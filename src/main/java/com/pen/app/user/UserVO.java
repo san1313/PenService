@@ -12,23 +12,24 @@ import lombok.Data;
 
 @Data
 public class UserVO implements UserDetails{
-	int id;
-	String loginId;
-	String password;
-	String fullName;
-	String deptName;
-	String roleName;
+	String empNum;
+	String empName;
+	String empId;
+	String empPw;
+	String empTel;
+	String authCode;
+	String authName;
 
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> auth = new ArrayList<>();
-		auth.add(new SimpleGrantedAuthority(this.roleName));
+		auth.add(new SimpleGrantedAuthority(this.authName));
 		return auth;
 	}
 	@Override
 	public String getUsername() {
 
-		return loginId;
+		return empId;
 	}
 	@Override
 	public boolean isAccountNonExpired() {
@@ -49,5 +50,10 @@ public class UserVO implements UserDetails{
 	public boolean isEnabled() {
 
 		return true;
+	}
+	@Override
+	public String getPassword() {
+		
+		return empPw;
 	}
 }
