@@ -1,4 +1,4 @@
-package com.pen.app;
+package com.pen.app.controller;
 
 import java.security.Principal;
 import java.text.DateFormat;
