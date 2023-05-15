@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+  
+<mapper namespace="com.pen.app.bns.mapper.BnsMapper">
+
+<!-- 주문서 전체 조회 -->
+<select id="getOrdList" resultType="">
+    select *
+    from BNS_ORDER
+  </select>
+</mapper>
