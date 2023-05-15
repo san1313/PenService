@@ -6,7 +6,7 @@
 <mapper namespace="com.pen.app.user.mapper.UserMapper">
   <select id="getUser" resultType="UserVO">
     select *
-    from t_user
-    where login_id = #{loginId}
+    from COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE)
+    where EMP_ID = #{empId}
   </select>
 </mapper>
