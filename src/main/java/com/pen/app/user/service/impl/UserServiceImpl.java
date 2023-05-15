@@ -25,7 +25,7 @@ public UserVO getUser(UserVO vo) {
 public UserDetails loadUserByUsername(String username) throws UsernameNotFoundException {
 	// 단건조회
 	UserVO userVo = new UserVO();
-	userVo.setLoginId(username);
+	userVo.setEmpId(username);
 	UserVO vo = mapper.getUser(userVo);
 	// ID 없으면 error
 	if (vo == null) {
