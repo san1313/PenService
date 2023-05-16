@@ -11,4 +11,10 @@ public class MakController {
 	public void plan() {
 		
 	}
+	
+	@GetMapping("/test")
+	void test() {
+		
+	}
+	
 }
