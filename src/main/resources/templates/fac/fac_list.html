@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+
+  <head>
+    <meta charset="UTF-8" />
+    <title>설비관리</title>
+	
+    <style>
+      .fac_register{
+        border: 1px solid black;   
+        padding: 10px;
+      }
+      .btn{
+        width: 5px 15px;
+        background-color: #282cff;
+        border: none;
+        color: white;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        float: right;
+      }
+    </style>
+    
+    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+  </head>
+  
+  
+  <body>
+  <div layout:fragment="title">
+  	<h3>설비정보관리</h3>
+  </div>
+  
+  <div layout:fragment="content">
+    <div class = "fac_register">
+      <label for="fac_code">설비코드</label>
+				<select name="code">
+				<option value="EQNAN">EQMAN</option>
+				</select>
+   
+      <label>자재명</label>
+      <input class="text1" type="text">
+      <label>납기일</label>
+      <input class="text1" type="date"><br>
+      <label>거래처명</label>
+      <input class="text1" type="text">
+      <label>담당자</label>
+      <input class="text1" type="text">
+      <button type="summit" class="btn">등록</button>
+    </div>
+  
+      <div id="grid"></div>
+
+<script>
+  
+const gridData = [
+    {
+      name: 'Beautiful Lies',
+      artist: 'Birdy',
+      release: '2016.03.26 09:00AM',
+      type: 'Deluxe',
+      genre: 'Pop'
+    },
+    {
+      name: 'X',
+      artist: 'Ed Sheeran',
+      release: '2014.06.24',
+      type: 'Deluxe',
+      genre: 'Pop',
+      _attributes: {
+        disabled: true // A current row is disabled
+      }
+    },
+    {
+      name: 'Moves Like Jagger',
+      release: '2011.08.08',
+      artist: 'Maroon5',
+      type: 'Single',
+      genre: 'Pop,Rock',
+      _attributes: {
+        checkDisabled: true // A checkbox is disabled only
+      }
+    },
+    {
+      name: 'A Head Full Of Dreams',
+      artist: 'Coldplay',
+      release: '2015.12.04',
+      type: 'Deluxe',
+      genre: 'Rock',
+      _attributes: {
+        checked: true, // A checkbox is already checked while rendering
+        className: {
+          // Add class name on a row
+          row: ['red']
+        }
+      }
+    },
+    {
+      name: '19',
+      artist: 'Adele',
+      release: '2008.01.27',
+      type: 'EP',
+      genre: 'Pop,R&B',
+      _attributes: {
+        rowSpan: {
+          // Merge rows
+          artist: 3,
+          genre: 2
+        }
+      }
+    },
+    {
+      name: '21',
+      artist: 'Adele',
+      release: '2011.01.21',
+      type: 'Deluxe',
+      genre: 'Pop,R&B'
+    },
+    {
+      name: '25',
+      artist: 'Adele',
+      release: '2015.11.20',
+      type: 'EP',
+      genre: 'Pop',
+      _attributes: {
+        className: {
+          // Add class name on each columns
+          column: {
+            type: ['blue'],
+            genre: ['blue']
+          }
+        }
+      }
+    }
+  ];
+
+  const grid = new tui.Grid({
+    el: document.getElementById('grid'),
+    data: gridData,
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['checkbox'],
+    columns: [
+      {
+        header: 'Name',
+        name: 'name'
+      },
+      {
+        header: 'Artist',
+        name: 'artist'
+      },
+      {
+        header: 'Type',
+        name: 'type'
+      },
+      {
+        header: 'Release',
+        name: 'release'
+      },
+      {
+        header: 'Genre',
+        name: 'genre'
+      }
+    ]
+  });
+      
+ </script>
+  
+  </div>
+
+  </body>
+</html>
+
+
