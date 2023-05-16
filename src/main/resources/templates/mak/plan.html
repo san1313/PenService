@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8">
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<style>
+h7{
+margin-left:4vw;
+font-size:10pt;
+}
+input{
+margin-bottom:3vh;
+margin-left:1vw;
+}
+</style>
+
+</head>
+<body>
+<h2 layout:fragment="title">생산 계획 관리</h2>
+<div layout:fragment="content">
+<div style="text-align:left">
+
+<input type="radio" name="btn" id="planBtn" value="plan">
+<label for="plan">계약서</label>
+<input type="radio" name="btn" id="orderBtn" value="order">
+<label for="order">주문서</label>
+</div>
+<form id="frm" style="text-align:left">
+
+</form>
+
+
+      <div id="grid"></div>
+
+<script>
+
+
+
+let br = document.createElement('br');
+const div = document.getElementById('grid');
+const Frm = document.getElementById('frm');
+document.getElementById('planBtn').addEventListener('click',function(){
+	Frm.textContent='';
+	div.textContent='';
+    let input = document.createElement('input');
+    let text = document.createElement('h7');
+    text.append("계약명");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("제품명");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("납기일");
+    Frm.appendChild(text);
+    text.appendChild(input);
+
+    Frm.appendChild(br);
+    
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("계획명");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("수주량");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("마감기한");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    
+    
+    
+    
+    
+    const gridData = [
+        {
+          c1: '1992/03/25',
+          c2: '12/06/2019',
+          c3: '2014-04-16',
+          c4: '2019-11-19 09:00 AM',
+          c5: '2019-11-19 09:00 AM',
+          c6: '2019-01',
+          c7: '2019'
+        }
+      ];
+
+      const grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        scrollX: false,
+        scrollY: false,
+        data: gridData,
+        columns: [
+          {
+            header: 'DatePicker (Default)',
+            name: 'c1',
+            editor: 'datePicker'
+          },
+          {
+            header: 'DatePicker (Using options)',
+            name: 'c2',
+            editor: {
+              type: 'datePicker',
+              options: {
+                format: 'dd/MM/yyyy'
+              }
+            }
+          },
+          {
+            header: 'DatePicker (selectableRanges)',
+            name: 'c3',
+            editor: {
+              type: 'datePicker'
+            }
+          },
+          {
+            header: 'Date-TimePicker',
+            name: 'c4',
+            editor: {
+              type: 'datePicker',
+              options: {
+                format: 'yyyy-MM-dd HH:mm A',
+                timepicker: true
+              }
+            }
+          },
+          {
+            header: 'Date-TimePicker With tab',
+            name: 'c5',
+            editor: {
+              type: 'datePicker',
+              options: {
+                format: 'yyyy-MM-dd HH:mm A',
+                timepicker: {
+                  layoutType: 'tab',
+                  inputType: 'spinbox'
+                }
+              }
+            }
+          },
+          {
+            header: 'MonthPicker',
+            name: 'c6',
+            editor: {
+              type: 'datePicker',
+              options: {
+                format: 'yyyy-MM',
+                type: 'month'
+              }
+            }
+          },
+          {
+            header: 'YearPicker',
+            name: 'c7',
+            editor: {
+              type: 'datePicker',
+              options: {
+                format: 'yyyy',
+                type: 'year'
+              }
+            }
+          }
+        ]
+      });
+})
+
+document.getElementById('orderBtn').addEventListener('click',function(){
+	Frm.textContent='';
+	div.textContent='';
+    let input = document.createElement('input');
+    let text = document.createElement('h7');
+    text.append("계획명");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("제품명")
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("납기일")
+    Frm.appendChild(text);
+    text.appendChild(input);
+    
+    Frm.appendChild(br);
+    
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("주문명");
+    Frm.appendChild(text);
+    text.appendChild(input);
+    input = document.createElement('input');
+    text = document.createElement('h7');
+    text.append("마감기한")
+    Frm.appendChild(text);
+    text.appendChild(input);
+    
+
+})
+
+
+
+</script>
+</div>
+
+</body>
+</html>
