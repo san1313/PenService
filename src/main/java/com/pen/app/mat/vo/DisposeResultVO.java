@@ -7,12 +7,14 @@ import lombok.Data;
 @Data
 public class DisposeResultVO {//폐기처리결과
 
-	int num;
 	String matLot;
 	String matUnit;
-	int matBtestQnt; //검사 전 수량
-	int matAtestQnt; //검사 후 수량
-	int matSta; //폐기율
+	int matTestQnt; //검사량
+	int matPassQnt; //합격량
+	int matStaQnt; //폐기량
+	int qipNumListExp;//보관초과검사내역번호
+	String testOrderCode2; //검사순서코드
+	
 	
 	String matName;
 	int matQnt; //재고량
