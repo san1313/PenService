@@ -11,11 +11,11 @@ import com.pen.app.mat.vo.OrderVO;
 @Controller
 public class MatController {
 
-	@RequestMapping(value="orderregister", method=RequestMethod.POST)
+	@RequestMapping(value="orderregister")
 	public String matregister(OrderVO order) {
-		MatService.orderregister(order);
 		
-		return "orderregister";
+		
+		return "order";
 	}
 	
 	
