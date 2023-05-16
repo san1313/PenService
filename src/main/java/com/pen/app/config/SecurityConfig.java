@@ -29,11 +29,7 @@ public class SecurityConfig {
 	public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
 	http.authorizeHttpRequests((requests) ->
 	requests
-<<<<<<< HEAD
 	.antMatchers("/" ,"/top", "/logout", "/login", "/**").permitAll()
-=======
-	.antMatchers("/" ,"/top", "/logout", "/login","/**").permitAll()
->>>>>>> refs/remotes/origin/seonjae
 	.antMatchers("/admin/**").hasAuthority("ADMIN")
 	.anyRequest().authenticated())
 	.formLogin(login->
