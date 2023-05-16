@@ -3,7 +3,7 @@ package com.pen.app.fac.vo;
 import lombok.Data;
 
 @Data
-public class FacVO {
+public class FacInfoVO {
 	
 	/*
 	CREATE TABLE FAC_INFO (

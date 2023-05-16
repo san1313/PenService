@@ -1,7 +1,8 @@
 package com.pen.app.fac.service;
 
-import com.pen.app.fac.vo.FacVO;
+import com.pen.app.fac.vo.FacInfoVO;
 
 public interface FacService {
-	public FacVO getFac(FacVO vo);
+	public FacInfoVO getFac(FacInfoVO vo);
+	
 }
