@@ -9,4 +9,12 @@
     from COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE)
     where EMP_ID = #{empId}
   </select>
+  
+  <update id="modifyUser">
+  	UPDATE COM_INFO_EMP SET 
+  	<if test="empPw != null and empPw != ''.toString()">
+  		emp_pw = ${vo.empPw}, 
+  	</if>
+ 	emp_tel = ${vo.empTel}
+  </update>
 </mapper>
