@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8">
+<title>ordList</title>
+<script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<style>
+
+.process{
+display : inline;
+}
+
+.container-fluid{
+text-align : left !important;
+}
+
+.ordbtn{
+float : right;
+margin-bottom : 1px;
+}
+.ordbtn button{
+margin-right : 2px;
+}
+.ordReg{
+margin-top: 30px;
+}
+</style>
+
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script> <!-- 그리드 -->
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
+</head>
+
+
+<body>
+
+<div layout:fragment = "title">
+<h1>주문서 관리</h1> 
+<button class ="ordReg">주문서<br>등록하기</button>
+</div>
+
+<div layout:fragment = "content">
+
+  진행구분 <label class="process">진행
+    <input type="checkbox" checked="checked">
+    <span class="checkmark"></span>
+  </label>
+  
+  <label class="process">완료
+    <input type="checkbox">
+    <span class="checkmark"></span>
+  </label>
+  
+  <label class="process">전체
+    <input type="checkbox">
+    <span class="checkmark"></span>
+  </label>
+ 
+
+<p>거래처 <input type ="text"> <button class="fa-solid fa-magnifying-glass" data-bs-toggle="modal" data-bs-target="#exampleModal"></button></p>  
+<p>제품명 <input type ="text"> <button class="fa-solid fa-magnifying-glass" data-bs-toggle="modal" data-bs-target="#exampleModal"></button></p>
+<!-- -----------------------------------------------모달시작--------------------------------------------- -->
+<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">new message to null</h1> -->
+        <h1>거래처 목록</h1>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        <form>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">주문코드:</label>
+            <input type="text" class="form-control" id="recipient-name">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">제품명:</label>
+            <textarea class="form-control" id="message-text"></textarea>
+          </div>
+        </form>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+        <button type="button" class="btn btn-primary">Send message</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!---------------------------------- 모달끝 -------------------------------------------------->
+
+
+<p>주문일자 - 납기일자 <input type = "date"><input type = "date"> <button>조회</button> <button>초기화</button></p>
+<div class = "ordbtn">
+<button >주문서 수정</button> <button >주문서 취소</button>
+</div>
+<br>
+
+
+<!----------------------------------------------- -그리드시작-------------------------------------------- -->
+<div id="grid"></div>
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+ 	$.ajax({
+ 		url : "/bns/ordListAjax",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			grid.resetData(result);
+ 		}
+ 	});
+    var grid = new tui.Grid({
+      el: document.getElementById('grid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['checkbox'],
+      columns: [
+        {
+          header: 'No',
+          name: 'ordCode'
+        },
+        {
+          header: '주문코드',
+          name: 'accCode'
+        },
+        {
+          header: '거래처명',
+          name: 'accName'
+        },
+        {
+          header: '주문일자',
+          name: 'ordDate'
+        },
+        {
+          header: '납기일자',
+          name: 'ordDueDate'
+        },
+        {
+            header: '진행상황',
+            name: 'ordProgress'
+          },
+        {
+            header: '담당자명',
+            name: 'empNum'
+          },
+        {
+            header: '비고',
+            name: 'ordNote'
+          }
+    
+      ]
+    });
+    <!----------------------------------------- 그리드끝 ----------------------------------------->
+    
+    
+    
+    <!--------------------------모달시작------------------------>
+    const exampleModal = document.getElementById('exampleModal')
+    if (exampleModal) {
+      exampleModal.addEventListener('show.bs.modal', event => {
+        // Button that triggered the modal
+        const button = event.relatedTarget
+        // Extract info from data-bs-* attributes
+        const recipient = button.getAttribute('data-bs-whatever')
+        // If necessary, you could initiate an Ajax request here
+        // and then do the updating in a callback.
+
+        // Update the modal's content.
+        const modalTitle = exampleModal.querySelector('.modal-title')
+        const modalBodyInput = exampleModal.querySelector('.modal-body input')
+
+        modalTitle.textContent = `New message to ${recipient}`
+        modalBodyInput.value = recipient
+      })
+    }
+    <!--------------------------모달끝------------------------>
+    
+    </script>
+  
+</div>
+</body>
+</html>
