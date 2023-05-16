@@ -1,5 +1,7 @@
 package com.pen.app.bns.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -11,11 +13,11 @@ import com.pen.app.bns.vo.BnsOrdVO;
 public class BnsServiceImpl implements BnsService {
 
 	@Autowired BnsMapper mapper;
-	
+
 	@Override
-	public BnsOrdVO getOrd(BnsOrdVO vo) {
-		
-		return mapper.getOrd(vo);
+	public List<BnsOrdVO> getOrdList() {
+		return mapper.getOrdList();
 	}
+
 	
 }

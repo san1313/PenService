@@ -7,8 +7,9 @@
 <mapper namespace="com.pen.app.bns.mapper.BnsMapper">
 
 <!-- 주문서 전체 조회 -->
-<select id="getOrdList" resultType="">
+<select id="getOrdList" resultType="BnsOrdVO">
     select *
     from BNS_ORDER
   </select>
+  
 </mapper>

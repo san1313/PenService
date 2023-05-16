@@ -2,14 +2,17 @@ package com.pen.app.bns.vo;
 
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class BnsOrdVO {
-	String contCode;
+	String ordCode;
 	String accCode;
 	String accName;
-	Date contDate;
-	Date contDueDate;
-	String contProgress;
-	String contNote;
+	Date ordDate;
+	Date ordDueDate;
+	String ordProgress;
 	String empNum;
-	
+	String ordNote;
 }
+	

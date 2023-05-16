@@ -6,4 +6,5 @@ import com.pen.app.bns.vo.BnsOrdVO;
 
 public interface BnsMapper {
 	List<BnsOrdVO> getOrdList();
+	
 }
