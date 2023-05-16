@@ -1,22 +1,13 @@
 package com.pen.app.controller;
 
-import java.security.Principal;
-import java.text.DateFormat;
-import java.util.Date;
-import java.util.Locale;
-
-import javax.servlet.http.HttpSession;
-
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.PostMapping;
+
+import com.pen.app.user.UserVO;
+import com.pen.app.user.service.impl.UserServiceImpl;
 
 /**
  * Handles requests for the application home page.
@@ -24,47 +15,42 @@ import org.springframework.web.bind.annotation.RequestMethod;
 @Controller
 public class CommonController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(CommonController.class);
+	@Autowired UserServiceImpl userService;
 	
-	/**
-	 * Simply selects the home view to render by returning its name.
-	 */
-	@RequestMapping(value = "/", method = RequestMethod.GET)
-	public String home(Locale locale, Model model) {
-		logger.info("Welcome home! The client locale is {}.", locale);
-		
-		Date date = new Date();
-		DateFormat dateFormat = DateFormat.getDateTimeInstance(DateFormat.LONG, DateFormat.LONG, locale);
-		
-		String formattedDate = dateFormat.format(date);
-		
-		model.addAttribute("serverTime", formattedDate );
-		
+	@GetMapping(value = {"/top", "/"})
+	public String top() {
 		return "/top";
 	}
 	
-	@GetMapping("/top")
-	public void top() {
-		
+	@GetMapping("/modifyUser")
+	public String modifyUserForm() {
+		return "/com/modifyUser";
 	}
 	
-	@GetMapping("/user/user")
-	public void user(@AuthenticationPrincipal Principal uservo, HttpSession session) {
-		String sessionLoginId = (String)session.getAttribute("loginId");
-		System.out.println(sessionLoginId);
-		System.out.println("------------------------");
-		UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
-		System.out.println(userDetails.getUsername());
-		System.out.println("------------------------");
-//		System.out.println(uservo.getName());
-	}
-	
-	@GetMapping("/admin/admin")
-	public void admin() {
-		
-	}
 	@GetMapping("/login")
 	public void login() {
 		
 	}
+	
+	@PostMapping("/modify")
+	public String modifyUser(UserVO vo) {
+		System.out.println(vo.getPassword());
+		if (vo.getPassword()!="") {
+			vo.setEmpPw(new BCryptPasswordEncoder().encode(vo.getPassword()));
+		}
+		userService.modifyUser(vo);
+		System.out.println(vo);
+		return "/com/modifyUser";
+	}
+	
+//	@GetMapping("/user/user")
+//	public void user(@AuthenticationPrincipal Principal uservo, HttpSession session) {
+//		String sessionLoginId = (String)session.getAttribute("loginId");
+//		System.out.println(sessionLoginId);
+//		System.out.println("------------------------");
+//		UserDetails userDetails = (UserDetails)SecurityContextHolder.getContext().getAuthentication().getPrincipal();
+//		System.out.println(userDetails.getUsername());
+//		System.out.println("------------------------");
+////		System.out.println(uservo.getName());
+//	}
 }

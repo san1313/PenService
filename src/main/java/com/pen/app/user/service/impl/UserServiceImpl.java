@@ -34,4 +34,10 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
 	// vo return
 	return vo;
 }
+
+@Override
+public boolean modifyUser(UserVO vo) {
+	
+	return mapper.modifyUser(vo)==1;
+}
 }
