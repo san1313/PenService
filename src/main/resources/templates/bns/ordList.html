@@ -47,7 +47,7 @@ margin-top: 30px;
 
 <div layout:fragment = "title">
 <h1>주문서 관리</h1> 
-<button class ="ordReg">주문서<br>등록하기</button>
+<button type="button" class="btn btn-outline-secondary" data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서<br>등록하기</button>
 </div>
 
 <div layout:fragment = "content">
@@ -68,45 +68,282 @@ margin-top: 30px;
   </label>
  
 
-<p>거래처 <input type ="text"> <button class="fa-solid fa-magnifying-glass" data-bs-toggle="modal" data-bs-target="#exampleModal"></button></p>  
-<p>제품명 <input type ="text"> <button class="fa-solid fa-magnifying-glass" data-bs-toggle="modal" data-bs-target="#exampleModal"></button></p>
-<!-- -----------------------------------------------모달시작--------------------------------------------- -->
-<div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-  <div class="modal-dialog">
+<p>거래처 <input type ="text"> <button id="accountList" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-account-modal-lg" ></button></p>  
+<p>제품명 <input type ="text"> <button id="productList"class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-product-modal-lg"></button></p>
+
+
+<!-- 거래처리스트 modal -->
+<div class="modal fade bd-account-modal-lg" id="accountListModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header">
-        <!-- <h1 class="modal-title fs-5" id="exampleModalLabel">new message to null</h1> -->
-        <h1>거래처 목록</h1>
-        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      <h1>거래처 목록</h1>
+      <p>거래처명 <input type = "text"> <button type = "submit" class="fa-solid fa-magnifying-glass"></button>
+      <div id="accountGrid"></div>
+      <button>확인</button> <button>취소</button>
       </div>
-      <div class="modal-body">
-        <form>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">주문코드:</label>
-            <input type="text" class="form-control" id="recipient-name">
-          </div>
-          <div class="mb-3">
-            <label for="message-text" class="col-form-label">제품명:</label>
-            <textarea class="form-control" id="message-text"></textarea>
-          </div>
-        </form>
-      </div>
-      <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-        <button type="button" class="btn btn-primary">Send message</button>
-      </div>
+  </div>
+</div>
+      
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+ 	$.ajax({
+ 		url : "/bns/accList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			account_Grid.resetData(result);
+ 			account_Grid.refreshLayout();
+ 		}
+ 	});
+    var account_Grid = new tui.Grid({
+      el: document.getElementById('accountGrid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['checkbox'],
+      columns: [
+        {
+          header: '거래처코드',
+          name: 'accCode'
+        },
+        {
+          header: '거래처명',
+          name: 'accName'
+        }
+    
+      ]
+    });
+    $(function(){
+    	$('#accountListModal').on('shown.bs.modal', function(){
+    		account_Grid.refreshLayout();
+    	})
+    })
+</script>
+    
+<!-- 거래처리스트 모달 끝 -->
+
+<!-- 제품 리스트 modal -->
+<div class="modal fade bd-product-modal-lg" id = "productListModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <h1>제품 목록</h1>
+      
+      <p>제품명 <input type = "text"> <button type = "submit" class="fa-solid fa-magnifying-glass"></button>
+     
+      <div id="productGrid"></div>
+       <button>확인</button> <button>취소</button>
     </div>
   </div>
 </div>
 
-<!---------------------------------- 모달끝 -------------------------------------------------->
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+ 	$.ajax({
+ 		url : "/bns/prodList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			product_Grid.resetData(result);
+ 			product_Grid.refreshLayout();
+ 		}
+ 	});
+    var product_Grid = new tui.Grid({
+      el: document.getElementById('productGrid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['checkbox'],
+      columns: [
+        {
+          header: '제품코드',
+          name: 'prodCode'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        }
+    
+      ]
+    });
+    $(function(){
+    	$('#productListModal').on('shown.bs.modal', function(){
+    		product_Grid.refreshLayout();
+    	})
+    })
+</script>
+<!-- 제품 리스트 모달 끝 -->
 
+    <!-- 주문서등록 modal -->
+<div class="modal fade bd-ordList-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+    
+      <div class="modal-header">
+      <h1 class = "modal-title">주문서 등록</h1>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      
+      <form method="get" action ="/insertOrdList">
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">주문코드 </label>
+            <input type="text" class="form-control" name="ordCode">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button> </label>
+            <input type="text" class="form-control" name="prodName">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">제품코드 </label>
+            <input type="text" class="form-control" name="prodCode">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">주문량 </label>
+            <input type="text" class="form-control" name="ordDetQuan">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">단가 </label>
+            <input type="text" class="form-control" name="ordDetPrice">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">거래처명 <button type="button"class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button> </label>
+            <input type="text" class="form-control" name="accName">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">거래처코드 </label>
+            <input type="text" class="form-control" name="accCode">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">주문일자 </label>
+            <input type="text" class="form-control" name="ordDate">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">납기일자 </label>
+            <input type="text" class="form-control" name="ordDueDate">
+          </div>
+          <div class="mb-3">
+            <label for="recipient-name" class="col-form-label">담당자명 </label>
+            <input type="text" class="form-control" name="empName">
+          </div>
+          <div class="mb-3">
+            <label for="message-text" class="col-form-label">비고 </label>
+            <textarea class="form-control" name="ordNote"></textarea>
+          </div>
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+        <button type="submit" class="btn btn-primary">등록</button>
+       
+<!-- 주문서 등록내의 거래처리스트모달 -->
+<div class="modal fade bd-smallaccount-modal-sm" id = "accountRegModal"tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <h2>거래처 목록</h2>
+    <p>거래처명 <input type = "text"> <button type = "submit" class="fa-solid fa-magnifying-glass"></button></p>
+      <div id="accountRegGrid"></div>
+      <button>확인</button><button>취소</button>
+    </div>
+  </div>
+</div>
+
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+ 	$.ajax({
+ 		url : "/bns/accList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			accountReg_Grid.resetData(result);
+ 			accountReg_Grid.refreshLayout();
+ 		}
+ 	});
+    var accountReg_Grid = new tui.Grid({
+      el: document.getElementById('accountRegGrid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['checkbox'],
+      columns: [
+        {
+          header: '거래처코드',
+          name: 'accCode'
+        },
+        {
+          header: '거래처명',
+          name: 'accName'
+        }
+    
+      ]
+    });
+    $(function(){
+    	$('#accountRegModal').on('shown.bs.modal', function(){
+    		accountReg_Grid.refreshLayout();
+    	})
+    })
+</script>
+
+<!-- 주문서 등록내의 거래처리스트모달 끝 -->
+
+<!-- 주문서 등록내의 제품리스트모달 -->
+<div class="modal fade bd-smallproduct-modal-sm" id = "productRegModal"tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <h2>제품리스트</h2>
+    <p>제품명 <input type = "text"> <button type = "submit" class="fa-solid fa-magnifying-glass"></button></p>
+      <div id="productRegGrid"></div>
+      <button>확인</button><button>취소</button>
+    </div>
+  </div>
+</div>
+      
+     </form>
+      
+      
+    </div>
+  </div>
+</div>
+
+<script src="/plugins/jquery/jquery.min.js"></script>
+<script>
+ 	$.ajax({
+ 		url : "/bns/prodList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			productReg_Grid.resetData(result);
+ 			productReg_Grid.refreshLayout();
+ 		}
+ 	});
+    var productReg_Grid = new tui.Grid({
+      el: document.getElementById('productRegGrid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['checkbox'],
+      columns: [
+        {
+          header: '제품코드',
+          name: 'prodCode'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        }
+    
+      ]
+    });
+    $(function(){
+    	$('#productRegModal').on('shown.bs.modal', function(){
+    		productReg_Grid.refreshLayout();
+    	})
+    })
+</script>
+<!-- 주문서 등록내의 제품리스트 모달 끝 -->
+
+<!-- 주문서 등록 모달 끝 -->
 
 <p>주문일자 - 납기일자 <input type = "date"><input type = "date"> <button>조회</button> <button>초기화</button></p>
 <div class = "ordbtn">
 <button >주문서 수정</button> <button >주문서 취소</button>
 </div>
 <br>
+
+
 
 
 <!----------------------------------------------- -그리드시작-------------------------------------------- -->
@@ -128,11 +365,11 @@ margin-top: 30px;
       rowHeaders: ['checkbox'],
       columns: [
         {
-          header: 'No',
+          header: '주문코드',
           name: 'ordCode'
         },
         {
-          header: '주문코드',
+          header: '거래처코드',
           name: 'accCode'
         },
         {
@@ -164,28 +401,7 @@ margin-top: 30px;
     });
     <!----------------------------------------- 그리드끝 ----------------------------------------->
     
-    
-    
-    <!--------------------------모달시작------------------------>
-    const exampleModal = document.getElementById('exampleModal')
-    if (exampleModal) {
-      exampleModal.addEventListener('show.bs.modal', event => {
-        // Button that triggered the modal
-        const button = event.relatedTarget
-        // Extract info from data-bs-* attributes
-        const recipient = button.getAttribute('data-bs-whatever')
-        // If necessary, you could initiate an Ajax request here
-        // and then do the updating in a callback.
 
-        // Update the modal's content.
-        const modalTitle = exampleModal.querySelector('.modal-title')
-        const modalBodyInput = exampleModal.querySelector('.modal-body input')
-
-        modalTitle.textContent = `New message to ${recipient}`
-        modalBodyInput.value = recipient
-      })
-    }
-    <!--------------------------모달끝------------------------>
     
     </script>
   
