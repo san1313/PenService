@@ -5,7 +5,7 @@
 
   <head>
     <meta charset="UTF-8" />
-    <title>설비관리</title>
+    <title>펜서비스</title>
 	
     <style>
       .fac_register{
@@ -32,23 +32,45 @@
   
   <body>
   <div layout:fragment="title">
-  	<h3>설비정보관리</h3>
+  	<h3>설비등록</h3>
   </div>
   
   <div layout:fragment="content">
-    <div class = "fac_register">
+    <div class = "fac_register" syle="text-align:left">
       <label for="fac_code">설비코드</label>
-				<select name="code">
-				<option value="EQNAN">EQMAN</option>
-				</select>
+	  <input type="text"id="fac_code" placeholder="EQMAN" readonly>
    
-      <label>자재명</label>
-      <input class="text1" type="text">
-      <label>납기일</label>
-      <input class="text1" type="date"><br>
-      <label>거래처명</label>
-      <input class="text1" type="text">
-      <label>담당자</label>
+      <label for="fac_name">설비명</label>
+    <input type="text" id="fac_name">
+     <label for="maker_name">제조업체</label>
+     <input type="text"id="maker_name">
+  <label for="operate_check">가동여부</label>
+<input type="radio" name="operate_check" value="operate" checked> 가동      
+<input type="radio" name="operate_check" value="non_operate"> 비가동
+
+<label for="install_date">입고일자</label>
+<input type="date">
+
+<label for="proc_code">공정코드</label>
+<input type="text"id="proc_code">
+<button type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-search"></i></button> 
+
+	<label for="proc_name">공정명</label>
+	<input type="text" id="proc_name">
+	
+	<label for="emp_num">담당자</label>
+	<input type="text" id="emp_num">
+	
+	<label for="temp_min">최저온도(℃)</label>
+	<input type="text" id="temp_min"size=13 maxlength=3>
+	
+	<label for="temp_max">최고온도(℃)</label>
+	<input type="text" id="temp_max" size=13 maxlength=3>
+	
+	<label for="confirm_cycle">점검주기(일)</label>
+		<input type="text" id="confirm_cycle">
+		</div>
+	
       <input class="text1" type="text">
       <button type="summit" class="btn">등록</button>
     </div>

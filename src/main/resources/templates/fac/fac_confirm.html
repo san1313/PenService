@@ -87,15 +87,15 @@
 </style>
 
  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
 </head>
 
 <body>
-<!-----------------------------------------------------------------------------------------------설비등록시작------------------------------------------------------------------------------------------------------------->
 	<div layout:fragment="title">
   	<h3>설비등록</h3>
   	</div>
@@ -123,7 +123,8 @@
 				
 				<label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="text"id="proc_code">
-				<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
+				<button type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-search"></i></button> 
+				
 				<label for="proc_name">공정명</label>
 				<input type="text" id="proc_name">&nbsp;&nbsp;&nbsp;&nbsp; 	
 				
@@ -153,133 +154,183 @@
 				</div>
 				<hr class="my-4">
 		</form>
-    <!-- Large modal -->
-
-<!--공정코드 조회 모달시작 -->
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header" style="text-align:left">
-		<h5 class="modal-title" >공정코드조회</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-      	<label for="proc_name">공정명</label>&nbsp;&nbsp;<input type="text" id="proc_name_search"><button>검색</button>
-      <!-- 모달속 그리드시작 --> 
-<div id="grid2"></div>
-
-      <script>
-      $.ajax({
-   		url : "/fac/ProcSelectAjax",
-   		method : "GET",
-   		dataType : "JSON",
-   		success : function(result){
-   			grid.resetData(result);
-   		}
-   	});
-      
-   var grid = new tui.Grid({
-    el: document.getElementById('grid2'),
-    scrollX: false,
-    scrollY: false,
-    rowHeaders: ['checkbox'],
-    columns: [
-      {
-        header: '공정코드',
-        name: 'ProcCode'
-      },
-      {
-        header: '공정명',
-        name: 'ProcName'
-      }
-    ]
-   });
-   
-   
-   </script>
- <!-- 모달속 그리드 끝 -->
- <hr>
- <button>선택</button> <button>삭제</button>
-      </div>
-    </div>
-  </div>
-</div>			
-<!-- 모달끝 -->			
-<!-----------------------------------------------------------------------------------------------설비등록끝------------------------------------------------------------------------------------------------------------->
-
-
-<!-----------------------------------------------------------------------------------------------설비관리시작------------------------------------------------------------------------------------------------------------->
-  	<h3 style="text-align:left">설비관리</h3>
-  	<div class="info_search" style="text-align:left">
-  	 <select name = "fac_info">
-  	 <option value="선택"selected="selected">---선택---</option>
-  	 <option value="설비명">설비명</option>
- 	 <option value="설비코드">설비코드</option>
-  	<option value="담당자">담당자</option>
-  	 </select>
-  		<input type="text" id="search_name">
-  <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
-  
-  	</div>
-  
-  <!-- 그리드시작 -->
+		
+		<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+	<div class="modal-dialog">
+		<div class="modal-content">
+			<div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
+				<h4 class="modal-title" id="myModalLabel">Reply Modal</h4>
+			</div>
+			<div class="modal-body">
+				<div class="form-group">
+					<label>Reply</label>
+					<input type="text" class="form-control" name="reply" value="샘플값">
+				</div>
+				<div class="form-group">
+					<label>Replyer</label>
+					<input type="text" class="form-control" name="replyer" value="user03">
+				</div>
+				<div class="form-group">
+					<label>Reply Date</label>
+					<input type="text" class="form-control" name="replydate" value="2023-04-10 13:23">
+				</div>
+			</div>
+			<div class="modal-footer">
+				<button id="modalModBtn" type="button" class="btn btn-warning">Modify</button>
+				<button id="modalRemoveBtn" type="button" class="btn btn-danger">Remove</button>
+				<button id="modalRegisterBtn" type="button" class="btn btn-default">Register</button>
+				<button id="modalCloseBtn" type="button" class="btn btn-default">Close</button>
+			</div>
+		</div>
+		<!-- /.modal-content -->
+	</div>
+	<!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 	
-      <div id="grid"></div>
-
+		
+		
+		
+	
+  	<h3 style="text-align:left">설비관리</h3>
+  
+	
+      <div id="grid"></div>	
       <script>
-      $.ajax({
-   		url : "/fac/infoListAjax",
-   		method : "GET",
-   		dataType : "JSON",
-   		success : function(result){
-   			grid.resetData(result);
-   		}
-   	});
-      
-   var grid = new tui.Grid({
+const gridData = [
+    {
+      name: 'Beautiful Lies',
+      artist: 'Birdy',
+      release: '2016.03.26 09:00AM',
+      type: 'Deluxe',
+      genre: 'Pop'
+    },
+    {
+      name: 'X',
+      artist: 'Ed Sheeran',
+      release: '2014.06.24',
+      type: 'Deluxe',
+      genre: 'Pop',
+      _attributes: {
+        disabled: true // A current row is disabled
+      }
+    },
+    {
+      name: 'Moves Like Jagger',
+      release: '2011.08.08',
+      artist: 'Maroon5',
+      type: 'Single',
+      genre: 'Pop,Rock',
+      _attributes: {
+        checkDisabled: true // A checkbox is disabled only
+      }
+    },
+    {
+      name: 'A Head Full Of Dreams',
+      artist: 'Coldplay',
+      release: '2015.12.04',
+      type: 'Deluxe',
+      genre: 'Rock',
+      _attributes: {
+        checked: true, // A checkbox is already checked while rendering
+        className: {
+          // Add class name on a row
+          row: ['red']
+        }
+      }
+    },
+    {
+      name: '19',
+      artist: 'Adele',
+      release: '2008.01.27',
+      type: 'EP',
+      genre: 'Pop,R&B',
+      _attributes: {
+        rowSpan: {
+          // Merge rows
+          artist: 3,
+          genre: 2
+        }
+      }
+    },
+    {
+      name: '21',
+      artist: 'Adele',
+      release: '2011.01.21',
+      type: 'Deluxe',
+      genre: 'Pop,R&B'
+    },
+    {
+      name: '25',
+      artist: 'Adele',
+      release: '2015.11.20',
+      type: 'EP',
+      genre: 'Pop',
+      _attributes: {
+        className: {
+          // Add class name on each columns
+          column: {
+            type: ['blue'],
+            genre: ['blue']
+          }
+        }
+      }
+    }
+  ];
+
+const grid = new tui.Grid({
     el: document.getElementById('grid'),
+    data: {
+      api: {
+        readData: { url: '/api/readData', method: 'GET' }
+      }
+    },
     scrollX: false,
     scrollY: false,
-    rowHeaders: ['checkbox'],
+    minBodyHeight: 30,
+    rowHeaders: ['rowNum'],
+    pageOptions: {
+      perPage: 5
+    },
     columns: [
       {
         header: '설비코드',
-        name: 'facCode'
+        name: 'fac_code'
       },
       {
         header: '설비명',
-        name: 'facName'
+        name: 'fac_name'
       },
       {
         header: '가동여부',
-        name: 'operateCheck'
+        name: 'operate_check'
       },
 
       {
           header: '점검주기(일)',
-          name: 'checkCycle'
+          name: 'confirm_cycle'
        },
        {
            header: '입고일자',
-           name: 'installDate'
+           name: 'proc_name'
         },
         {
             header: '제조업체',
-            name: 'makerName'
+            name: 'maker_name'
          },
          {
              header: '최저온도(℃)',
-             name: 'tempMin'
+             name: 'temp_min'
           },
           {
               header: '최고온도(℃)',
-              name: 'tempMax'
+              name: 'temp_max'
            },
            {
                header: '담당자',
-               name: 'empNum'
+               name: 'emp_num'
             }   
     ]
   });

@@ -1,25 +1,37 @@
 package com.pen.app.controller;
 
-import org.springframework.stereotype.Controller;
+import java.util.List;
 
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.pen.app.fac.mapper.FacMapper;
+import com.pen.app.fac.vo.FacInfoVO;
 
 
 @Controller
+@RequestMapping("/fac")
 public class FacController {
 	
-	 @GetMapping("/fac/register")
+	@Autowired FacMapper dao;
+	
+	 @GetMapping("/register")
 	    public void register() {
 		 	
 	    }
-	 @GetMapping("/fac/fac_list")
+	 @GetMapping("/list")
 	    public void getList() {
 		 	
 	    }
-	 @PostMapping("/fac/fac_list")
-	 public String get() {
-	     return "";
-	 }
+	 	
+	 	@ResponseBody
+		@GetMapping("/infoListAjax")
+		public List<FacInfoVO> infoListAjax(){
+		List<FacInfoVO> list = dao.getList();
+		System.out.println(list);
+		return list;
+		}
 }
