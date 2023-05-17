@@ -78,7 +78,17 @@
     <div id="grid"></div>
     
     <button type="button" class="submitbtn">발주요청</button>
+    
     <script>
+    $.ajax({
+ 		url : "/mat/orderListAjax",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			grid.resetData(result);
+ 		}
+ 	});
+
       const gridData = [{
           name: 'Beautiful Lies',
           artist: 'Birdy',
