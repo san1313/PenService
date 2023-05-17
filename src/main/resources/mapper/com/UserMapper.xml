@@ -13,8 +13,8 @@
   <update id="modifyUser">
   	UPDATE COM_INFO_EMP SET 
   	<if test="empPw != null and empPw != ''.toString()">
-  		emp_pw = ${vo.empPw}, 
+  		emp_pw = ${empPw}, 
   	</if>
- 	emp_tel = ${vo.empTel}
+ 	emp_tel = ${empTel}
   </update>
 </mapper>

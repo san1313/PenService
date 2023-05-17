@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<html xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+ 	  xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
   <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1" />
@@ -787,7 +788,7 @@
     <!-- REQUIRED SCRIPTS -->
     <!-- 로그아웃폼 -->
     <form action="logout" method="post" id="logout">
-      <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+      <input sec:authorize="isAuthenticated()" type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
     </form>
     <!-- ./로그아웃폼-->
     <form action="" method="post"></form>
@@ -800,9 +801,6 @@
 
     <!-- OPTIONAL SCRIPTS -->
     <script src="../plugins/chart.js/Chart.min.js"></script>
-    <!-- AdminLTE for demo purposes -->
-    <!--<script src="../dist/js/demo.js"></script> -->
-    <!-- AdminLTE dashboard demo (This is only for demo purposes) -->
     <script src="../dist/js/pages/dashboard3.js"></script>
     <script>
       function logout() {
