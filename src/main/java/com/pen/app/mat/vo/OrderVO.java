@@ -12,7 +12,8 @@ public class OrderVO { //발주
 	String matOrdername; //발주명
 	String accCode; //거래처코드
 	
-	int num;
+	
+	String matDtaordcode; //발주상세코드
 	int matUntpc; //단가
 	int matOrderQy; //발주량
 	int matTotamt; //총금액
@@ -21,5 +22,6 @@ public class OrderVO { //발주
 	String matName; //자재명
 	Date matOrderdate; //발주일자	
 	Date matReqdate; //납기요청일
+	String matStd; //규격
 
 }
