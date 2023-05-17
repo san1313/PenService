@@ -10,4 +10,6 @@ import com.pen.app.mat.vo.OrderVO;
 public interface MatService {
 	public void orderregister(OrderVO order);
 	public List<OrderVO> getorderlist();
+	public List<OrderVO> getmatlist(); //모달자재목록
+	public List<OrderVO> getmatminilist(String keyword);
 }

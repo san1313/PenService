@@ -4,10 +4,20 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
   
 <mapper namespace="com.pen.app.mat.mapper.MatMapper">
-	<select id="ordersemilist" resultType="OrderVO">
-		select h.MAT_ORDERNUM, h.MAT_ORDERNAME, h.MAT_CHARGER, h.ACC_CODE, o.MAT_UNTPC, o.MAT_ORDER_QY, o.MAT_TOTAMT, o.MAT_ORDERNUM, o.MAT_REQDATE, h.MAT_CODE, h.MAT_NAME,o.num
+	<select id="getorderlist" resultType="OrderVO">
+		select h.MAT_ORDERNUM, h.MAT_ORDERNAME, h.MAT_CHARGER, h.ACC_CODE, o.MAT_UNTPC, o.MAT_ORDER_QY, o.MAT_TOTAMT, o.MAT_ORDERNUM, o.MAT_REQDATE, o.MAT_CODE, o.MAT_NAME,o.MAT_DTAORDCODE
 		from MAT_ORDER_HEADER h, MAT_ORDER o
 		where h.MAT_ORDERNUM=o.MAT_ORDERNUM
-		and h.mat_name= #{matName}
+		and o.mat_name='자재명'
+	</select>
+	
+	<!-- 모달자재목록 -->
+	<select id="getmatlist" resultType="OrderVO">
+		select mat_code, mat_name, mat_unit from COM_CODE_MAT
+	</select>
+	
+	<!-- 모달자재검사조회 -->
+	<select id="getmatminilist" resultType="OrderVO">
+		select mat_code, mat_name, mat_unit from COM_CODE_MAT where mat_name =#{keyword}
 	</select>
 </mapper>

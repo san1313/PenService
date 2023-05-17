@@ -24,6 +24,17 @@ public class MatServiceimpl implements MatService{
 	public List<OrderVO> getorderlist() {		
 		return matmapper.getorderlist();
 	}
+
+	@Override
+	public List<OrderVO> getmatlist() {
+		return matmapper.getmatlist();
+	}
+
+	@Override
+	public List<OrderVO> getmatminilist(String keyword) {
+		
+		return matmapper.getmatminilist(keyword);
+	}
 	
 	
 }
