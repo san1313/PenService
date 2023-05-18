@@ -95,14 +95,14 @@
 </head>
 
 <body>
-<!-----------------------------------------------------------------------------------------------설비등록시작------------------------------------------------------------------------------------------------------------->
+<!----------설비등록시작--------->
 	<div layout:fragment="title">
   	<h3>설비등록</h3>
   	</div>
 
 	<div layout:fragment="content">
-		<form action="fac_list.html" method="get">		
-			<div class = "fac_register" style="text-align:left">
+		<!-- <form action="fac_list.html" method="get">-->		
+			 <div class = "fac_register" style="text-align:left">
 				
 				<label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -114,8 +114,8 @@
 				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
 				
 				<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp; 
-				<input type="radio" name="operate_check" value="operate" checked> 가동
-				<input type="radio" name="operate_check" value="non_operate"> 비가동
+				<input type="radio" name="operate_check" value="operate" checked>&nbsp;&nbsp;&nbsp;Y
+				<input type="radio" name="operate_check" value="non_operate">&nbsp;&nbsp;&nbsp;N
 				<br>
 				
 				<label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -124,8 +124,6 @@
 				<label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="text"id="proc_code">
 				<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
-				<label for="proc_name">공정명</label>
-				<input type="text" id="proc_name">&nbsp;&nbsp;&nbsp;&nbsp; 	
 				
 				<label for="emp_num">담당자</label>
 				<input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -144,73 +142,40 @@
 
 				<div class="row">
 					<div class="col">
-						<button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>
-					</div>
-					<div class="col">
+						<button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>	
+						&nbsp;&nbsp;&nbsp;&nbsp;
 						<button class="w-30 btn btn-secondary btn-lg"
-							type="button">취소</button>
+							type="reset">초기화</button>
 					</div>
 				</div>
 				<hr class="my-4">
-		</form>
-    <!-- Large modal -->
+		<!-- </form> -->
 
-<!--공정코드 조회 모달시작 -->
-<div class="modal fade bd-example-modal-lg" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+<!--공정코드 모달 -->
+<div class="modal fade bd-example-modal-lg" id="procCodemodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
-      <div class="modal-header" style="text-align:left">
+      <div class="modal-header">
 		<h5 class="modal-title" >공정코드조회</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>      
       </div>
       <div class="modal-body">
-      	<label for="proc_name">공정명</label>&nbsp;&nbsp;<input type="text" id="proc_name_search"><button>검색</button>
-      <!-- 모달속 그리드시작 --> 
-<div id="grid2"></div>
-
-      <script>
-      $.ajax({
-   		url : "/fac/ProcSelectAjax",
-   		method : "GET",
-   		dataType : "JSON",
-   		success : function(result){
-   			grid.resetData(result);
-   		}
-   	});
-      
-   var grid = new tui.Grid({
-    el: document.getElementById('grid2'),
-    scrollX: false,
-    scrollY: false,
-    rowHeaders: ['checkbox'],
-    columns: [
-      {
-        header: '공정코드',
-        name: 'ProcCode'
-      },
-      {
-        header: '공정명',
-        name: 'ProcName'
-      }
-    ]
-   });
-   
-   
-   </script>
- <!-- 모달속 그리드 끝 -->
- <hr>
- <button>선택</button> <button>삭제</button>
+      	<label>공정명</label>
+      	<input class="modaltext" type=text id="ckproc-text">
+        <button class="procsearchbtn" type="button" id="ckproc">검색</button>
+        
+      	<div id="modal-grid2"></div>
+      	
+        <button class="submitprocmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">선택</button>
+ 
       </div>
     </div>
   </div>
-</div>			
-<!-- 모달끝 -->			
-<!-----------------------------------------------------------------------------------------------설비등록끝------------------------------------------------------------------------------------------------------------->
-
-
-<!-----------------------------------------------------------------------------------------------설비관리시작------------------------------------------------------------------------------------------------------------->
+</div>
+ 	
+<!----설비선택검색---->
   	<h3 style="text-align:left">설비관리</h3>
   	<div class="info_search" style="text-align:left">
   	 <select name = "fac_info">
@@ -219,24 +184,29 @@
  	 <option value="설비코드">설비코드</option>
   	<option value="담당자">담당자</option>
   	 </select>
-  		<input type="text" id="search_name">
+  	<input type="text" id="search_name">
   <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
   
-  	</div>
-  
-  <!-- 그리드시작 -->
-	
-      <div id="grid"></div>
-
-      <script>
-      $.ajax({
+<button>수정</button> <button>삭제</button>
+  <div>
+     	
+<!-- 설비정보목록그리드 -->
+ <div id="grid"></div>
+	    
+      
+    <script>
+    //grid-전체리스트그리드
+    $(function(){
+    	
+    $.ajax({
    		url : "/fac/infoListAjax",
    		method : "GET",
    		dataType : "JSON",
    		success : function(result){
-   			grid.resetData(result);
+   		 grid.resetData(result);
+   		 grid.refreshLayout();
    		}
-   	});
+   		});
       
    var grid = new tui.Grid({
     el: document.getElementById('grid'),
@@ -254,7 +224,8 @@
       },
       {
         header: '가동여부',
-        name: 'operateCheck'
+        name: 'operateCheck',
+        filter: 'select'
       },
 
       {
@@ -283,9 +254,81 @@
             }   
     ]
   });
+   
+   grid.on('click',function(e){
+	   console.log(grid.getRow(e.rowKey))
+	   const info = grid.getRow(e.rowKey)
+	   
+	     
+   })
+    
+   
+    //grid2-공정코드모달
+      $.ajax({
+   		url : "/fac/proclistAjax",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			grid2.resetData(result);
+   			grid2.refreshLayout();
+   		}
+   	});
       
-     
+   var grid2 = new tui.Grid({
+    el: document.getElementById('modal-grid2'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['rowNum'],
+    columns: [
+      {
+        header: '공정코드',
+        name: 'procCode'
+      },
+      {
+        header: '공정명',
+        name: 'procName'
+      }
+    ]
+   })
+   
+   $(function(){  
+	 $('#procCodemodalbtn').on('shown.bs.modal', function(){ //공정코드모달버튼을 누르면 모달이 뜬다.
+	     grid2.refreshLayout(); 
+	    });
+	    })
+	
+	//공정코드모달검색조회
+    $("#ckproc").on('click', function(){
+    	console.log($("#ckproc-text").val())
+    	const prsed = $("#ckproc-text").val()
+		$("#ckproc-text").val('');
+    	
+    	$.ajax({
+    		 url : "/fac/procminilist",   //공정코드목록조회 페이지 
+    	     method : "GET",
+    	     data : {'result' : prsed},
+    	     success : function(result){
+    	     grid2.resetData(result);
+    	     grid2.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
+  
+    });
+    });
+	grid2.on('click', function(e){
+		let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
+		$('#proc_code').val(content.procCode); //proc_code라는 id의 인풋 창에 값 rowKey안의 procCode를 넣음
+	})      
+    })
+   
+  
+
+ 
+		
  </script>
 	</div>
+
 </body>
 </html>

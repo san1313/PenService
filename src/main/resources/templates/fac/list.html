@@ -2,13 +2,72 @@
 <html xmlns:th="http://www.thymeleaf.org"
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8" />
+<title>PenServiceMES</title>
+<style>
+. a {
+	float: left;
+	display: block;
+	color: black;
+	text-align: center;
+	padding: 14px 16px;
+	text-decoration: none;
+	font-size: 17px;
+}
 
-  <head>
-    <meta charset="UTF-8" />
-    <title>펜서비스</title>
-	
-    <style>
-      .fac_register{
+. a:hover {
+	background-color: #ddd;
+	color: black;
+}
+
+ a.active {
+	background-color: #2196F3;
+	color: white;
+}
+
+.search-container {
+	float: right;
+}
+
+.input[type=text] {
+	padding: 6px;
+	margin-top: 8px;
+	font-size: 17px;
+	border: none;
+}
+
+.search-container button {
+	float: right;
+	padding: 6px 10px;
+	margin-top: 8px;
+	margin-right: 16px;
+	background: #ddd;
+	font-size: 17px;
+	border: none;
+	cursor: pointer;
+}
+
+.search-container button:hover {
+	background: #ccc;
+}
+
+@media screen and (max-width: 600px) {
+	 .search-container {
+		float: none;
+	}
+ .input[type=text], .topnav .search-container button {
+		float: none;
+		display: block;
+		text-align: left;
+		width: 100%;
+		margin: 0;
+		padding: 14px;
+	}
+	.input[type=text] {
+		border: 1px solid #ccc;
+	}
+	.fac_register{
         border: 1px solid black;   
         padding: 10px;
       }
@@ -22,179 +81,240 @@
         font-size: 16px;
         float: right;
       }
-    </style>
-    
-    <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+	
+	
+}
+</style>
+
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-  </head>
-  
-  
-  <body>
-  <div layout:fragment="title">
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
+</head>
+
+<body>
+<!----------설비등록시작--------->
+	<div layout:fragment="title">
   	<h3>설비등록</h3>
-  </div>
-  
-  <div layout:fragment="content">
-    <div class = "fac_register" syle="text-align:left">
-      <label for="fac_code">설비코드</label>
-	  <input type="text"id="fac_code" placeholder="EQMAN" readonly>
-   
-      <label for="fac_name">설비명</label>
-    <input type="text" id="fac_name">
-     <label for="maker_name">제조업체</label>
-     <input type="text"id="maker_name">
-  <label for="operate_check">가동여부</label>
-<input type="radio" name="operate_check" value="operate" checked> 가동      
-<input type="radio" name="operate_check" value="non_operate"> 비가동
+  	</div>
 
-<label for="install_date">입고일자</label>
-<input type="date">
+	<div layout:fragment="content">
+		<form action="fac_list.html" method="get">		
+			<div class = "fac_register" style="text-align:left">
+				
+				<label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="maker_name">제조업체</label>
+				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="operate_check" value="operate" checked> 가동
+				<input type="radio" name="operate_check" value="non_operate"> 비가동
+				<br>
+				
+				<label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text"id="proc_code">
+				<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
+				<label for="proc_name">공정명</label>
+				<input type="text" id="proc_name">&nbsp;&nbsp;&nbsp;&nbsp; 	
+				
+				<label for="emp_num">담당자</label>
+				<input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<br>
+				<label for="temp_min">최저온도(℃)</label>
+				<input type="text" id="temp_min"size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="temp_max">최고온도(℃)</label>
+				<input type="text" id="temp_max" size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="confirm_cycle">점검주기(일)</label>
+				<input type="text" id="confirm_cycle">
+				</div>
+				<br>
+				<br>
 
-<label for="proc_code">공정코드</label>
-<input type="text"id="proc_code">
-<button type="button" data-bs-toggle="modal" data-bs-target="#myModal"><i class="fa fa-search"></i></button> 
+				<div class="row">
+					<div class="col">
+						<button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>	
+						&nbsp;&nbsp;&nbsp;&nbsp;
+						<button class="w-30 btn btn-secondary btn-lg"
+							type="reset">초기화</button>
+					</div>
+				</div>
+				<hr class="my-4">
+		</form>
 
-	<label for="proc_name">공정명</label>
-	<input type="text" id="proc_name">
-	
-	<label for="emp_num">담당자</label>
-	<input type="text" id="emp_num">
-	
-	<label for="temp_min">최저온도(℃)</label>
-	<input type="text" id="temp_min"size=13 maxlength=3>
-	
-	<label for="temp_max">최고온도(℃)</label>
-	<input type="text" id="temp_max" size=13 maxlength=3>
-	
-	<label for="confirm_cycle">점검주기(일)</label>
-		<input type="text" id="confirm_cycle">
-		</div>
-	
-      <input class="text1" type="text">
-      <button type="summit" class="btn">등록</button>
+<!--공정코드 모달시작 -->
+<div class="modal fade bd-example-modal-lg" id="procmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:left">
+		<h5 class="modal-title" >공정코드조회</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+      	<label>공정명</label>
+      	<input type=text class="modaltext" id="ckproc-text">
+        <button class="ckprocmodalbtn" type="button" id="ckproc">조회</button>
+        
+      	<div id="grid2"></div>
+      	
+        <button class="submitprocmodalbtn" type="button">저장</button>
+      </div>
     </div>
+  </div>
+</div>
+ 	
+<!----설비검색시작---->
+  	<h3 style="text-align:left">설비관리</h3>
+  	<div class="info_search" style="text-align:left">
+  	 <select name = "fac_info">
+  	 <option value="선택"selected="selected">---선택---</option>
+  	 <option value="설비명">설비명</option>
+ 	 <option value="설비코드">설비코드</option>
+  	<option value="담당자">담당자</option>
+  	 </select>
+  	<input type="text" id="search_name">
+  <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
   
-      <div id="grid"></div>
+<button>수정</button> <button>삭제</button>
+  <div>
+<!-- 설비검색끝 -->        	
 
-<script>
-  
-const gridData = [
-    {
-      name: 'Beautiful Lies',
-      artist: 'Birdy',
-      release: '2016.03.26 09:00AM',
-      type: 'Deluxe',
-      genre: 'Pop'
-    },
-    {
-      name: 'X',
-      artist: 'Ed Sheeran',
-      release: '2014.06.24',
-      type: 'Deluxe',
-      genre: 'Pop',
-      _attributes: {
-        disabled: true // A current row is disabled
-      }
-    },
-    {
-      name: 'Moves Like Jagger',
-      release: '2011.08.08',
-      artist: 'Maroon5',
-      type: 'Single',
-      genre: 'Pop,Rock',
-      _attributes: {
-        checkDisabled: true // A checkbox is disabled only
-      }
-    },
-    {
-      name: 'A Head Full Of Dreams',
-      artist: 'Coldplay',
-      release: '2015.12.04',
-      type: 'Deluxe',
-      genre: 'Rock',
-      _attributes: {
-        checked: true, // A checkbox is already checked while rendering
-        className: {
-          // Add class name on a row
-          row: ['red']
-        }
-      }
-    },
-    {
-      name: '19',
-      artist: 'Adele',
-      release: '2008.01.27',
-      type: 'EP',
-      genre: 'Pop,R&B',
-      _attributes: {
-        rowSpan: {
-          // Merge rows
-          artist: 3,
-          genre: 2
-        }
-      }
-    },
-    {
-      name: '21',
-      artist: 'Adele',
-      release: '2011.01.21',
-      type: 'Deluxe',
-      genre: 'Pop,R&B'
-    },
-    {
-      name: '25',
-      artist: 'Adele',
-      release: '2015.11.20',
-      type: 'EP',
-      genre: 'Pop',
-      _attributes: {
-        className: {
-          // Add class name on each columns
-          column: {
-            type: ['blue'],
-            genre: ['blue']
-          }
-        }
-      }
-    }
-  ];
-
-  const grid = new tui.Grid({
+ <div id="grid"></div>
+	    
+      
+    <script>
+    //전체리스트그리드
+    $.ajax({
+   		url : "/fac/infoListAjax",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   		 grid.resetData(result);
+   		 grid.refreshLayout();
+   		}
+   		});
+      
+   var grid = new tui.Grid({
     el: document.getElementById('grid'),
-    data: gridData,
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
     columns: [
       {
-        header: 'Name',
-        name: 'name'
+        header: '설비코드',
+        name: 'facCode'
       },
       {
-        header: 'Artist',
-        name: 'artist'
+        header: '설비명',
+        name: 'facName'
       },
       {
-        header: 'Type',
-        name: 'type'
+        header: '가동여부',
+        name: 'operateCheck'
       },
+
       {
-        header: 'Release',
-        name: 'release'
-      },
-      {
-        header: 'Genre',
-        name: 'genre'
-      }
+          header: '점검주기(일)',
+          name: 'checkCycle'
+       },
+       {
+           header: '입고일자',
+           name: 'installDate'
+        },
+        {
+            header: '제조업체',
+            name: 'makerName'
+         },
+         {
+             header: '최저온도(℃)',
+             name: 'tempMin'
+          },
+          {
+              header: '최고온도(℃)',
+              name: 'tempMax'
+           },
+           {
+               header: '담당자',
+               name: 'empNum'
+            }   
     ]
   });
+    
+   
+    //공정코드모달
+      $.ajax({
+   		url : "/fac/ProclistAjax",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			grid2.resetData(result);
+   			grid2.refreshLayout();
+   		}
+   	});
       
- </script>
+   var grid2 = new tui.Grid({
+    el: document.getElementById('grid2'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['checkbox'],
+    columns: [
+      {
+        header: '공정코드',
+        name: 'ProcCode'
+      },
+      {
+        header: '공정명',
+        name: 'ProcName'
+      }
+    ]
+   })
+   
+   $(function(){  
+	 $('#procmodalbtn').on('shown.bs.modal', function(){
+	     grid2.refreshLayout();
+	    });
+	    })
+	
+	//공정코드모달검색조회
+    $("#ckprocmodalbtn").on('click', function(){
+    	console.log($("#ckproc-text").val())
+    	const result = $("#ckproc-text").val()
+		$("#ckproc-text").val('');
+    	
+    	$.ajax({
+    		 url : "/fac/procminilist",   //공정코드목록조회 페이지 
+    	     method : "GET",
+    	     data : {'result' : result},
+    	     success : function(result){
+    	     modal_grid.resetData(result);
+    	     modal_grid.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
   
-  </div>
+    });
+    })
+   
+   
+  
 
-  </body>
+ 
+		
+ </script>
+	</div>
+</body>
 </html>
-
-
