@@ -14,5 +14,15 @@
 select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') installDate,maker_name,temp_min,temp_max,emp_num from fac_info
   </select>
   
+  	<!-- 공정코드목록 -->
+  <select id="getproclist" resultType="FacConnProcVO">
+  select proc_code, proc_name from MAK_CODE_PROC
+  </select>
+  
+  <!-- 공정코드검사조회 -->
+  <select id="getprocminilist" resultType="FacConnProcVO">
+  select proc_code, proc_name from MAK_CODE_PROC where proc_name like #{keyword}
+  </select>
+  
   
 </mapper>
