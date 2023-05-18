@@ -34,4 +34,5 @@
 		to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,cont_det_code
 		from con_base_bns where cont_det_code !=#{contDetCode}
 	</select>
+	
 </mapper>

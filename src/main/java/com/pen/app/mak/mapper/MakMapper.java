@@ -13,4 +13,5 @@ public interface MakMapper {
 	List<PlanVO> getCont();
 	List<PlanVO> getConnect(String contDetCode);
 	List<PlanVO> getContr(String ContDetCode);
+	
 }
