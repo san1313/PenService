@@ -8,6 +8,9 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import com.fasterxml.jackson.databind.annotation.JsonDeserialize;
+import com.pen.app.com.security.CustomAuthorityDeserializer;
+
 import lombok.Data;
 
 @Data
@@ -20,7 +23,8 @@ public class UserVO implements UserDetails{
 	String empTel;
 	String authCode;
 	String authName;
-
+	
+	@JsonDeserialize(using = CustomAuthorityDeserializer.class)
 	@Override
 	public Collection<? extends GrantedAuthority> getAuthorities() {
 		List<GrantedAuthority> auth = new ArrayList<>();

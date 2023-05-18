@@ -78,6 +78,7 @@
             data: dataSource,
             scrollX: false,
             scrollY: true,
+            selectionUnit: "row",
             columns: [
               {
                 header: "사원번호",
@@ -112,6 +113,7 @@
           grid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
           });
+          tui.Grid.setLanguage("ko");
           $("#save").click(() => {
             grid.request("updateData");
           });

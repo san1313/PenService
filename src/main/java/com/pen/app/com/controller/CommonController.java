@@ -1,7 +1,10 @@
 package com.pen.app.com.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -17,6 +20,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.com.service.impl.UserServiceImpl;
 import com.pen.app.com.vo.UserVO;
@@ -71,10 +75,10 @@ public class CommonController {
 		return new ToastUiResponseDTO(userService.getUserList());
 	}
 	
+	@ResponseBody
 	@PostMapping("/admin/userModifyAjax")
-	public ToastUiResponseDTO userModifyAjax(List<UserVO> list) {
-		System.out.println(list);
-		
+	public ToastUiResponseDTO userModifyAjax(@RequestBody Map<String, List<UserVO>> updatedRows) {
+		System.out.println(updatedRows.get("updatedRows"));
 		return new ToastUiResponseDTO("Success");
 	}
 //	@GetMapping("/user/user")
