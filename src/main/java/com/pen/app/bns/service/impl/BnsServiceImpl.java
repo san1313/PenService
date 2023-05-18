@@ -36,5 +36,15 @@ public class BnsServiceImpl implements BnsService {
 		return mapper.getProdList();
 	}
 
+	@Override
+	public List<BnsAccVO> getAccKeyList(String keyword) {
+		return mapper.getAccKeyList(keyword);
+	}
+
+	@Override
+	public List<BnsProdVO> getProdKeyList(String keyword) {
+		return mapper.getProdKeyList(keyword);
+	}
+
 	
 }
