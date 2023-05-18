@@ -12,4 +12,6 @@ public interface MatService {
 	public List<OrderVO> getorderlist();
 	public List<OrderVO> getmatlist(); //모달자재목록
 	public List<OrderVO> getmatminilist(String keyword);
+	public List<OrderVO> getacclist(); //모달거래처목록
+	public List<OrderVO> getaccminilist(String keyword);
 }

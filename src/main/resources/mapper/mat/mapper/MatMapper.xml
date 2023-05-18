@@ -16,8 +16,19 @@
 		select mat_code, mat_name, mat_unit from COM_CODE_MAT
 	</select>
 	
-	<!-- 모달자재검사조회 -->
+	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
 		select mat_code, mat_name, mat_unit from COM_CODE_MAT where mat_name =#{keyword}
+	</select>
+	
+	<!-- 모달거래처목록 -->
+	<select id="getacclist" resultType="OrderVO">
+		SELECT b.mat_name, c.acc_code, c.acc_name FROM COM_ACCOUNT_ITEM A JOIN COM_CODE_MAT B ON (A.ACC_ITEM = b.mat_code) JOIN COM_CODE_ACCOUNT C ON (a.acc_code = c.acc_code)
+	</select>
+	
+	<!-- 모달거래처검색조회 -->
+	<select id="getaccminilist" resultType="OrderVO">
+		SELECT b.mat_name, c.acc_code, c.acc_name FROM COM_ACCOUNT_ITEM A JOIN COM_CODE_MAT B ON (A.ACC_ITEM = b.mat_code) JOIN COM_CODE_ACCOUNT C ON (a.acc_code = c.acc_code) where b.mat_name=#{keyword}
+
 	</select>
 </mapper>
