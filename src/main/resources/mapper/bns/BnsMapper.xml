@@ -8,27 +8,46 @@
 
 <!-- 주문서 전체 조회 -->
   <select id="getOrdList" resultType="BnsOrdVO">
-   select ord_code, acc_code, acc_name, to_date(ord_date,'YYYY-MM-DD'), to_date(ord_due_date,'YYYY-MM-DD'), ord_progress, emp_num, ord_note 
+   select ord_code, acc_code, acc_name, to_char(ord_date,'YYYY-MM-DD') as ord_date, to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date, ord_progress, emp_num, ord_note 
    from bns_order
   </select>
   
 <!-- 주문서 등록 -->
   <insert id="insertOrdList" parameterType ="com.pen.app.bns.vo.BnsOrdVO">
-  insert into bns_order values('bns_ord'||LPAD(ord_seq.nextval, 3, '0'),#{accCode},#{accName},#{ordDate},#{ordDueDate},#{ordProgress},#{empNum},#{ordNote})
-  from bns_order
+  insert all into bns_order values('bns_ord'||LPAD(ord_seq.nextval, 3, '0'),#{accCode},#{accName},#{ordDate},#{ordDueDate},#{ordProgress},#{empNum},#{ordNote})
+  			 into bns_order_detail values(#{ordDetCode},'bns_ord'||LPAD(ord_seq.nextval, 3, '0'),{prodCode},{prodName},{ordDetPrice},{ordDetQuan},{ordDetProgress})
+  			 select * from dual
   </insert>
+
   
-  
-  <!-- 거래처 전체 조회 -->
+  <!-- 거래처코드,거래처명 조회 -->
   <select id="getAccList" resultType="BnsAccVO">
    select acc_code, acc_name 
    from com_code_account
   </select>
   
-  <!-- 제품 전체 조회 -->
+  <!-- 거래처코드, 거래처명 검색 조회 -->
+  <select id ="getAccKeyList" resultType="BnsAccVO">
+  select acc_code, acc_name
+  from com_code_account
+  where acc_name =#{keyword}
+  </select>
+  
+  
+  <!-- 제품코드, 제품명 조회 -->
   <select id="getProdList" resultType="BnsProdVO">
    select prod_code, prod_name 
    from com_code_prod
   </select>
+  
+  <!-- 제품코드, 제품명 검색 조회 -->
+  <select id="getProdKeyList" resultType="BnsProdVO">
+  select prod_code, prod_name 
+   from com_code_prod
+   where prod_name = #{keyword}
+  
+  </select>
+  
+  
   
 </mapper>

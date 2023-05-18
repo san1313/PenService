@@ -9,8 +9,8 @@ public class BnsOrdVO {
 	String ordCode;
 	String accCode;
 	String accName;
-	Date ordDate;
-	Date ordDueDate;
+	String ordDate;
+	String ordDueDate;
 	String ordProgress;
 	String empNum;
 	String ordNote;
