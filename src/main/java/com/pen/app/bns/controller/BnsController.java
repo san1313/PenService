@@ -1,4 +1,4 @@
-package com.pen.app.controller;
+package com.pen.app.bns.controller;
 	
 import java.util.List;
 

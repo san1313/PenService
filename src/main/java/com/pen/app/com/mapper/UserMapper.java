@@ -1,8 +1,8 @@
-package com.pen.app.user.mapper;
+package com.pen.app.com.mapper;
 
 import java.util.List;
 
-import com.pen.app.user.UserVO;
+import com.pen.app.com.vo.UserVO;
 
 public interface UserMapper {
 	UserVO getUser(UserVO vo);

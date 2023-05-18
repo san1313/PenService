@@ -1,4 +1,4 @@
-package com.pen.app.user.service.impl;
+package com.pen.app.com.service.impl;
 
 import java.util.List;
 
@@ -8,9 +8,9 @@ import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
 
-import com.pen.app.user.UserVO;
-import com.pen.app.user.mapper.UserMapper;
-import com.pen.app.user.service.UserService;
+import com.pen.app.com.mapper.UserMapper;
+import com.pen.app.com.service.UserService;
+import com.pen.app.com.vo.UserVO;
 
 @Service
 public class UserServiceImpl implements UserService, UserDetailsService {

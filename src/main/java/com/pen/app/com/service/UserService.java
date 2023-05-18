@@ -1,8 +1,8 @@
-package com.pen.app.user.service;
+package com.pen.app.com.service;
 
 import java.util.List;
 
-import com.pen.app.user.UserVO;
+import com.pen.app.com.vo.UserVO;
 
 public interface UserService {
 	public UserVO getUser(UserVO vo);

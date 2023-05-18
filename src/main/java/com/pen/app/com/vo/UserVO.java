@@ -1,4 +1,4 @@
-package com.pen.app.user;
+package com.pen.app.com.vo;
 
 import java.util.ArrayList;
 import java.util.Collection;

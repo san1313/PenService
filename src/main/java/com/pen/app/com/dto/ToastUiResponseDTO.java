@@ -1,4 +1,4 @@
-package com.pen.app.com;
+package com.pen.app.com.dto;
 
 import java.util.HashMap;
 

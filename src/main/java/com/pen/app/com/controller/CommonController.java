@@ -1,16 +1,13 @@
-package com.pen.app.controller;
+package com.pen.app.com.controller;
 
 import java.security.Principal;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
@@ -20,9 +17,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pen.app.com.ToastUiResponseDTO;
-import com.pen.app.user.UserVO;
-import com.pen.app.user.service.impl.UserServiceImpl;
+import com.pen.app.com.dto.ToastUiResponseDTO;
+import com.pen.app.com.service.impl.UserServiceImpl;
+import com.pen.app.com.vo.UserVO;
 
 /**
  * Handles requests for the application home page.
