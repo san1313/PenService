@@ -1,12 +1,22 @@
 package com.pen.app.controller;
 
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.pen.app.mak.mapper.MakMapper;
+import com.pen.app.mak.vo.PlanVO;
 
 @Controller
 @RequestMapping("/mak")
 public class MakController {
+	
+	@Autowired MakMapper mapper;
+	
 	@GetMapping("/plan")
 	public void plan() {
 		
@@ -16,5 +26,44 @@ public class MakController {
 	void test() {
 		
 	}
+	
+	@GetMapping("/planList")
+	@ResponseBody
+	List<PlanVO> planList(){
+		List<PlanVO> list = mapper.getPlanList();
+		
+		return list;
+	}
+	
+	@GetMapping("/planning")
+	@ResponseBody
+	List<PlanVO> planning(){
+		List<PlanVO> result = null;
+		List<PlanVO> list = mapper.getCont();
+		for(int i = 0; i<list.size();i++) {
+			System.out.println("포문 : "+list);
+			String detC = list.get(i).getContDetCode();
+			System.out.println("음"+detC);
+			List<PlanVO> CDC = mapper.getConnect(detC);
+			System.out.println("확인"+CDC);
+			if(CDC!=null) {
+				for(int j=0; j<CDC.size();j++) {
+					String detCo = CDC.get(i).getContDetCode();
+					System.out.println("체크"+detCo);
+					List<PlanVO> plan = mapper.getPlanning(detCo);
+					System.out.println("결과"+plan);
+					result = plan;
+					
+					result.addAll(mapper.getContr(detCo));
+					System.out.println("최종결과 : "+result);
+				}
+			}
+			
+		}
+		
+		return result;
+	}
+	
+	
 	
 }

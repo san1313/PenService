@@ -5,5 +5,34 @@
 
 <mapper namespace="com.pen.app.mak.mapper.MakMapper">
 
+	<select id="getPlanList" resultType="PlanVO">
+		select plan_nm,acc_code||acc_name
+		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd') planDate,
+		to_char(dcls_date,'yyyy-MM-dd')
+		dclsDate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
+		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan from
+		conplan_view
+	</select>
 
+	<select id="getPlanning" resultType="PlanVO">
+		select acc_code||acc_name contNm,cont_det_quan-plan_qnt contDetQuan,
+		prod_name, to_char(cont_det_release,'yyyy-MM-dd')
+		contDetRelease,cont_det_code from conplan_view where cont_det_code =
+		#{contDetCode} and cont_det_quan-plan_qnt>0
+	</select>
+
+	<select id="getCont" resultType="PlanVO">
+		select * from con_base_bns
+	</select>
+
+	<select id="getConnect" resultType="PlanVO">
+		select * from mak_plan_to_ord where cont_det_code = #{contDetCode}
+	</select>
+
+	<select id="getContr" resultType="PlanVO">
+		select acc_code||acc_name contNm, cont_det_quan, prod_name,
+		to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,cont_det_code
+		from con_base_bns where cont_det_code !=#{contDetCode}
+	</select>
+	
 </mapper>
