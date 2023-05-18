@@ -1,5 +1,7 @@
 package com.pen.app.user.service.impl;
 
+import java.util.List;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
@@ -39,5 +41,17 @@ public UserDetails loadUserByUsername(String username) throws UsernameNotFoundEx
 public boolean modifyUser(UserVO vo) {
 	
 	return mapper.modifyUser(vo)==1;
+}
+
+@Override
+public List<UserVO> getUserList() {
+	
+	return mapper.getUserList();
+}
+
+@Override
+public boolean modifyUserList(List<UserVO> list) {
+	
+	return mapper.modifyUserList(list)>0;
 }
 }

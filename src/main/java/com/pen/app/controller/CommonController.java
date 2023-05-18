@@ -1,6 +1,9 @@
 package com.pen.app.controller;
 
 import java.security.Principal;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import javax.servlet.http.HttpSession;
 
@@ -15,7 +18,9 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pen.app.com.ToastUiResponseDTO;
 import com.pen.app.user.UserVO;
 import com.pen.app.user.service.impl.UserServiceImpl;
 
@@ -63,9 +68,17 @@ public class CommonController {
 		return "/com/userManage";
 	}
 	
-	@GetMapping("/test")
-	public void test() {
+	@ResponseBody
+	@GetMapping("/admin/userListAjax")
+	public ToastUiResponseDTO userListAjax(){
+		return new ToastUiResponseDTO(userService.getUserList());
+	}
+	
+	@PostMapping("/admin/userModifyAjax")
+	public ToastUiResponseDTO userModifyAjax(List<UserVO> list) {
+		System.out.println(list);
 		
+		return new ToastUiResponseDTO("Success");
 	}
 //	@GetMapping("/user/user")
 //	public void user(@AuthenticationPrincipal Principal uservo, HttpSession session) {
