@@ -27,6 +27,7 @@ public class MatServiceimpl implements MatService{
 
 	@Override
 	public List<OrderVO> getmatlist() {
+		//모달자재목록
 		return matmapper.getmatlist();
 	}
 
@@ -34,6 +35,18 @@ public class MatServiceimpl implements MatService{
 	public List<OrderVO> getmatminilist(String keyword) {
 		
 		return matmapper.getmatminilist(keyword);
+	}
+
+	@Override
+	public List<OrderVO> getacclist() {
+		//모달거래처목록
+		return matmapper.getacclist();
+	}
+
+	@Override
+	public List<OrderVO> getaccminilist(String keyword) {
+		// TODO Auto-generated method stub
+		return matmapper.getaccminilist(keyword);
 	}
 	
 	

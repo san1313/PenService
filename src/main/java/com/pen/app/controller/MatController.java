@@ -47,4 +47,20 @@ public class MatController {
 		return list;
 	}
 	
+	@ResponseBody
+	@GetMapping("/acclist")
+	public List<OrderVO> acclist(){
+		List<OrderVO> list = matmapper.getacclist();
+		return list;
+	}
+	
+	@RequestMapping("/accminilist")
+	@ResponseBody
+	public List<OrderVO> accminilist(@RequestParam String result){
+		System.out.println(result);
+		List<OrderVO> list = matmapper.getaccminilist(result);
+		return list;
+	}
+	
+	
 }

@@ -23,5 +23,8 @@ public class OrderVO { //발주
 	Date matOrderdate; //발주일자	
 	Date matReqdate; //납기요청일
 	String matStd; //규격
+	
+	
+	String accName; //거래처명
 
 }
