@@ -11,14 +11,20 @@
 <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <style>
-h7{
-margin-left:4vw;
+label{
 font-size:10pt;
 }
 input{
-margin-bottom:3vh;
-margin-left:1vw;
+margin-bottm:1vh;
+}
+#getConNm{
+margin-top:5px;
+}
+.form-control{
+height:28px;
+font-size:10px;
 }
 </style>
 
@@ -27,173 +33,327 @@ margin-left:1vw;
 <h2 layout:fragment="title">생산 계획 관리</h2>
 <div layout:fragment="content">
 <div style="text-align:left">
-
+<label for="plan">
 <input type="radio" name="btn" id="planBtn" value="plan">
-<label for="plan">계약서</label>
+계약서</label>
+<label for="order">
 <input type="radio" name="btn" id="orderBtn" value="order">
-<label for="order">주문서</label>
+주문서</label>
 </div>
-<form id="frm" style="text-align:left">
-
+<form style="text-align:left">
+<div class="card card-outline">
+<div class="card-body" id="frm">
+</div>
+</div>
 </form>
-
+<form id="hiddenFrm">
+</form>
+   <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h5 class="modal-title">계약목록</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+        
+      	<div id="modal-grid"></div>
+        <button class="fa-solid fa-magnifying-glass" data-dismiss="modal" type="button" onclick='planChoice()' id="conChoice">선택</button>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div id="grid"></div>
 
 <script>
+var modal_grid;
 
-
-
+const Hfrm = document.getElementById('hiddenFrm');
 let br = document.createElement('br');
-const div = document.getElementById('grid');
+const table = document.getElementById('grid');
 const Frm = document.getElementById('frm');
 document.getElementById('planBtn').addEventListener('click',function(){
 	Frm.textContent='';
-	div.textContent='';
+	table.textContent='';
+	let div1 = document.createElement('div');
     let input = document.createElement('input');
-    let text = document.createElement('h7');
+    let text = document.createElement('label');
+    let selectes = document.createElement('select');
+    let options = document.createElement('option');
+    
+    div1.setAttribute('class','form-group row');
+    let div = document.createElement('div');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    selectes.setAttribute('class','form-control col-6');
+    //인풋 아이디
+    selectes.setAttribute('id','conmi')
     text.append("계약명");
-    Frm.appendChild(text);
-    text.appendChild(input);
+    div.appendChild(text);
+    div.appendChild(selectes);
+    div1.appendChild(div);
+    Frm.appendChild(div1);
+    
+    
+    let sicon = document.createElement('ion-icon');
+    sicon.setAttribute('id','getConNm');
+    sicon.setAttribute('name','search');
+    sicon.dataset.toggle="modal";
+    sicon.dataset.target=".bd-example-modal-lg";
+    sicon.setAttribute('class','col-1');
+    div.appendChild(sicon);
+    
+    
+    div = document.createElement('div');
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    //인풋아이디
+    input.setAttribute('id','prnmi')
     text.append("제품명");
-    Frm.appendChild(text);
-    text.appendChild(input);
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
+    
+    div = document.createElement('div');
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    //인풋 아이디
+    input.setAttribute('id','dereli')
     text.append("납기일");
-    Frm.appendChild(text);
-    text.appendChild(input);
-
-    Frm.appendChild(br);
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
     
+
+    
+    div1 = document.createElement('div');
+    div1.setAttribute('class','form-group row');
+    div = document.createElement('div');
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    //인풋 아이디
+    input.setAttribute('id','plnmi')
     text.append("계획명");
-    Frm.appendChild(text);
-    text.appendChild(input);
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
+    Frm.appendChild(div1);
+    
+    div=document.createElement('div');
     input = document.createElement('input');
-    text = document.createElement('h7');
-    text.append("수주량");
-    Frm.appendChild(text);
-    text.appendChild(input);
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    //인풋아이디
+    input.setAttribute('id','plcoi')
+    text.append("계획수량");
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
+    
+    div = document.createElement('div');
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    input.setAttribute('type','date');
+    //인풋아이디
+    input.setAttribute('id','dclsi')
     text.append("마감기한");
-    Frm.appendChild(text);
-    text.appendChild(input);
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
     
     
-    
-    
-    
-    const gridData = [
-        {
-          c1: '1992/03/25',
-          c2: '12/06/2019',
-          c3: '2014-04-16',
-          c4: '2019-11-19 09:00 AM',
-          c5: '2019-11-19 09:00 AM',
-          c6: '2019-01',
-          c7: '2019'
+    $.ajax({
+        url : "/mak/planList",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	grid.resetData(result);
         }
-      ];
+        });
 
-      const grid = new tui.Grid({
+        var grid = new tui.Grid({
         el: document.getElementById('grid'),
         scrollX: false,
         scrollY: false,
-        data: gridData,
-        columns: [
-          {
-            header: 'DatePicker (Default)',
-            name: 'c1',
-            editor: 'datePicker'
-          },
-          {
-            header: 'DatePicker (Using options)',
-            name: 'c2',
-            editor: {
-              type: 'datePicker',
-              options: {
-                format: 'dd/MM/yyyy'
-              }
-            }
-          },
-          {
-            header: 'DatePicker (selectableRanges)',
-            name: 'c3',
-            editor: {
-              type: 'datePicker'
-            }
-          },
-          {
-            header: 'Date-TimePicker',
-            name: 'c4',
-            editor: {
-              type: 'datePicker',
-              options: {
-                format: 'yyyy-MM-dd HH:mm A',
-                timepicker: true
-              }
-            }
-          },
-          {
-            header: 'Date-TimePicker With tab',
-            name: 'c5',
-            editor: {
-              type: 'datePicker',
-              options: {
-                format: 'yyyy-MM-dd HH:mm A',
-                timepicker: {
-                  layoutType: 'tab',
-                  inputType: 'spinbox'
-                }
-              }
-            }
-          },
-          {
-            header: 'MonthPicker',
-            name: 'c6',
-            editor: {
-              type: 'datePicker',
-              options: {
-                format: 'yyyy-MM',
-                type: 'month'
-              }
-            }
-          },
-          {
-            header: 'YearPicker',
-            name: 'c7',
-            editor: {
-              type: 'datePicker',
-              options: {
-                format: 'yyyy',
-                type: 'year'
-              }
-            }
-          }
+        rowHeaders: ['checkbox'],
+        columns: [{
+        header: '생산계획명',
+        name: 'planNm'
+        },
+        {
+        header: '계약명',
+        name: 'contNm'
+        },
+        {
+        header: '제품명',
+        name: 'prodName'
+        },
+        {
+        header: '계획일자',
+        name: 'planDate'
+        },
+        {
+        header: '마감기한',
+        name: 'dclsDate'
+        },
+        {
+        header: '납기일',
+        name: 'contDetRelease'
+        },
+        {
+        header: '계획수량',
+        name: 'planQnt'
+        },
+        {
+        header: '상태',
+        name: 'planState'
+        },
+        {
+        header: '잔류계약수량',
+        name: 'contDetQuan'
+        },
+        {
+        header: '공정흐름도',
+        name: ''
+        }
         ]
-      });
+        });
+        
+      //검색버튼 모달
+     document.getElementById('getConNm').addEventListener('click',function(){
+        $.ajax({
+          url : "/mak/planning",
+          method : "GET",
+          dataType : "JSON",
+          success : function(result){
+            modal_grid.resetData(result);                  
+          }
+        });     
+     });			
+              
+            
+        });
+//모달내부 그리드 생성
+modal_grid = new tui.Grid({
+  el: document.getElementById('modal-grid'),
+  scrollX: false,
+  scrollY: false,
+  rowHeaders: ['checkbox'],
+  columns: [{
+    header: '계약명',
+    name: 'contNm'
+  },
+  {
+    header: '제품명',
+    name: 'prodName'
+  },
+  {
+    header: '잔류수량',
+    name: 'contDetQuan'
+  },
+  {
+	  header: '납기일',
+	  name : 'contDetRelease'
+  },
+  {
+	  header:'계획상세코드',
+	  name: 'contDetCode',
+	  hidden:1
+  }
+]
 })
 
+$(function(){
+$('#matmodalbtn').on('shown.bs.modal', function(){
+   modal_grid.refreshLayout();
+});         
+      
+
+})
+            
+function planChoice(){
+	let conData = modal_grid.getCheckedRows();
+	console.log(conData[0]);
+	for(let i=0;i<conData.length;i++){		
+		document.getElementById('dereli').value=conData[0].contDetRelease;
+		document.getElementById('plcoi').value=conData[0].contDetQuan;
+		document.getElementById('prnmi').value=conData[0].prodName;
+		document.getElementById('conmi').value=conData[0].contNm;
+		
+		
+		let input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contNm'+i);
+		input.value = conData[i].contNm;
+		Hfrm.appendChild(input);
+		
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','prodName'+i);
+		input.value = conData[i].prodName;
+		Hfrm.appendChild(input);
+		
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contDetQuan'+i);
+		input.value = conData[i].contDetQuan;
+		Hfrm.appendChild(input);
+		
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contDetRelease'+i);
+		input.value = conData[i].contDetRelease;
+		Hfrm.appendChild(input);
+		
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contDetCode'+i);
+		input.value = conData[i].contDetCode;
+		Hfrm.appendChild(input);
+		
+		let options = document.createElement("option");
+		options.setAttribute('name',conmi);
+		options.value = conData[i].contDetCode;
+		options.append(conData[i].contNm);
+		
+	}
+	
+	
+};  
+
+            
 document.getElementById('orderBtn').addEventListener('click',function(){
 	Frm.textContent='';
-	div.textContent='';
+	table.textContent='';
     let input = document.createElement('input');
-    let text = document.createElement('h7');
+    let text = document.createElement('label');
     text.append("계획명");
     Frm.appendChild(text);
     text.appendChild(input);
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
     text.append("제품명")
     Frm.appendChild(text);
     text.appendChild(input);
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
     text.append("납기일")
     Frm.appendChild(text);
     text.appendChild(input);
@@ -201,12 +361,12 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     Frm.appendChild(br);
     
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
     text.append("주문명");
     Frm.appendChild(text);
     text.appendChild(input);
     input = document.createElement('input');
-    text = document.createElement('h7');
+    text = document.createElement('label');
     text.append("마감기한")
     Frm.appendChild(text);
     text.appendChild(input);
