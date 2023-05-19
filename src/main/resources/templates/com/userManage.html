@@ -12,6 +12,8 @@
     <title>Pen Service</title>
     <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
     <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
   </head>
@@ -25,18 +27,22 @@
             <label class="col-form-label" for="empName">사원명</label>
           </div>
           <div class="col-7">
-            <input type="text" class="form-control" id="empName" name="empName" readonly />
+            <input type="text" class="form-control" id="empName" name="empName" />
           </div>
           <div class="col-2">
-            <button class="fa-solid fa-magnifying-glass btn btn-primary" style="height: 38px; float: left"></button>
+            <button
+              class="fa-solid fa-magnifying-glass btn btn-primary"
+              id="userSearchBtn"
+              style="height: 38px; float: left"
+            ></button>
           </div>
         </div>
         <div class="row col-8 justify-content-end">
           <div class="col-auto">
-            <button class="btn btn-primary" style="height: 38px">비밀번호 수정</button>
+            <button class="btn btn-primary" id="resetPw" style="height: 38px">비밀번호 초기화</button>
           </div>
           <div class="col-auto">
-            <button class="btn btn-primary" style="height: 38px">추가</button>
+            <button class="btn btn-primary" id="addEmp" style="height: 38px">추가</button>
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" style="height: 38px">초기화</button>
@@ -72,54 +78,169 @@
             },
           };
           //datasource 끝
+
+          //권한 select 박스 항목 받아오기 시작
+          var authList = [];
+          $.ajax({
+            url: "/getAuthListAjax",
+            method: "GET",
+          }).done((r) => {
+            r.forEach((ele) => {
+              authList.push({ text: ele.authName, value: ele.authName });
+            });
+          });
+          //권한 select 박스 항목 받아오기 끝
+
           //그리드폼 시작
           const grid = new tui.Grid({
             el: document.getElementById("grid"),
             data: dataSource,
             scrollX: false,
-            scrollY: true,
-            selectionUnit: "row",
+            rowHeaders: [{ type: "checkbox", header: ` ` }],
             columns: [
               {
                 header: "사원번호",
                 name: "empNum",
+                align: "center",
               },
               {
                 header: "사원명",
                 name: "empName",
                 editor: "text",
+                align: "center",
               },
               {
                 header: "아이디",
                 name: "empId",
                 editor: "text",
+                align: "center",
               },
               {
-                header: "권한코드",
-                name: "authCode",
-                editor: "text",
+                header: "입사일",
+                name: "hireDate",
+                align: "center",
               },
               {
                 header: "권한명",
                 name: "authName",
+                editor: { type: "select", options: { listItems: authList } },
+                align: "center",
               },
               {
                 header: "연락처",
                 name: "empTel",
                 editor: "text",
+                align: "center",
               },
             ],
           });
+          //그리드 폼 끝
+
+          //그리드 세팅 시작
+          //서버에 연결전 토큰값 담는 method
           grid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
           });
+
+          //tui grid의 언어세팅
           tui.Grid.setLanguage("ko");
+
+          //체크박스 하나만 적용 시작
+          grid.on("check", function (e) {
+            var checkRows = grid.getCheckedRowKeys();
+            checkRows.forEach(function (key, idx) {
+              if (key != e.rowKey) {
+                grid.uncheck(key);
+              }
+            });
+          });
+          //체크박스 하나만 적용 끝
+          //그리드 세팅 끝
+
+          //저장기능 시작
           $("#save").click(() => {
+            grid.finishEditing();
             grid.request("updateData");
           });
+
+          //저장기능 끝
+
+          //사원명 조회 기능 grid.readData
+          $("#userSearchBtn").click(() => {
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+
+            let empName = $("#empName");
+            if (noChange) {
+              // 변경점이 없다면
+              // 사원명 input의 value로 조회해서 grid를 다시 그림
+              if (empName.val() != "") {
+                $.ajax({
+                  url: "/admin/getUserWithNameAjax",
+                  dataType: "JSON",
+                  data: { empName: empName.val() },
+                }).done((r) => {
+                  grid.resetData(r);
+                });
+                // 사원명 input이 비어있으면 모두 조회
+              } else {
+                grid.readData();
+              }
+            } else {
+              // 변경점이 있다면 confirm 창을 띄운다.
+              if (confirm("조회시 변경된 데이터가 소실됩니다. 조회하겠습니까?")) {
+                // 사원명 input의 value로 조회해서 grid를 다시 그림
+                if (empName.val() != "") {
+                  $.ajax({
+                    url: "/admin/getUserWithNameAjax",
+                    dataType: "JSON",
+                    data: { empName: empName.val() },
+                  }).done((r) => {
+                    grid.resetData(r);
+                  });
+                  // 사원명 input이 비어있으면 모두 조회
+                } else {
+                  grid.readData();
+                }
+              }
+            }
+          });
+          //사원명 조회기능 끝
+
+          //비밀번호 초기화 시작
+          $("#resetPw").click((e) => {
+            let chkData = grid.getCheckedRows()[0];
+            $.ajax({
+              url: "/admin/resetPassword",
+              method: "POST",
+              data: { empNum: chkData.empNum, empPw: chkData.empTel.substr(-4) },
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+              },
+            }).done((r) => {
+              alert(
+                `${chkData.empName} 님의 비밀번호가 초기화 되었습니다.\n초기화된 비밀번호는 연락처 끝 4자리입니다. `
+              );
+              grid.readData();
+            });
+          });
+          //비밀번호 초기화 끝
+
+          //사원 추가 시작
+          $("#addEmp").click((e) => {
+            var currCode;
+            let toDay;
+            let date = new Date();
+            toDay = `${date.getFullYear}-${date.getMonth + 1}-${date.getDate}`;
+            $.ajax({
+              url: "/admin/getEmpCode",
+            }).done((r) => {
+              currCode = r;
+            });
+            grid.prependRow({ empNum: currCode, hireDate: toDay });
+          });
+          //사원 추가 끝
         });
-        //그리드 폼 끝
-        //메인그리드 끝
       </script>
     </div>
     <!-- 메인컨텐츠 끝 -->

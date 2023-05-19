@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.com.mapper.UserMapper;
 import com.pen.app.com.service.UserService;
+import com.pen.app.com.vo.AuthVO;
 import com.pen.app.com.vo.UserVO;
 
 @Service
@@ -53,5 +54,29 @@ public List<UserVO> getUserList() {
 public boolean modifyUserList(List<UserVO> list) {
 	
 	return mapper.modifyUserList(list)>0;
+}
+
+@Override
+public List<UserVO> getUserWithName(String empName) {
+	
+	return mapper.getUserWithName(empName);
+}
+
+@Override
+public List<AuthVO> getAuthList() {
+	
+	return mapper.getAuthList();
+}
+
+@Override
+public boolean resetPassword(String empNum, String empPw) {
+	
+	return mapper.resetPassword(empNum, empPw)==1;
+}
+
+@Override
+public String getEmpCode() {
+	
+	return mapper.getEmpCode();
 }
 }

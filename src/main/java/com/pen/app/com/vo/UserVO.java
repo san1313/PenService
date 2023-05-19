@@ -14,13 +14,13 @@ import com.pen.app.com.security.CustomAuthorityDeserializer;
 import lombok.Data;
 
 @Data
-
 public class UserVO implements UserDetails{
 	String empNum;
 	String empName;
 	String empId;
 	String empPw;
 	String empTel;
+	String hireDate;
 	String authCode;
 	String authName;
 	
@@ -55,6 +55,9 @@ public class UserVO implements UserDetails{
 	public boolean isEnabled() {
 
 		return true;
+	}
+	public String getHireDate() {
+		return hireDate.substring(0, 10);
 	}
 	@Override
 	public String getPassword() {

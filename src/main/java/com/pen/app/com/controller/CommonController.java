@@ -23,6 +23,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.fasterxml.jackson.databind.util.JSONPObject;
 import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.com.service.impl.UserServiceImpl;
+import com.pen.app.com.vo.AuthVO;
 import com.pen.app.com.vo.UserVO;
 
 /**
@@ -54,24 +55,28 @@ public class CommonController {
 	}
 	
 	@PostMapping("/modify")
-	public ResponseEntity<HttpStatus> modifyUser(@RequestBody UserVO vo, HttpSession session) { 
-		System.out.println(vo.getPassword());
+	public boolean modifyUser(@RequestBody UserVO vo, HttpSession session) { 
 		if (vo.getPassword()!="") {
 			vo.setEmpPw(new BCryptPasswordEncoder().encode(vo.getPassword()));
 		}
-		userService.modifyUser(vo);
-		return new ResponseEntity<HttpStatus>(HttpStatus.OK);
+		return userService.modifyUser(vo);
+	}
+	
+	@ResponseBody
+	@GetMapping("/getAuthListAjax")
+	public List<AuthVO> getAuthListAjax() {
+		return userService.getAuthList();
 	}
 	
 	@GetMapping("/admin/userManage")
 	public String userManage(){
-		
 		return "/com/userManage";
 	}
 	
 	@ResponseBody
 	@GetMapping("/admin/userListAjax")
 	public ToastUiResponseDTO userListAjax(){
+		
 		return new ToastUiResponseDTO(userService.getUserList());
 	}
 	
@@ -80,6 +85,24 @@ public class CommonController {
 	public ToastUiResponseDTO userModifyAjax(@RequestBody Map<String, List<UserVO>> updatedRows) {
 		System.out.println(updatedRows.get("updatedRows"));
 		return new ToastUiResponseDTO("Success");
+	}
+	
+	@ResponseBody
+	@GetMapping("/admin/getUserWithNameAjax")
+	public List<UserVO> getUserAjax(String empName) {
+		return userService.getUserWithName(empName);
+	}
+	
+	@ResponseBody
+	@PostMapping("/admin/resetPassword")
+	public boolean resetPassword(String empNum, String empPw) {
+		return userService.resetPassword(empNum, new BCryptPasswordEncoder().encode(empPw));
+	}
+	
+	@ResponseBody
+	@GetMapping("/admin/getEmpCode")
+	public String getEmpCode() {
+		return userService.getEmpCode();
 	}
 //	@GetMapping("/user/user")
 //	public void user(@AuthenticationPrincipal Principal uservo, HttpSession session) {
