@@ -21,6 +21,7 @@ public class BnsServiceImpl implements BnsService {
 		return mapper.getOrdList();
 	}
 
+	//주문서 등록
 	@Override
 	public int insertOrdList(BnsOrdVO bnsOrdVo) {
 		return mapper.insertOrdList(bnsOrdVo);
@@ -45,6 +46,15 @@ public class BnsServiceImpl implements BnsService {
 	public List<BnsProdVO> getProdKeyList(String keyword) {
 		return mapper.getProdKeyList(keyword);
 	}
+
+
+
+	@Override
+	public List<BnsOrdVO> getOrdListCon(BnsOrdVO vo) {
+		return mapper.getOrdListCon(vo);
+	}
+
+	
 
 	
 }
