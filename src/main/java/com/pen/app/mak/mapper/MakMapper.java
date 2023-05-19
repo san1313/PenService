@@ -1,5 +1,6 @@
 package com.pen.app.mak.mapper;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.pen.app.mak.vo.MakVO;
@@ -12,6 +13,6 @@ public interface MakMapper {
 	List<PlanVO> getPlanning(String contDetCode);
 	List<PlanVO> getCont();
 	List<PlanVO> getConnect(String contDetCode);
-	List<PlanVO> getContr(String ContDetCode);
+	List<PlanVO> getContr(ArrayList<String> detCoList);
 	
 }
