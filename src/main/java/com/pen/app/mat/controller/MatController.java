@@ -66,10 +66,10 @@ public class MatController {
 	}
 	
 	@ResponseBody
-	@GetMapping("/matorderlist")
-	public String matorderlist(){
-		List<OrderVO> list = matmapper.getmatorderlist();
-		return "sdfsdf";
+	@GetMapping("/matordercode")
+	public String matordercode(){
+		String result = matmapper.getmatordercode();
+		return result;
 	}
 	
 }

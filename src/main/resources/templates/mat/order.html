@@ -81,6 +81,7 @@
       <input class="text1" type="text" id="matmodaltest" readonly	>
       <input class="text1" type="hidden" id="matmodaltest1" readonly	>
       <input class="text1" type="hidden" id="matmodaltestuntpc" readonly	>
+      <input class="text1" type="hidden" id="matmodalordername" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>납기일</label>
       <input class="text1" type="date" id="matReqdate"><br>
@@ -216,10 +217,6 @@
     header: '발주량',
     name: 'matOrderQy',
     editor: 'text'
-    },
-    {
-    header: '총금액',
-    name: 'matTotamt'
     }
     ]
     });
@@ -305,7 +302,8 @@
       console.log('자재코드 : ' + dataRow.matCode + ', 자재명 : ' + dataRow.matName);
       $('#matmodaltest').val(dataRow.matName);
       $('#matmodaltest1').val(dataRow.matCode);
-      $('#matmodaltestuntpc').val(dataRow.matUntpc);     
+      $('#matmodaltestuntpc').val(dataRow.matUntpc);
+      $('#matmodalordername').val(dataRow.matOrdername);
       $('#matmodal').modal('hide');
       
       $.ajax({
@@ -424,7 +422,9 @@
     	 alert('뭔가 비어있는게 있어요');
     	 false;
      }else{
-     let necc = {matName: $('#matmodaltest').val() ,
+     let necc = {matOrdernum: $('#orderCode').val(),
+    		 	matOrdername: $('#matmodalordername').val(),
+    		 	matName: $('#matmodaltest').val() ,
     	  		matCode: $('#matmodaltest1').val() ,
     	  		accCode: $('#accmodaltest').val(),
     	  		matReqdate: $('#matReqdate').val(),
@@ -451,9 +451,9 @@
        }
   })
      
-     
+  //발주번호
   $.ajax({
-	  url : "/mat/matorderlist",
+	  url : "/mat/matordercode",
 		method : "GET",
   }).done((result)=>{
 	  $('#orderCode').val(result);

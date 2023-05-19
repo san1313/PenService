@@ -107,15 +107,4 @@ public class BnsController {
 	}
 	
 	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
 }

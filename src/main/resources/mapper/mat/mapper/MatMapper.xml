@@ -13,12 +13,12 @@
 	
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
-		select distinct a.mat_code, a.mat_name, b.mat_untpc from COM_CODE_MAT a join MAT_ORDER b on a.mat_name=b.mat_name
+		select distinct a.mat_code, a.mat_name, b.mat_untpc, c.mat_ordername from COM_CODE_MAT a join MAT_ORDER b on (a.mat_name=b.mat_name) join mat_order_header c on(b.mat_ordernum = c.mat_ordernum)
 	</select>
 	
 	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
-		select distinct a.mat_code, a.mat_name, b.mat_untpc from COM_CODE_MAT a join MAT_ORDER b on a.mat_name=b.mat_name where a.mat_name like #{keyword}
+		select distinct a.mat_code, a.mat_name, b.mat_untpc, c.mat_ordername from COM_CODE_MAT a join MAT_ORDER b on (a.mat_name=b.mat_name) join mat_order_header c on(b.mat_ordernum = c.mat_ordernum) where a.mat_name like #{keyword}
 	</select>
 	
 	<!-- 모달거래처목록 -->
@@ -31,7 +31,7 @@
 		SELECT b.mat_name, c.acc_code, c.acc_name FROM COM_ACCOUNT_ITEM A JOIN COM_CODE_MAT B ON (A.ACC_ITEM = b.mat_code) JOIN COM_CODE_ACCOUNT C ON (a.acc_code = c.acc_code) where b.mat_name like #{keyword}
 	</select>
 	
-	<select id="getmatorderlist" resultType="OrderVO">
+	<select id="getmatordercode" resultType="String">
 		SELECT COM_CODE||'-'||(select LPAD(MAX(REGEXP_REPLACE(MAT_ORDERNUM, '[^0-9]')+1),6,'0') AS NUM FROM MAT_ORDER_HEADER) AS MAT_CODE FROM COM_CODE WHERE CODE_NAME =  '자재코드'
 	</select>
 </mapper>
