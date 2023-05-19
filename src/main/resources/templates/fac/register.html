@@ -82,7 +82,6 @@
         float: right;
       }
    
-   
 }
 </style>
 
@@ -101,55 +100,79 @@
      </div>
 
    <div layout:fragment="content">
-      <!-- <form action="fac_list.html" method="get">-->      
+      <form action="fac_list.html" method="get">     
           <div class = "fac_register" style="text-align:left">
             
-            <label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
-            
+     
             <label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+            <input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <label for="maker_name">제조업체</label>
-            <input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+            <label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text"id="fac_code" placeholder="EQMAN_자동생성" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp; 
-            <input type="radio" name="operate_check" value="operate" checked>&nbsp;&nbsp;&nbsp;Y
-            <input type="radio" name="operate_check" value="non_operate">&nbsp;&nbsp;&nbsp;N
-            <br>
-            
-            <label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            <label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             <input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             
-            <label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text"id="proc_code">
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
-            
-            <label for="emp_num">담당자</label>
-            <input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <br>
-            <label for="temp_min">최저온도(℃)</label>
-            <input type="text" id="temp_min"size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="proc_name">공정명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="proc_name" placeholder="조회 후 등록하시오">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <label for="temp_max">최고온도(℃)</label>
-            <input type="text" id="temp_max" size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="proc_code" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <label for="confirm_cycle">점검주기(일)</label>
-            <input type="text" id="confirm_cycle">
-            </div>
+  
+            <label for="confirm_cycle">점검주기(일)</label>&nbsp;&nbsp;
+            <input type="text" id="confirm_cycle" size=11>
+           
+            
             <br>
+            
+            <label for="temp_min">최저온도(℃)</label>&nbsp;
+            <input type="text" id="temp_min">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+            <label for="temp_max">최고온도(℃)</label>&nbsp;&nbsp;
+            <input type="text" id="temp_max">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+           	<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="operate_check" value="operate" checked>&nbsp;&nbsp;&nbsp;Y
+            <input type="radio" name="operate_check" value="non_operate">&nbsp;&nbsp;&nbsp;N
+            
             <br>
+             <label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
+            <label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+           
+             <br>
+            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
+           </div>
+
+           </form>
+
+
+            <h5 class="modal-title" >공정정보조회</h5>
+            <label>공정명</label>
+         <input class="modaltext" type=text id="ckproc-text">
+        <button class="procsearchbtn" type="button" id="ckproc">검색</button>
+            
+            <div id="modal-grid2"></div>   
+            <br>
             <div class="row">
                <div class="col">
                   <button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>   
                   &nbsp;&nbsp;&nbsp;&nbsp;
-                  <button class="w-30 btn btn-secondary btn-lg"
-                     type="reset">초기화</button>
+                  <button class="w-30 btn btn-secondary btn-lg"type="reset">초기화</button>
                </div>
             </div>
             <hr class="my-4">
-      <!-- </form> -->
+            
+          
+      
+      
+    
+      
+      
 
 <!--공정코드 모달 -->
 <div class="modal fade bd-example-modal-lg" id="procCodemodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -161,7 +184,7 @@
           <span aria-hidden="true">&times;</span>
         </button>      
       </div>
-      <div class="modal-body">
+      <div class="modal-body" >
          <label>공정명</label>
          <input class="modaltext" type=text id="ckproc-text">
         <button class="procsearchbtn" type="button" id="ckproc">검색</button>
@@ -174,10 +197,9 @@
     </div>
   </div>
 </div>
-    
+  <h3 style="text-align:left">설비관리</h3>    
 <!----설비선택검색---->
-     <h3 style="text-align:left">설비관리</h3>
-     <div class="info_search" style="text-align:left">
+ <div class="info_search" style="text-align:left">
       <select name = "fac_info">
       <option value="선택"selected="selected">---선택---</option>
       <option value="설비명">설비명</option>
@@ -186,34 +208,40 @@
       </select>
      <input type="text" id="search_name">
   <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
-  
-<button>수정</button> <button>삭제</button>
-  <div>
+
+<div class= info_update style="float: right;"><button >수정</button></div> 
+<div class= info_delete  style="float: right;"><button>삭제</button> </div>
+</div>
         
 <!-- 설비정보목록그리드 -->
  <div id="grid"></div>
 
-<!-- 설비 정보 상세 모달 -->
-<div class="modal fade" id="facilityModal" tabindex="-1" role="dialog" aria-labelledby="facilityModalLabel" aria-hidden="true">
-   <div class="modal-dialog" role="document">
-      <div class="modal-content">
-         <div class="modal-header">
-            <h5 class="modal-title" id="facilityModalLabel">설비 정보 상세</h5>
-            <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-               <span aria-hidden="true">&times;</span>
-            </button>
-         </div>
-         <div class="modal-body">
-            <!-- 모달 내용을 채우는 요소들 -->
-            <div id="facilityDetails"></div>
-         </div>
-         <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-dismiss="modal" >닫기</button>
-            <button class="facilityDetailsmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">닫기</button>
-         </div>
+
+
+
+<!--설비정보상세모달 -->
+<div class="modal fade bd-example-modal-lg" id="facilityModal" tabindex="-1" role="dialog" aria-labelledby="facilityModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+      <h5 class="modal-title" id="facilityModalLabel">설비 정보 상세</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
       </div>
-   </div>
+      <div class="modal-body">
+   		 <!-- 모달 내용을 채우는 요소들 -->  
+         <div id="facilityDetails"></div>
+         </div>
+        
+         <div class="modal-footer">
+        
+ 		<button class="facilityDetailsmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">닫기</button>
+      </div>
+    </div>
+  </div>
 </div>
+
        
       
     <script>
@@ -323,12 +351,12 @@
     rowHeaders: ['rowNum'],
     columns: [
       {
-        header: '공정코드',
-        name: 'procCode'
-      },
-      {
         header: '공정명',
         name: 'procName'
+      },
+      {
+        header: '공정코드',
+        name: 'procCode'
       }
     ]
    })
@@ -362,6 +390,7 @@
    grid2.on('click', function(e){
       let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
       $('#proc_code').val(content.procCode); //proc_code라는 id의 인풋 창에 값 rowKey안의 procCode를 넣음
+      $('#proc_name').val(content.procName);//proc_name라는 id의 인풋 창에 값 rowKey안의 procName을 넣음
    })      
     })
    

@@ -24,8 +24,8 @@ public class FacController {
 	    public void management() {
 		 	
 	    }
-	 @GetMapping("/list")
-	    public void getList() {
+	 @GetMapping("/register")
+	    public void register() {
 		 	
 	    }
 	 	
