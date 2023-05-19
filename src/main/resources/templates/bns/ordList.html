@@ -75,7 +75,7 @@ margin-top: 30px;
       <form method="get" action ="/insertOrdList">
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">주문코드 </label>
-            <input type="text" class="form-control" name="ordCode" readonly>
+            <input type="text" class="form-control" name="ordCode" value="" readonly>
           </div>
           <div class="mb-3">
             <label for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button> </label>
@@ -121,6 +121,24 @@ margin-top: 30px;
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
         </div>
        </form>
+       
+       <!-- 주문코드 자동입력 -->
+       <script>
+       $.ajax({
+    		url : "/bns/ordCode",
+    		method : "GET",
+    		dataType : "JSON",
+    		success : function(result){
+    			console.log(result);
+    			$('input[name=ordCode]').attr('value',result[0].ordCode);
+    			$('input[name=ordDate]').attr('value',result[0].ordDate);
+    			
+    			
+    		}
+    	});
+       
+       </script>
+       
        
 <!-- 주문서 등록내의 거래처리스트모달 -->
 <div class="modal fade bd-smallaccount-modal-sm" id = "accountRegModal"tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -218,6 +236,8 @@ margin-top: 30px;
     	  $('#accountRegModal').modal('hide');
       })
     })   
+    
+    
     
     
 </script>
@@ -356,9 +376,13 @@ margin-top: 30px;
   </label>
  
 
-<p>거래처 <input type ="text" id="accountlist-text"> <button id="accountList" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-account-modal-lg" ></button></p>  
+<p>거래처명 <input type ="text" id="accountlist-text"> <button id="accountList" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-account-modal-lg" ></button></p>  
 <p>제품명 <input type ="text" id="productlist-text"> <button id="productList"class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-product-modal-lg"></button></p>
-
+<p>주문일자 - 납기일자 <input type="date" id="orddate-text"><input type ="date" id="ordduedate-text"> <button id="searchOrd">조회</button> <button>초기화</button></p>
+<div class = "ordbtn">
+<button >주문서 취소</button>
+</div>
+<br>
 
 <!-- 거래처리스트 modal -->
 <div class="modal fade bd-account-modal-lg" id="accountListModal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -369,7 +393,7 @@ margin-top: 30px;
       
       <div id="accountGrid"></div>
       
-      <div class = "modalbtn"><button id ="searchacc-btn" data-toggle="modal" data-target=".bd-account-modal-lg">확인	</button> <button>취소</button></div>
+      <div class = "modalbtn"><button id ="searchacc-btn" data-toggle="modal" data-target=".bd-account-modal-lg">확인</button> <button>취소</button></div>
       </div>
   </div>
 </div>
@@ -385,6 +409,7 @@ margin-top: 30px;
  			account_Grid.refreshLayout();
  		}
  	});
+ 	
     var account_Grid = new tui.Grid({
       el: document.getElementById('accountGrid'),
       scrollX: false,
@@ -438,18 +463,18 @@ margin-top: 30px;
       $('#accountlist-text').val(dataRow.accName);
       
       $("#searchacc-btn").click(function(){
-    	  $('#accountListModal').modal('hide');
-
+    	  
     	  $.ajax({
     	 		url : "/bns/accList",
     	 		method : "GET",
-    	 		data : {'result' : result},
+    	 		dataType : "JSON",
     	 		success : function(result){
     	 			account_Grid.resetData(result);
     	 			account_Grid.refreshLayout();
     	 		}
     	 	});
-    	  
+    	 $('#accountListModal').modal('hide');
+ 
     	  
       })
     })   
@@ -546,7 +571,7 @@ margin-top: 30px;
     	  $.ajax({
      		 url : "/bns/prodList",
      	     method : "GET",
-     	     data : {'result' : result},
+     	     dataType : "JSON",
      	     success : function(result){
      	     product_Grid.resetData(result);
      	     product_Grid.refreshLayout();
@@ -563,11 +588,7 @@ margin-top: 30px;
 
     
 
-<p>주문일자 - 납기일자 <input type = "date"><input type = "date"> <button>조회</button> <button>초기화</button></p>
-<div class = "ordbtn">
-<button >주문서 취소</button>
-</div>
-<br>
+
 
 
 
@@ -584,6 +605,28 @@ margin-top: 30px;
  			grid.resetData(result);
  		}
  	});
+ 	
+ 	
+ 	$("#searchOrd").on('click', function(){
+ 		let accName = $('#accountlist-text').val();
+ 		let prodName = $('#productlist-text').val();
+ 		let ordDate = ${'#orddate-text').val();
+	    let ordDueDate = ${'#ordduedate-text').val(); 	
+ 		let data1 = {'accName':accName,'prodName':prodName,'ordDate':ordDate,'ordDueDate':ordDueDate};
+ 		
+ 		
+ 	$.ajax({
+ 		url : "/bns/ordListconAjax",
+ 		method : "GET",
+ 		data : data1,
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			grid.resetData(result);
+ 		}
+ 	});
+ 	})
+ 	
+ 	
     var grid = new tui.Grid({
       el: document.getElementById('grid'),
       scrollX: false,
@@ -603,6 +646,10 @@ margin-top: 30px;
           name: 'accName'
         },
         {
+            header: '제품명',
+            name: 'prodName'
+          },
+        {
           header: '주문일자',
           name: 'ordDate'
         },
@@ -616,7 +663,7 @@ margin-top: 30px;
           },
         {
             header: '담당자명',
-            name: 'empNum'
+            name: 'empName'
           },
         {
             header: '비고',
@@ -627,7 +674,6 @@ margin-top: 30px;
     });
     <!----------------------------------------- 그리드끝 ----------------------------------------->
     
-
     
     </script>
   

@@ -8,6 +8,7 @@ import com.pen.app.bns.vo.BnsProdVO;
 
 public interface BnsMapper {
 	List<BnsOrdVO> getOrdList(); //주문서 전체 조회
+	List<BnsOrdVO> getOrdListCon(BnsOrdVO vo); //주문서 조건 조회
 	List<BnsAccVO> getAccList(); //모달창 거래처리스트 조회
 	List<BnsProdVO> getProdList();// 모달창 제품리스트 조회
 	
@@ -15,4 +16,6 @@ public interface BnsMapper {
 	List<BnsProdVO> getProdKeyList(String keyword);
 	
 	int insertOrdList(BnsOrdVO bnsOrdVo);// 주문서 등록
+	
+	List<BnsOrdVO> getOrdCode();//주문코드 조회
 }

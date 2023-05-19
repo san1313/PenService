@@ -1,7 +1,5 @@
 package com.pen.app.bns.vo;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -14,5 +12,16 @@ public class BnsOrdVO {
 	String ordProgress;
 	String empNum;
 	String ordNote;
+	
+	String ordDetCode;
+	String prodCode;
+	String prodName;
+	int ordDetPrice;
+	int ordDetQuan;
+	String ordDetProgress;
+	
+	String empName;
+	
+	
 }
 	
