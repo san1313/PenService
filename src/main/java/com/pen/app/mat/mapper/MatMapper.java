@@ -10,5 +10,7 @@ public interface MatMapper {
 	List<OrderVO> getmatminilist(String keyword);//거래처모달검색조회
 	List<OrderVO> getacclist(); //모달거래처목록
 	List<OrderVO> getaccminilist(String keyword);//거래처모달검색조회
+	
+	List<OrderVO>getmatorderlist();
 }
 	
