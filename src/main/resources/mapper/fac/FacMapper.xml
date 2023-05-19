@@ -4,11 +4,13 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.fac.mapper.FacMapper">
+
   <select id="getFac" resultType="FacInfoVO">
 	select *
 	from fac_info
 	where fac_code = #{facCode}
   </select>
+  
   
   <select id="getList" resultType="FacInfoVO">
 select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') installDate,maker_name,temp_min,temp_max,emp_num from fac_info
