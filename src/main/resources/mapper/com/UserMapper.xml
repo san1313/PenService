@@ -22,9 +22,25 @@
   <select id="getUserList" resultType="UserVO">
   	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE)
   </select>
-  
+  <!-- 유저 정보수정 -->
   <update id="modifyUserList">
   	UPDATE COM_INFO_EMP SET
   	
   </update>
+  
+  <select id="getUserWithName" resultType="UserVO">
+  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME = #{empName}
+  </select>
+  
+  <select id="getAuthList" resultType="AuthVO">
+  	select * from com_code_auth
+  </select>
+  
+  <update id="resetPassword">
+  	UPDATE COM_INFO_EMP SET EMP_PW = #{empPw} WHERE EMP_NUM = #{empNum}
+  </update>
+  
+  <select id="getEmpCode" resultType="String">
+  	select com_code||'-'||LPAD(emp_seq.nextval,4,'0') from com_code where code_name = '사원코드'
+  </select>
 </mapper>

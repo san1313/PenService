@@ -15,10 +15,10 @@
 	</select>
 
 	<select id="getPlanning" resultType="PlanVO">
-		select acc_code||acc_name contNm,cont_det_quan-plan_qnt contDetQuan,
+		select acc_code||acc_name contNm,cont_det_quan-sum(plan_qnt) contDetQuan,
 		prod_name, to_char(cont_det_release,'yyyy-MM-dd')
 		contDetRelease,cont_det_code from conplan_view where cont_det_code =
-		#{contDetCode} and cont_det_quan-plan_qnt>0
+		#{contDetCode} and cont_det_quan-plan_qnt>0 group by cont_det_code, cont_det_quan,prod_name,cont_det_release,acc_code||acc_name
 	</select>
 
 	<select id="getCont" resultType="PlanVO">
@@ -32,7 +32,12 @@
 	<select id="getContr" resultType="PlanVO">
 		select acc_code||acc_name contNm, cont_det_quan, prod_name,
 		to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,cont_det_code
-		from con_base_bns where cont_det_code !=#{contDetCode}
+		from con_base_bns
+		<where>
+		<foreach collection="list" item="cdc" separator=" and ">
+		cont_det_code != #{cdc}
+		</foreach>
+		</where> 
 	</select>
 	
 </mapper>

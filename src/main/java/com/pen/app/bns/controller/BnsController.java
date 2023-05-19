@@ -14,6 +14,7 @@ import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+
 	
 	
 @Controller
@@ -28,6 +29,9 @@ public class BnsController {
 		return "bns/ordList";
 	}
 	
+
+	
+	
 	@ResponseBody
 	@GetMapping("/ordListAjax")
 	public List<BnsOrdVO> ordListAjax(){
@@ -35,11 +39,34 @@ public class BnsController {
 		return list;
 	}
 	
-	@RequestMapping("/insertOrdList")
 	@ResponseBody
-	public String insertOrdList(Model model) {
-		return "redirect:/insertOrdList";
+	@GetMapping("/ordListconAjax")
+	public List<BnsOrdVO> ordListconAjax(BnsOrdVO vo){
+		System.out.println("아작스 통해서 들어온 데이터 : "+vo);
+		List<BnsOrdVO> list = dao.getOrdListCon(vo);
+		System.out.println("조회 이후 나온 데이터 : "+list);
+		return list;
 	}
+	
+//	@RequestMapping("/insertOrdList")
+//	@ResponseBody
+//	public String insertOrdList(BnsOrdVO ordVo) {
+//		dao.getOrdList()
+//		return "redirect:/insertOrdList";
+//	}
+	
+	
+//	@RequestMapping(value = "register", method = RequestMethod.POST)
+//	public String register(BoardVO board, RedirectAttributes model) {
+//		log.info("컨트롤 .. 등록");
+//		// 등록 처리 후 목록이동.
+//		boardService.register(board);
+//		model.addFlashAttribute("result", board.getBno());
+//
+//		return "redirect:/board/list"; // reponse.sendRedirect();
+//	}
+	
+	
 	
 	@ResponseBody
 	@GetMapping("/accList")
@@ -60,6 +87,7 @@ public class BnsController {
 	@GetMapping("/prodList")
 	public List<BnsProdVO> prodList() {
 		List<BnsProdVO> list = dao.getProdList();
+		
 		return list;
 	}
 	
@@ -70,6 +98,13 @@ public class BnsController {
 		return list;
 	}
 	
+	@ResponseBody
+	@GetMapping("/ordCode")
+	List<BnsOrdVO> ordCode() {
+		List<BnsOrdVO> list = dao.getOrdCode();
+		System.out.println("주문코드 최대값 : "+list);
+		return list;
+	}
 	
 	
 	

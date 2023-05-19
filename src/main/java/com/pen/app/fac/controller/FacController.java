@@ -20,8 +20,8 @@ public class FacController {
 	
 	@Autowired FacMapper dao;
 	
-	 @GetMapping("/register")
-	    public void register() {
+	 @GetMapping("/management")
+	    public void management() {
 		 	
 	    }
 	 @GetMapping("/list")
@@ -57,7 +57,5 @@ public class FacController {
 		System.out.println(list);
 		return list;
 		}
-	 	
-	 	
 	 	
 }
