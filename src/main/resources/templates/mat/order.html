@@ -79,7 +79,7 @@
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
       <label>담당자</label>
       <input class="text1" type="text">
-      <button type="button" class="addmatbtn">추가</button>
+      <button type="button" id="addmatbtn">추가</button>
      
       
       
@@ -153,7 +153,24 @@
      
 
      //grid
-     let necc = {};
+     //	let necc = {};
+     
+    //추가버튼
+    $(function(){  
+    $('#addmatbtn').click(function(){
+    	$.ajax({
+    	url : "/mat/orderListAjax",
+    	method : "GET",
+    	dataType : "JSON",
+    	success : function(result){
+    	grid.resetData(result);
+    	grid.refreshLayout();
+    		    
+    	}
+    	});
+    }
+    });	 
+     
      
     $.ajax({
     url : "/mat/orderListAjax",
@@ -398,14 +415,7 @@
     	});
      })	
          
-     //추가버튼
      
-    
-     $(function(){  
-    $('addmatbtn').click(function(e){
-    	grid.append();
-    }
-    });
      
      
      
