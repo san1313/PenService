@@ -8,7 +8,7 @@
 
 <!-- 주문서 전체 조회 -->
   <select id="getOrdList" resultType="BnsOrdVO">
-select o.ord_code ord_code, acc_code, acc_name, to_char(ord_date,'YYYY-MM-DD') as ord_date, to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date, ord_progress, e.emp_name emp_name, ord_note, prod_code, prod_name, ord_det_price, ord_det_quan,ord_det_progress
+  select o.ord_code ord_code, acc_code, acc_name,prod_name,to_char(ord_date,'YYYY-MM-DD') as ord_date,to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date,ord_progress, e.emp_name emp_name,ord_note
 from bns_order_detail d join bns_order o 
 on(d.ord_code =o.ord_code)
 join com_info_emp e
@@ -17,10 +17,13 @@ on(o.emp_num = e.emp_num)
   
    <!-- 주문서 조건 조회 -->
    <select id="getOrdListCon" resultType="BnsOrdVO">
-	select *
+  select o.ord_code ord_code, acc_code, acc_name,prod_name,to_char(ord_date,'YYYY-MM-DD') as ord_date, to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date,ord_progress, e.emp_name emp_name,ord_note
 	from bns_order_detail d join bns_order o 
 	on(d.ord_code =o.ord_code)
-	where acc_name =#{accName} and prod_name = #{prodName} and ord_date = #{ordDate} and ord_due_date = #{ordDueDate}
+	join com_info_emp e
+on(o.emp_num = e.emp_num)
+	where (acc_name = #{accName}) or (acc_name is null) and (prod_name = #{prodName}) or (prod_name is null)
+	and (ord_date = #{ordDate}) or (ord_date is null) and (ord_due_date = #{ordDueDate}) or (ord_due_date is null)
   </select> 
   
   
