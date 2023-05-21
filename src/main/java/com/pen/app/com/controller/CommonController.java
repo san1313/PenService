@@ -82,9 +82,35 @@ public class CommonController {
 	
 	@ResponseBody
 	@PostMapping("/admin/userModifyAjax")
-	public ToastUiResponseDTO userModifyAjax(@RequestBody Map<String, List<UserVO>> updatedRows) {
-		System.out.println(updatedRows.get("updatedRows"));
-		return new ToastUiResponseDTO("Success");
+	public ToastUiResponseDTO userModifyAjax(@RequestBody Map<String, List<UserVO>> modifiedRows) {
+		System.out.println(modifiedRows);
+		String result = "Success";
+		List<UserVO> updatedRows = modifiedRows.get("updatedRows");
+		List<UserVO> createdRows = modifiedRows.get("createdRows");
+		List<UserVO> deletedRows = modifiedRows.get("deletedRows");
+		
+		// 변경사항 중에서 update 된 건을 update 기능으로
+		if (updatedRows.size()!=0) {
+			userService.modifyUserList(updatedRows);
+		}
+		
+		// 변경사항 중에서 create 된 건을 insert 기능으로
+		if (createdRows.size()!=0) {
+			for(UserVO vo : createdRows) { // 비밀번호 암호화
+				vo.setEmpPw(new BCryptPasswordEncoder().encode(vo.getEmpTel().substring(vo.getEmpTel().length()-4)));
+			}
+			if(!userService.insertUserList(createdRows)) { // 결과가 0건이면
+				result = "Fail";
+			}
+		}
+		
+		// 변경사항 중에서 delete 된 건을 delete 기능으로
+		if (deletedRows.size()!=0) {
+			if(!userService.deleteUserList(deletedRows)) { // 결과가 0이면
+				result = "Fail";
+			}
+		}
+		return new ToastUiResponseDTO(result);
 	}
 	
 	@ResponseBody

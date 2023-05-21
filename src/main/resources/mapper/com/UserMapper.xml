@@ -10,6 +10,7 @@
     from COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE)
     where EMP_ID = #{empId}
   </select>
+  
   <!-- 본인 정보 수정 -->
   <update id="modifyUser">
   	UPDATE COM_INFO_EMP SET 
@@ -18,29 +19,66 @@
   	</if>
  	emp_tel = ${empTel}
   </update>
-  <!-- 유저 리스트 출력 -->
+  
+  <!-- 사원 리스트 출력 -->
   <select id="getUserList" resultType="UserVO">
-  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE)
+  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) ORDER BY EMP_NUM
   </select>
-  <!-- 유저 정보수정 -->
+  
+  <!-- 사원 정보수정 -->
   <update id="modifyUserList">
-  	UPDATE COM_INFO_EMP SET
-  	
+  	<foreach collection="list" item="vo" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
+        	UPDATE COM_INFO_EMP
+           	SET
+           	  EMP_NAME = #{vo.empName},
+	  	      EMP_ID = #{vo.empId},
+	 	      AUTH_CODE = (SELECT AUTH_CODE FROM COM_CODE_AUTH WHERE AUTH_NAME = #{vo.authName}),
+	 	      EMP_TEL = #{vo.empTel}
+    	    WHERE EMP_NUM = #{vo.empNum}
+    </foreach>
   </update>
   
+  <!-- 이름으로 사원 조회 -->
   <select id="getUserWithName" resultType="UserVO">
   	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME = #{empName}
   </select>
   
+  <!-- 모든 권한 리스트 조회 -->
   <select id="getAuthList" resultType="AuthVO">
   	select * from com_code_auth
   </select>
   
+  <!-- 유저 비밀번호 변경 -->
   <update id="resetPassword">
   	UPDATE COM_INFO_EMP SET EMP_PW = #{empPw} WHERE EMP_NUM = #{empNum}
   </update>
   
+  <!-- 다음 EMP CODE 조회 -->
   <select id="getEmpCode" resultType="String">
-  	select com_code||'-'||LPAD(emp_seq.nextval,4,'0') from com_code where code_name = '사원코드'
+  	SELECT (SELECT COM_CODE FROM COM_CODE WHERE CODE_NAME = '사원코드')||'-'|| LPAD(LAST_NUMBER,4,'0') FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'EMP_SEQ'
   </select>
+  
+  <!-- 사원 추가 -->
+  <insert id="insertUserList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_INFO_EMP VALUES (
+          (SELECT COM_CODE FROM COM_CODE WHERE CODE_NAME = '사원코드')||'-'||LPAD(EMP_SEQ.NEXTVAL,4,'0'),
+          #{vo.empName},
+          #{vo.empId},
+          #{vo.empTel},
+          (SELECT AUTH_CODE FROM COM_CODE_AUTH WHERE AUTH_NAME = #{vo.authName}),
+          #{vo.empPw},
+          TO_DATE(#{vo.hireDate},'YYYY-MM-DD')
+    )
+    </foreach>
+  </insert>
+  
+  <!-- 사원 삭제 -->
+  <delete id="deleteUserList">
+      DELETE FROM COM_INFO_EMP WHERE 
+    <foreach collection="list" item="vo" separator="OR">
+        EMP_NUM = #{vo.empNum} 
+    </foreach>
+  </delete>
 </mapper>

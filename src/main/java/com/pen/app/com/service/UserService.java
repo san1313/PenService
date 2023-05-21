@@ -14,4 +14,6 @@ public interface UserService {
 	public List<AuthVO> getAuthList();
 	public boolean resetPassword(String empNum, String empPw);
 	public String getEmpCode();
+	public boolean insertUserList(List<UserVO> list);
+	public boolean deleteUserList(List<UserVO> list);
 }

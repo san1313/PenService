@@ -79,4 +79,14 @@ public String getEmpCode() {
 	
 	return mapper.getEmpCode();
 }
+@Override
+	public boolean insertUserList(List<UserVO> list) {
+	
+		return mapper.insertUserList(list)>0;
+	}
+@Override
+	public boolean deleteUserList(List<UserVO> list) {
+	
+		return mapper.deleteUserList(list)>0;
+	}
 }

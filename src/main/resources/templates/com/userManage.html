@@ -27,7 +27,7 @@
             <label class="col-form-label" for="empName">사원명</label>
           </div>
           <div class="col-7">
-            <input type="text" class="form-control" id="empName" name="empName" />
+            <input type="text" class="form-control" id="empName" name="empName" placeholder="빈 칸이면 전체 조회" />
           </div>
           <div class="col-2">
             <button
@@ -45,10 +45,10 @@
             <button class="btn btn-primary" id="addEmp" style="height: 38px">추가</button>
           </div>
           <div class="col-auto">
-            <button class="btn btn-primary" style="height: 38px">초기화</button>
+            <button class="btn btn-primary" id="delete" style="height: 38px">삭제</button>
           </div>
           <div class="col-auto">
-            <button class="btn btn-primary" style="height: 38px">삭제</button>
+            <button class="btn btn-primary" id="reset" style="height: 38px">초기화</button>
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" id="save" style="height: 38px">저장</button>
@@ -70,7 +70,7 @@
                 url: "/admin/userListAjax",
                 method: "GET",
               },
-              updateData: {
+              modifyData: {
                 url: "/admin/userModifyAjax",
                 method: "POST",
                 withCredentials: true,
@@ -91,10 +91,14 @@
           });
           //권한 select 박스 항목 받아오기 끝
 
+          //전화번호 정규식
+          const telRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
+
           //그리드폼 시작
           const grid = new tui.Grid({
             el: document.getElementById("grid"),
             data: dataSource,
+            bodyHeight: 600,
             scrollX: false,
             rowHeaders: [{ type: "checkbox", header: ` ` }],
             columns: [
@@ -114,6 +118,9 @@
                 name: "empId",
                 editor: "text",
                 align: "center",
+                validation: {
+                  unique: true,
+                },
               },
               {
                 header: "입사일",
@@ -131,6 +138,9 @@
                 name: "empTel",
                 editor: "text",
                 align: "center",
+                validation: {
+                  regExp: telRegex,
+                },
               },
             ],
           });
@@ -140,6 +150,13 @@
           //서버에 연결전 토큰값 담는 method
           grid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
+          });
+
+          //데이터 저장 여부 alert
+          grid.on("response", (e) => {
+            if (JSON.parse(e.xhr.response).data.contents == "Success") {
+              alert("데이터가 저장되었습니다.");
+            }
           });
 
           //tui grid의 언어세팅
@@ -155,12 +172,41 @@
             });
           });
           //체크박스 하나만 적용 끝
+
           //그리드 세팅 끝
 
           //저장기능 시작
           $("#save").click(() => {
-            grid.finishEditing();
-            grid.request("updateData");
+            //유효성 검사 시작
+            let vd = grid.validate(); // grid 만들때 설정한 validation 옵션에 걸리는 행들
+            let idn = 0; // 행 안의 empId가 문제인 경우의 수
+            let teln = 0; // 행 안의 empTel이 문제인 경우의 수
+            if (vd.length != 0) {
+              vd.forEach((arr) => {
+                arr.errors.forEach((col) => {
+                  if (col.columnName == "empId") {
+                    idn++;
+                  } else {
+                    teln++;
+                  }
+                });
+              });
+              if (idn) {
+                // idn이 0이 아니면
+                alert("중복되는 아이디가 존재합니다.");
+              }
+              if (teln) {
+                //teln이 0이 아니면
+                alert(
+                  "전화번호의 형식이 잘못되었습니다.\n[010-0000-0000 또는 02-000-0000 의 형식으로 입력해주십시오.]"
+                );
+              }
+              //유효성 검사 끝
+            } else {
+              //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
+              grid.finishEditing();
+              grid.request("modifyData");
+            }
           });
 
           //저장기능 끝
@@ -200,7 +246,7 @@
                   });
                   // 사원명 input이 비어있으면 모두 조회
                 } else {
-                  grid.readData();
+                  grid.restore();
                 }
               }
             }
@@ -227,19 +273,46 @@
           //비밀번호 초기화 끝
 
           //사원 추가 시작
+          let nextNum; // EMPCODE
           $("#addEmp").click((e) => {
-            var currCode;
-            let toDay;
-            let date = new Date();
-            toDay = `${date.getFullYear}-${date.getMonth + 1}-${date.getDate}`;
-            $.ajax({
-              url: "/admin/getEmpCode",
-            }).done((r) => {
-              currCode = r;
-            });
-            grid.prependRow({ empNum: currCode, hireDate: toDay });
+            //오늘 날짜 가져오기 시작
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1;
+            var day = today.getDate();
+            var format = year + "-" + ("00" + month.toString()).slice(-2) + "-" + ("00" + day.toString()).slice(-2);
+            //오늘 날짜 가져오기 끝
+            if (!nextNum) {
+              // 코드를 가져온적이 없으면 새로 가져옴
+              $.ajax({
+                url: "/admin/getEmpCode",
+                async: false,
+              }).done((r) => {
+                nextNum = r;
+              });
+            } else {
+              // 코드를 이미 가져왔다면 코드에 1을 추가함
+              let word = nextNum.substr(0, 4);
+              let num = parseInt(nextNum.substr(4)) + 1 + "";
+              nextNum = word + num.padStart(4, "0");
+            }
+            grid.appendRow({ empNum: nextNum, hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
           });
           //사원 추가 끝
+
+          //사원 삭제 시작
+          $("#delete").click((e) => {
+            grid.removeCheckedRows(true);
+          });
+          //사원 삭제 끝
+
+          //초기화 버튼 시작
+          $("#reset").click((e) => {
+            if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
+              grid.restore();
+            }
+          });
+          //초기화 버튼 끝
         });
       </script>
     </div>
