@@ -4,12 +4,12 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.pen.app.mak.vo.MakVO;
+import com.pen.app.mak.vo.PlanListVO;
+import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanVO;
 
 public interface MakService {
-	public MakVO getMak(MakVO vo);
-	public MakVO setMak(MakVO vo);
-	public int insertPlan(List<PlanVO> list);
+	public int insertPlan(PlanListVO vo);
 	public List<PlanVO> getPlanList();
 	public List<PlanVO> getCont();
 	public List<PlanVO> getConnect(String detc);

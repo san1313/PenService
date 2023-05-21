@@ -9,19 +9,22 @@ public class PlanVO {
 	String pdCode; 
 	String planState; 
 	int planQnt;    
-	String planCode; 
+	int priority;    
+	String planClsdate;
+	String planSdate;
+	String pdProdCode;
 	//계획
-	String planNm; 
+	String planCode;
+	String planNm;
 	String planDate;         
-	String clsDate;         
 	String planType;  
 	String makEmpNum;
+	
 	//연결
 	int connectCode;        
 	String ordDetCode; 
 	String contDetCode; 
-	int priority;    
-	String dclsDate;
+	
 	//계약 상세
 	String contCode;  
 	String prodCode;  

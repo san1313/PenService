@@ -10,31 +10,13 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pen.app.mak.mapper.MakMapper;
 import com.pen.app.mak.service.MakService;
 import com.pen.app.mak.vo.MakVO;
+import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanVO;
 
 @Service
 public class MakServiceImpl implements MakService {
 
 @Autowired MakMapper mapper;
-
-@Override
-public MakVO getMak(MakVO vo) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Override
-public MakVO setMak(MakVO vo) {
-	// TODO Auto-generated method stub
-	return null;
-}
-
-@Transactional
-public int insertPlan(List<PlanVO> list) {
-	
-	return 0;
-}
-
 
 
 @Override
@@ -57,14 +39,25 @@ public List<PlanVO> getConnect(String detc) {
 
 @Override
 public List<PlanVO> getPlanning(String detc) {
-	List<PlanVO> list = mapper.getPlanning(detc);
-	return list;
+	List<PlanVO> vo = mapper.getPlanning(detc);
+	return vo;
 }
 
 @Override
 public List<PlanVO> getContr(ArrayList<String> detCoList) {
 	List<PlanVO> list = mapper.getContr(detCoList);
 	return list;
+}
+
+@Override
+@Transactional
+public int insertPlan(PlanListVO vo) {
+	int result = mapper.insertPlan(vo.getPlanList().get(0));
+	for(int i=0; i<vo.getPlanList().size();i++) {
+	result += mapper.insertDetailPlan(vo.getPlanList().get(i));
+	result += mapper.setPlanCont(vo.getPlanList().get(i));
+	};
+	return result;
 }
 
 
