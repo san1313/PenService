@@ -29,8 +29,15 @@ on(o.emp_num = e.emp_num)
   
   
 <!-- 주문서 등록 -->
-  <insert id="insertOrdList">
 
+  <insert id="insertOrdList">
+  
+  insert all into bns_order values('bns_ord_'||LPAD(ord_seq.nextval, 3, '0'),#{list[0].accCode},#{list[0].accName},#{list[0].ordDate},#{list[0].ordDueDate},'접수완료',#{list[0].empNum},'비고')
+  
+  <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
+        into bns_order_detail values('bns_ord_det'||LPAD(get_ord_det_seq,3,'0'),'bns_ord'||LPAD(ord_seq.currval, 3, '0'),#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice})
+    </foreach>
+    
   </insert>
 
 <select id="getEmpList" resultType="BnsEmpVO">

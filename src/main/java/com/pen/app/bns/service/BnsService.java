@@ -14,10 +14,8 @@ public interface BnsService {
 	public  List<BnsOrdVO> getOrdListCon(BnsOrdVO vo);
 	public List<BnsAccVO> getAccList();
 	public List<BnsProdVO> getProdList();
-	public List<BnsEmpVO> getEmpList();
 	public List<BnsAccVO> getAccKeyList(String keyword);
 	public List<BnsProdVO> getProdKeyList(String keyword);
-	public List<BnsEmpVO> getEmpKeyList(String keyword);
-	public int insertOrdList(BnsOrdVO bnsOrdVo);
-	public void insertOrdDetList (BnsOrdDetListVO bnsOrdDetListVo);
+	public int insertOrdList(List<BnsOrdVO> list);
+	/* public void insertOrdDetList (BnsOrdDetListVO bnsOrdDetListVo); */
 }

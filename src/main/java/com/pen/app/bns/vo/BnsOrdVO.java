@@ -18,6 +18,7 @@ public class BnsOrdVO {
 	String prodName;
 	int ordDetPrice;
 	int ordDetQuan;
+	int ordDetTotPrice;
 	String ordDetProgress;
 	
 	String empName;

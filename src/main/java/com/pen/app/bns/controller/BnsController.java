@@ -3,6 +3,8 @@ package com.pen.app.bns.controller;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -13,13 +15,10 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.vo.BnsAccVO;
-import com.pen.app.bns.vo.BnsEmpVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
-import com.pen.app.bns.vo.BnsOrdDetVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 
-   
    
 @Controller
 @RequestMapping("/bns")
@@ -28,12 +27,13 @@ public class BnsController {
 @Autowired BnsMapper dao;
    
    @GetMapping("/ordList")
-   public String ordList(Model model) {
+   public String ordList(Model model, Authentication authentication) {
       model.addAttribute("ordList", dao.getOrdList());
+      UserDetails user = (UserDetails) authentication.getPrincipal();
+      model.addAttribute("userVO", user);
       return "bns/ordList";
    }
    
-	
 	
 	@ResponseBody
 	@GetMapping("/ordListAjax")
@@ -53,24 +53,13 @@ public class BnsController {
 	
 	@RequestMapping("/insertOrdList")
 	@ResponseBody
-	public BnsOrdDetVO insertOrdList(@RequestBody BnsOrdDetListVO vo) {
-		System.err.println(vo);
-		
+	public BnsOrdVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
+		System.err.println(list.getList());
+		dao.insertOrdList(list.getList());
 		return null;
 	}
 	
-	
-//	@RequestMapping(value = "register", method = RequestMethod.POST)
-//	public String register(BoardVO board, RedirectAttributes model) {
-//		log.info("컨트롤 .. 등록");
-//		// 등록 처리 후 목록이동.
-//		boardService.register(board);
-//		model.addFlashAttribute("result", board.getBno());
-//		return "redirect:/board/list"; // reponse.sendRedirect();
-//	}
-	
-	
-	
+
 	@ResponseBody
 	@GetMapping("/accList")
 	public List<BnsAccVO> accList() {
@@ -101,20 +90,8 @@ public class BnsController {
 		return list;
 	}
 	
-	@ResponseBody
-	@GetMapping("/empList")
-	public List<BnsEmpVO> empList() {
-		List<BnsEmpVO> list = dao.getEmpList();
-		
-		return list;
-	}
-	
-	@RequestMapping("/empKeyList")
-	@ResponseBody
-	public List<BnsEmpVO> empKeyList(@RequestParam String result){
-		List<BnsEmpVO> list = dao.getEmpKeyList(result);
-		return list;
-	}
+
+
 	
 	
 	@ResponseBody
@@ -124,15 +101,6 @@ public class BnsController {
 		System.out.println("주문코드 최대값 : "+list);
 		return list;
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
 	
 	
 	

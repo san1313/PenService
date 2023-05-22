@@ -7,6 +7,6 @@ import lombok.Data;
 @Data
 public class BnsOrdDetListVO {
 
-	List<BnsOrdDetVO> list;
+	List<BnsOrdVO> list;
 	
 }
