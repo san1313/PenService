@@ -6,5 +6,10 @@ import lombok.Data;
 
 @Data
 public class PlanListVO {
-	public List<PlanVO> list;
+	List<PlanVO> planList;
+	
+	
+	public void setPlanList(List<PlanVO> mainList) {
+		this.planList = mainList;
+	}
 }

@@ -4,34 +4,41 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.mak.mapper.MakMapper">
-
+<!-- 쿼리 수정하기 다 건에 대해 그룹 함수로 빼줘야함 -->
+<!-- 계획서가 존재하는 계약 내용들 즉 현재 수립된 계획서 불러오기 비교 구문용 -->
 	<select id="getPlanList" resultType="PlanVO">
 		select plan_nm,acc_code||acc_name
-		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd') planDate,
-		to_char(dcls_date,'yyyy-MM-dd')
-		dclsDate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
-		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan from
-		conplan_view
+		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd') planDate,to_char(plan_sdate,'yyyy-MM-dd')
+		planSdate,priority,
+		to_char(plan_clsdate,'yyyy-MM-dd')
+		planClsdate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
+		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code from
+		conplan_view where plan_type='plan'
 	</select>
 
+<!-- 현재 잔존하는 계약수량 존재하는 계약 내용 불러오기 모달에 뜨는 xml -->
 	<select id="getPlanning" resultType="PlanVO">
 		select acc_code||acc_name contNm,cont_det_quan-sum(plan_qnt) contDetQuan,
 		prod_name, to_char(cont_det_release,'yyyy-MM-dd')
-		contDetRelease,cont_det_code from conplan_view where cont_det_code =
-		#{contDetCode} and cont_det_quan-plan_qnt>0 group by cont_det_code, cont_det_quan,prod_name,cont_det_release,acc_code||acc_name
+		contDetRelease,cont_det_code,prod_code from conplan_view where cont_det_code =
+		#{contDetCode} and (select cont_det_quan-sum(plan_qnt) contDetQuan from conplan_view where cont_det_code =
+		#{contDetCode} group by cont_det_quan)>0 group by cont_det_code, cont_det_quan,prod_name,cont_det_release,acc_code||acc_name,prod_code
 	</select>
 
+<!-- 현재 존재하는 계약서들 불러오기 비교구문용 -->
 	<select id="getCont" resultType="PlanVO">
 		select * from con_base_bns
 	</select>
 
+<!-- 계약연결코드 불러오기 비교구문용 -->
 	<select id="getConnect" resultType="PlanVO">
 		select * from mak_plan_to_ord where cont_det_code = #{contDetCode}
 	</select>
 
+<!-- 계약서 내용(가공) 불러오기 모달에 띄우는 용도[계획서가 없는 계약건] -->
 	<select id="getContr" resultType="PlanVO">
 		select acc_code||acc_name contNm, cont_det_quan, prod_name,
-		to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,cont_det_code
+		to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,cont_det_code,prod_code
 		from con_base_bns
 		<where>
 		<foreach collection="list" item="cdc" separator=" and ">
@@ -40,4 +47,16 @@
 		</where> 
 	</select>
 	
+ 	<update id="insertPlan">
+	insert into MAK_PLAN values ((select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_plan_seq.nextval),#{planNm},#{planType},sysdate,'1111')
+	</update>
+	
+	<update id="insertDetailPlan">
+	insert into mak_plan_detail values ((select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_pd_seq.nextval),#{planState},#{prodCode},#{planQnt},#{planSdate},#{planClsdate},#{priority},(select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_plan_seq.currval))
+	</update>
+	
+	<update id="setPlanCont">
+	insert into mak_plan_to_ord(connect_code,cont_det_code,pd_code) values (to_char(mak_plan_cont_seq.nextval),#{contDetCode},(select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_pd_seq.currval))
+	
+	</update>
 </mapper>

@@ -4,6 +4,8 @@
 	layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
 <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
@@ -47,6 +49,8 @@ font-size:10px;
 </div>
 </form>
 <form id="hiddenFrm">
+<input id="planBtn0" type=hidden>
+<input id="orderBtn0" type=hidden>
 </form>
    <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -69,35 +73,49 @@ font-size:10px;
       <div id="grid"></div>
 
 <script>
+//전역변수 선언부
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+var selectNum = 0;
+//계약건 모달그리드
 var modal_grid;
+//등록 시 넘길 데이터
+var planData = {};
 
 const Hfrm = document.getElementById('hiddenFrm');
 let br = document.createElement('br');
 const table = document.getElementById('grid');
 const Frm = document.getElementById('frm');
+//라디오 버튼 클릭 - 계약서기반
 document.getElementById('planBtn').addEventListener('click',function(){
+	
+	
+	//폼과 그리드 초기화
 	Frm.textContent='';
 	table.textContent='';
+	
+	//생성자
 	let div1 = document.createElement('div');
     let input = document.createElement('input');
     let text = document.createElement('label');
     let selectes = document.createElement('select');
     let options = document.createElement('option');
     
+    //계약명
     div1.setAttribute('class','form-group row');
     let div = document.createElement('div');
     div.setAttribute('class','form-group row col-4');
     text.setAttribute('class','col-auto col-form-label');
     selectes.setAttribute('class','form-control col-6');
     //인풋 아이디
-    selectes.setAttribute('id','conmi')
+    selectes.setAttribute('id','conmi');
     text.append("계약명");
     div.appendChild(text);
     div.appendChild(selectes);
     div1.appendChild(div);
     Frm.appendChild(div1);
     
-    
+    //모달 아이콘
     let sicon = document.createElement('ion-icon');
     sicon.setAttribute('id','getConNm');
     sicon.setAttribute('name','search');
@@ -106,7 +124,7 @@ document.getElementById('planBtn').addEventListener('click',function(){
     sicon.setAttribute('class','col-1');
     div.appendChild(sicon);
     
-    
+    //제품명
     div = document.createElement('div');
     input = document.createElement('input');
     text = document.createElement('label');
@@ -114,12 +132,14 @@ document.getElementById('planBtn').addEventListener('click',function(){
     text.setAttribute('class','col-auto col-form-label');
     input.setAttribute('class','form-control col-8');
     //인풋아이디
+    input.setAttribute('readonly','readonly');
     input.setAttribute('id','prnmi')
     text.append("제품명");
     div.appendChild(text);
     div.appendChild(input);
     div1.appendChild(div);
     
+    //납기일
     div = document.createElement('div');
     input = document.createElement('input');
     text = document.createElement('label');
@@ -127,6 +147,7 @@ document.getElementById('planBtn').addEventListener('click',function(){
     text.setAttribute('class','col-auto col-form-label');
     input.setAttribute('class','form-control col-8');
     //인풋 아이디
+    input.setAttribute('readonly','readonly');
     input.setAttribute('id','dereli')
     text.append("납기일");
     div.appendChild(text);
@@ -134,7 +155,7 @@ document.getElementById('planBtn').addEventListener('click',function(){
     div1.appendChild(div);
     
 
-    
+    //계획명
     div1 = document.createElement('div');
     div1.setAttribute('class','form-group row');
     div = document.createElement('div');
@@ -151,12 +172,14 @@ document.getElementById('planBtn').addEventListener('click',function(){
     div1.appendChild(div);
     Frm.appendChild(div1);
     
+    //계획수량
     div=document.createElement('div');
     input = document.createElement('input');
     text = document.createElement('label');
     div.setAttribute('class','form-group row col-4');
     text.setAttribute('class','col-auto col-form-label');
     input.setAttribute('class','form-control col-8');
+    input.setAttribute('type','number');
     //인풋아이디
     input.setAttribute('id','plcoi')
     text.append("계획수량");
@@ -164,6 +187,24 @@ document.getElementById('planBtn').addEventListener('click',function(){
     div.appendChild(input);
     div1.appendChild(div);
     
+    //우선순위
+    div=document.createElement('div');
+    input = document.createElement('input');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    input.value=0;
+    //인풋아이디
+    input.setAttribute('id','priorityi')
+    text.append("우선순위");
+    div.appendChild(text);
+    div.appendChild(input);
+    div1.appendChild(div);
+    
+    //시작일자
+    div2 = document.createElement('div');
+    div2.setAttribute('class','form-group row');
     div = document.createElement('div');
     input = document.createElement('input');
     text = document.createElement('label');
@@ -171,13 +212,150 @@ document.getElementById('planBtn').addEventListener('click',function(){
     text.setAttribute('class','col-auto col-form-label');
     input.setAttribute('class','form-control col-8');
     input.setAttribute('type','date');
+    //오늘 이전 날짜 막기
+    input.min=new Date().toISOString().slice(0, 10);
+    //오늘날짜 디폴트로 넣어주기
+    input.value=new Date().toISOString().slice(0, 10);
     //인풋아이디
-    input.setAttribute('id','dclsi')
-    text.append("마감기한");
+    input.setAttribute('id','dsti')
+    text.append("시작일자");
     div.appendChild(text);
     div.appendChild(input);
-    div1.appendChild(div);
+    div2.appendChild(div);
+    Frm.appendChild(div2);
     
+    //종료일자
+    div = document.createElement('div');
+    input = document.createElement('input');
+    text = document.createElement('label');
+    div.setAttribute('class','form-group row col-4');
+    text.setAttribute('class','col-auto col-form-label');
+    input.setAttribute('class','form-control col-8');
+    input.setAttribute('type','date');
+    //오늘날짜 디폴트로 넣어주기
+    input.value=new Date().toISOString().slice(0, 10);
+    //인풋아이디
+    input.setAttribute('id','dclsi')
+    text.append("종료일자");
+    div.appendChild(text);
+    div.appendChild(input);
+    div2.appendChild(div);
+    
+    //등록버튼 넣기
+    div = document.createElement('div');
+    let Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-2');
+    Btn.setAttribute('class','form-control col-8 btn btn-primary');
+    Btn.setAttribute('id','subBtn');
+    Btn.append('등록');
+    div.appendChild(Btn);
+    div2.appendChild(div);   
+    
+  	//삭제버튼 넣기
+    div = document.createElement('div');
+    Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-2');
+    Btn.setAttribute('class','form-control col-8 btn btn-danger');
+    Btn.setAttribute('id','delBtn');
+    Btn.append('삭제');
+    div.appendChild(Btn);
+    div2.appendChild(div);
+    
+    //등록버튼 기능
+    $('#subBtn').click(function(e){
+    	e.preventDefault();
+    	planData={};
+    	let innerData=[];
+    	let reAmount=0;
+    	let size = $("#conmi option").length;
+    	for(let i = 0; i<size;i++){
+    		reAmount = $("#abplcoi"+i).val()-$("#plcoi"+i).val();
+    		console.log($("#planBtn").val());
+    		let data = {
+    				"planNm":$("#plnmi"+i).val(),
+    				"prodCode":$("#prodCode"+i).val(),
+    				"prodName":$("#prnmi"+i).val(),
+    				"planQnt":Math.abs($("#plcoi"+i).val()),
+    				"contDetCode":$("#contDetCode"+i).val(),
+    				"planSdate":$("#dsti"+i).val(),
+    				"planClsdate":$("#dclsi"+i).val(),
+    				"priority":$("#priorityi"+i).val(),
+    				"planType":$("#planBtn").val(),
+    				"planNm":$("#plnmi"+i).val(),
+    				"planDate":new Date().toISOString().slice(0, 10),
+    				"contNm":$("#contNm"+i).val(),
+    				"contDetRelease":document.getElementById("dereli"+i).value,
+    				"planState":"미작업",
+    				"contDetQuan":reAmount
+    		};
+    		/* innerData.slice("") */
+    		
+    		innerData.push(data);
+    		
+    	}
+    	planData={"planList":innerData};
+    	console.log(innerData);
+    	console.log(planData);
+    	 $.ajax({
+    	        url : "/mak/insertPlan",
+    	        method : "POST",
+    	        data: JSON.stringify(planData),
+    	        headers: {"Content-Type": "application/json"},
+    	        beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                  },
+    	        success : function(result){
+					alert(result);
+					grid.appendRows(innerData);
+    	        }
+    	        });
+    	
+    })
+    
+    $('#delBtn').click(function(e){
+    	e.preventDefault();
+    	console.log($("#planBtn0").val());
+    })
+    //input 데이터 옮기기
+    $('input').change(function(){
+    	//시작일자 변경 시 종료일자 지정일은 최소 시작일자 이후로 지정
+    	document.getElementById('dclsi').min=document.getElementById('dsti').value;
+
+    	document.getElementById(this.id+selectNum).value=this.value;
+    	
+    	//변수 제어 - 제약 조건 걸기
+    	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
+    		alert('해당 계약건의 수량을 넘어설수 없습니다.');
+    		$('#plcoi').val($('#abplcoi'+selectNum).val());
+    	};
+    	if($('#dsti').val()<new Date().toISOString().slice(0, 10)){
+    		alert('계약시작일의 최소일자는 금일입니다.');
+    		document.getElementById('dsti').value=new Date().toISOString().slice(0, 10);
+    	}
+    	if($('#dclsi').val()<$('#dsti').val()){
+    		alert('계약종료일의 최소일자는 계약시작일입니다.');
+    		$('#dclsi').val($('#dsti').val());
+    	}
+    });
+    
+    //셀렉트박스 옵션 값 선택시 데이터 변경
+    $('#conmi').change(function(){
+    	selectNum=$('#conmi option:selected').data('num');
+    	//셀렉트 박스 변경시 저장된 옵션 데이터들 불러오기
+    	$('#plnmi').val(document.getElementById('plnmi'+0).value);
+    	$('#dclsi').val(document.getElementById('dclsi'+$('#conmi option:selected').data('num')).value);
+    	$('#dsti').val(document.getElementById('dsti'+$('#conmi option:selected').data('num')).value);
+    	$('#prnmi').val(document.getElementById('prnmi'+$('#conmi option:selected').data('num')).value);
+    	$('#dereli').val(document.getElementById('dereli'+$('#conmi option:selected').data('num')).value);
+    	$('#plcoi').val(document.getElementById('plcoi'+$('#conmi option:selected').data('num')).value);
+    	$('#priorityi').val(document.getElementById('priorityi'+$('#conmi option:selected').data('num')).value);
+    	document.getElementById('plcoi').max=$('#abplcoi'+selectNum).val();
+    	if(selectNum==0){
+    		$('#plnmi').attr('readonly',false);
+    	}else{
+    		$('#plnmi').attr('readonly',true);
+    	}
+    })
     
     $.ajax({
         url : "/mak/planList",
@@ -210,8 +388,12 @@ document.getElementById('planBtn').addEventListener('click',function(){
         name: 'planDate'
         },
         {
-        header: '마감기한',
-        name: 'dclsDate'
+        header: '시작일자',
+        name: 'planSdate'
+        },
+        {
+           header: '종료일자',
+           name: 'planClsdate'
         },
         {
         header: '납기일',
@@ -228,6 +410,10 @@ document.getElementById('planBtn').addEventListener('click',function(){
         {
         header: '잔류계약수량',
         name: 'contDetQuan'
+        },
+        {
+            header: '우선순위',
+            name: 'priority'
         },
         {
         header: '공정흐름도',
@@ -287,50 +473,114 @@ $('#matmodalbtn').on('shown.bs.modal', function(){
       
 
 })
-            
+
+//모달 선택 시 데이터 내려받기
 function planChoice(){
+	document.getElementById('conmi').textContent="";
+	Hfrm.textContent="";
 	let conData = modal_grid.getCheckedRows();
+	let options=null;
+	let input=null;
 	console.log(conData[0]);
-	for(let i=0;i<conData.length;i++){		
+	
+	for(let i=0;i<conData.length;i++){
+		
 		document.getElementById('dereli').value=conData[0].contDetRelease;
 		document.getElementById('plcoi').value=conData[0].contDetQuan;
 		document.getElementById('prnmi').value=conData[0].prodName;
 		document.getElementById('conmi').value=conData[0].contNm;
+
+		//계획명
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','plnmi'+i);
+		Hfrm.appendChild(input);
 		
-		
-		let input = document.createElement('input');
+		//계약명
+		input = document.createElement('input');
 		input.setAttribute('type','hidden');
 		input.setAttribute('id','contNm'+i);
 		input.value = conData[i].contNm;
 		Hfrm.appendChild(input);
 		
+		//제품명
 		input = document.createElement('input');
 		input.setAttribute('type','hidden');
-		input.setAttribute('id','prodName'+i);
+		input.setAttribute('id','prnmi'+i);
 		input.value = conData[i].prodName;
 		Hfrm.appendChild(input);
 		
+		//계약수량
 		input = document.createElement('input');
 		input.setAttribute('type','hidden');
-		input.setAttribute('id','contDetQuan'+i);
+		input.setAttribute('id','plcoi'+i);
 		input.value = conData[i].contDetQuan;
 		Hfrm.appendChild(input);
 		
+		//계약수량 절대 기록 창
 		input = document.createElement('input');
 		input.setAttribute('type','hidden');
-		input.setAttribute('id','contDetRelease'+i);
+		input.setAttribute('id','abplcoi'+i);
+		input.value = conData[i].contDetQuan;
+		Hfrm.appendChild(input);
+		
+		
+		//납기일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dereli'+i);
 		input.value = conData[i].contDetRelease;
 		Hfrm.appendChild(input);
 		
+		//계획상세코드
 		input = document.createElement('input');
 		input.setAttribute('type','hidden');
 		input.setAttribute('id','contDetCode'+i);
 		input.value = conData[i].contDetCode;
 		Hfrm.appendChild(input);
 		
-		let options = document.createElement("option");
+		//계약시작일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dsti'+i);
+		//오늘 날짜 넣어두기
+		input.value=new Date().toISOString().slice(0, 10)
+		Hfrm.appendChild(input);
+		
+		
+		//계약종료일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dclsi'+i);
+	    //오늘날짜 디폴트로 넣어주기
+	    input.value=new Date().toISOString().slice(0, 10);
+		Hfrm.appendChild(input);
+		
+		//우선순위
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','priorityi'+i);
+		input.value=0;
+		Hfrm.appendChild(input);
+		
+		//제품코드 넣기
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','prodCode'+i);
+		input.value=conData[i].prodCode;
+		Hfrm.appendChild(input);
+		
+		//계약명 인풋
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contNm'+i);
+		input.value=conData[i].contNm;
+		Hfrm.appendChild(input);
+		
+		//옵션값에 추가하기
+		options = document.createElement("option");
 		options.setAttribute('name',conmi);
-		options.value = conData[i].contDetCode;
+		options.dataset.num=i;
 		options.append(conData[i].contNm);
 		document.getElementById('conmi').appendChild(options);
 	}
@@ -338,7 +588,9 @@ function planChoice(){
 	
 };  
 
-            
+
+
+//주문서기반 라디오 클릭 이벤트
 document.getElementById('orderBtn').addEventListener('click',function(){
 	Frm.textContent='';
 	table.textContent='';
