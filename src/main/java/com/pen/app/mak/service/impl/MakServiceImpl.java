@@ -9,7 +9,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.pen.app.mak.mapper.MakMapper;
 import com.pen.app.mak.service.MakService;
-import com.pen.app.mak.vo.MakVO;
 import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanVO;
 

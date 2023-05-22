@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.com.mapper.ItemMapper">
+<select id="getMatList" resultType="MatVO">
+	SELECT * FROM COM_CODE_MAT
+</select>
+<select id="getSemiList" resultType="SemiVO">
+	SELECT * FROM COM_CODE_SEMI
+</select>
+<select id="getProdList" resultType="ProdVO">
+	SELECT * FROM COM_CODE_PROD
+</select>
+</mapper>

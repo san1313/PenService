@@ -2,7 +2,6 @@ package com.pen.app.mat.vo;
 
 import java.util.Date;
 
-
 import lombok.Data;
 
 @Data

@@ -63,7 +63,7 @@
   <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
         separator=" ">
     INTO COM_INFO_EMP VALUES (
-          (SELECT COM_CODE FROM COM_CODE WHERE CODE_NAME = '사원코드')||'-'||LPAD(EMP_SEQ.NEXTVAL,4,'0'),
+          (SELECT COM_CODE FROM COM_CODE WHERE CODE_NAME = '사원코드')||'-'||LPAD(GET_EMP_SEQ,4,'0'),
           #{vo.empName},
           #{vo.empId},
           #{vo.empTel},

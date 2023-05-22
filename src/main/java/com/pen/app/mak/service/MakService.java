@@ -3,8 +3,6 @@ package com.pen.app.mak.service;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.pen.app.mak.vo.MakVO;
-import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanVO;
 

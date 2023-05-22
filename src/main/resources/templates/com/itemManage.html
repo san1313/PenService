@@ -18,13 +18,35 @@
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
   </head>
   <body>
-    <div layout:fragment="title">사원 정보 관리</div>
+    <div layout:fragment="title">품목 정보 관리</div>
     <!-- 메인컨텐츠 -->
     <div layout:fragment="content">
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-4">
           <div class="col-3">
-            <label class="col-form-label" for="empName">사원명</label>
+            <label class="col-form-label" for="">조회항목 : </label>
+          </div>
+          <div class="row col-9">
+            <div class="col-4">
+              <input type="radio" id="mat" name="type" value="mat" style="margin-right: 5px" checked />
+              <label class="col-form-label" for="mat">자재</label>
+            </div>
+            <div class="col-4">
+              <input type="radio" id="semi" name="type" value="semi" style="margin-right: 5px" />
+              <label class="col-form-label" for="semi">반제품</label>
+            </div>
+            <div class="col-4">
+              <input type="radio" id="prod" name="type" value="prod" style="margin-right: 5px" />
+              <label class="col-form-label" for="prod">완제품</label>
+            </div>
+          </div>
+        </div>
+        <div class="row col-8"></div>
+      </div>
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="row col-4">
+          <div class="col-3">
+            <label class="col-form-label" for="empName">품목명</label>
           </div>
           <div class="col-7">
             <input type="text" class="form-control" id="empName" name="empName" placeholder="빈 칸이면 전체 조회" />
@@ -39,9 +61,6 @@
         </div>
         <div class="row col-8 justify-content-end">
           <div class="col-auto">
-            <button class="btn btn-primary" id="resetPw" style="height: 38px">비밀번호 초기화</button>
-          </div>
-          <div class="col-auto">
             <button class="btn btn-primary" id="addEmp" style="height: 38px">추가</button>
           </div>
           <div class="col-auto">
@@ -55,7 +74,9 @@
           </div>
         </div>
       </div>
-      <div id="grid"></div>
+      <div id="matGrid"></div>
+      <div id="semiGrid" style="display: none"></div>
+      <div id="prodGrid" style="display: none"></div>
       <script src="/plugins/jquery/jquery.min.js"></script>
       <script>
         $(function () {
@@ -63,15 +84,43 @@
           const header = $('meta[name="_csrf_header"]').attr("content");
           // 메인그리드시작;
           // datasource 시작
-          const dataSource = {
+          const matDataSource = {
             contentType: "application/json",
             api: {
               readData: {
-                url: "/admin/userListAjax",
+                url: "/admin/getMatList",
                 method: "GET",
               },
               modifyData: {
-                url: "/admin/userModifyAjax",
+                url: "/admin/matModifyAjax",
+                method: "POST",
+                withCredentials: true,
+              },
+            },
+          };
+          const semiDataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/admin/getSemiList",
+                method: "GET",
+              },
+              modifyData: {
+                url: "/admin/semiModifyAjax",
+                method: "POST",
+                withCredentials: true,
+              },
+            },
+          };
+          const prodDataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/admin/getProdList",
+                method: "GET",
+              },
+              modifyData: {
+                url: "/admin/prodModifyAjax",
                 method: "POST",
                 withCredentials: true,
               },
@@ -79,77 +128,171 @@
           };
           //datasource 끝
 
-          //권한 select 박스 항목 받아오기 시작
-          var authList = [];
-          $.ajax({
-            url: "/getAuthListAjax",
-            method: "GET",
-          })
-            .done((r) => {
-              r.forEach((ele) => {
-                authList.push({ text: ele.authName, value: ele.authName });
-              });
-            })
-            .fail((e) => {
-              alert("권한 데이터를 받아오는중 에러가 발생했습니다.");
-            });
-          //권한 select 박스 항목 받아오기 끝
-
-          //전화번호 정규식
-          const telRegex = /^\d{2,3}-\d{3,4}-\d{4}$/;
-
           //그리드폼 시작
-          const grid = new tui.Grid({
-            el: document.getElementById("grid"),
-            data: dataSource,
-            bodyHeight: 680,
+          const matGrid = new tui.Grid({
+            el: document.getElementById("matGrid"),
+            data: matDataSource,
+            bodyHeight: 630,
             scrollX: false,
-            rowHeaders: [{ type: "checkbox", header: ` ` }],
+            rowHeaders: ["rowNum"],
             columns: [
               {
-                header: "사원번호",
-                name: "empNum",
+                header: "자재코드",
+                name: "matCode",
                 align: "center",
               },
               {
-                header: "사원명",
-                name: "empName",
+                header: "자재명",
+                name: "matName",
                 editor: "text",
                 align: "center",
               },
               {
-                header: "아이디",
-                name: "empId",
+                header: "규격",
+                name: "matStd",
                 editor: "text",
                 align: "center",
-                validation: {
-                  unique: true,
+              },
+              {
+                header: "단위",
+                name: "matUnit",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "안전재고",
+                name: "matSfst",
+                align: "center",
+                editor: "text",
+              },
+              {
+                header: "사용여부",
+                name: "matUse",
+                editor: {
+                  type: "radio",
+                  options: {
+                    listItems: [
+                      {
+                        text: "Y",
+                        value: "Y",
+                      },
+                      { text: "N", value: "N" },
+                    ],
+                  },
                 },
+                align: "center",
               },
+            ],
+          });
+          const semiGrid = new tui.Grid({
+            el: document.getElementById("semiGrid"),
+            data: semiDataSource,
+            bodyHeight: 630,
+            scrollX: false,
+            columns: [
               {
-                header: "입사일",
-                name: "hireDate",
+                header: "반제품코드",
+                name: "semicode",
                 align: "center",
               },
               {
-                header: "권한명",
-                name: "authName",
-                editor: { type: "select", options: { listItems: authList } },
-                align: "center",
-              },
-              {
-                header: "연락처",
-                name: "empTel",
+                header: "반제품명",
+                name: "semiName",
                 editor: "text",
                 align: "center",
-                validation: {
-                  regExp: telRegex,
+              },
+              {
+                header: "규격",
+                name: "semiStd",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "단위",
+                name: "semiUnit",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "사용여부",
+                name: "semiUse",
+                editor: {
+                  type: "radio",
+                  options: {
+                    listItems: [
+                      {
+                        text: "Y",
+                        value: "Y",
+                      },
+                      { text: "N", value: "N" },
+                    ],
+                  },
                 },
+                align: "center",
+              },
+            ],
+          });
+          const prodGrid = new tui.Grid({
+            el: document.getElementById("prodGrid"),
+            data: prodDataSource,
+            bodyHeight: 630,
+            scrollX: false,
+            columns: [
+              {
+                header: "완제품코드",
+                name: "prodCode",
+                align: "center",
+              },
+              {
+                header: "완제품명",
+                name: "prodName",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "규격",
+                name: "prodStd",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "단위",
+                name: "prodUnit",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "안전재고",
+                name: "prodSfst",
+                align: "center",
+                editor: "text",
+              },
+              {
+                header: "사용여부",
+                name: "prodUse",
+                editor: {
+                  type: "radio",
+                  options: {
+                    listItems: [
+                      {
+                        text: "Y",
+                        value: "Y",
+                      },
+                      { text: "N", value: "N" },
+                    ],
+                  },
+                },
+                align: "center",
               },
             ],
           });
           //그리드 폼 끝
 
+          //라디오 버튼 누를시 타겟 grid 변경
+          let grid = matGrid;
+          $("input[name=type]").on("change", (e) => {
+            console.log($("input[name=type]:checked").val());
+          });
           //그리드 세팅 시작
           //서버에 연결전 토큰값 담는 method
           grid.on("beforeRequest", function (obj) {
@@ -169,75 +312,27 @@
           //tui grid의 언어세팅
           tui.Grid.setLanguage("ko");
 
-          //체크박스 하나만 적용 시작
-          grid.on("check", function (e) {
-            var checkRows = grid.getCheckedRowKeys();
-            checkRows.forEach(function (key, idx) {
-              if (key != e.rowKey) {
-                grid.uncheck(key);
-              }
-            });
-          });
-          //체크박스 하나만 적용 끝
-
           //그리드 세팅 끝
 
           //저장기능 시작
           $("#save").click(() => {
-            //유효성 검사 시작
-            let vd = grid.validate(); // grid 만들때 설정한 validation 옵션에 걸리는 행들
-            let idn = 0; // 행 안의 empId가 문제인 경우의 수
-            let teln = 0; // 행 안의 empTel이 문제인 경우의 수
-            if (vd.length != 0) {
-              vd.forEach((arr) => {
-                arr.errors.forEach((col) => {
-                  if (col.columnName == "empId") {
-                    idn++;
-                  } else {
-                    teln++;
-                  }
-                });
-              });
-              if (idn) {
-                // idn이 0이 아니면
-                alert("중복되는 아이디가 존재합니다.");
-              }
-              if (teln) {
-                //teln이 0이 아니면
-                alert(
-                  "전화번호의 형식이 잘못되었습니다.\n[010-0000-0000 또는 02-000-0000 의 형식으로 입력해주십시오.]"
-                );
-              }
-              //유효성 검사 끝
-            } else {
-              //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
-              grid.finishEditing();
-              grid.request("modifyData");
-            }
+            //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
+            grid.finishEditing();
+            grid.request("modifyData");
           });
-
           //저장기능 끝
 
           //사원명 조회 기능 grid.readData
           $("#userSearchBtn").click(() => {
             let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
-
             let empName = $("#empName");
             if (noChange) {
               // 변경점이 없다면
               // 사원명 input의 value로 조회해서 grid를 다시 그림
               if (empName.val() != "") {
-                $.ajax({
-                  url: "/admin/getUserWithNameAjax",
-                  dataType: "JSON",
-                  data: { empName: empName.val() },
-                }).done((r) => {
-                  grid.resetData(r);
-                });
-                // 사원명 input이 비어있으면 모두 조회
               } else {
-                grid.readData();
+                grid.restore();
               }
             } else {
               // 변경점이 있다면 confirm 창을 띄운다.
@@ -260,29 +355,6 @@
             }
           });
           //사원명 조회기능 끝
-
-          //비밀번호 초기화 시작
-          $("#resetPw").click((e) => {
-            if (grid.getCheckedRowKeys().length == 0) {
-              alert("초기화 할 사원을 체크해주십시오.");
-            } else {
-              let chkData = grid.getCheckedRows()[0];
-              $.ajax({
-                url: "/admin/resetPassword",
-                method: "POST",
-                data: { empNum: chkData.empNum, empPw: chkData.empTel.substr(-4) },
-                beforeSend: function (xhr) {
-                  xhr.setRequestHeader(header, token);
-                },
-              }).done((r) => {
-                alert(
-                  `${chkData.empName} 님의 비밀번호가 초기화 되었습니다.\n초기화된 비밀번호는 연락처 끝 4자리입니다. `
-                );
-                grid.readData();
-              });
-            }
-          });
-          //비밀번호 초기화 끝
 
           //사원 추가 시작
           let nextNum; // EMPCODE
