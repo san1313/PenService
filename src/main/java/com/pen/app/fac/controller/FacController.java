@@ -29,16 +29,8 @@ public class FacController {
           
        }
     
-    @GetMapping("/confirmRegister") //점검등록 페이지 
-       public void confirmRegister() {
-          
-       }
-    
-   
-    
-    
-       @ResponseBody
-      @GetMapping("/infoListAjax") //설비전체리스트
+      @ResponseBody
+      @GetMapping("/infoListAjax") //설비전체리스트 
       public List<FacInfoVO> infoListAjax(){
       List<FacInfoVO> list = dao.getList();
       System.out.println(list);
