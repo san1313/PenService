@@ -12,5 +12,6 @@ public interface MatMapper {
 	List<OrderVO> getaccminilist(String keyword);//거래처모달검색조회
 	
 	String getmatordercode();
+	public void getmatregister(OrderVO vo); //발주등록
 }
 	

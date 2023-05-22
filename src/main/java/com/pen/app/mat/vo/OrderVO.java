@@ -2,6 +2,7 @@ package com.pen.app.mat.vo;
 
 import java.util.Date;
 
+
 import lombok.Data;
 
 @Data
@@ -26,5 +27,7 @@ public class OrderVO { //발주
 	
 	
 	String accName; //거래처명
+	
+	
 
 }

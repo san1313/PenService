@@ -14,47 +14,47 @@ import com.pen.app.bns.vo.BnsProdVO;
 @Service
 public class BnsServiceImpl implements BnsService {
 
-	@Autowired BnsMapper mapper;
+   @Autowired BnsMapper mapper;
 
-	@Override
-	public List<BnsOrdVO> getOrdList() {
-		return mapper.getOrdList();
-	}
+   @Override
+   public List<BnsOrdVO> getOrdList() {
+      return mapper.getOrdList();
+   }
 
-	//주문서 등록
-	@Override
-	public int insertOrdList(BnsOrdVO bnsOrdVo) {
-		return mapper.insertOrdList(bnsOrdVo);
-	}
+   //주문서 등록
+   @Override
+   public int insertOrdList(BnsOrdVO bnsOrdVo) {
+      return mapper.insertOrdList(bnsOrdVo);
+   }
 
-	@Override
-	public List<BnsAccVO> getAccList() {
-		return mapper.getAccList();
-	}
+   @Override
+   public List<BnsAccVO> getAccList() {
+      return mapper.getAccList();
+   }
 
-	@Override
-	public List<BnsProdVO> getProdList() {
-		return mapper.getProdList();
-	}
+   @Override
+   public List<BnsProdVO> getProdList() {
+      return mapper.getProdList();
+   }
 
-	@Override
-	public List<BnsAccVO> getAccKeyList(String keyword) {
-		return mapper.getAccKeyList(keyword);
-	}
+   @Override
+   public List<BnsAccVO> getAccKeyList(String keyword) {
+      return mapper.getAccKeyList(keyword);
+   }
 
-	@Override
-	public List<BnsProdVO> getProdKeyList(String keyword) {
-		return mapper.getProdKeyList(keyword);
-	}
+   @Override
+   public List<BnsProdVO> getProdKeyList(String keyword) {
+      return mapper.getProdKeyList(keyword);
+   }
 
 
 
-	@Override
-	public List<BnsOrdVO> getOrdListCon(BnsOrdVO vo) {
-		return mapper.getOrdListCon(vo);
-	}
+   @Override
+   public List<BnsOrdVO> getOrdListCon(BnsOrdVO vo) {
+      return mapper.getOrdListCon(vo);
+   }
 
-	
+   
 
-	
+   
 }

@@ -4,9 +4,7 @@
 
 <head>
   <meta charset="UTF-8" />
-  <meta name="_csrf" th:content="${_csrf.token}" />
-  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>자재발주관리</title>
+  <title>자재발주조회</title>
 
   <style>
     .ordersearch {
@@ -70,31 +68,24 @@
 
 <body>
   <div layout:fragment="title">
-    <h3>자재발주관리</h3>
+    <h3>자재발주조회</h3>
   </div>
   
   <div layout:fragment="content">
-    <div class="ordersearch">
-      <label>발주번호</label>
-      <input id="orderCode" class="text1" readonly>
       <label>자재명</label>
       <input class="text1" type="text" id="matmodaltest" readonly	>
       <input class="text1" type="hidden" id="matmodaltest1" readonly	>
       <input class="text1" type="hidden" id="matmodaltestuntpc" readonly	>
       <input class="text1" type="hidden" id="matmodalordername" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
-      <label>납기일</label>
-      <input class="text1" type="date" id="matReqdate"><br>
       <label>거래처명</label>
       <input class="text1" type="text" id="accmodaltest" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
-      <label>담당자</label>
-      <input class="text1" type="text" id ="matCharger">
-      <button type="button" id="addmatbtn">추가</button>
-     
-      
-      
+      <label>납기일</label>
+      <input class="text1" type="date" id="matReqdate"> ~ <input class="text1" type="date" id="matReqdate">
+      <button type="button" id="addmatbtn">조회</button>      
     </div>
+
 
     <!-- 자재명모달 -->
     <div class="modal fade bd-example-modal-lg" id="matmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -138,49 +129,20 @@
 </div>
 
 
-<!-- 필요자재발주목록모달 -->
-	 <!-- <div class="modal fade bd-example-modal-lg" id="neccmatmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">필요자재발주목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-      	<div id="neccmat-modal-grid"></div>
-      </div>
-    </div>
-  </div>
-</div> -->
+
 	
 	<div id="grid"></div>
-    <button type="button" class="btn btn-primary" id="suBtn">발주요청</button>
-	<button type="button" class="btn btn-danger" id="deletematbtn">삭제</button>
+	    <button type="button" class="btn btn-primary" id="download">다운로드</button>
+		
 
     <script>
-    const token = $('meta[name="_csrf"]').attr("content");
-    const header = $('meta[name="_csrf_header"]').attr("content");
 
-          
-     
-    // $.ajax({
-    // url : "/mat/orderListAjax",
-    // method : "GET",
-    // dataType : "JSON",
-    // success : function(result){
-    // grid.resetData(result);
-    // grid.refreshLayout();
-    
-    // }
-    // });
 
     var grid = new tui.Grid({
     el: document.getElementById('grid'),
     scrollX: false,
     scrollY: false,
-    rowHeaders: ['checkbox'],
+    rowHeaders: ['rowNum'],
     columns: [{
     header: '발주번호',
     name: 'matOrdernum'
@@ -202,6 +164,10 @@
     name: 'accCode'
     },
     {
+    header: '발주일',
+    name: 'matOrderdate'
+    },
+    {
     header: '납기일',
     name: 'matReqdate'
     },
@@ -216,7 +182,6 @@
     {
     header: '발주량',
     name: 'matOrderQy',
-    editor: 'text'
     }
     ]
     });
@@ -260,9 +225,7 @@
     });
     })
     
-    
-    
-    
+       
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
@@ -414,11 +377,11 @@
      })	
          
      
-     //추가버튼
+     //조회버튼
     document.getElementById('addmatbtn').addEventListener('click', function(){
       //grid
     
-     if($('#matmodaltest').val()=='' || $('#matmodaltest1').val()=='' || $('#accmodaltest').val()=='' || $('#matReqdate').val()=='' || $('#matCharger').val()=='' || $('#matmodaltestuntpc').val()==''){
+     if($('#matmodaltest').val()=='' || $('#accmodaltest').val()=='' || $('#matReqdate').val()==''){
     	 alert('뭔가 비어있는게 있어요');
     	 false;
      }else{
@@ -440,7 +403,7 @@
     })
      
     //삭제버튼
-     document.getElementById('deletematbtn').addEventListener('click', function(){
+     /*document.getElementById('deletematbtn').addEventListener('click', function(){
        let checked = grid.getCheckedRows();
        for(let i = 0;i<checked.length;i++){
        grid.removeRow(checked[i].rowKey);
@@ -449,7 +412,7 @@
     	   document.getElementById('suBtn').setAttribute('style','display:none');
     	   document.getElementById('deletematbtn').setAttribute('style','display:none');
        }
-  })
+  })*/
      
   //발주번호
   $.ajax({
@@ -461,24 +424,33 @@
   
   
   //발주요청버튼
-  document.getElementById('suBtn').addEventListener('click', function(){
+  /*document.getElementById('suBtn').addEventListener('click', function(){
 	  let checked = grid.getCheckedRows();
 	  $.ajax({
   		url : "/mat/matregister",
   		method : "POST",
-  		data : JSON.stringify({list:grid.getCheckedRows()}),
+  		data : JSON.stringify(
+	  		{accCode: grid.getCheckedRows().accCode}, {matCharger: grid.getCheckedRows().matCharger},
+	  		{matOrdername: grid.getCheckedRows().matOrdername}, {matUntpc: grid.getCheckedRows().matUntpc},
+	  		{matOrderQy: grid.getCheckedRows().matOrderQy}, {matTotamt: grid.getCheckedRows().matTotamt},
+	  		{matUnit: grid.getCheckedRows().matUnit}, {matOrderdate: grid.getCheckedRows().matOrderdate},
+	  		{matReqdate: grid.getCheckedRows().matReqdate}, {matName: grid.getCheckedRows().matName},
+	  		{matCode: grid.getCheckedRows().matCode}, {matStd: grid.getCheckedRows().matStd}
+  		),
   		beforeSend: function (xhr) {
             xhr.setRequestHeader(header, token);
           },
   		dataType : "JSON",
   		contentType: "application/json",
-  		success : function(result3){			
-  			console.log(result3);
+  		success : function(result3){
   			
+  			console.log(result3);
+  			grid.resetData(result3);
+  			grid.refreshLayout();
   		}
   	});
 	  
-  })
+  })*/
      
      //필요자재발주목록모달
     /* $.ajax({

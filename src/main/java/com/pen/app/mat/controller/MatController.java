@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mat.mapper.MatMapper;
+import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 
 
@@ -23,13 +25,7 @@ public class MatController {
 	public void ordermain() {
 		
 	}
-		
-	/*
-	 * @ResponseBody
-	 * 
-	 * @GetMapping("/orderListAjax") public List<OrderVO> orderListAjax(){
-	 * List<OrderVO> list = matmapper.getorderlist(); return list; }
-	 */
+	 
 	
 	//자재모달창리스트
 	@ResponseBody
@@ -65,6 +61,7 @@ public class MatController {
 		return list;
 	}
 	
+	//발주번호
 	@ResponseBody
 	@GetMapping("/matordercode")
 	public String matordercode(){
@@ -72,4 +69,48 @@ public class MatController {
 		return result;
 	}
 	
+	//발주등록
+	 @RequestMapping("/matregister")
+	 @ResponseBody 
+	 public OrderVO matregister(@RequestBody MatOrdVO vo){
+		 //OrderVO result1 = matmapper.getmatregister(vo);		 
+		 System.err.println(vo);
+	 	 return null; 
+	 	}
+	
+	
+	 
+	 
+	 
+	 //자재발주조회
+	 @GetMapping("/orderlist")
+	 public void orderlistmain(){
+		 
+	 }
+	 
+	
+	 //자재/반제품 입고
+	 @GetMapping("/warehousing")
+	 public void warehousing() {
+		 
+	 }
+	 
+	 //자재/반제품 입고조회
+	 @GetMapping("/warehousinglist")
+	 public void warehousinglist() {
+		 
+	 }
+	
+	 //자재/반제품 재고조회
+	 @GetMapping("/inventory")
+	 public void inventory() {
+		 
+	 }
+	 
+	 
+	 //재고조정관리
+	 @GetMapping("/matadjust")
+	 public void matadjust(){
+	 
+	 }
 }
