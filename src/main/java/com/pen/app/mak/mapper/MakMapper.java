@@ -14,4 +14,6 @@ public interface MakMapper {
 	int insertPlan(PlanVO vo);
 	int insertDetailPlan(PlanVO vo);
 	int setPlanCont(PlanVO vo);
+	int getContCount(String contDetCode);
+	int getLeftQuan(String contDetCode);
 }
