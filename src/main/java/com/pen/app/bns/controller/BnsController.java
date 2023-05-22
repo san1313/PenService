@@ -6,12 +6,16 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.vo.BnsAccVO;
+import com.pen.app.bns.vo.BnsEmpVO;
+import com.pen.app.bns.vo.BnsOrdDetListVO;
+import com.pen.app.bns.vo.BnsOrdDetVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 
@@ -48,12 +52,13 @@ public class BnsController {
 		return list;
 	}
 	
-//	@RequestMapping("/insertOrdList")
-//	@ResponseBody
-//	public String insertOrdList(BnsOrdVO ordVo) {
-//		dao.getOrdList()
-//		return "redirect:/insertOrdList";
-//	}
+	@RequestMapping("/insertOrdList")
+	@ResponseBody
+	public BnsOrdDetVO insertOrdList(@RequestBody BnsOrdDetListVO vo) {
+		System.err.println(vo);
+		
+		return null;
+	}
 	
 	
 //	@RequestMapping(value = "register", method = RequestMethod.POST)
@@ -97,6 +102,22 @@ public class BnsController {
 		List<BnsProdVO> list = dao.getProdKeyList(result);
 		return list;
 	}
+	
+	@ResponseBody
+	@GetMapping("/empList")
+	public List<BnsEmpVO> empList() {
+		List<BnsEmpVO> list = dao.getEmpList();
+		
+		return list;
+	}
+	
+	@RequestMapping("/empKeyList")
+	@ResponseBody
+	public List<BnsEmpVO> empKeyList(@RequestParam String result){
+		List<BnsEmpVO> list = dao.getEmpKeyList(result);
+		return list;
+	}
+	
 	
 	@ResponseBody
 	@GetMapping("/ordCode")

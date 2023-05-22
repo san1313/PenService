@@ -22,25 +22,35 @@ on(o.emp_num = e.emp_num)
 	on(d.ord_code =o.ord_code)
 	join com_info_emp e
 on(o.emp_num = e.emp_num)
-	where (acc_name = #{accName}) or (acc_name is null) and (prod_name = #{prodName}) or (prod_name is null)
-	and (ord_date = #{ordDate}) or (ord_date is null) and (ord_due_date = #{ordDueDate}) or (ord_due_date is null)
+	where (acc_name = #{accName} or #{accName} is null) and (prod_name = #{prodName} or #{prodName} is null)
+	and (ord_date = #{ordDate} or #{ordDate} is null) and (ord_due_date = #{ordDueDate} or #{ordDueDate} is null)
   </select> 
   
   
   
 <!-- 주문서 등록 -->
   <insert id="insertOrdList">
-  insert all into bns_order values(#{ordCode},#{accCode},#{accName},#{ordDate},#{ordDueDate},#{ordProgress},#{empNum},#{ordNote})
-  			 into bns_order_detail values(#{ordDetCode},#{ordCode},#{prodCode},#{prodName},#{ordDetPrice},#{ordDetQuan},#{ordDetProgress})
-  			 select * from dual
+
   </insert>
 
+<select id="getEmpList" resultType="BnsEmpVO">
+select emp_num, emp_name
+from com_info_emp
+</select>
+
+ <select id ="getEmpKeyList" resultType="BnsEmpVO">
+ select emp_num, emp_name
+from com_info_emp
+  where emp_name =#{keyword}
+  </select>
   
   <!-- 거래처코드,거래처명 조회 -->
   <select id="getAccList" resultType="BnsAccVO">
    select acc_code, acc_name 
    from com_code_account
   </select>
+  
+  
   
   <!-- 거래처코드, 거래처명 검색 조회 -->
   <select id ="getAccKeyList" resultType="BnsAccVO">

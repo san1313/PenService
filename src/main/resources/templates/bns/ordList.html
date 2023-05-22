@@ -14,6 +14,9 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 
+<meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
 <style>
 
 .modaltitle{
@@ -40,12 +43,16 @@ margin-right : 2px;
 .ordReg{
 margin-top: 30px;
 }
+.form-control{
+width:150px;
+}
+
 </style>
 
 <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script> <!-- 그리드 -->
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
+<!-- <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> --> <!-- 모달 -->
 </head>
 
 
@@ -73,51 +80,129 @@ margin-top: 30px;
       </div>
       
       <form method="get" action ="/insertOrdList">
-          <div class="mb-3">
+      <div class="registerform">	
+          <div class = "productReginput" style="display:flex;">
+          <div style= "float : left; margin-right:10px">
             <label for="recipient-name" class="col-form-label">주문코드 </label>
-            <input type="text" class="form-control" name="ordCode" value="" readonly>
+            <input  type="text" class="form-control" name="ordCode" value="" readonly>
+            </div>
+            <div style= "float : left; margin-right:10px">
+            <label for="recipient-name" class="col-form-label">담당자명 <button type="button"  class="fa-solid fa-magnifying-glass"  data-toggle="modal" data-target=".bd-smallemp-modal-sm"> </button>  </label>
+            <input type="text" id="ordempname"class="form-control" name="empName" readonly>
+            </div>
+            <div style= "float : left; margin-right:10px">
+            <label for="recipient-name" class="col-form-label">담당자코드 </label>
+            <input type="text" id="ordempnum"class="form-control" name="empCode" readonly>
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button> </label>
-            <input id="ordprodname" type="text" class="form-control" name="prodName" readonly>
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">제품코드 </label>
-            <input type="text" id="ordprodcode" class="form-control" name="prodCode" readonly>
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">주문량 </label>
-            <input type="number" class="form-control" name="ordDetQuan">
-          </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">단가 </label>
-            <input type="text" class="form-control" name="ordDetPrice">
-          </div>
-          <div class="mb-3">
+          
+          
+         
+         
+		<div style = "display : flex;">
+		<div style="float : left; margin-right:10px">
             <label for="recipient-name" class="col-form-label">거래처명 <button type="button"class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button> </label>
             <input id="ordaccname" type="text" class="form-control" name="accName" readonly>
-          </div>
-          <div class="mb-3">
+         </div>
+          <div style="float : left; margin-right:10px">
             <label for="recipient-name" class="col-form-label">거래처코드 </label>
             <input type="text" id="ordacccode" class="form-control" name="accCode" readonly>
+            </div>
           </div>
-          <div class="mb-3">
+          <div style = "display : flex;">
+          <div style="float : left; margin-right:10px">
             <label for="recipient-name" class="col-form-label">주문일자 </label>
             <input type="text" class="form-control" name="ordDate" readonly placeholder="현재날짜">
-          </div>
-          <div class="mb-3">
+         </div>
+         <div style="float : left; margin-right:10px">
             <label for="recipient-name" class="col-form-label">납기일자 </label>
             <input type="date" class="form-control" name="ordDueDate">
+            </div>
           </div>
-          <div class="mb-3">
-            <label for="recipient-name" class="col-form-label">담당자명 </label>
-            <input type="text" class="form-control" name="empName">
-          </div>
-          <div class="mb-3">
+          
             <label for="message-text" class="col-form-label">비고 </label>
             <textarea class="form-control" name="ordNote"></textarea>
+          
+          <hr>
+          <h2>제품추가</h2>
+          
+       
+          
+          
+          
+          
+          <div class = "productReginput"style="display:flex; ">
+          	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button> </label>
+            <input id="ordprodname" type="text" class="form-control" name="prodName" readonly>
+         	</div>
+         	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품코드 </label>
+            <input type="text" id="ordprodcode" class="form-control" name="prodCode" readonly>
+          	</div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문량 </label>
+            <input type="number" id="ordprodquan" class="form-control" name="ordDetQuan">
           </div>
-        <div class = "modalbtn"><button type="submit" class="btn btn-primary">등록</button>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">단가 </label>
+            <input type="text" id="ordprodprice" class="form-control" name="ordDetPrice">
+          </div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문금액 </label>
+            <input type="text" id="ordprodtotprice" class="form-control" name="ordDetTotPrice">
+          </div>
+         </div>
+         
+         <div class = "productReginput"style="display:flex; ">
+          	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct2-modal-sm"></button> </label>
+            <input id="ordprodname2" type="text" class="form-control" name="prodName2" readonly>
+         	</div>
+         	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품코드 </label>
+            <input type="text" id="ordprodcode2" class="form-control" name="prodCode2" readonly>
+          	</div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문량 </label>
+            <input type="number" class="form-control" name="ordDetQuan">
+          </div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">단가 </label>
+            <input type="text" class="form-control" name="ordDetPrice">
+          </div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문금액 </label>
+            <input type="text" id="ordprodtotprice" class="form-control" name="ordDetTotPrice">
+          </div>
+         </div>
+         
+         <div class = "productReginput"style="display:flex; ">
+          	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품명 <button type="button" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-smallproduct3-modal-sm"></button> </label>
+            <input id="ordprodname3" type="text" class="form-control" name="prodName3" readonly>
+         	</div>
+         	<div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">제품코드 </label>
+            <input type="text" id="ordprodcode3" class="form-control" name="prodCode3" readonly>
+          	</div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문량 </label>
+            <input type="number" class="form-control" name="ordDetQuan">
+          </div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">단가 </label>
+            <input type="text" class="form-control" name="ordDetPrice">
+          </div>
+          <div style="float : left; margin-right:10px">
+            <label  for="recipient-name" class="col-form-label">주문금액 </label>
+            <input type="text" id="ordprodtotprice" class="form-control" name="ordDetTotPrice">
+          </div>
+         </div>
+          
+          
+          </div>
+        <div class = "modalbtn"><button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
         <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
         </div>
        </form>
@@ -140,6 +225,103 @@ margin-top: 30px;
        </script>
        
        
+       <!-- 주문서 등록내의 직원리스트모달 -->
+       
+        <div class="modal fade bd-smallemp-modal-sm" id = "empRegModal"tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <h2 class= "modaltitle">직원 목록</h2>
+    <p>직원명 <input id="searchempreg-text" type = "text"> <button id="searchempreg" class="fa-solid fa-magnifying-glass"></button></p>
+      <div id="empRegGrid"></div>
+      <div class = "modalbtn"><button id="modalempregsubmit" data-toggle="modal" data-target=".bd-smallemp-modal-sm">확인</button><button>취소</button></div>
+    </div>
+  </div>
+</div>
+       
+       
+       <script>
+ 	$.ajax({
+ 		url : "/bns/empList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			empReg_Grid.resetData(result);
+ 			empReg_Grid.refreshLayout();
+ 		}
+ 	});
+    var empReg_Grid = new tui.Grid({
+      el: document.getElementById('empRegGrid'),
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '사원코드',
+          name: 'empNum'
+        },
+        {
+          header: '사원명',
+          name: 'empName'
+        }
+    
+      ]
+    });
+    
+    
+    //그리드 먼저 나타내고 모달창
+    $(function(){
+    	$('#empRegModal').on('shown.bs.modal', function(){
+    		empReg_Grid.refreshLayout();
+    	})
+    })
+    
+        $("#searchempreg").on('click', function(){
+    	const result = $("#searchempreg-text").val()
+		$("#searchempreg-text").val('');
+    	
+    	$.ajax({
+    		 url : "/bns/empKeyList",
+    	     method : "GET",
+    	     data : {'result' : result},
+    	     success : function(result){
+    	     empReg_Grid.resetData(result);
+    	     empReg_Grid.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
+  
+    });
+    })
+    
+    empReg_Grid.on('click', ev=> {
+      
+
+      const focusCell = empReg_Grid.getFocusedCell()
+     
+
+      let dataRow = empReg_Grid.getRow(ev.rowKey);
+      
+      $('#ordempname').val(dataRow.empName);
+      $('#ordempnum').val(dataRow.empNum);
+      
+      $('#modalempregsubmit').click(function(){
+    	  
+    	  $.ajax({
+  	 		url : "/bns/empList",
+  	 		method : "GET",
+  	 		dataType : "JSON",
+  	 		success : function(result){
+  	 			empReg_Grid.resetData(result);
+  	 			empReg_Grid.refreshLayout();
+  	 		}
+  	 	});
+    	  
+    	  $('#empRegModal').modal('hide');
+      })
+    })    
+    
+    </script>
+       
 <!-- 주문서 등록내의 거래처리스트모달 -->
 <div class="modal fade bd-smallaccount-modal-sm" id = "accountRegModal"tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-sm">
@@ -155,6 +337,44 @@ margin-top: 30px;
 
 
 <script src="/plugins/jquery/jquery.min.js"></script>
+
+<!-- 등록 이벤트 -->
+<script>
+
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+
+
+$('#ordregsubmit').on('click' ,function(){
+	
+	let orderDet = { prodName : $('#ordprodname').val(),
+					prodCode : $('#ordprodcode').val(),
+					ordDetQuan : $('#ordprodquan').val(),
+					ordDetPrice : $('#ordprodprice').val()}
+	
+	
+	$.ajax({
+		url : "/insertOrdList",
+		method : "POST",
+		contentType : "application/json",
+		data : JSON.stringify({ list : orderDet}),
+		dataType : "JSON",
+		beforeSend: function (xhr) {
+            xhr.setRequestHeader(header, token);
+          },
+		success : function(result){
+			console.log(result)
+		}
+		
+	})
+	
+	
+	
+	
+})
+	</script>
+
+
 <script>
  	$.ajax({
  		url : "/bns/accList",
@@ -255,9 +475,28 @@ margin-top: 30px;
     </div>
   </div>
 </div>
-      
-      
-      
+     
+     <div class="modal fade bd-smallproduct2-modal-sm" id = "productRegModal2" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <h2 class= "modaltitle">제품리스트</h2>
+    <p>제품명 <input id="searchprodreg-text2"type = "text"> <button id="searchprodreg2"type = "submit" class="fa-solid fa-magnifying-glass"></button></p>
+      <div id="productRegGrid2"></div>
+      <div class = "modalbtn"><button id = "modalsubmitbtn2" data-toggle="modal" data-target=".bd-smallproduct2-modal-sm"type="button" >확인</button><button>취소</button></div>
+    </div>
+  </div>
+</div> 
+
+     <div class="modal fade bd-smallproduct3-modal-sm" id = "productRegModal3" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-sm">
+    <div class="modal-content">
+    <h2 class= "modaltitle">제품리스트</h2>
+    <p>제품명 <input id="searchprodreg-text3"type = "text"> <button id="searchprodreg3"type = "submit" class="fa-solid fa-magnifying-glass"></button></p>
+      <div id="productRegGrid3"></div>
+      <div class = "modalbtn"><button id = "modalsubmitbtn3" data-toggle="modal" data-target=".bd-smallproduct3-modal-sm"type="button" >확인</button><button>취소</button></div>
+    </div>
+  </div>
+</div> 
       
     </div>
   </div>
@@ -278,7 +517,7 @@ margin-top: 30px;
       el: document.getElementById('productRegGrid'),
       scrollX: false,
       scrollY: false,
-      rowHeaders: ['checkbox'],
+      
       columns: [
         {
           header: '제품코드',
@@ -288,7 +527,7 @@ margin-top: 30px;
           header: '제품명',
           name: 'prodName'
         }
-    
+    	
       ]
     });
     $(function(){
@@ -329,9 +568,6 @@ margin-top: 30px;
       
       $('#modalsubmitbtn').click(function(){
     
-    	  
-    	  
-    	  
     	  $.ajax({
     	 		url : "/bns/prodList",
     	 		method : "GET",
@@ -342,17 +578,169 @@ margin-top: 30px;
     	 		}
     	 	});
     	  
-    	  
     	  $('#productRegModal').modal('hide');
+    	})
+      })
+      
+      /* 두번째 제품 */
+      $.ajax({
+ 		url : "/bns/prodList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			productReg_Grid2.resetData(result);
+ 			productReg_Grid2.refreshLayout();
+ 		}
+ 	});
+    var productReg_Grid2 = new tui.Grid({
+      el: document.getElementById('productRegGrid2'),
+      scrollX: false,
+      scrollY: false,
+      
+      columns: [
+        {
+          header: '제품코드',
+          name: 'prodCode'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        }
+    	
+      ]
+    });
+    $(function(){
+    	$('#productRegModal2').on('shown.bs.modal', function(){
+    		productReg_Grid2.refreshLayout();
+    	})
+    })
+    
+        $("#searchprodreg2").on('click', function(){
+    	const result = $("#searchprodreg-text2").val()
+		$("#searchprodreg-text2").val('');
+    	
+    	$.ajax({
+    		 url : "/bns/prodKeyList",
+    	     method : "GET",
+    	     data : {'result' : result},
+    	     success : function(result){
+    	     productReg_Grid2.resetData(result);
+    	     productReg_Grid2.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
+  
+    });
+    })
+    
+    productReg_Grid2.on('click', ev=> {
+      
+
+      const focusCell = productReg_Grid2.getFocusedCell()
+     
+
+      let dataRow = productReg_Grid2.getRow(ev.rowKey);
+      
+      $('#ordprodname2').val(dataRow.prodName);
+      $('#ordprodcode2').val(dataRow.prodCode);
+      
+      $('#modalsubmitbtn2').click(function(){
+    
+    	  $.ajax({
+    	 		url : "/bns/prodList",
+    	 		method : "GET",
+    	 		dataType : "JSON",
+    	 		success : function(result){
+    	 			productReg_Grid2.resetData(result);
+    	 			productReg_Grid2.refreshLayout();
+    	 		}
+    	 	});
+    	  
+    	  $('#productRegModal2').modal('hide');
     	  
     	})
     	
-    	
       })
     
+      
+      
+      /* 세번째 제품 */
+            $.ajax({
+ 		url : "/bns/prodList",
+ 		method : "GET",
+ 		dataType : "JSON",
+ 		success : function(result){
+ 			productReg_Grid3.resetData(result);
+ 			productReg_Grid3.refreshLayout();
+ 		}
+ 	});
+    var productReg_Grid3 = new tui.Grid({
+      el: document.getElementById('productRegGrid3'),
+      scrollX: false,
+      scrollY: false,
+      columns: [
+        {
+          header: '제품코드',
+          name: 'prodCode'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        }
+      ]
+    });
+    $(function(){
+    	$('#productRegModal3').on('shown.bs.modal', function(){
+    		productReg_Grid3.refreshLayout();
+    	})
+    })
+        $("#searchprodreg3").on('click', function(){
+    	const result = $("#searchprodreg-text3").val()
+		$("#searchprodreg-text3").val('');
+    	
+    	$.ajax({
+    		 url : "/bns/prodKeyList",
+    	     method : "GET",
+    	     data : {'result' : result},
+    	     success : function(result){
+    	     productReg_Grid3.resetData(result);
+    	     productReg_Grid3.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
+    });
+    })
     
+    productReg_Grid3.on('click', ev=> {
+
+      const focusCell = productReg_Grid3.getFocusedCell()
+
+      let dataRow = productReg_Grid3.getRow(ev.rowKey);
+      
+      $('#ordprodname3').val(dataRow.prodName);
+      $('#ordprodcode3').val(dataRow.prodCode);
+      
+      $('#modalsubmitbtn3').click(function(){
     
-    
+    	  $.ajax({
+    	 		url : "/bns/prodList",
+    	 		method : "GET",
+    	 		dataType : "JSON",
+    	 		success : function(result){
+    	 			productReg_Grid3.resetData(result);
+    	 			productReg_Grid3.refreshLayout();
+    	 		}
+    	 	});
+    	  
+    	  $('#productRegModal3').modal('hide');
+    	})
+      })
+      
+      
+      
+      
 </script>
 <!-- 주문서 등록내의 제품리스트 모달 끝 -->
 
@@ -376,7 +764,7 @@ margin-top: 30px;
   </label>
  
 
-<p>거래처명 <input type ="text" id="accountlist-text" style="background-color : #e2e1e1" readonly > <button id="accountList" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-account-modal-lg" ></button></p>  
+<p>거래처명 <input type ="text" id="accountlist-text" style="background-color : #e2e1e1" > <button id="accountList" class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-account-modal-lg" ></button></p>  
 <p>제품명 <input type ="text" id="productlist-text" style="background-color : #e2e1e1" > <button id="productList"class="fa-solid fa-magnifying-glass" data-toggle="modal" data-target=".bd-product-modal-lg"></button></p>
 <p>주문일자 - 납기일자 <input type="date" id="orddate-text"><input type ="date" id="ordduedate-text"> <button id="searchOrd">조회</button> <button>초기화</button></p>
 <div class = "ordbtn">
@@ -414,7 +802,6 @@ margin-top: 30px;
       el: document.getElementById('accountGrid'),
       scrollX: false,
       scrollY: false,
-      rowHeaders: ['checkbox'],
       columns: [
         {
           header: '거래처코드',
@@ -513,7 +900,6 @@ margin-top: 30px;
       el: document.getElementById('productGrid'),
       scrollX: false,
       scrollY: false,
-      rowHeaders: ['checkbox'],
       columns: [
         {
           header: '제품코드',
@@ -587,7 +973,6 @@ margin-top: 30px;
 <!-- 제품 리스트 모달 끝 -->
 
     
-
 
 
 
@@ -672,6 +1057,48 @@ margin-top: 30px;
     
       ]
     });
+ 	
+ 	 /*  product_Grid.on('click', ev=> {
+ 	      console.log(ev.rowKey)
+ 	      console.log(ev.columns)
+
+ 	      const focusCell = product_Grid.getFocusedCell()
+ 	      console.log(focusCell)
+
+ 	      let dataRow = product_Grid.getRow(ev.rowKey);
+ 	      console.log(dataRow);
+
+ 	     
+ 	      $('#productlist-text').val(dataRow.prodName);
+ 	      
+ 	      $('#modalsubmit').click(function(){
+ 	    	  $('#productListModal').modal('hide');
+ 	    	  
+ 	    	  $.ajax({
+ 	     		 url : "/bns/prodList",
+ 	     	     method : "GET",
+ 	     	     dataType : "JSON",
+ 	     	     success : function(result){
+ 	     	     product_Grid.resetData(result);
+ 	     	     product_Grid.refreshLayout();
+ 	     	     }
+ 	     	     
+ 	   
+ 	     });
+ 	    	  
+ 	      })
+ 	    })   */
+ 	
+ 	
+  	grid.on('click', (ev) => {
+	      const focusCelll = grid.getFocusedCell()
+ 	      console.log(focusCelll)
+
+ 	      let dataRoww = grid.getRow(ev.rowKey);
+ 	      console.log(dataRoww);
+
+  		
+ 		}); 
     <!----------------------------------------- 그리드끝 ----------------------------------------->
     
     

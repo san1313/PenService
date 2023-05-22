@@ -8,6 +8,8 @@ import org.springframework.stereotype.Service;
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
+import com.pen.app.bns.vo.BnsEmpVO;
+import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 
@@ -52,6 +54,26 @@ public class BnsServiceImpl implements BnsService {
 	@Override
 	public List<BnsOrdVO> getOrdListCon(BnsOrdVO vo) {
 		return mapper.getOrdListCon(vo);
+	}
+
+	@Override
+	public void insertOrdDetList(BnsOrdDetListVO vo) {
+		
+		for(int i = 0; i<vo.getList().size(); i++) {
+			
+			mapper.insertOrdDetList(vo.getList().get(i));
+		}
+	
+	}
+
+	@Override
+	public List<BnsEmpVO> getEmpList() {
+		return mapper.getEmpList();
+	}
+
+	@Override
+	public List<BnsEmpVO> getEmpKeyList(String keyword) {
+		return mapper.getEmpKeyList(keyword);
 	}
 
 	
