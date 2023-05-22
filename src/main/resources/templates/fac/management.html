@@ -125,6 +125,7 @@
     <div class="modal-content">
       <div class="modal-header">
       <h5 class="modal-title" id="facilityModalLabel">설비 정보 상세</h5>
+      <div id='modal-grid2'></div>
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>      
@@ -145,19 +146,20 @@
         
     <script>
     //grid-전체리스트그리드
+    var grid = null;
     $(function(){
        
     $.ajax({
          url : "/fac/infoListAjax",
          method : "GET",
-         dataType : "JSON",
          success : function(result){
+        	 console.log(result);
           grid.resetData(result);
           grid.refreshLayout();
          }
          });
       
-   var grid = new tui.Grid({
+    grid = new tui.Grid({
     el: document.getElementById('grid'),
     scrollX: false,
     scrollY: false,
@@ -165,13 +167,22 @@
     columns: [
       {
         header: '설비코드',
-        name: 'facCode'
+        name: 'facCode',
+       	filter: 'select'
       },
       {
         header: '설비명',
-        name: 'facName'
+        name: 'facName',
+        filter: 'select'
       },
-      
+      {
+    	  header:'공정코드',
+    	  name: 'procCode'
+      },
+      {
+    	  header:'공정명',
+    	  name: 'procName'
+      },
       
       {
         header: '가동여부',
@@ -219,6 +230,8 @@
       facilityDetails.innerHTML = `
          <p>설비코드: ${info.facCode}</p>
          <p>설비명: ${info.facName}</p>
+         <p>공정코드:${info.procCode}</p>
+         <p>공정명:${info.procName}</p>
          <p>가동여부: ${info.operateCheck}</p>
          <p>점검주기(일): ${info.checkCycle}</p>
          <p>입고일자: ${info.installDate}</p>

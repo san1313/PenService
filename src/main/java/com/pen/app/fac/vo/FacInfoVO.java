@@ -5,26 +5,20 @@ import lombok.Data;
 @Data
 public class FacInfoVO {
 	
-	/*
-	CREATE TABLE FAC_INFO (
-   FAC_CODE VARCHAR2(15) NOT NULL,
-   FAC_NAME VARCHAR2(50) NOT NULL,
-   INSTALL_DATE DATE NOT NULL,
-   TEMP_MIN NUMBER NOT NULL,
-   TEMP_MAX NUMBER NOT NULL,
-   MAKER_NAME VARCHAR2(50) NOT NULL,
-   CHECK_CYCLE NUMBER NOT NULL,
-   OPERATE_CHECK VARCHAR2(10) NOT NULL,
-   EMP_NUM VARCHAR2(15) NOT NULL
-);
-	 * */
-	String facCode;
-	String facName;
-	String installDate;
-	String tempMin;
-	String tempMax;
-	String makerName;
-	String checkCycle;
-	String operateCheck;
-	String EmpNum;
+	String facCode; //설비코드
+	String facName; //설비명
+	String installDate; //입고날짜
+	String tempMin; //최저온도
+	String tempMax; //최고온도
+	String makerName; //제조업체
+	String checkCycle; //점검주기
+	String operateCheck; //가동유무
+	String EmpNum; //사원번호
+	
+	String procCode; //공정코드
+	String procName; //공정명
+	String procType; //공정타입
+	String procDetail; //공정설명
+	
+	
 }

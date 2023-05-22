@@ -4,42 +4,40 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.fac.mapper.FacMapper">
-  <!--설비단건조회 -->
-  <select id="getFac" resultType="FacInfoVO">
-   select *
-   from fac_info
-   where fac_code = #{facCode}
-  </select>
-  
-  <!-- 설비정보목록조회 -->
-  <select id="getList" resultType="FacInfoVO">
-select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') installDate,maker_name,temp_min,temp_max,emp_num from fac_info
-  </select>
-  
-  <!-- 설비등록 -->
-  <insert id="insert">
-     insert into fac_info values('EQMAN'||fac_seq.nextval,#{fac_name},#{install_date},#{temp_min},#{temp_max},#{maker_name},#{check_cycle},#{operate_check},#{emp_num})
-  </insert>
-  
-  <insert id="insertSelectKey">
-     <selectKey keyProperty="facCode" order ="BEFORE" resultType="String">
-     select 'EQMAN'||fac_seq.nextval from dual
-     </selectKey>
-     
-     insert into fac_info values('EQMAN'||fac_seq.nextval,#{fac_name},#{install_date},#{temp_min},#{temp_max},#{maker_name},#{check_cycle},#{operate_check},#{emp_num})
-  </insert>
-  
-  
-  
-     <!-- 공정코드목록 -->
-  <select id="getproclist" resultType="FacConnProcVO">
-  select proc_code, proc_name from MAK_CODE_PROC
-  </select>
-  
-  <!-- 공정코드검사조회 -->
-  <select id="getprocminilist" resultType="FacConnProcVO">
-  select proc_code, proc_name from MAK_CODE_PROC where proc_name like #{keyword}
-  </select>
-  
-  
+	<!--설비단건조회 -->
+	<select id="getFac" resultType="FacInfoVO">
+		select *
+		from fac_info
+		where fac_code = #{facCode}
+	</select>
+
+	<!-- 설비정보목록조회 -->
+	<select id="getList" resultType="FacInfoVO">
+		<!-- select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') 
+			installDate,maker_name,temp_min,temp_max,emp_num from fac_info -->
+		select fac_code ,fac_name,proc_name
+		,proc_code,operate_check,check_cycle
+		,to_char(install_date,'yyyy-MM-dd') installDate,maker_name
+		,temp_min,temp_max ,emp_num from FAC_INFO join FAC_CONN_PROC
+		using(fac_code) join COM_CODE_PROC using(proc_code)
+	</select>
+
+	<!-- 설비등록 -->
+	<insert id="insert">
+		insert into fac_info
+		values('EQMAN'||fac_seq.nextval,#{fac_name},#{install_date},#{temp_min},#{temp_max},#{maker_name},#{check_cycle},#{operate_check},#{emp_num})
+	</insert>
+		
+	<!-- 공정코드목록 -->
+	<select id="getproclist" resultType="FacConnProcVO">
+		select proc_code, proc_name from COM_CODE_PROC
+	</select>
+	
+	<!-- 공정코드검사조회 -->
+	<select id="getprocminilist" resultType="FacConnProcVO">
+		select proc_code, proc_name from COM_CODE_PROC where proc_name like
+		#{keyword}
+	</select>
+
+
 </mapper>

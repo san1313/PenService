@@ -100,7 +100,7 @@
      </div>
 
    <div layout:fragment="content">
-      <form action="fac_list.html" method="get">     
+      <form action="/fac/management" method="post">     
           <div class = "fac_register" style="text-align:left">
             
      
@@ -205,6 +205,9 @@
          success : function(result){
             grid2.resetData(result);
             grid2.refreshLayout();
+         },
+         error :function(reject){
+        	 console.log(reject);
          }
       });
       
