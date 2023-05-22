@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.mak.mapper.MakMapper;
 import com.pen.app.mak.service.MakService;
 import com.pen.app.mak.vo.PlanListVO;
@@ -33,21 +34,23 @@ public class MakController {
 
 	@GetMapping("/planList")
 	@ResponseBody
-	List<PlanVO> planList(){
-		List<PlanVO> list = mapper.getPlanList();
+	ToastUiResponseDTO planList(){
+		List<PlanVO> list = service.getPlanList();
+		System.out.println("조회내용 : "+list);
 		
-		return list;
+		return new ToastUiResponseDTO(list);
 	}
 	
 	@GetMapping("/planning")
 	@ResponseBody
 	List<PlanVO> planning(){
+		int contCount=0;
 		List<PlanVO> result = new ArrayList<>();
 		List<PlanVO> list = mapper.getCont();
 		ArrayList<String> detCoList = new ArrayList<>();
-
+		ArrayList<String> detCo = new ArrayList<>();
 		for(int i = 0; i<list.size();i++) {
-			System.out.println("포문 : "+list);
+			System.out.println("포문 : "+list.get(i));
 			String detC = list.get(i).getContDetCode();
 			System.out.println("음"+detC);
 			List<PlanVO> CDC = mapper.getConnect(detC);
@@ -56,29 +59,36 @@ public class MakController {
 			if(CDC.isEmpty()) {
 				System.out.println("조건값 없음");
 			}else {
+				//이중 포문
 				for(int j=0; j<CDC.size();j++) {
-					ArrayList<String> detCo = new ArrayList<>();
-					detCo.add(CDC.get(j).getContDetCode());
-					System.out.println("CDC 포문 : "+j+"번 : "+CDC.get(j));
+					//계약상세코드 떼기
+					if(!detCo.contains(CDC.get(j).getContDetCode())){
+						detCo.add(CDC.get(j).getContDetCode());
+						System.out.println("CDC 포문 : "+j+"번 : "+CDC.get(j));
+					};
 					
-					
-					System.out.println("체크"+detCo);
+					System.out.println(j+"번 체크"+detCo);
 					System.out.println("detCoList 포문 :" + detCoList);
+				};
+					//포문 이중포문
 					for(int k=0;k<detCo.size();k++) {
-						System.out.println("조건값 확인 : "+detCo.get(k));
+						System.out.println(k+"번 조건값 확인 : "+detCo.get(k));
+						contCount += mapper.getContCount(detCo.get(k));
+						//특정코드
 					List<PlanVO> plan = mapper.getPlanning(detCo.get(k));
 					if(plan.isEmpty()) {
 						System.out.println("결과값 없음");
-//						detCoList = new ArrayList<>();
-						detCoList.add(detCo.get(k));
-						
+						if(!detCoList.contains(detCo.get(k))) {
+							detCoList.add(detCo.get(k));	
+						};
 						}else {
 							System.out.println("결과 : "+plan);
-						result.addAll(plan);
-						detCoList.add(detCo.get(k));
+							if(!detCoList.contains(detCo.get(k))) {
+								result.addAll(plan);
+								detCoList.add(detCo.get(k));
+							};
 						System.out.println("결과를 담은 곳 : "+result);
 						};
-					}
 					
 				}
 			}
@@ -95,6 +105,11 @@ public class MakController {
 		result.addAll(result1);
 		};
 			System.out.println("최종 결과값 : "+result);
+			if(contCount>0&&result.isEmpty()) {
+				
+			}else if(contCount==0&&result.isEmpty()) {
+				result=list;
+			}
 		return result;
 	}
 	

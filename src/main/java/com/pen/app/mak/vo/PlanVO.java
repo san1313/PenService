@@ -57,5 +57,5 @@ public class PlanVO {
 	int ordDetQuan;        
 	String ordDetProgress; 
 
-	
+	int count;
 }
