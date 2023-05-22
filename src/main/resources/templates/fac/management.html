@@ -4,7 +4,7 @@
    layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8" />
-<title>PenServiceMES</title>
+<title>설비정보관리</title>
 <style>
 . a {
    float: left;
@@ -94,110 +94,13 @@
 </head>
 
 <body>
-<!----------설비등록시작--------->
+<!----------설비관리시작--------->
    <div layout:fragment="title">
-     <h3>설비등록</h3>
+     <h3>설비관리</h3>
      </div>
 
    <div layout:fragment="content">
-      <form action="fac_list.html" method="get">     
-          <div class = "fac_register" style="text-align:left">
-            
-     
-            <label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text"id="fac_code" placeholder="EQMAN_자동생성" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            <input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-            
-            <br>
-            <label for="proc_name">공정명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="proc_name" placeholder="조회 후 등록하시오">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="proc_code">공정코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="proc_code" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-  
-            <label for="confirm_cycle">점검주기(일)</label>&nbsp;&nbsp;
-            <input type="text" id="confirm_cycle" size=11>
-           
-            
-            <br>
-            
-            <label for="temp_min">최저온도(℃)</label>&nbsp;
-            <input type="text" id="temp_min">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="temp_max">최고온도(℃)</label>&nbsp;&nbsp;
-            <input type="text" id="temp_max">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-           	<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="operate_check" value="operate" checked>&nbsp;&nbsp;&nbsp;Y
-            <input type="radio" name="operate_check" value="non_operate">&nbsp;&nbsp;&nbsp;N
-            
-            <br>
-             <label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-
-            <label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-           
-             <br>
-            <button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg"><i class="fa fa-search"></i></button>
-           </div>
-
-           </form>
-
-
-            <h5 class="modal-title" >공정정보조회</h5>
-            <label>공정명</label>
-         <input class="modaltext" type=text id="ckproc-text">
-        <button class="procsearchbtn" type="button" id="ckproc">검색</button>
-            
-            <div id="modal-grid2"></div>   
-            <br>
-            <div class="row">
-               <div class="col">
-                  <button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>   
-                  &nbsp;&nbsp;&nbsp;&nbsp;
-                  <button class="w-30 btn btn-secondary btn-lg"type="reset">초기화</button>
-               </div>
-            </div>
-            <hr class="my-4">
-            
-          
-      
-      
     
-      
-      
-
-<!--공정코드 모달 -->
-<div class="modal fade bd-example-modal-lg" id="procCodemodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" >공정코드조회</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body" >
-         <label>공정명</label>
-         <input class="modaltext" type=text id="ckproc-text">
-        <button class="procsearchbtn" type="button" id="ckproc">검색</button>
-        
-         <div id="modal-grid2"></div>
-         
-        <button class="submitprocmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">선택</button>
- 
-      </div>
-    </div>
-  </div>
-</div>
-  <h3 style="text-align:left">설비관리</h3>    
 <!----설비선택검색---->
  <div class="info_search" style="text-align:left">
       <select name = "fac_info">
@@ -216,9 +119,6 @@
 <!-- 설비정보목록그리드 -->
  <div id="grid"></div>
 
-
-
-
 <!--설비정보상세모달 -->
 <div class="modal fade bd-example-modal-lg" id="facilityModal" tabindex="-1" role="dialog" aria-labelledby="facilityModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
@@ -230,20 +130,19 @@
         </button>      
       </div>
       <div class="modal-body">
-   		 <!-- 모달 내용을 채우는 요소들 -->  
+          <!-- 모달 내용을 채우는 요소들 -->  
          <div id="facilityDetails"></div>
          </div>
         
          <div class="modal-footer">
         
- 		<button class="facilityDetailsmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">닫기</button>
+       <button class="facilityDetailsmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">닫기</button>
       </div>
     </div>
   </div>
 </div>
 
-       
-      
+        
     <script>
     //grid-전체리스트그리드
     $(function(){
@@ -272,6 +171,8 @@
         header: '설비명',
         name: 'facName'
       },
+      
+      
       {
         header: '가동여부',
         name: 'operateCheck',

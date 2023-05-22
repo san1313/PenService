@@ -4,7 +4,7 @@
    layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8" />
-<title>PenServiceMES</title>
+<title>설비정보등록</title>
 <style>
 . a {
    float: left;
@@ -133,7 +133,7 @@
             <label for="temp_max">최고온도(℃)</label>&nbsp;&nbsp;
             <input type="text" id="temp_max">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-           	<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+              <label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" name="operate_check" value="operate" checked>&nbsp;&nbsp;&nbsp;Y
             <input type="radio" name="operate_check" value="non_operate">&nbsp;&nbsp;&nbsp;N
             
@@ -165,15 +165,7 @@
                   <button class="w-30 btn btn-secondary btn-lg"type="reset">초기화</button>
                </div>
             </div>
-            <hr class="my-4">
             
-          
-      
-      
-    
-      
-      
-
 <!--공정코드 모달 -->
 <div class="modal fade bd-example-modal-lg" id="procCodemodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
@@ -197,142 +189,14 @@
     </div>
   </div>
 </div>
-  <h3 style="text-align:left">설비관리</h3>    
-<!----설비선택검색---->
- <div class="info_search" style="text-align:left">
-      <select name = "fac_info">
-      <option value="선택"selected="selected">---선택---</option>
-      <option value="설비명">설비명</option>
-     <option value="설비코드">설비코드</option>
-     <option value="담당자">담당자</option>
-      </select>
-     <input type="text" id="search_name">
-  <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
-
-<div class= info_update style="float: right;"><button >수정</button></div> 
-<div class= info_delete  style="float: right;"><button>삭제</button> </div>
-</div>
+ 
         
 <!-- 설비정보목록그리드 -->
  <div id="grid"></div>
-
-
-
-
-<!--설비정보상세모달 -->
-<div class="modal fade bd-example-modal-lg" id="facilityModal" tabindex="-1" role="dialog" aria-labelledby="facilityModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg" role="document">
-    <div class="modal-content">
-      <div class="modal-header">
-      <h5 class="modal-title" id="facilityModalLabel">설비 정보 상세</h5>
-         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-   		 <!-- 모달 내용을 채우는 요소들 -->  
-         <div id="facilityDetails"></div>
-         </div>
-        
-         <div class="modal-footer">
-        
- 		<button class="facilityDetailsmodalbtn" type="button" data-toggle="modal" data-target=".bd-example-modal-lg">닫기</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-       
       
     <script>
-    //grid-전체리스트그리드
     $(function(){
-       
-    $.ajax({
-         url : "/fac/infoListAjax",
-         method : "GET",
-         dataType : "JSON",
-         success : function(result){
-          grid.resetData(result);
-          grid.refreshLayout();
-         }
-         });
-      
-   var grid = new tui.Grid({
-    el: document.getElementById('grid'),
-    scrollX: false,
-    scrollY: false,
-    rowHeaders: ['checkbox'],
-    columns: [
-      {
-        header: '설비코드',
-        name: 'facCode'
-      },
-      {
-        header: '설비명',
-        name: 'facName'
-      },
-      {
-        header: '가동여부',
-        name: 'operateCheck',
-        filter: 'select'
-      },
-
-      {
-          header: '점검주기(일)',
-          name: 'checkCycle'
-       },
-       {
-           header: '입고일자',
-           name: 'installDate'
-        },
-        {
-            header: '제조업체',
-            name: 'makerName'
-         },
-         {
-             header: '최저온도(℃)',
-             name: 'tempMin'
-          },
-          {
-              header: '최고온도(℃)',
-              name: 'tempMax'
-           },
-           {
-               header: '담당자',
-               name: 'empNum'
-            }   
-    ]
-  });
-   
-   grid.on('click',function(e){
-      console.log(grid.getRow(e.rowKey))
-      const info = grid.getRow(e.rowKey)
-      
-      showFacilityDetails(info); // 모달 창에 정보를 표시하는 함수 호출  
-   });
-   
-   function showFacilityDetails(info) {
-      // 모달 내용을 채우는 요소들에 정보를 설정
-      const facilityDetails = document.getElementById('facilityDetails');
-      facilityDetails.innerHTML = `
-         <p>설비코드: ${info.facCode}</p>
-         <p>설비명: ${info.facName}</p>
-         <p>가동여부: ${info.operateCheck}</p>
-         <p>점검주기(일): ${info.checkCycle}</p>
-         <p>입고일자: ${info.installDate}</p>
-         <p>제조업체: ${info.makerName}</p>
-         <p>최저온도: ${info.tempMin}</p>
-         <p>최고온도: ${info.tempMax}</p>
-         <p>담당자: ${info.empNum}</p>
-      `;
-
-      // 모달 창 열기
-      $('#facilityModal').modal('show');
-   }
-
-    
-   
+ 
     //grid2-공정코드모달
       $.ajax({
          url : "/fac/proclistAjax",
@@ -394,10 +258,7 @@
    })      
     })
    
-  
-
- 
-      
+     
  </script>
    </div>
 
