@@ -76,388 +76,54 @@
   <div layout:fragment="content">
 	<h5>검사내역리스트</h5>
      <div id="testmetgrid"></div>  
-     <button type="button" class="btn btn-danger" id="movebtn">이동</button>
-     
-  </div>
+     <button type="button" class="btn btn-primary" id="movebtn">이동</button>
 
-	
-	<button type="button" class="btn btn-danger" id="deletematbtn">제거</button>
-    <button type="button" class="btn btn-primary" id="suBtn">저장</button>
+    
 	<div id="grid"></div>
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-          
+    $.ajax({
+    	url:"/mat/warehousing",
+    	method:"GET",
+    	dataType: "JSON",
+    	success:function(result){
+    		testmetgrid.resetData(result);
+    	
+    	}
+    });     
      
-
-    var grid = new tui.Grid({
-    el: document.getElementById('grid'),
+    var testmetgrid = new tui.Grid({
+    el: document.getElementById('testmetgrid'),
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
     columns: [{
-    header: '발주번호',
-    name: 'matOrdernum'
-    },
-    {
-    header: '발주명',
-    name: 'matOrdername'
-    },
-    {
     header: '자재코드',
     name: 'matCode'
     },
     {
     header: '자재명',
     name: 'matName'
+    },   
+    {
+    header: '발주번호',
+    name: 'matOrdernum'
     },
     {
-    header: '거래처명',
-    name: 'accCode'
-    },
-    {
-    header: '납기일',
-    name: 'matReqdate'
-    },
-    {
-    header: '담당자',
-    name: 'matCharger'
-    },
-    {
-    header: '단가',
-    name: 'matUntpc'
-    },
-    {
-    header: '발주량',
-    name: 'matOrderQy',
-    editor: 'text'
+    header: '입고량',
+    name: 'matWrhqy'
     }
     ]
     });
 
     
-  //자재명모달
-    $.ajax({
-        url : "/mat/matlist",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	console.log(result);
-          modal_grid.resetData(result);
-          modal_grid.refreshLayout();
-        }
-      });
-
-
-	  
-      var modal_grid = new tui.Grid({
-        el: document.getElementById('mat-modal-grid'),
-
-        scrollX: false,
-        scrollY: false,
-        rowHeaders: ['rowNum'],
-        columns: [{
-          header: '자재코드',
-          name: 'matCode'
-        },
-        {
-          header: '자재명',
-          name: 'matName'
-        }
-      ]
-    })
-      
-    
-    $(function(){  
-    $('#matmodal').on('shown.bs.modal', function(e){
-    	modal_grid.refreshLayout();
-    });
-    })
-    
-    
-    
-    
-    
-    //자재모달검색조회
-    $("#ckmat").on('click', function(){
-    	console.log(document.getElementById('ckmat-text').value)
-    	let data0 = document.getElementById('ckmat-text').value;
-    	let result2 = "%";
-    	result2+=document.getElementById('ckmat-text').value;
-    	result2+="%";
-		$("#ckmat-text").val('');
-    	
-    	$.ajax({
-    		 url : "/mat/matminilist",
-    	     method : "GET",
-    	     data : {'result' : result2},
-    	     success : function(result){
-    	     modal_grid.resetData(result);
-    	     modal_grid.refreshLayout();	
-    	     },
-    	     error: function(reject){
-    	    	 console.log(reject)
   
-      }
-    })
-    });
-     
-    //자재모달선택
-    modal_grid.on('click', ev=> {
-      console.log(ev.rowKey)
-      console.log(ev.columns)
-
-      const focusCell = modal_grid.getFocusedCell()
-      console.log(focusCell)
-
-      let dataRow = modal_grid.getRow(ev.rowKey);
-      console.log(dataRow);
-
-      console.log('자재코드 : ' + dataRow.matCode + ', 자재명 : ' + dataRow.matName);
-      $('#matmodaltest').val(dataRow.matName);
-      $('#matmodaltest1').val(dataRow.matCode);
-      $('#matmodaltestuntpc').val(dataRow.matUntpc);
-      $('#matmodalordername').val(dataRow.matOrdername);
-      $('#matmodal').modal('hide');
-      
-      $.ajax({
-          url : "/mat/matlist",
-          method : "GET",
-          dataType : "JSON",
-          success : function(result){
-          	console.log(result);
-            modal_grid.resetData(result);
-            modal_grid.refreshLayout();
-          }
-        });
-    })	
-
-    
-    //거래처모달
-    $.ajax({
- 		url : "/mat/acclist",
- 		method : "GET",
- 		dataType : "JSON",
- 		success : function(result){
- 			console.log(result);
- 			accmodal_grid.resetData(result);
- 			accmodal_grid.refreshLayout();
- 		}
- 	});
-    
-    
-
-    
-    var accmodal_grid = new tui.Grid({
-      el: document.getElementById('acc-modal-grid'),
-
-      scrollX: false,
-      scrollY: false,
-      rowHeaders: ['rowNum'],
-      columns: [
-        {
-          header: '자재명',
-          name: 'matName'
-        },
-        {
-          header: '거래처코드',
-          name: 'accCode'
-        },
-        {
-          header: '거래처명',
-          name: 'accName'
-        }  
-      ]
-    });
-    
-     $(function(){  
-        $('#accmodal').on('shown.bs.modal', function(){
-        	accmodal_grid.refreshLayout();
-        });
-        })
-        
-        
-        //거래처모달검색조회
-         $("#ckacc").on('click', function(){
-        	console.log(document.getElementById('ckacc-text').value)
-        	let data1 = document.getElementById('ckacc-text').value;
-        	let result = "%";
-        	result += data1;
-        	result += "%";
-    		$("#ckacc-text").val('');
-        	
-        	$.ajax({
-        		 url : "/mat/accminilist",
-        	     method : "GET",
-        	     data : {'result' : result},
-        	     success : function(result){
-        	     accmodal_grid.resetData(result);
-        	     accmodal_grid.refreshLayout();	
-        	     },
-        	     error: function(reject){
-        	    	 console.log(reject)
-          }
-        })
-        }); 
-    
-   		//거래처모달선택
-     accmodal_grid.on('click', ev=> {
-       console.log(ev.rowKey)
-       console.log(ev.columns)
-
-       const focusCell = accmodal_grid.getFocusedCell()
-       console.log(focusCell)
-
-       let dataRow = accmodal_grid.getRow(ev.rowKey);
-       console.log(dataRow);
-
-       console.log('자재명 : ' + dataRow.matName + ', 거래처코드 : ' + dataRow.accCode + ', 거래처명 : ' + dataRow.accName);
-       $('#accmodaltest').val(dataRow.accName);
-       $('#accmodal').modal('hide');
-       
-       $.ajax({
-    		url : "/mat/acclist",
-    		method : "GET",
-    		dataType : "JSON",
-    		success : function(result){
-    			console.log(result);
-    			accmodal_grid.resetData(result);
-    			accmodal_grid.refreshLayout();
-    		}
-    	});
-     })	
-         
-     
-     //추가버튼
-    document.getElementById('addmatbtn').addEventListener('click', function(){
-      //grid
-    
-     if($('#matmodaltest').val()=='' || $('#matmodaltest1').val()=='' || $('#accmodaltest').val()=='' || $('#matReqdate').val()=='' || $('#matCharger').val()=='' || $('#matmodaltestuntpc').val()==''){
-    	 alert('뭔가 비어있는게 있어요');
-    	 false;
-     }else{
-     let necc = {matOrdernum: $('#orderCode').val(),
-    		 	matOrdername: $('#matmodalordername').val(),
-    		 	matName: $('#matmodaltest').val() ,
-    	  		matCode: $('#matmodaltest1').val() ,
-    	  		accCode: $('#accmodaltest').val(),
-    	  		matReqdate: $('#matReqdate').val(),
-    	  		matCharger: $('#matCharger').val(),
-    	  		matUntpc: $('#matmodaltestuntpc').val()
-      };
-     grid.appendRow(necc);
-	if(grid.getData().length>0){
-		document.getElementById('suBtn').setAttribute('style','display:block;');
-		document.getElementById('deletematbtn').setAttribute('style','display:block');
-	}
-    }
-    })
-     
-    //삭제버튼
-     document.getElementById('deletematbtn').addEventListener('click', function(){
-       let checked = grid.getCheckedRows();
-       for(let i = 0;i<checked.length;i++){
-       grid.removeRow(checked[i].rowKey);
-       };
-       if(grid.getData().length==0){
-    	   document.getElementById('suBtn').setAttribute('style','display:none');
-    	   document.getElementById('deletematbtn').setAttribute('style','display:none');
-       }
-  })
-     
-  //발주번호
-  $.ajax({
-	  url : "/mat/matordercode",
-		method : "GET",
-  }).done((result)=>{
-	  $('#orderCode').val(result);
-  })
-  
-  
-  //발주요청버튼
-  document.getElementById('suBtn').addEventListener('click', function(){
-	  let checked = grid.getCheckedRows();
-	  $.ajax({
-  		url : "/mat/matregister",
-  		method : "POST",
-  		data : JSON.stringify({list:grid.getCheckedRows()}),
-  		beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-  		dataType : "JSON",
-  		contentType: "application/json",
-  		success : function(result3){			
-  			console.log(result3);
-  			
-  		}
-  	});
-	  
-  })
-     
-     //필요자재발주목록모달
-    /* $.ajax({
-        url : "/mat/matlist",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	console.log(result);
-          acc_modal_grid.resetData(result);
-          acc_modal_grid.refreshLayout();
-        }
-      });
-
-
-	  
-      var modal_grid = new tui.Grid({
-        el: document.getElementById('acc-modal-grid'),
-
-        scrollX: false,
-        scrollY: false,
-        rowHeaders: ['rowNum'],
-        columns: [{
-          header: '자재코드',
-          name: 'matCode'
-        },
-        {
-          header: '자재명',
-          name: 'matName'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '재고량',
-          name: 'matUnit'
-        },
-        {
-          header: '안전재고',
-          name: 'matUnit'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-          }
-        
-      ]
-    }) */
-
-   
     </script>
+	</div>
 
-    </div>
     
     </body>
     

@@ -7,8 +7,8 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
-import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
+import com.pen.app.mat.vo.WarehousingVO;
 
 @Service
 public class MatServiceimpl implements MatService{
@@ -52,13 +52,16 @@ public class MatServiceimpl implements MatService{
 
 
 	 @Override
-	 public void getmatregister(MatOrdVO vo) { 
+	 public void getmatregister(List<OrderVO> list) { 
 		 // 발주등록 
-		 for(int i=0; i<vo.getList().size(); i++) {
-			// matmapper.getmatregister(vo.getList().get(i));
 			 
-		 }
 	 }
+
+	@Override
+	public List<WarehousingVO> getwarehousinglist() {
+		// 자재입고 검사내역리스트
+		return matmapper.getwarehousinglist();
+	}
 	 
 	
 	
