@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
+import com.pen.app.mat.vo.WarehousingVO;
 
 
 @Controller
@@ -73,8 +74,9 @@ public class MatController {
 	 @RequestMapping("/matregister")
 	 @ResponseBody 
 	 public OrderVO matregister(@RequestBody MatOrdVO vo){
-		 //OrderVO result1 = matmapper.getmatregister(vo);		 
-		 System.err.println(vo);
+		 System.err.println(vo.getList());
+		 System.out.println(vo.getList().get(0));
+		 matmapper.getmatregister(vo.getList());		 
 	 	 return null; 
 	 	}
 	
@@ -95,9 +97,17 @@ public class MatController {
 		 
 	 }
 	 
+	 @RequestMapping("/warehousing")
+	 @ResponseBody
+	 public List<WarehousingVO> warehousinglist(){
+		 List<WarehousingVO> list = matmapper.getwarehousinglist();
+		 return list;
+	 }
+	 
+	 
 	 //자재/반제품 입고조회
-	 @GetMapping("/warehousinglist")
-	 public void warehousinglist() {
+	 @GetMapping("/warehousingmatlist")
+	 public void warehousingmatlist() {
 		 
 	 }
 	
