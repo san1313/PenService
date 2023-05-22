@@ -13,12 +13,12 @@
 	
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
-		select mat_code, mat_name, mat_unit from COM_CODE_MAT
+		select distinct a.mat_code, a.mat_name, b.mat_untpc, c.mat_ordername from COM_CODE_MAT a join MAT_ORDER b on (a.mat_name=b.mat_name) join mat_order_header c on(b.mat_ordernum = c.mat_ordernum)
 	</select>
 	
 	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
-		select mat_code, mat_name, mat_unit from COM_CODE_MAT where mat_name =#{keyword}
+		select distinct a.mat_code, a.mat_name, b.mat_untpc, c.mat_ordername from COM_CODE_MAT a join MAT_ORDER b on (a.mat_name=b.mat_name) join mat_order_header c on(b.mat_ordernum = c.mat_ordernum) where a.mat_name like #{keyword}
 	</select>
 	
 	<!-- 모달거래처목록 -->
@@ -28,7 +28,23 @@
 	
 	<!-- 모달거래처검색조회 -->
 	<select id="getaccminilist" resultType="OrderVO">
-		SELECT b.mat_name, c.acc_code, c.acc_name FROM COM_ACCOUNT_ITEM A JOIN COM_CODE_MAT B ON (A.ACC_ITEM = b.mat_code) JOIN COM_CODE_ACCOUNT C ON (a.acc_code = c.acc_code) where b.mat_name=#{keyword}
-
+		SELECT b.mat_name, c.acc_code, c.acc_name FROM COM_ACCOUNT_ITEM A JOIN COM_CODE_MAT B ON (A.ACC_ITEM = b.mat_code) JOIN COM_CODE_ACCOUNT C ON (a.acc_code = c.acc_code) where b.mat_name like #{keyword}
+	</select>
+	
+	<select id="getmatordercode" resultType="String">
+		SELECT COM_CODE||'-'||(select LPAD(MAX(REGEXP_REPLACE(MAT_ORDERNUM, '[^0-9]')+1),6,'0') AS NUM FROM MAT_ORDER_HEADER) AS MAT_CODE FROM COM_CODE WHERE CODE_NAME =  '자재코드'
+	</select>
+	
+	
+	
+	<select id="getmatregister" statementType="CALLABLE">
+		{call mo_prc(
+			#{vo.accCode, mode = IN, jdbcType = VARCHAR}, #{vo.matCharger, mode = IN, jdbcType = VARCHAR}, #{vo.matOrdername, mode = IN, jdbcType = VARCHAR},
+			#{vo.matUnit, mode = IN, jdbcType = VARCHAR}, #{vo.matOrderQy, mode = IN, jdbcType = VARCHAR}, #{vo.matTotamt, mode = IN, jdbcType = VARCHAR},
+			#{vo.matUnit, mode = IN, jdbcType = VARCHAR}, #{vo.matReqdate, mode = IN, jdbcType = VARCHAR}, #{vo.matOrderdate, mode = IN, jdbcType = VARCHAR},
+			#{vo.matName, mode = IN, jdbcType = VARCHAR}, #{vo.matCode, mode = IN, jdbcType = VARCHAR}, #{vo.matStd, mode = IN, jdbcType = VARCHAR}
+		)
+		}
+		
 	</select>
 </mapper>

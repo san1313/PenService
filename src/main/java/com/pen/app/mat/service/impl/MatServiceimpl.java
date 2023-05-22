@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 
 @Service
@@ -48,6 +49,18 @@ public class MatServiceimpl implements MatService{
 		// TODO Auto-generated method stub
 		return matmapper.getaccminilist(keyword);
 	}
+
+
+	 @Override
+	 public void getmatregister(MatOrdVO vo) { 
+		 // 발주등록 
+		 for(int i=0; i<vo.getList().size(); i++) {
+			// matmapper.getmatregister(vo.getList().get(i));
+			 
+		 }
+	 }
+	 
+	
 	
 	
 }

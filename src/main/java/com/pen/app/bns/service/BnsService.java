@@ -8,12 +8,12 @@ import com.pen.app.bns.vo.BnsProdVO;
 
 public interface BnsService {
 
-	public List<BnsOrdVO> getOrdList();
-	public  List<BnsOrdVO> getOrdListCon(BnsOrdVO vo);
-	public List<BnsAccVO> getAccList();
-	public List<BnsProdVO> getProdList();
-	public List<BnsAccVO> getAccKeyList(String keyword);
-	public List<BnsProdVO> getProdKeyList(String keyword);
-	
-	public int insertOrdList(BnsOrdVO bnsOrdVo);
+   public List<BnsOrdVO> getOrdList();
+   public  List<BnsOrdVO> getOrdListCon(BnsOrdVO vo);
+   public List<BnsAccVO> getAccList();
+   public List<BnsProdVO> getProdList();
+   public List<BnsAccVO> getAccKeyList(String keyword);
+   public List<BnsProdVO> getProdKeyList(String keyword);
+   
+   public int insertOrdList(BnsOrdVO bnsOrdVo);
 }

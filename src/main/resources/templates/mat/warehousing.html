@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>자재발주관리</title>
+  <title>자재/반제품 입고 관리</title>
 
   <style>
     .ordersearch {
@@ -41,7 +41,7 @@
     #grid {
       margin: 20px 0 10px;
     }
-	#deletematbtn{
+	#movebtn{
 	display:none;
 	float:right;
 	margin-right:10px;
@@ -70,94 +70,20 @@
 
 <body>
   <div layout:fragment="title">
-    <h3>자재발주관리</h3>
+    <h3>자재/반제품 입고 관리</h3>
   </div>
   
   <div layout:fragment="content">
-    <div class="ordersearch">
-      <label>발주번호</label>
-      <input id="orderCode" class="text1" readonly>
-      <label>자재명</label>
-      <input class="text1" type="text" id="matmodaltest" readonly	>
-      <input class="text1" type="hidden" id="matmodaltest1" readonly	>
-      <input class="text1" type="hidden" id="matmodaltestuntpc" readonly	>
-      <input class="text1" type="hidden" id="matmodalordername" readonly	>
-      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
-      <label>납기일</label>
-      <input class="text1" type="date" id="matReqdate"><br>
-      <label>거래처명</label>
-      <input class="text1" type="text" id="accmodaltest" readonly	>
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
-      <label>담당자</label>
-      <input class="text1" type="text" id ="matCharger">
-      <button type="button" id="addmatbtn">추가</button>
+	<h5>검사내역리스트</h5>
+     <div id="testmetgrid"></div>  
+     <button type="button" class="btn btn-danger" id="movebtn">이동</button>
      
-      
-      
-    </div>
-
-    <!-- 자재명모달 -->
-    <div class="modal fade bd-example-modal-lg" id="matmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">자재목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-        <label>자재명</label>
-        <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
-      	<div id="mat-modal-grid"></div>
-      </div>
-    </div>
   </div>
-</div>
 
-
-	<!-- 거래처목록모달 -->
-	 <div class="modal fade bd-example-modal-lg" id="accmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">거래처목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-        <label>자재명</label>
-        <input class="modaltext" type="text" id="ckacc-text">
-        <button class="ckaccmodalbtn" type="button" id="ckacc">조회</button>
-      	<div id="acc-modal-grid"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- 필요자재발주목록모달 -->
-	 <!-- <div class="modal fade bd-example-modal-lg" id="neccmatmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">필요자재발주목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-      	<div id="neccmat-modal-grid"></div>
-      </div>
-    </div>
-  </div>
-</div> -->
 	
+	<button type="button" class="btn btn-danger" id="deletematbtn">제거</button>
+    <button type="button" class="btn btn-primary" id="suBtn">저장</button>
 	<div id="grid"></div>
-    <button type="button" class="btn btn-primary" id="suBtn">발주요청</button>
-	<button type="button" class="btn btn-danger" id="deletematbtn">삭제</button>
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
@@ -165,16 +91,6 @@
 
           
      
-    // $.ajax({
-    // url : "/mat/orderListAjax",
-    // method : "GET",
-    // dataType : "JSON",
-    // success : function(result){
-    // grid.resetData(result);
-    // grid.refreshLayout();
-    
-    // }
-    // });
 
     var grid = new tui.Grid({
     el: document.getElementById('grid'),
