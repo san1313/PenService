@@ -32,7 +32,7 @@ public class SecurityConfig {
 	http.authorizeHttpRequests((requests) ->
 	requests
 	.antMatchers("/logout", "/login").permitAll()
-	.antMatchers("/admin/**").hasAuthority("ADMIN")
+	.antMatchers("/admin/**").hasAuthority("총관리자")
 	.anyRequest().authenticated())
 	.formLogin(login->
 		login.loginPage("/login")
