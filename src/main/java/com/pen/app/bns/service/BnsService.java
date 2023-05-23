@@ -17,5 +17,8 @@ public interface BnsService {
 	public List<BnsAccVO> getAccKeyList(String keyword);
 	public List<BnsProdVO> getProdKeyList(String keyword);
 	public int insertOrdList(List<BnsOrdVO> list);
+	
+	public int modOrdList(List<BnsOrdVO> list);//주문서 수정
+	public List<BnsOrdVO> getProdModList(String keyword);
 	/* public void insertOrdDetList (BnsOrdDetListVO bnsOrdDetListVo); */
 }

@@ -18,6 +18,11 @@ public interface BnsMapper {
 	List<BnsAccVO> getAccKeyList(String keyword); //거래처리스트 조회검색
 	List<BnsProdVO> getProdKeyList(String keyword);
 	
+	List<BnsOrdVO> getProdModList(String keyword); // 주문서 수정 모달창 내의 제품리스트
 	int insertOrdList(List<BnsOrdVO> list);// 주문서 등록
+	
+	int modOrdList(List<BnsOrdVO> list);// 주문서 수정
+	
 	List<BnsOrdVO> getOrdCode();//주문코드 조회
+	
 }
