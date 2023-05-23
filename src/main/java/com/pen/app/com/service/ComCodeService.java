@@ -8,4 +8,6 @@ import com.pen.app.com.vo.UserVO;
 
 public interface ComCodeService {
 	List<ComCodeVO> getComCodeList();
+	List<ComCodeVO> getComCodeWithName(String codeName);
+	List<ComCodeVO> getInnerCodeList(String comCode);
 }

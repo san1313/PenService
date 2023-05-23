@@ -40,7 +40,7 @@
   
   <!-- 이름으로 사원 조회 -->
   <select id="getUserWithName" resultType="UserVO">
-  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME = #{empName}
+  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME LIKE '%'||#{empName}||'%'
   </select>
   
   <!-- 모든 권한 리스트 조회 -->

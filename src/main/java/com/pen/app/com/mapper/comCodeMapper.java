@@ -12,4 +12,6 @@ import com.pen.app.com.vo.UserVO;
 public interface comCodeMapper {
 	//공통코드 리스트 조회
 	List<ComCodeVO> getComCodeList();
+	List<ComCodeVO> getComCodeWithName(String codeName);
+	List<ComCodeVO> getInnerCodeList(String comCode);
 }

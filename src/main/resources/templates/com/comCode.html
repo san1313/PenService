@@ -16,6 +16,14 @@
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #comCodeGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+    </style>
   </head>
   <body>
     <div layout:fragment="title">공통 코드 조회</div>
@@ -40,12 +48,12 @@
         <div class="row col-8"></div>
       </div>
       <div class="row justify-content-center">
-        <div class="row col-3">
-          <div id="comCodeGrid"></div>
+        <div class="row col-4">
+          <div class="col" id="comCodeGrid"></div>
         </div>
-        <div class="row col-2"></div>
-        <div class="row col-7">
-          <div id="innerCodeGrid"></div>
+        <div class="row col-8">
+          <div class="col-1"></div>
+          <div class="col-11" id="innerCodeGrid"></div>
         </div>
       </div>
       <script src="/plugins/jquery/jquery.min.js"></script>
@@ -54,31 +62,28 @@
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
           // 메인그리드시작;
-          // datasource 시작
-          const comCodeDataSource = {
-            contentType: "application/json",
-            api: {
-              readData: {
-                url: "/admin/getComCodeList",
-                method: "GET",
-              },
-            },
-          };
-          const innerCodeDataSource = {
-            contentType: "application/json",
-            api: {
-              readData: {
-                url: "/admin/getInnerCodeList",
-                method: "GET",
-              },
-            },
-          };
-          //datasource 끝
 
+          //그리드 세팅 시작
+          tui.Grid.applyTheme("default", {
+            cell: { selectedHeader: { background: "none" }, focused: { border: "transparent !important" } }, // 드래그했을때 헤더도 드래그 x , focus border x
+          });
+          tui.Grid.setLanguage("ko", {
+            display: {
+              noData: "데이터가 없습니다.",
+            },
+          });
+          //그리드 세팅 끝
           //그리드폼 시작
           const comCodeGrid = new tui.Grid({
             el: document.getElementById("comCodeGrid"),
-            data: comCodeDataSource,
+            data: {
+              api: {
+                readData: {
+                  url: "/admin/getComCodeList",
+                  method: "GET",
+                },
+              },
+            },
             bodyHeight: 680,
             scrollX: false,
             columns: [
@@ -96,10 +101,14 @@
           });
           const InnerCodeGrid = new tui.Grid({
             el: document.getElementById("innerCodeGrid"),
-            data: innerCodeDataSource,
             bodyHeight: 680,
             scrollX: false,
             columns: [
+              {
+                header: "공통코드",
+                name: "comCode",
+                align: "center",
+              },
               {
                 header: "세부코드",
                 name: "comInnerCode",
@@ -114,35 +123,45 @@
                 header: "세부코드설명",
                 name: "innerCodeDetail",
                 align: "center",
-              },
-              {
-                header: "공통코드",
-                name: "comCode",
-                align: "center",
+                width: 450,
               },
             ],
           });
           //그리드 폼 끝
 
           //사원명 조회 기능 grid.readData
-
           $("#comCodeSearchBtn").click(() => {
-            let = $("#empName");
-            if (empName.val() != "") {
+            let codeName = $("#codeName");
+            if (codeName.val() != "") {
               $.ajax({
-                url: "/admin/getUserWithNameAjax",
+                url: "/admin/getComCodeWithName",
                 dataType: "JSON",
-                data: { empName: empName.val() },
+                data: { codeName: codeName.val() },
               }).done((r) => {
-                grid.resetData(r);
+                comCodeGrid.resetData(r);
               });
               // 사원명 input이 비어있으면 모두 조회
             } else {
-              grid.readData();
+              comCodeGrid.readData();
             }
-            empName.val("");
+            codeName.val("");
           });
           // //사원명 조회기능 끝
+
+          //공통코드 그리드 클릭시 세부코드 조회
+          comCodeGrid.on("click", (e) => {
+            let comCode = comCodeGrid.getRow(e.rowKey).comCode;
+            $.ajax({
+              url: "/admin/getInnerCodeList",
+              data: { comCode: comCode },
+            })
+              .done((r) => {
+                InnerCodeGrid.resetData(r);
+              })
+              .fail((e) => {
+                alert("데이터를 불러오는 중 에러가 발생했습니다.");
+              });
+          });
         });
       </script>
     </div>

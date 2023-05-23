@@ -12,7 +12,7 @@
 
 	<!-- 자재 이름으로 조회 -->
 	<select id="getMatWithName" resultType="MatVO">
-		SELECT * FROM COM_CODE_MAT WHERE MAT_NAME = #{matName}
+		SELECT * FROM COM_CODE_MAT WHERE MAT_NAME LIKE '%'||#{matName}||'%'
 	</select>
 
 	<!-- 자재 코드 가져오기 -->

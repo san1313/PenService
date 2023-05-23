@@ -272,7 +272,19 @@ public class CommonController {
 	
 	@GetMapping("/admin/getComCodeList")
 	@ResponseBody
-	public List<ComCodeVO> getComCodeList(){
-		return comCodeService.getComCodeList();
+	public ToastUiResponseDTO getComCodeList(){
+		return new ToastUiResponseDTO(comCodeService.getComCodeList());
+	}
+	
+	@GetMapping("/admin/getComCodeWithName")
+	@ResponseBody
+	public List<ComCodeVO> getComCodeWithName(String codeName) {
+		return comCodeService.getComCodeWithName(codeName);
+	}
+	
+	@GetMapping("/admin/getInnerCodeList")
+	@ResponseBody
+	public List<ComCodeVO> getInnerCodeList(String comCode){
+		return comCodeService.getInnerCodeList(comCode);
 	}
 }

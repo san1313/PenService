@@ -23,4 +23,14 @@ public class ComCodeServiceImpl implements ComCodeService {
 			
 			return mapper.getComCodeList();
 		}
+	@Override
+		public List<ComCodeVO> getComCodeWithName(String codeName) {
+		
+			return mapper.getComCodeWithName(codeName);
+		}
+	@Override
+		public List<ComCodeVO> getInnerCodeList(String comCode) {
+			
+			return mapper.getInnerCodeList(comCode);
+		}
 }
