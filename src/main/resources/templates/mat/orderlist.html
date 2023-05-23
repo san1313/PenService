@@ -73,13 +73,10 @@
   
   <div layout:fragment="content">
       <label>자재명</label>
-      <input class="text1" type="text" id="matmodaltest" readonly	>
-      <input class="text1" type="hidden" id="matmodaltest1" readonly	>
-      <input class="text1" type="hidden" id="matmodaltestuntpc" readonly	>
-      <input class="text1" type="hidden" id="matmodalordername" readonly	>
+      <input class="text1" type="text" id="matmodalmatname" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>거래처명</label>
-      <input class="text1" type="text" id="accmodaltest" readonly	>
+      <input class="text1" type="text" id="accmodalname" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
       <label>납기일</label>
       <input class="text1" type="date" id="matReqdate"> ~ <input class="text1" type="date" id="matReqdate">
@@ -131,14 +128,14 @@
 
 
 	
-	<div id="grid"></div>
-	    <button type="button" class="btn btn-primary" id="download">다운로드</button>
+	<div id="listgrid"></div>
+	<button type="button" class="btn btn-primary" id="download">다운로드</button>
 		
 
     <script>
 
 
-    var grid = new tui.Grid({
+    var listgrid = new tui.Grid({
     el: document.getElementById('grid'),
     scrollX: false,
     scrollY: false,
@@ -182,6 +179,10 @@
     {
     header: '발주량',
     name: 'matOrderQy',
+    },
+    {
+    header: '총금액',
+    name: 'matTotamt'
     }
     ]
     });
@@ -423,93 +424,7 @@
   })
   
   
-  //발주요청버튼
-  /*document.getElementById('suBtn').addEventListener('click', function(){
-	  let checked = grid.getCheckedRows();
-	  $.ajax({
-  		url : "/mat/matregister",
-  		method : "POST",
-  		data : JSON.stringify(
-	  		{accCode: grid.getCheckedRows().accCode}, {matCharger: grid.getCheckedRows().matCharger},
-	  		{matOrdername: grid.getCheckedRows().matOrdername}, {matUntpc: grid.getCheckedRows().matUntpc},
-	  		{matOrderQy: grid.getCheckedRows().matOrderQy}, {matTotamt: grid.getCheckedRows().matTotamt},
-	  		{matUnit: grid.getCheckedRows().matUnit}, {matOrderdate: grid.getCheckedRows().matOrderdate},
-	  		{matReqdate: grid.getCheckedRows().matReqdate}, {matName: grid.getCheckedRows().matName},
-	  		{matCode: grid.getCheckedRows().matCode}, {matStd: grid.getCheckedRows().matStd}
-  		),
-  		beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-  		dataType : "JSON",
-  		contentType: "application/json",
-  		success : function(result3){
-  			
-  			console.log(result3);
-  			grid.resetData(result3);
-  			grid.refreshLayout();
-  		}
-  	});
-	  
-  })*/
-     
-     //필요자재발주목록모달
-    /* $.ajax({
-        url : "/mat/matlist",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	console.log(result);
-          acc_modal_grid.resetData(result);
-          acc_modal_grid.refreshLayout();
-        }
-      });
-
-
-	  
-      var modal_grid = new tui.Grid({
-        el: document.getElementById('acc-modal-grid'),
-
-        scrollX: false,
-        scrollY: false,
-        rowHeaders: ['rowNum'],
-        columns: [{
-          header: '자재코드',
-          name: 'matCode'
-        },
-        {
-          header: '자재명',
-          name: 'matName'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '재고량',
-          name: 'matUnit'
-        },
-        {
-          header: '안전재고',
-          name: 'matUnit'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-          }
-        
-      ]
-    }) */
-
+  
    
     </script>
 

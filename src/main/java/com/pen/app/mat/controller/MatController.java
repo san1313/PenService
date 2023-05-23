@@ -13,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
+import com.pen.app.mat.vo.WareRegVO;
 import com.pen.app.mat.vo.WarehousingVO;
 
 
@@ -22,12 +23,12 @@ public class MatController {
 
 @Autowired MatMapper matmapper;
 	
+	//발주페이지
 	@GetMapping("/order")
 	public void ordermain() {
 		
 	}
-	 
-	
+	 	
 	//자재모달창리스트
 	@ResponseBody
 	@GetMapping("/matlist")
@@ -79,30 +80,61 @@ public class MatController {
 		 matmapper.getmatregister(vo.getList());		 
 	 	 return null; 
 	 	}
-	
-	
-	 
-	 
-	 
-	 //자재발주조회
-	 @GetMapping("/orderlist")
-	 public void orderlistmain(){
 		 
+	 
+	 //자재발주조회페이지
+	 @GetMapping("/orderlist")
+	 public void matorderlist(){
+		 
+	 }
+	 //자재발주조회
+	 @RequestMapping("orderlistajax")
+	 public List<OrderVO> orderlistajax(){
+		 List<OrderVO> list = matmapper.getorderlistajax();
+		 return list;
 	 }
 	 
 	
-	 //자재/반제품 입고
+	 //자재입고페이지
 	 @GetMapping("/warehousing")
 	 public void warehousing() {
 		 
 	 }
 	 
-	 @RequestMapping("/warehousing")
+	 //자재 검사내역리스트
+	 @RequestMapping("/warehousinglist")
 	 @ResponseBody
 	 public List<WarehousingVO> warehousinglist(){
 		 List<WarehousingVO> list = matmapper.getwarehousinglist();
 		 return list;
 	 }
+	 
+	 //자재 입고등록
+	 @RequestMapping("/warehousingregister")
+	 @ResponseBody
+	 public WarehousingVO warehousingregister(@RequestBody WareRegVO vo) {
+		 System.err.println(vo.getList());
+		 
+		 matmapper.getwarehousingregister(vo.getList());
+		 return null;
+	 }
+	 
+	 //반제품입고페이지
+	 @GetMapping("/semiwarehousing")
+	 public void semiwarehousing() {
+		 
+	 }
+	 
+	 //반제품 검사내역리스트
+	 @RequestMapping("/semiwarehousinglist")
+	 @ResponseBody
+	 public List<WarehousingVO> semiwarehousinglist(){
+		List<WarehousingVO> list = matmapper.getsemiwarehousinglist();
+		return list;
+	 }
+	 
+	 
+	 //반제품 입고등록
 	 
 	 
 	 //자재/반제품 입고조회

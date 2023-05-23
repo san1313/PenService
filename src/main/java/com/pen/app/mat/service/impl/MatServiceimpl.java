@@ -56,13 +56,32 @@ public class MatServiceimpl implements MatService{
 		 // 발주등록 
 			 
 	 }
+	 
+	 @Override
+	public List<OrderVO> getorderlistajax() {
+		// 발주등록조회페이지
+		return matmapper.getorderlistajax();
+	}
 
 	@Override
 	public List<WarehousingVO> getwarehousinglist() {
 		// 자재입고 검사내역리스트
 		return matmapper.getwarehousinglist();
 	}
-	 
+
+	
+	@Override
+	public void getwarehousingregister(List<WarehousingVO> list) {
+		// 자재입고등록
+		
+	}
+
+	@Override
+	public List<WarehousingVO> getsemiwarehousinglist() {
+		// 반제품 검사내역리스트
+		return matmapper.getsemiwarehousinglist();
+	}
+
 	
 	
 	
