@@ -91,7 +91,7 @@
 			<button type="button" class="btn btn-outline-secondary"
 				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
 				등록</button>
-			<button class="btn btn-outline-secondary">주문서 취소</button>
+			<button id ="BtnOrdCancle" class="btn btn-outline-secondary">주문서 취소</button>
 		</div>
 		
 		<br>
@@ -170,11 +170,9 @@
 								<label for="recipient-name" class="col-form-label">담당자명
 								</label> <input type="text" id="ordempname" class="form-control" name="empName" th:value="${#authentication.principal.username}" readonly>
 							</div>
-							
+								
 								 <input type="hidden" th:value="${userVO.empNum}" id="ordempnum" class="form-control" name="empCode" readonly >
 							
-						</div>
-						<div style="display: flex;">
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">거래처명
 									<button type="button" class="fa-solid fa-magnifying-glass"
@@ -182,9 +180,11 @@
 								</label> <input id="ordaccname" type="text" class="form-control"
 									name="accName" readonly>
 							</div>
+						</div>
+						<div style="display: flex;">
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">거래처코드
-								</label> <input type="text" id="ordacccode" class="form-control"
+								 <!-- <label for="recipient-name" class="col-form-label">거래처코드 </label> -->
+								 <input type="hidden" id="ordacccode" class="form-control"
 									name="accCode" readonly>
 							</div>
 						</div>
@@ -204,10 +204,11 @@
 						<input type="hidden" id="modalOrdNote" class="form-control" name="ordNote"></input>
 						<br>
 						<hr>
-						<h2>제품추가</h2>
-						<br> <label>제품명</label>
+						<h2>주문상세</h2>
+						<br> <label>제품리스트</label>
 						<button type="button" class="fa-solid fa-magnifying-glass"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
+							<button style="float:right; margin-right : 5px;"id="ordProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
 						<div class="modalbtn">
 							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
@@ -273,6 +274,11 @@
 		const header = $('meta[name="_csrf_header"]').attr("content");
 		
 		
+		$('#ordProdDelete').on('click' ,function(){
+			
+			addProdgrid.removeCheckedRows(true)
+			
+		});
 		
 		
 		
@@ -280,7 +286,19 @@
              el: document.getElementById('addProdgrid'),
              scrollX: false,
              scrollY: false,
-             rowHeaders: ['rowNum'],
+             rowHeaders: [
+                 {
+                   type: 'rowNum',
+                 },
+                 {
+                   type: 'checkbox',
+                   header: `
+                   <label for="all-checkbox" class="checkbox">
+                     <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+                     <span class="custom-input"></span>
+                   </label>`
+                 }	
+               ],
              columns: [
            	  
                {
@@ -306,37 +324,37 @@
                  name: 'ordDetTotPrice'
                  
                }
-              
              ],
                summary: {
+            	   height: 40,
             	    position: 'bottom',
              columnContent: {
             	 ordDetQuan: {
-                   template: function(summary) {
-                     return `합계: ${summary.sum}`;
+                   template: function(valueMap) {
+                     return `TOTAL: ${valueMap.sum}`;
                    }
                  },
                  ordDetPrice: {
-                   template: function(summary) {
-                     return `합계: ${summary.sum}`;
+                   template: function(valueMap) {
+                     return `TOTAL: ${valueMap.sum}원`;
                    }
                  },
                  ordDetTotPrice: {
-                     template: function(summary) {
-                       return `합계: ${summary.sum}`;
+                     template: function(valueMap) {
+                       return `TOTAL: ${valueMap.sum}원`;
                      }
                    }
                }
-              
              }  
             	});
-         addProdgrid.on('editingFinish', function(ev){
+		 
+          addProdgrid.on('editingFinish', function(ev){
        	  let row = addProdgrid.getRow(ev.rowKey);
        	  if((ev.columnName=="ordDetQuan" || ev.columnName=="ordDetPrice")&&row.ordDetQuan&&row.ordDetPrice){
        		  addProdgrid.setValue(ev.rowKey, "ordDetTotPrice", row.ordDetQuan*row.ordDetPrice, false)
        	  }
        	  
-         })
+         }) 
          
          
 		 
@@ -409,7 +427,7 @@ $.ajax({
      el: document.getElementById('accountRegGrid'),
      scrollX: false,
      scrollY: false,
-     
+     rowHeaders: ['rowNum'],
      columns: [
        {
          header: '거래처코드',
@@ -484,6 +502,7 @@ $.ajax({
      el: document.getElementById('productRegGrid'),
      scrollX: false,
      scrollY: false,
+     rowHeaders: ['rowNum'],
      columns: [
        {
          header: '제품코드',
@@ -567,6 +586,7 @@ $.ajax({
      el: document.getElementById('accountGrid'),
      scrollX: false,
      scrollY: false,
+     rowHeaders: ['rowNum'],
      columns: [
        {
          header: '거래처코드',
@@ -647,6 +667,7 @@ $.ajax({
      el: document.getElementById('productGrid'),
      scrollX: false,
      scrollY: false,
+     rowHeaders: ['rowNum'],
      columns: [
        {
          header: '제품코드',
@@ -756,7 +777,19 @@ $.ajax({
      el: document.getElementById('grid'),
      scrollX: false,
      scrollY: false,
-     rowHeaders: ['checkbox'],
+     rowHeaders: [
+         {
+           type: 'rowNum',
+         },
+         {
+           type: 'checkbox',
+           header: `
+           <label for="all-checkbox" class="checkbox">
+             <input type="checkbox" id="all-checkbox" class="hidden-input" name="_checked" />
+             <span class="custom-input"></span>
+           </label>`
+         }	
+       ],
      columns: [
        {
          header: '주문코드',
@@ -768,23 +801,30 @@ $.ajax({
        },
        {
          header: '거래처명',
-         name: 'accName'
+         name: 'accName',
+         sortable: true,
+         filter: 'select'
        },
        {
            header: '제품명',
-           name: 'prodName'
+           name: 'prodName',
+           sortable: true,
+           filter: 'select'
          },
        {
          header: '주문일자',
-         name: 'ordDate'
+         name: 'ordDate',
+         sortable: true
        },
        {
          header: '납기일자',
-         name: 'ordDueDate'
+         name: 'ordDueDate',
+         sortable: true	
        },
        {
            header: '진행상황',
-           name: 'ordProgress'
+           name: 'ordProgress',
+           filter: 'select'
          },
        {
            header: '담당자명',
@@ -798,7 +838,8 @@ $.ajax({
      ]
    });
 	
- 	grid.on('click', (ev) => {
+ 	grid.on('dblclick', (ev) => {
+ 		
 	      const focusCell = grid.getFocusedCell()
 	      console.log(focusCell)
 
