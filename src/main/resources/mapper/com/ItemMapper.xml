@@ -4,13 +4,145 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.com.mapper.ItemMapper">
-<select id="getMatList" resultType="MatVO">
-	SELECT * FROM COM_CODE_MAT
-</select>
-<select id="getSemiList" resultType="SemiVO">
-	SELECT * FROM COM_CODE_SEMI
-</select>
-<select id="getProdList" resultType="ProdVO">
-	SELECT * FROM COM_CODE_PROD
-</select>
+	<!-- 자재기능 시작 -->
+	<!-- 자재 전체 리스트 조회 -->
+	<select id="getMatList" resultType="MatVO">
+		SELECT * FROM COM_CODE_MAT
+	</select>
+
+	<!-- 자재 이름으로 조회 -->
+	<select id="getMatWithName" resultType="MatVO">
+		SELECT * FROM COM_CODE_MAT WHERE MAT_NAME = #{matName}
+	</select>
+
+	<!-- 자재 코드 가져오기 -->
+	<select id="getMatCode" resultType="String">
+		SELECT 'MAT-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
+		SEQUENCE_NAME = 'MAT_SEQ'
+	</select>
+
+	<!-- 자재 정보수정 -->
+	<update id="modifyMatList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_CODE_MAT
+			SET
+			MAT_NAME = #{vo.matName},
+			MAT_STD = #{vo.matStd},
+			MAT_UNIT = #{vo.matUnit},
+			MAT_USE = #{vo.matUse},
+			MAT_SFST = #{vo.matSfst}
+			WHERE MAT_CODE = #{vo.matCode}
+		</foreach>
+	</update>
+	
+	  <!-- 자재 추가 -->
+  <insert id="insertMatList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_CODE_MAT VALUES (
+          GET_MAT_SEQ,
+          #{vo.matName},
+          #{vo.matStd},
+          #{vo.matUnit},
+          #{vo.matSfst},
+          #{vo.matUse}
+    )
+    </foreach>
+  </insert>
+	<!-- 자재기능 끝 -->
+
+	<!-- 반제품기능 시작 -->
+	<!-- 반제품 전체 리스트 조회 -->
+	<select id="getSemiList" resultType="SemiVO">
+		SELECT * FROM COM_CODE_SEMI
+	</select>
+
+	<!-- 반제품 코드 가져오기 -->
+	<select id="getSemiCode" resultType="String">
+		SELECT 'SEMI-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
+		SEQUENCE_NAME = 'SEMI_SEQ'
+	</select>
+
+	<!-- 반자재 이름으로 조회 -->
+	<select id="getSemiWithName" resultType="SemiVO">
+		SELECT * FROM COM_CODE_SEMI WHERE SEMI_NAME = #{semiName}
+	</select>
+	
+		<!-- 반제품 정보수정 -->
+	<update id="modifySemiList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_CODE_SEMI
+			SET
+			SEMI_NAME = #{vo.semiName},
+			SEMI_STD = #{vo.semiStd},
+			SEMI_UNIT = #{vo.semiUnit},
+			SEMI_USE = #{vo.semiUse}
+			WHERE SEMI_CODE = #{vo.semiCode}
+		</foreach>
+	</update>
+	
+	  <!-- 반제품 추가 -->
+  <insert id="insertSemiList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_CODE_SEMI VALUES (
+          GET_SEMI_SEQ,
+          #{vo.semiName},
+          #{vo.semiStd},
+          #{vo.semiUnit},
+          #{vo.semiUse}
+    )
+    </foreach>
+  </insert>
+	<!-- 반제품기능 끝 -->
+
+	<!-- 완제품기능 시작 -->
+	<!-- 완제품 전체 리스트 조회 -->
+	<select id="getProdList" resultType="ProdVO">
+		SELECT * FROM COM_CODE_PROD
+	</select>
+
+	<!-- 완제품 이름으로 조회 -->
+	<select id="getProdWithName" resultType="ProdVO">
+		SELECT * FROM COM_CODE_PROD WHERE PROD_NAME = #{prodName}
+	</select>
+
+	<!-- 완제품 코드 가져오기 -->
+	<select id="getProdCode" resultType="String">
+		SELECT 'PROD-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
+		SEQUENCE_NAME = 'PROD_SEQ'
+	</select>
+	
+	<!-- 완제품 정보수정 -->
+	<update id="modifyProdList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_CODE_PROD
+			SET
+			PROD_NAME = #{vo.prodName},
+			PROD_STD = #{vo.prodStd},
+			PROD_UNIT = #{vo.prodUnit},
+			PROD_USE = #{vo.prodUse},
+			PROD_SFST = #{vo.prodSfst}
+			WHERE PROD_CODE = #{vo.prodCode}
+		</foreach>
+	</update>
+	
+	  <!-- 자재 추가 -->
+  <insert id="insertProdList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_CODE_PROD VALUES (
+          GET_PROD_SEQ,
+          #{vo.prodName},
+          #{vo.prodStd},
+          #{vo.prodUnit},
+          #{vo.prodSfst},
+          #{vo.prodUse}
+    )
+    </foreach>
+  </insert>
+	<!-- 완제품기능 끝 -->
 </mapper>

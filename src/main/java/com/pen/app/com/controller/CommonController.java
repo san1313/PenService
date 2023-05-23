@@ -17,9 +17,11 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.com.dto.ToastUiResponseDTO;
+import com.pen.app.com.service.impl.ComCodeServiceImpl;
 import com.pen.app.com.service.impl.ItemServiceImpl;
 import com.pen.app.com.service.impl.UserServiceImpl;
 import com.pen.app.com.vo.AuthVO;
+import com.pen.app.com.vo.ComCodeVO;
 import com.pen.app.com.vo.MatVO;
 import com.pen.app.com.vo.ProdVO;
 import com.pen.app.com.vo.SemiVO;
@@ -33,6 +35,7 @@ public class CommonController {
 	
 	@Autowired UserServiceImpl userService;
 	@Autowired ItemServiceImpl itemService;
+	@Autowired ComCodeServiceImpl comCodeService;
 	@Autowired AuthenticationManager authenticationManager;
 	
 	@GetMapping(value = {"/top", "/"})
@@ -40,6 +43,7 @@ public class CommonController {
 		return "/top";
 	}
 	
+	//로그인유저 정보수정
 	@GetMapping("/modifyUser")
 	public String modifyUserForm(Model model, Principal principal) {
 		UserVO vo = new UserVO();
@@ -49,12 +53,6 @@ public class CommonController {
 		return "/com/modifyUser";
 		
 	}
-	
-	@GetMapping("/login")
-	public void login() {
-		
-	}
-	
 	@PostMapping("/modify")
 	public boolean modifyUser(@RequestBody UserVO vo, HttpSession session) { 
 		if (vo.getPassword()!="") {
@@ -62,6 +60,14 @@ public class CommonController {
 		}
 		return userService.modifyUser(vo);
 	}
+	
+	//로그인 페이지 -----------------------------------------------
+	@GetMapping("/login")
+	public void login() {
+		
+	}
+	
+	//사원관리페이지 -----------------------------------------------
 	
 	@ResponseBody
 	@GetMapping("/getAuthListAjax")
@@ -84,7 +90,6 @@ public class CommonController {
 	@ResponseBody
 	@PostMapping("/admin/userModifyAjax")
 	public ToastUiResponseDTO userModifyAjax(@RequestBody Map<String, List<UserVO>> modifiedRows) {
-		System.out.println(modifiedRows);
 		String result = "Success";
 		List<UserVO> updatedRows = modifiedRows.get("updatedRows");
 		List<UserVO> createdRows = modifiedRows.get("createdRows");
@@ -132,6 +137,7 @@ public class CommonController {
 		return userService.getEmpCode();
 	}
 	
+	//품목정보 페이지 -----------------------------------------------
 	@GetMapping("/admin/itemManage")
 	public String itemManage() {
 		return "/com/itemManage";
@@ -143,15 +149,130 @@ public class CommonController {
 		return new ToastUiResponseDTO(itemService.getMatList());
 	}
 	
+	@GetMapping("/admin/getMatWithName")
+	@ResponseBody
+	public List<MatVO> getMatWithName(String itemName) {
+		return itemService.getMatWithName(itemName);
+	}
+	
+	@GetMapping("/admin/getMatCode")
+	@ResponseBody
+	public String getMatCode() {
+		return itemService.getMatCode();
+	}
+	
+	@ResponseBody
+	@PostMapping("/admin/matModifyAjax")
+	public ToastUiResponseDTO matModifyAjax(@RequestBody Map<String, List<MatVO>> modifiedRows) {
+		String result = "Success";
+		List<MatVO> updatedRows = modifiedRows.get("updatedRows");
+		List<MatVO> createdRows = modifiedRows.get("createdRows");
+		
+		// 변경사항 중에서 update 된 건을 update 기능으로
+		if (updatedRows.size()!=0) {
+			itemService.modifyMatList(updatedRows);
+		}
+		
+		// 변경사항 중에서 create 된 건을 insert 기능으로
+		if (createdRows.size()!=0) {
+			if(!itemService.insertMatList(createdRows)) { // 결과가 0건이면
+				result = "Fail";
+			}
+		
+		}
+		return new ToastUiResponseDTO(result);
+	}
+	
 	@GetMapping("/admin/getSemiList")
 	@ResponseBody
 	public ToastUiResponseDTO getSemiList(){
 		return new ToastUiResponseDTO(itemService.getSemiList());
 	}
 	
+	@GetMapping("/admin/getSemiWithName")
+	@ResponseBody
+	public List<SemiVO> getSemiWithName(String itemName) {
+		return itemService.getSemiWithName(itemName);
+	}
+	
+	@GetMapping("/admin/getSemiCode")
+	@ResponseBody
+	public String getSemiCode() {
+		return itemService.getSemiCode();
+	}
+	
+	@ResponseBody
+	@PostMapping("/admin/semiModifyAjax")
+	public ToastUiResponseDTO semiModifyAjax(@RequestBody Map<String, List<SemiVO>> modifiedRows) {
+		String result = "Success";
+		List<SemiVO> updatedRows = modifiedRows.get("updatedRows");
+		List<SemiVO> createdRows = modifiedRows.get("createdRows");
+		
+		// 변경사항 중에서 update 된 건을 update 기능으로
+		if (updatedRows.size()!=0) {
+			itemService.modifySemiList(updatedRows);
+		}
+		
+		// 변경사항 중에서 create 된 건을 insert 기능으로
+		if (createdRows.size()!=0) {
+			if(!itemService.insertSemiList(createdRows)) { // 결과가 0건이면
+				result = "Fail";
+			}
+		
+		}
+		return new ToastUiResponseDTO(result);
+	}
+	
 	@GetMapping("/admin/getProdList")
 	@ResponseBody
 	public ToastUiResponseDTO getProdList(){
 		return new ToastUiResponseDTO(itemService.getProdList());
+	}
+	
+	@GetMapping("/admin/getProdWithName")
+	@ResponseBody
+	public List<ProdVO> getProdWithName(String itemName) {
+		return itemService.getProdWithName(itemName);
+	}
+	
+	@GetMapping("/admin/getProdCode")
+	@ResponseBody
+	public String getProdCode() {
+		return itemService.getProdCode();
+	}
+	@ResponseBody
+	@PostMapping("/admin/prodModifyAjax")
+	public ToastUiResponseDTO prodModifyAjax(@RequestBody Map<String, List<ProdVO>> modifiedRows) {
+		System.out.println("----------------Prod--------------");
+		System.out.println(modifiedRows);
+		String result = "Success";
+		List<ProdVO> updatedRows = modifiedRows.get("updatedRows");
+		List<ProdVO> createdRows = modifiedRows.get("createdRows");
+		
+		// 변경사항 중에서 update 된 건을 update 기능으로
+		if (updatedRows.size()!=0) {
+			itemService.modifyProdList(updatedRows);
+		}
+		
+		// 변경사항 중에서 create 된 건을 insert 기능으로
+		if (createdRows.size()!=0) {
+			if(!itemService.insertProdList(createdRows)) { // 결과가 0건이면
+				result = "Fail";
+			}
+		
+		}
+		return new ToastUiResponseDTO(result);
+	}
+	
+	//공통코드 조회 페이지 -----------------------------------------------
+	@GetMapping("/admin/comCode")
+	public String comCode() {
+		return "/com/comCode";
+	}
+	
+	@GetMapping("/admin/getComCodeList")
+	@ResponseBody
+	public List<ComCodeVO> getComCodeList(){
+		return comCodeService.getComCodeList();
 	}
 }

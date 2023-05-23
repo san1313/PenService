@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  layout:decorate="~{layout/template}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Pen Service</title>
+    <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+    <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+  </head>
+  <body>
+    <div layout:fragment="title">공통 코드 조회</div>
+    <!-- 메인컨텐츠 -->
+    <div layout:fragment="content">
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="row col-4">
+          <div class="col-3">
+            <label class="col-form-label" for="CodeName">코드명</label>
+          </div>
+          <div class="col-7">
+            <input type="text" class="form-control" id="codeName" name="codeName" placeholder="빈 칸이면 전체 조회" />
+          </div>
+          <div class="col-2">
+            <button
+              class="fa-solid fa-magnifying-glass btn btn-primary"
+              id="comCodeSearchBtn"
+              style="height: 38px; float: left"
+            ></button>
+          </div>
+        </div>
+        <div class="row col-8"></div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="row col-3">
+          <div id="comCodeGrid"></div>
+        </div>
+        <div class="row col-2"></div>
+        <div class="row col-7">
+          <div id="innerCodeGrid"></div>
+        </div>
+      </div>
+      <script src="/plugins/jquery/jquery.min.js"></script>
+      <script>
+        $(function () {
+          const token = $('meta[name="_csrf"]').attr("content");
+          const header = $('meta[name="_csrf_header"]').attr("content");
+          // 메인그리드시작;
+          // datasource 시작
+          const comCodeDataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/admin/getComCodeList",
+                method: "GET",
+              },
+            },
+          };
+          const innerCodeDataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/admin/getInnerCodeList",
+                method: "GET",
+              },
+            },
+          };
+          //datasource 끝
+
+          //그리드폼 시작
+          const comCodeGrid = new tui.Grid({
+            el: document.getElementById("comCodeGrid"),
+            data: comCodeDataSource,
+            bodyHeight: 680,
+            scrollX: false,
+            columns: [
+              {
+                header: "공통코드",
+                name: "comCode",
+                align: "center",
+              },
+              {
+                header: "공통코드명",
+                name: "codeName",
+                align: "center",
+              },
+            ],
+          });
+          const InnerCodeGrid = new tui.Grid({
+            el: document.getElementById("innerCodeGrid"),
+            data: innerCodeDataSource,
+            bodyHeight: 680,
+            scrollX: false,
+            columns: [
+              {
+                header: "세부코드",
+                name: "comInnerCode",
+                align: "center",
+              },
+              {
+                header: "세부코드명",
+                name: "innerCodeName",
+                align: "center",
+              },
+              {
+                header: "세부코드설명",
+                name: "innerCodeDetail",
+                align: "center",
+              },
+              {
+                header: "공통코드",
+                name: "comCode",
+                align: "center",
+              },
+            ],
+          });
+          //그리드 폼 끝
+
+          //사원명 조회 기능 grid.readData
+
+          $("#comCodeSearchBtn").click(() => {
+            let = $("#empName");
+            if (empName.val() != "") {
+              $.ajax({
+                url: "/admin/getUserWithNameAjax",
+                dataType: "JSON",
+                data: { empName: empName.val() },
+              }).done((r) => {
+                grid.resetData(r);
+              });
+              // 사원명 input이 비어있으면 모두 조회
+            } else {
+              grid.readData();
+            }
+            empName.val("");
+          });
+          // //사원명 조회기능 끝
+        });
+      </script>
+    </div>
+    <!-- 메인컨텐츠 끝 -->
+  </body>
+</html>

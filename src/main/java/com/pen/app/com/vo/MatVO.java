@@ -9,4 +9,5 @@ public class MatVO {
 	String matStd;
 	String matUnit;
 	String matUse;
+	int matSfst;
 }

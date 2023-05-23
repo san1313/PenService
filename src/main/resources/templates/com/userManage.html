@@ -250,14 +250,17 @@
                     data: { empName: empName.val() },
                   }).done((r) => {
                     grid.resetData(r);
+                  }).fail((e)=>{
+                	  alert('데이터를 조회하는 중 에러가 발생했습니다.');
                   });
                   // 사원명 input이 비어있으면 모두 조회
                 } else {
-                  grid.restore();
+                  grid.readData();
                   nextNum = null;
                 }
               }
             }
+            empName.val('');
           });
           //사원명 조회기능 끝
 

@@ -46,25 +46,22 @@
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-4">
           <div class="col-3">
-            <label class="col-form-label" for="empName">품목명</label>
+            <label class="col-form-label" for="itemName">품목명</label>
           </div>
           <div class="col-7">
-            <input type="text" class="form-control" id="empName" name="empName" placeholder="빈 칸이면 전체 조회" />
+            <input type="text" class="form-control" id="itemName" name="itemName" placeholder="빈 칸이면 전체 조회" />
           </div>
           <div class="col-2">
             <button
               class="fa-solid fa-magnifying-glass btn btn-primary"
-              id="userSearchBtn"
+              id="itemSearchBtn"
               style="height: 38px; float: left"
             ></button>
           </div>
         </div>
         <div class="row col-8 justify-content-end">
           <div class="col-auto">
-            <button class="btn btn-primary" id="addEmp" style="height: 38px">추가</button>
-          </div>
-          <div class="col-auto">
-            <button class="btn btn-danger" id="delete" style="height: 38px">삭제</button>
+            <button class="btn btn-primary" id="add" style="height: 38px">추가</button>
           </div>
           <div class="col-auto">
             <button class="btn btn-primary" id="reset" style="height: 38px">초기화</button>
@@ -188,11 +185,12 @@
             el: document.getElementById("semiGrid"),
             data: semiDataSource,
             bodyHeight: 630,
+            rowHeaders: ["rowNum"],
             scrollX: false,
             columns: [
               {
                 header: "반제품코드",
-                name: "semicode",
+                name: "semiCode",
                 align: "center",
               },
               {
@@ -235,6 +233,7 @@
           const prodGrid = new tui.Grid({
             el: document.getElementById("prodGrid"),
             data: prodDataSource,
+            rowHeaders: ["rowNum"],
             bodyHeight: 630,
             scrollX: false,
             columns: [
@@ -291,16 +290,72 @@
           //라디오 버튼 누를시 타겟 grid 변경
           let grid = matGrid;
           $("input[name=type]").on("change", (e) => {
-            console.log($("input[name=type]:checked").val());
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+            let radioVal = $("input[name=type]:checked").val();
+            let mat = $("#matGrid");
+            let semi = $("#semiGrid");
+            let prod = $("#prodGrid");
+            if (noChange) {
+              if (radioVal == "mat") {
+                grid = matGrid;
+                semi.hide();
+                prod.hide();
+                mat.show();
+                grid.refreshLayout();
+              } else if (radioVal == "semi") {
+                grid = semiGrid;
+                mat.hide();
+                prod.hide();
+                semi.show();
+                grid.refreshLayout();
+              } else {
+                grid = prodGrid;
+                mat.hide();
+                semi.hide();
+                prod.show();
+                grid.refreshLayout();
+              }
+            } else {
+              if (confirm("조회항목 변경시 수정한 데이터가 소실됩니다. 변경하시겠습니까?")) {
+                grid.restore();
+                if (radioVal == "mat") {
+                  grid = matGrid;
+                  semi.hide();
+                  prod.hide();
+                  mat.show();
+                  grid.refreshLayout();
+                } else if (radioVal == "semi") {
+                  grid = semiGrid;
+                  mat.hide();
+                  prod.hide();
+                  semi.show();
+                  grid.refreshLayout();
+                } else {
+                  grid = prodGrid;
+                  mat.hide();
+                  semi.hide();
+                  prod.show();
+                  grid.refreshLayout();
+                }
+                nextNum = null;
+              }
+            }
           });
           //그리드 세팅 시작
           //서버에 연결전 토큰값 담는 method
-          grid.on("beforeRequest", function (obj) {
+          matGrid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+          semiGrid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+          prodGrid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
           });
 
           //데이터 저장 여부 alert
-          grid.on("response", (e) => {
+          matGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
               alert("데이터가 저장되었습니다.");
@@ -308,7 +363,22 @@
               alert("데이터 저장중 에러가 발생했습니다.");
             }
           });
-
+          semiGrid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
+          prodGrid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
           //tui grid의 언어세팅
           tui.Grid.setLanguage("ko");
 
@@ -316,83 +386,111 @@
 
           //저장기능 시작
           $("#save").click(() => {
+            console.log(grid);
+
             //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
             grid.finishEditing();
             grid.request("modifyData");
           });
           //저장기능 끝
 
-          //사원명 조회 기능 grid.readData
-          $("#userSearchBtn").click(() => {
+          //품목 조회 기능 grid.readData
+          $("#itemSearchBtn").click(() => {
             let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
-            let empName = $("#empName");
+            let itemName = $("#itemName");
+            let url;
+            let type = $("input[name=type]:checked").val();
+            if (type == "mat") {
+              url = "Mat";
+            } else if (type == "semi") {
+              url = "Semi";
+            } else {
+              url = "Prod";
+            }
             if (noChange) {
               // 변경점이 없다면
-              // 사원명 input의 value로 조회해서 grid를 다시 그림
-              if (empName.val() != "") {
+              // 품목 input의 value로 조회해서 grid를 다시 그림
+              if (itemName.val() != "") {
+                $.ajax({
+                  url: "/admin/get" + url + "WithName",
+                  dataType: "JSON",
+                  data: { itemName: itemName.val() },
+                }).done((r) => {
+                  grid.resetData(r);
+                });
+                // 품목명 input이 비어있으면 모두 조회
               } else {
-                grid.restore();
+                grid.readData();
               }
             } else {
               // 변경점이 있다면 confirm 창을 띄운다.
               if (confirm("조회시 변경된 데이터가 소실됩니다. 조회하겠습니까?")) {
-                // 사원명 input의 value로 조회해서 grid를 다시 그림
-                if (empName.val() != "") {
+                // 품목 input의 value로 조회해서 grid를 다시 그림
+                if (itemName.val() != "") {
                   $.ajax({
-                    url: "/admin/getUserWithNameAjax",
+                    url: "/admin/get" + url + "WithName",
                     dataType: "JSON",
-                    data: { empName: empName.val() },
+                    data: { itemName: itemName.val() },
                   }).done((r) => {
                     grid.resetData(r);
                   });
-                  // 사원명 input이 비어있으면 모두 조회
+                  // 품목 input이 비어있으면 모두 조회
                 } else {
-                  grid.restore();
+                  grid.readData();
                   nextNum = null;
                 }
               }
             }
+            itemName.val("");
           });
-          //사원명 조회기능 끝
+          //품목 조회기능 끝
 
-          //사원 추가 시작
+          //품목 추가 시작
           let nextNum; // EMPCODE
-          $("#addEmp").click((e) => {
-            //오늘 날짜 가져오기 시작
-            var today = new Date();
-            var year = today.getFullYear();
-            var month = today.getMonth() + 1;
-            var day = today.getDate();
-            var format = year + "-" + ("00" + month.toString()).slice(-2) + "-" + ("00" + day.toString()).slice(-2);
-            //오늘 날짜 가져오기 끝
+          $("#add").click((e) => {
+            let url;
+            let type = $("input[name=type]:checked").val();
             if (!nextNum) {
               // 코드를 가져온적이 없으면 새로 가져옴
+              if (type == "mat") {
+                url = "Mat";
+              } else if (type == "semi") {
+                url = "Semi";
+              } else {
+                url = "Prod";
+              }
               $.ajax({
-                url: "/admin/getEmpCode",
+                url: "/admin/get" + url + "Code",
                 async: false,
               }).done((r) => {
                 nextNum = r;
               });
             } else {
               // 코드를 이미 가져왔다면 코드에 1을 추가함
-              let word = nextNum.substr(0, 4);
-              let num = parseInt(nextNum.substr(4)) + 1 + "";
-              nextNum = word + num.padStart(4, "0");
+              let word;
+              let num;
+              if (type == "mat") {
+                word = nextNum.substr(0, 4);
+                num = parseInt(nextNum.substr(4)) + 1 + "";
+              } else {
+                word = nextNum.substr(0, 5);
+                num = parseInt(nextNum.substr(5)) + 1 + "";
+              }
+              nextNum = word + num.padStart(5, "0");
             }
-            grid.appendRow({ empNum: nextNum, hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
-          });
-          //사원 추가 끝
-
-          //사원 삭제 시작
-          $("#delete").click((e) => {
-            if (grid.getCheckedRowKeys().length == 0) {
-              alert("삭제할 행을 체크해주십시오.");
-            } else {
-              grid.removeCheckedRows(true);
+            switch (type) {
+              case "mat":
+                grid.appendRow({ matCode: nextNum, matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+                break;
+              case "semi":
+                grid.appendRow({ semiCode: nextNum, semiUse: "Y" }, { focus: true });
+                break;
+              case "prod":
+                grid.appendRow({ prodCode: nextNum, prodUse: "Y" }, { focus: true });
             }
           });
-          //사원 삭제 끝
+          //품목 추가 끝
 
           //초기화 버튼 시작
           $("#reset").click((e) => {
