@@ -21,6 +21,16 @@ public class WarehousingVO { //입고
 	String testNumMat; //검사수량
 	String testTnumDef; //총불량량
 	String testTnumPass; //총합격량
+	String matCode;
+	String matName;
+	String matOrdernum;
+	String accCode; //거래처코드
+	
+	Date matOrderdate; //발주일자
+	
+	int matQnt; //재고량
+	String matState; //상태
+	Date matKeepdate; //현재보관기한
 	
 	
 	

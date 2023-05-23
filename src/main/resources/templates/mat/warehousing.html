@@ -6,54 +6,27 @@
   <meta charset="UTF-8" />
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>자재/반제품 입고 관리</title>
+  <title>자재 입고 관리</title>
 
   <style>
-    .ordersearch {
-      border: 1px solid black;
-      padding: 20px;
-    }
-
-    .addmatbtn {
-      width: 5px 10px;
-      background-color: #282cff;
-      border: none;
-      color: white;
-      text-align: center;
-      display: inline-block;
-      font-size: 16px;
-      float: right;
-      margin: 0 10px;
-    }
-
-    .submitbtn {
-      width: 5px 10px;
-      background-color: #282cff;
-      border: none;
-      color: white;
-      text-align: center;
-      display: inline-block;
-      font-size: 16px;
-      float: right;
-      margin: 0 10px;
-    }
-
-    #grid {
-      margin: 20px 0 10px;
+    h5{
+    float : left;
     }
 	#movebtn{
-	display:none;
+	margin : 10px;
 	float:right;
 	margin-right:10px;
 	}
-	#suBtn{
-	display:none;
+	#deletebtn{
+	margin : 10px;
 	float:right;
+	margin-right:10px;
 	}
-    .text1 {
-      margin: 15px;
-      padding: 0 5px 0 0;
-    }
+	#subtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+	}
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -70,23 +43,27 @@
 
 <body>
   <div layout:fragment="title">
-    <h3>자재/반제품 입고 관리</h3>
+    <h3>자재 입고 관리</h3>
   </div>
   
   <div layout:fragment="content">
 	<h5>검사내역리스트</h5>
      <div id="testmetgrid"></div>  
-     <button type="button" class="btn btn-primary" id="movebtn">이동</button>
-
-    
-	<div id="grid"></div>
+     <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+     <button type="button" class="btn btn-primary" id="movebtn">이동</button>    
+     </div>
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+     <button type="button" class="btn btn-danger" id="deletebtn">제거</button>
+     <button type="button" class="btn btn-primary" id="subtn">저장</button>
+	</div>
+	<div id="warehousinggrid"></div> 
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
-
+	tui.Grid.setLanguage('ko')
     $.ajax({
-    	url:"/mat/warehousing",
+    	url:"/mat/warehousinglist",
     	method:"GET",
     	dataType: "JSON",
     	success:function(result){
@@ -113,14 +90,95 @@
     name: 'matOrdernum'
     },
     {
-    header: '입고량',
-    name: 'matWrhqy'
+    header: '자재내역번호',
+    name: 'matDtaordcode',
+    hidden: true
+    },
+    {
+    header: '총합격량',
+    name: 'testTnumPass'
     }
     ]
     });
 
+    //이동버튼
+   document.getElementById('movebtn').addEventListener('click',function(){
+    	let checked = testmetgrid.getCheckedRows();
+    	console.log(checked)
+    	warehousinggrid.appendRows(checked);
+    	testmetgrid.removeCheckedRows(false);
+	   
+   })
     
+   
+    
+    var warehousinggrid = new tui.Grid({
+        el: document.getElementById('warehousinggrid'),
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['checkbox'],
+        columns: [{
+        header: '자재코드',
+        name: 'matCode'
+        },
+        {
+        header: '자재명',
+        name: 'matName'
+        },   
+        {
+        header: '발주번호',
+        name: 'matOrdernum'
+        },
+        {
+        header: '자재내역번호',
+        name: 'matDtaordcode',
+        hidden: true   
+        },
+        {
+        header: '거래처코드',
+        name: 'accCode'
+        },
+        {
+        header: '입고량',
+        name: 'testTnumPass'
+        },
+        {
+        header: '발주일자',
+        name: 'matOrderdate'
+        }
+        ]
+        });
+    
+ //제거버튼
+   document.getElementById('deletebtn').addEventListener('click', function(){
+	   let checked1 = warehousinggrid.getCheckedRows();
+	   console.log(checked1)
+	   testmetgrid.appendRows(checked1);
+	   warehousinggrid.removeCheckedRows(true);
+   })
   
+   //입고저장버튼
+   document.getElementById('subtn').addEventListener('click', function(){
+	   let checked2 = warehousinggrid.getCheckedRows();
+	   console.log(checked2);
+	   $.ajax({
+		   url:"/mat/warehousingregister",
+		   method: "POST",
+		   data: JSON.stringify({list:warehousinggrid.getCheckedRows()}),
+		   beforeSend: function (xhr){
+			   xhr.setRequestHeader(header, token);
+		   },
+		   dataType: "JSON",
+		   contentType: "application/json",
+		   success: function(result2){
+			   console.log(result2)
+		   },
+		   error: function(reject){
+			   console.log(reject)
+		   }
+	   });
+	   
+   })
     </script>
 	</div>
 

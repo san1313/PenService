@@ -18,6 +18,11 @@ public interface MatService {
 	public List<OrderVO> getaccminilist(String keyword);
 	public void getmatregister(List<OrderVO> list); //발주등록
 	
+	public List<OrderVO> getorderlistajax(); //발주등록조회페이지
+	
 	public List<WarehousingVO> getwarehousinglist(); //자재입고 검사내역리스트
 	
+	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
+	
+	public List<WarehousingVO> getsemiwarehousinglist(); //반제품 검사내역리스트
 }

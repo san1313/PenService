@@ -34,8 +34,7 @@
 	<select id="getmatordercode" resultType="String">
 		SELECT COM_CODE||'-'||LPAD((SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'MAT_ORDER_HEADER_SEQ'),6,'0') AS MAT_CODE FROM COM_CODE WHERE CODE_NAME =  '자재코드'
 	</select>
-	
-	
+		
 	
 	<select id="getmatregister" >
 	insert all
@@ -46,7 +45,34 @@
 	</foreach>	
 	</select>
 	
+	<!-- 자재검사내역리스트 -->
 	<select id = "getwarehousinglist" resultType="WarehousingVO">
-		select * from qip_list_mat
+		select m.mat_code, m.mat_name, h.mat_ordernum, q.test_tnum_pass
+		from QIP_LIST_MAT  q JOIN  MAT_ORDER m on(q.MAT_DTAORDCODE=m.MAT_DTAORDCODE) join MAT_ORDER_HEADER  h on(m.MAT_ORDERNUM=h.MAT_ORDERNUM) join COM_CODE_ACCOUNT a on(h.ACC_CODE=a.ACC_CODE)
+		join  COM_ACCOUNT_ITEM c on(a.ACC_CODE=c.ACC_CODE)
+		JOIN COM_CODE_MAT s on(c.acc_item = s.mat_code)
+		where QIP_CODE_LIST_MAT not in (select q.QIP_CODE_LIST_MAT
+		from QIP_LIST_MAT q join MAT_WRHOUSNG m on q.QIP_CODE_LIST_MAT = m.QIP_CODE_LIST_MAT)
 	</select>
+	
+	<!-- 자재입고등록 -->
+	<select id="getwarehousingregister">
+	DECLARE
+	BEGIN
+    MERGE INTO MAT_INVNTRY a
+    USING dual
+    ON (a.mat_lot = get_mat_lot_seq)
+    WHEN MATCHED THEN
+    UPDATE 
+    SET a.MAT_QNT = get_mat_lot_seq
+    WHEN NOT MATCHED THEN
+    INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT)
+    VALUES(get_mat_lot_seq, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt});
+    <foreach collection="list" item="vo" separator=";" close="; END;">
+    insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) values (mat_wrh_seq, #{vo.matDtaordcode}, get_mat_lot_seq, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
+    </foreach>
+	
+	</select>
+	
+	
 </mapper>
