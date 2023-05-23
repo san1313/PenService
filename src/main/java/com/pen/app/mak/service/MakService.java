@@ -13,5 +13,7 @@ public interface MakService {
 	public List<PlanVO> getConnect(String detc);
 	public List<PlanVO> getPlanning(String detc);
 	public List<PlanVO> getContr(ArrayList<String> detCoList);
-	
+	String delPlan(PlanVO vo);
+	int modPlan(PlanVO vo);
+	List<PlanVO> selectPlan(PlanVO vo);
 }

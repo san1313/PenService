@@ -132,6 +132,36 @@ public class MakController {
 		return result;
 	}
 	
+	@RequestMapping("/delPlan")
+	@ResponseBody
+	String delPlan(@RequestBody PlanVO vo) {
+	
+	System.out.println("삭제 받아오는 데이터 : "+vo);
+	String result = service.delPlan(vo);
+	System.out.println("결과 문자 : "+result);
+	
+	return result;
+	}
 	
 	
+	@RequestMapping("/updatePlan")
+	@ResponseBody
+	String updatePlan(@RequestBody PlanVO vo) {
+	String result ="";
+	System.out.println("수정 받아오는 데이터 : "+vo);
+	if(service.modPlan(vo)>0) {
+		result="수정성공";
+	}else{
+		result ="수정실패";
+	};
+	return result;
+	}
+	
+	@RequestMapping("/selectPlan")
+	@ResponseBody
+	List<PlanVO> selectPlan(@RequestBody PlanVO vo){
+		System.out.println("조회 조건 : "+vo);
+		List<PlanVO> list = service.selectPlan(vo); 
+		return list;
+	}
 }

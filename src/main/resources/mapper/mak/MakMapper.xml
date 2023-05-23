@@ -13,7 +13,7 @@
 		to_char(plan_clsdate,'yyyy-MM-dd')
 		planClsdate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
 		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code from
-		conplan_view where plan_type='plan' order by plan_date
+		conplan_view where plan_type='plan' order by pd_code
 	</select>
 	
 	<!-- 조회 조건을 위해 계약별 계획건 수 조회 -->
@@ -58,16 +58,45 @@
 		</where> 
 	</select>
 	
- 	<update id="insertPlan">
-	insert into MAK_PLAN values ((select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_plan_seq.nextval),#{planNm},#{planType},sysdate,'1111')
+ 	<update id="insertPlan" parameterType="PlanVO">
+	insert into MAK_PLAN values ((select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_plan_seq.nextval),#{planNm},'plan',sysdate,'1111')
 	</update>
 	
-	<update id="insertDetailPlan">
+	<update id="insertDetailPlan" parameterType="PlanVO">
 	insert into mak_plan_detail values ((select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_pd_seq.nextval),#{planState},#{prodCode},#{planQnt},#{planSdate},#{planClsdate},#{priority},(select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_plan_seq.currval))
 	</update>
 	
-	<update id="setPlanCont">
+	<update id="setPlanCont" parameterType="PlanVO">
 	insert into mak_plan_to_ord(connect_code,cont_det_code,pd_code) values (to_char(mak_plan_cont_seq.nextval),#{contDetCode},(select com_code from com_code where code_name = '생산코드')||'-'||to_char(mak_pd_seq.currval))
-	
 	</update>
+	
+	<delete id="delConPlan" parameterType="int">
+	delete from mak_plan_to_ord where connect_code=#{connectCode}
+	</delete>
+	
+	<delete id="delDPlan" parameterType="string">
+	delete from mak_plan_detail where pd_code=#{pdCode}
+	</delete>
+	
+	<delete id="delPlan" parameterType="string">
+	delete from mak_plan where plan_code = #{planCode}
+	</delete>
+	
+	<select id="getPdCount" parameterType="string" resultType="int">
+	select count(*) count from mak_plan_detail where plan_code=#{planCode}
+	</select>
+	
+	<update id="modPlan">
+	update mak_plan_detail set plan_qnt=#{planQnt},priority=#{priority},plan_sdate=#{planSdate},plan_clsdate=#{planClsdate} where pd_code=#{pdCode}
+	</update>
+	
+	<select id="getPlanningList" parameterType="PlanVO" resultType="PlanVO">
+			select plan_nm,acc_code||acc_name
+		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd') planDate,to_char(plan_sdate,'yyyy-MM-dd')
+		planSdate,priority,cont_det_code,plan_code,pd_code,connect_code,plan_type,
+		to_char(plan_clsdate,'yyyy-MM-dd')
+		planClsdate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
+		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code from
+		conplan_view where plan_type='plan' and plan_date between #{planSdate} and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by pd_code
+	</select>
 </mapper>
