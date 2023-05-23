@@ -90,47 +90,30 @@
 <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
 </head>
 
 <body>
 <!----------설비관리시작--------->
-   <div layout:fragment="title">
-     <h3>설비관리</h3>
-     </div>
+   <div layout:fragment="title"><h3>설비관리</h3></div>
 
    <div layout:fragment="content">
-    
-<!----설비선택검색---->
- <div class="info_search" style="text-align:left">
-      <select name = "fac_info">
-      <option value="선택"selected="selected">---선택---</option>
-      <option value="설비명">설비명</option>
-     <option value="설비코드">설비코드</option>
-     <option value="담당자">담당자</option>
-      </select>
-     <input type="text" id="search_name">
-  <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+	<!-- 설비전체목록그리드 -->
+ 	<div id="grid"></div>
 
-<div class= info_update style="float: right;"><button >수정</button></div> 
-<div class= info_delete  style="float: right;"><button>삭제</button> </div>
-</div>
-        
-<!-- 설비정보목록그리드 -->
- <div id="grid"></div>
 
-<!--설비정보상세모달 -->
+<!--설비row 클릭시 상세모달 -->
 <div class="modal fade bd-example-modal-lg" id="facilityModal" tabindex="-1" role="dialog" aria-labelledby="facilityModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg" role="document">
     <div class="modal-content">
       <div class="modal-header">
       <h5 class="modal-title" id="facilityModalLabel">설비 정보 상세</h5>
-      <div id='modal-grid2'></div>
          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
           <span aria-hidden="true">&times;</span>
         </button>      
       </div>
-      <div class="modal-body">
+      		<div class="modal-body">
           <!-- 모달 내용을 채우는 요소들 -->  
          <div id="facilityDetails"></div>
          </div>
@@ -145,7 +128,7 @@
 
         
     <script>
-    //grid-전체리스트그리드
+    //grid-설비정보목록그리드
     var grid = null;
     $(function(){
        
@@ -174,16 +157,7 @@
         header: '설비명',
         name: 'facName',
         filter: 'select'
-      },
-      {
-    	  header:'공정코드',
-    	  name: 'procCode'
-      },
-      {
-    	  header:'공정명',
-    	  name: 'procName'
-      },
-      
+      },   
       {
         header: '가동여부',
         name: 'operateCheck',
@@ -216,8 +190,8 @@
             }   
     ]
   });
-   
-   grid.on('click',function(e){
+   //그리드이벤트발생
+   grid.on('click',function(e){ 
       console.log(grid.getRow(e.rowKey))
       const info = grid.getRow(e.rowKey)
       
@@ -230,8 +204,6 @@
       facilityDetails.innerHTML = `
          <p>설비코드: ${info.facCode}</p>
          <p>설비명: ${info.facName}</p>
-         <p>공정코드:${info.procCode}</p>
-         <p>공정명:${info.procName}</p>
          <p>가동여부: ${info.operateCheck}</p>
          <p>점검주기(일): ${info.checkCycle}</p>
          <p>입고일자: ${info.installDate}</p>

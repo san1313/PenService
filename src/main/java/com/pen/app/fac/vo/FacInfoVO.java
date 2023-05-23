@@ -1,11 +1,14 @@
 package com.pen.app.fac.vo;
 
+import java.util.List;
+
 import lombok.Data;
 
 @Data
 public class FacInfoVO {
 	
-	String facCode; //설비코드
+	String facCode; //설비코드(pk)
+
 	String facName; //설비명
 	String installDate; //입고날짜
 	String tempMin; //최저온도
@@ -15,10 +18,7 @@ public class FacInfoVO {
 	String operateCheck; //가동유무
 	String EmpNum; //사원번호
 	
-	String procCode; //공정코드
-	String procName; //공정명
-	String procType; //공정타입
-	String procDetail; //공정설명
+
 	
-	
+	List<FacConnProcVO> list;//한 설비에 연결된 공정 데이터들
 }
