@@ -33,17 +33,6 @@ public List<FacConnProcVO> getprocminilist(String keyword) {
 	return null;
 }
 
-@Override
-public void insert(FacInfoVO vo) {
-	// TODO Auto-generated method stub
-	
-}
-
-@Override
-public void insertSelectKey(FacInfoVO vo) {
-	// TODO Auto-generated method stub
-	
-}
 
 @Override
 public FacInfoVO getFac(String facCode) {
@@ -51,11 +40,27 @@ public FacInfoVO getFac(String facCode) {
 	return null;
 }
 
+@Override
+public int facRegister(FacInfoVO vo) {
+	// 설비등록
+	return mapper.facRegister(vo);
+	
+}
 
-
-
-
-
+@Override
+public void facUpdate(FacInfoVO vo) {
+	// 설비수정
+	
+}
 
 
 }
+
+
+
+
+
+
+
+
+

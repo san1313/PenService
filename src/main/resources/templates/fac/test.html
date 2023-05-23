@@ -4,9 +4,8 @@
 	layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8" />
-<title>설비등록</title>
+<title>PenServiceMES</title>
 <style>
-
 . a {
 	float: left;
 	display: block;
@@ -68,92 +67,248 @@
 	.input[type=text] {
 		border: 1px solid #ccc;
 	}
+	.fac_register{
+        border: 1px solid black;   
+        padding: 10px;
+      }
+      .btn{
+        width: 5px 15px;
+        background-color: #282cff;
+        border: none;
+        color: white;
+        text-align: center;
+        display: inline-block;
+        font-size: 16px;
+        float: right;
+      }
+	
+	
 }
 </style>
 
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
 </head>
+
 <body>
+<!----------설비등록시작--------->
+	<div layout:fragment="title">
+  	<h3>설비등록</h3>
+  	</div>
+	<!--메인 콘텐트 -->
 	<div layout:fragment="content">
+		<form action="fac_list.html" method="post" onsubmit="return false">		
+			<div class = "fac_register" style="text-align:left">
+				<div class=fac_list>
+         		<button type="button" class="btn btn-primary">설비조회<i class="fa fa-search"></i></button></div><br>
+				
+				<label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp; 
 
-		<div class="py-5 text-left">
-			<h2>설비등록</h2>
-		</div>
-		<form action="fac_list.html" th:action th:object="${item}"
-			method="post">
-			<div>
-				<label for="fac_code">설비코드</label> <select name="code">
-					<option value="EQNAN">EQMAN</option>
-				</select>
-			</div>
-			<div>
-				<label for="fac_name">설비명</label> <input type="text" id="fac_name">
-			</div>
-			<div>
-				<label for="maker_name">제조업체</label> <input type="text"
-					id="maker_name">
-			</div>
-			<div>
-				<div>
-					<label for="maker_name">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp; <input
-						type="radio" name="operate" value="operate" checked> 가동 <input
-						type="radio" name="non_operate" value="non_operate"> 비가동
-				</div>
-				<div>
-					<label for="install_date">입고일자</label> <input type="date"><input
-						type="submit" value="Submit">
-					</p>
-				</div>
-			
-					<div class="search-container">
-					
-						
-						
-					</div>
-			
-				<div>
-				<form>
-					<label for="proc_code">공정코드</label> <input type="text"
-						id="proc_code"><button type="submit">
-								<i class="fa fa-search"></i>
-							</button>
-							</form>
-				</div>
+				<label for="operate_check">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="operate_check" value="operate" checked> 가동
+				<input type="radio" name="operate_check" value="non_operate"> 비가동
+				<br>
+				<label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 
-				<div>
-					<label for="proc_name">공정명</label> <input type="text"
-						id="proc_name">
+				<label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+				<br>
+				<label for="temp_min">최저온도(℃)</label>
+				<input type="text" id="temp_min"size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="temp_max">최고온도(℃)</label>
+				<input type="text" id="temp_max" size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="confirm_cycle">점검주기(일)</label>
+				<input type="text" id="confirm_cycle">
 				</div>
-
-				<div>
-					<label for="temp_min">최저온도</label> <input type="text" id="temp_min">&nbsp;&nbsp;&nbsp;℃
-				</div>
-				<div>
-					<label for="temp_max">최고온도</label> <input type="text" id="temp_max">&nbsp;&nbsp;&nbsp;℃
-				</div>
-				<div>
-					<label for="temp_min">최저온도</label> <input type="text" id="temp_min">&nbsp;&nbsp;&nbsp;℃
-				</div>
-				<div>
-					<label for="emp_num">담당자</label> <input type="text"
-						id="emp_num">
-				</div>
-					<div>
-					<label for="confirm_cycle">점검주기(일)</label> <input type="text"
-						id="confirm_cycle">
-				</div>
+				<br>
+				<br>
 
 				<div class="row">
 					<div class="col">
-						<button class="w-100 btn btn-primary btn-lg" type="submit">설비등록</button>
-					</div>
-					<div class="col">
-						<button class="w-100 btn btn-secondary btn-lg"
-							onclick="location.href='fac_list.html'"
-							th:onclick="|location.href='@{/form/items}'|" type="button">취소</button>
+						<button class="w-30 btn btn-primary btn-lg" type="submit">등록</button>&nbsp;&nbsp;&nbsp;&nbsp;
+						<button class="w-30 btn btn-secondary btn-lg"type="reset">초기화</button>
 					</div>
 				</div>
 				<hr class="my-4">
 		</form>
+<div align="left">	
+<button type="button" class="btn btn-primary" data-toggle="modal" data-target=".bd-example-modal-lg">공정코드조회<i class="fa fa-search"></i></button></div> 	
+
+<!--공정코드 모달시작 -->
+<div class="modal fade bd-example-modal-lg" id="procmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header" style="text-align:left">
+		<h5 class="modal-title" >공정코드조회</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+      	<label>공정명</label>
+      	<input type=text class="modaltext" id="ckproc-text">
+        <button class="ckprocmodalbtn" type="button" id="ckproc">조회</button>
+        
+      	<div id="grid2"></div>
+      	
+        <button class="submitprocmodalbtn" type="button">저장</button>
+      </div>
+    </div>
+  </div>
+</div>
+ 	
+<!----설비검색시작---->
+  	<div class="info_search" style="text-align:left">
+  	 <select name = "fac_info">
+  	 <option value="선택"selected="selected">---선택---</option>
+  	 <option value="설비명">설비명</option>
+ 	 <option value="설비코드">설비코드</option>
+  	<option value="담당자">담당자</option>
+  	 </select>
+  	<input type="text" id="search_name">
+  <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  
+ <div align="right"><button>수정</button> <button>삭제</button></div>
+  <div>
+<!-- 설비검색끝 -->        	
+
+ <div id="grid"></div>
+	    
+      
+    <script>
+    
+    
+    
+    //전체리스트그리드
+    $.ajax({
+   		url : "/fac/infoListAjax",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   		 grid.resetData(result);
+   		 grid.refreshLayout();
+   		}
+   		});
+      
+   var grid = new tui.Grid({
+    el: document.getElementById('grid'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['checkbox'],
+    columns: [
+      {
+        header: '설비코드',
+        name: 'facCode'
+      },
+      {
+        header: '설비명',
+        name: 'facName'
+      },
+      {
+        header: '가동여부',
+        name: 'operateCheck'
+      },
+
+      {
+          header: '점검주기(일)',
+          name: 'checkCycle'
+       },
+       {
+           header: '입고일자',
+           name: 'installDate'
+        },
+        {
+            header: '제조업체',
+            name: 'makerName'
+         },
+         {
+             header: '최저온도(℃)',
+             name: 'tempMin'
+          },
+          {
+              header: '최고온도(℃)',
+              name: 'tempMax'
+           },
+           {
+               header: '담당자',
+               name: 'empNum'
+            }   
+    ]
+  });
+    
+   
+    //공정코드모달
+      $.ajax({
+   		url : "/fac/ProclistAjax",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			grid2.resetData(result);
+   			grid2.refreshLayout();
+   		}
+   	});
+      
+   var grid2 = new tui.Grid({
+    el: document.getElementById('modal-grid2'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['rowNum'],
+    columns: [
+      {
+        header: '공정코드',
+        name: 'ProcCode'
+      },
+      {
+        header: '공정명',
+        name: 'ProcName'
+      }
+    ]
+   })
+   
+   $(function(){  
+	 $('#procCodemodalbtn').on('shown.bs.modal', function(){
+	     grid2.refreshLayout();
+	    });
+	    })
+	
+	//공정코드모달검색조회
+    $("#ckproc").on('click', function(){
+    	console.log($("#ckproc-text").val())
+    	const prsed = $("#ckproc-text").val()
+		$("#ckproc-text").val('');
+    	
+    	$.ajax({
+    		 url : "/fac/procminilist",   //공정코드목록조회 페이지 
+    	     method : "GET",
+    	     data : {'result' : prsed},
+    	     success : function(result){
+    	     grid2.resetData(result);
+    	     grid2.refreshLayout();
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+    	     }
+  
+    });
+    });
+   
+	
+ </script>
+	</div>
 	</div>
 </body>
 </html>

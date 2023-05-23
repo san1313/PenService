@@ -10,7 +10,10 @@
 		from fac_info
 		where fac_code = #{facCode}
 	</select>
-
+	
+	<!-- 설비전체조회 -->
+	
+	
 	<!-- 설비정보목록조회 -->
 	<select id="getList" resultType="FacInfoVO">
 		<!-- select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') 
@@ -23,10 +26,14 @@
 	</select>
 
 	<!-- 설비등록 -->
-	<insert id="insert">
+	<insert id="facRegister" parameterType="FacInfoVO">
 		insert into fac_info
-		values('EQMAN'||fac_seq.nextval,#{fac_name},#{install_date},#{temp_min},#{temp_max},#{maker_name},#{check_cycle},#{operate_check},#{emp_num})
+		values('EQMAN'||fac_seq.nextval,#{facName},#{installDate},#{tempMin},#{tempMax},#{makerName},#{checkCycle},#{operateCheck},#{empNum})
 	</insert>
+	
+	<!-- 설비수정 -->
+		
+		
 		
 	<!-- 공정코드목록 -->
 	<select id="getproclist" resultType="FacConnProcVO">

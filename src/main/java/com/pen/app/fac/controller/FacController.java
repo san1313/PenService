@@ -5,11 +5,13 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.fac.mapper.FacMapper;
+import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConnProcVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
@@ -19,7 +21,13 @@ import com.pen.app.fac.vo.FacInfoVO;
 public class FacController {
    
    @Autowired FacMapper dao;
+   @Autowired FacService service;
    
+   
+   @GetMapping("/test")
+   public void test() {
+	   
+   }
     @GetMapping("/management") //설비관리 페이지
        public void management() {
       
@@ -28,6 +36,13 @@ public class FacController {
        public void register() {
           
        }
+   
+    
+    @GetMapping("/confirm_register") //점검등록 페이지
+    public void confirm_register() {
+    	
+    }
+   
     
       @ResponseBody
       @GetMapping("/infoListAjax") //설비전체리스트 
@@ -55,7 +70,16 @@ public class FacController {
       System.out.println(list);
       return list;
       }
-       
-       
+      
+     //설비등록
+     @RequestMapping("/facRegister")
+   	 @ResponseBody
+   	 public int facRegister(FacInfoVO vo) {
+    	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
+    	 System.out.println(vo);
+    	 return service.facRegister(vo);
+     }
+   	 
+ 
        
 }
