@@ -62,7 +62,17 @@ public class BnsServiceImpl implements BnsService {
 			return mapper.insertOrdList(list);
 		}
 
-	
+	//주문서 수정 모달창 내의 제품 리스트
+	@Override
+	public List<BnsOrdVO> getProdModList(String keyword) {
+		return mapper.getProdModList(keyword);
+	}
+
+	//주문서 수정
+	@Override
+		public int modOrdList(List<BnsOrdVO> list) {
+			return mapper.modOrdList(list);
+		}
 
    
 }

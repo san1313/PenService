@@ -90,8 +90,25 @@ public class BnsController {
 		return list;
 	}
 	
-
-
+	//주문서 수정 모달창 안의 제품리스트
+	@ResponseBody
+	@GetMapping("/prodListModAjax")
+	public List<BnsOrdVO> prodListModAjax(String result){
+		
+		System.out.println(result);
+		List<BnsOrdVO> list = dao.getProdModList(result);
+		return list;
+	}
+	
+	//주문서 수정 모달창 안의 제품 수정
+	@RequestMapping("/modOrdList")
+	@ResponseBody
+	public BnsOrdVO modOrdList(@RequestBody BnsOrdDetListVO list) {
+		System.err.println(list.getList());
+		System.err.println(list.getList().get(1));
+		dao.modOrdList(list.getList());
+		return null;
+	}
 	
 	
 	@ResponseBody
