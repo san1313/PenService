@@ -16,4 +16,10 @@ public interface MakMapper {
 	int setPlanCont(PlanVO vo);
 	int getContCount(String contDetCode);
 	int getLeftQuan(String contDetCode);
+	int delConPlan(int connectCode);
+	int delDPlan(String pdCode);
+	int delPlan(String planCode);
+	int getPdCount(String planCode);
+	int modPlan(PlanVO vo);
+	List<PlanVO> getPlanningList(PlanVO vo);
 }
