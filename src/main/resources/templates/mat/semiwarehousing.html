@@ -78,11 +78,11 @@
     scrollY: false,
     rowHeaders: ['checkbox'],
     columns: [{
-    header: '자재코드',
+    header: '반제품코드',
     name: 'matCode'
     },
     {
-    header: '자재명',
+    header: '반제품명',
     name: 'matName'
     },   
     {
@@ -91,17 +91,12 @@
     },
     {
     header: '자재내역번호',
-    name: 'matDtaordcode'
+    name: 'matDtaordcode',
+    hidden: true
     },
     {
     header: '총합격량',
     name: 'testTnumPass'
-    },
-    {
-    header: '자재내역코드',
-    name: 'matDtaordcode',
-    hidden: true
-    
     }
     ]
     });
@@ -136,7 +131,8 @@
         },
         {
         header: '자재내역번호',
-        name: 'matDtaordcode'
+        name: 'matDtaordcode',
+        hidden: true   
         },
         {
         header: '거래처코드',
@@ -149,11 +145,6 @@
         {
         header: '발주일자',
         name: 'matOrderdate'
-        },
-        {
-         header: '자재내역코드',
-         name: 'matDtaordcode',
-         hidden: true   
         }
         ]
         });
@@ -169,6 +160,7 @@
    //입고저장버튼
    document.getElementById('subtn').addEventListener('click', function(){
 	   let checked2 = warehousinggrid.getCheckedRows();
+	   console.log(checked2);
 	   $.ajax({
 		   url:"/mat/warehousingregister",
 		   method: "POST",

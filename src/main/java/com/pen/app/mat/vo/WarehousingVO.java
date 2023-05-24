@@ -8,7 +8,7 @@ import lombok.Data;
 public class WarehousingVO { //입고
 	
 	int matWrhnum; //입고번호
-	int qipNumListMat;//자재내역번호
+	int qipCodeListMat;//자재내역번호
 	String matLot; //lot번호
 	String matBcncname; //거래처명
 	int matWrhqy; //입고량
