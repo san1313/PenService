@@ -16,4 +16,11 @@ public interface MakService {
 	String delPlan(PlanVO vo);
 	int modPlan(PlanVO vo);
 	List<PlanVO> selectPlan(PlanVO vo);
+	
+	
+	List<PlanVO> getOrdList();
+	int insertOrd(PlanListVO vo);
+	String delOrd(PlanVO vo);
+	int modOrd(PlanVO vo);
+	List<PlanVO> selectOrd(PlanVO vo);
 }
