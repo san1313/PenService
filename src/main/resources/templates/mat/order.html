@@ -54,6 +54,10 @@
       margin: 15px;
       padding: 0 5px 0 0;
     }
+    
+    #ckgrid{
+     margin-top: 30px;
+    }
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -141,23 +145,25 @@
 	<div id="grid"></div>
     <button type="button" class="btn btn-primary" id="suBtn">발주요청</button>
 	<button type="button" class="btn btn-danger" id="deletematbtn">삭제</button>
+	
+	<div id="ckgrid"></div>
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-          
+    // 당일발주건리스트
+    $.ajax({
+  		url : "/mat/todaymatregister",
+  		method : "GET",
+  		dataType : "JSON",
+  		success : function(result){
+  			console.log(result);
+  			ckgrid.resetData(result);
+  			ckgrid.refreshLayout();
+  		}
+  	});
      
-    // $.ajax({
-    // url : "/mat/orderListAjax",
-    // method : "GET",
-    // dataType : "JSON",
-    // success : function(result){
-    // grid.resetData(result);
-    // grid.refreshLayout();
-    
-    // }
-    // });
 
     var grid = new tui.Grid({
     el: document.getElementById('grid'),
@@ -210,10 +216,32 @@
     {
     header: '담당자',
     name: 'matCharger'
+    },
+    {
+    header: '발주일자',
+    name: 'matOrderdate',
+    hidden: true
     }
-    ]
+    ],
+    summary:{
+    	 height:40,
+    	 position:'bottom',
+    	 columnContent:{
+    	 	matOrderQy:{
+    	 template: function(valueMap) {
+              return `TOTAL: ${valueMap.sum}`;
+    	 }
+     },
+     	matTotamt:{
+     		template: function(valueMap) {
+              return `TOTAL: ${valueMap.sum}`;
+     	}
+     	}
+     }
+    }
     });
-
+  
+    
     //총금액
     grid.on('editingFinish', ev=>{
     	let row = grid.getRow(ev.rowKey);
@@ -465,6 +493,12 @@
   //발주요청버튼
   document.getElementById('suBtn').addEventListener('click', function(){
 	  let checked = grid.getCheckedRows();
+	  checked.forEach(function(ele,i){
+		  checked[i].matOrderdate=new Date().toISOString().slice(0, 10);
+	  });
+		    
+	  
+	  console.log(checked);
 	  $.ajax({
   		url : "/mat/matregister",
   		method : "POST",
@@ -478,10 +512,103 @@
   			console.log(result3);
   			
   		}
+         
+  	});
+	  ckgrid.appendRows(checked);
+	  grid.removeCheckedRows(false);
+
+	  $.ajax({
+  		url : "/mat/todaymatregister",
+  		method : "GET",
+  		dataType : "JSON",
+  		success : function(result){
+  			console.log(result);
+  			ckgrid.resetData(result);
+  			ckgrid.refreshLayout();
+  		}
   	});
 	  
   })
      
+  
+  
+  var ckgrid = new tui.Grid({
+    el: document.getElementById('ckgrid'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['rowNum'],
+    columns: [{
+    header: '발주번호',
+    name: 'matOrdernum'
+    },
+    {
+    header: '발주명',
+    name: 'matOrdername',
+    editor: 'text'
+    },
+    {
+    header: '거래처코드',
+    name: 'accCode'
+    },
+    {
+    header: '거래처명',
+    name: 'accName'
+    },
+    {
+    header: '자재코드',
+    name: 'matCode'
+    },
+    {
+    header: '자재명',
+    name: 'matName'
+    },
+    {
+    header: '발주량',
+    name: 'matOrderQy',
+    editor: 'text'
+    },
+    {
+    header: '단가',
+    name: 'matUntpc',
+    editor: 'text'
+    },
+    {
+     header: '총금액',
+     name: 'matTotamt'
+    },
+    {
+    header: '납기일',
+    name: 'matReqdate'
+    },
+    {
+    header: '담당자',
+    name: 'matCharger'
+    },
+    {
+    header: '발주일자',
+    name: 'matOrderdate'
+    }
+    ],
+    summary:{
+   	 height:40,
+   	 position:'bottom',
+   	 columnContent:{
+   	 	matOrderQy:{
+   	 template: function(valueMap) {
+             return `TOTAL: ${valueMap.sum}`;
+   	 }
+    },
+    	matTotamt:{
+    		template: function(valueMap) {
+             return `TOTAL: ${valueMap.sum}`;
+    	}
+    	}
+    }
+   }
+    });
+
+   
+
 
 
    

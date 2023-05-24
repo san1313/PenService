@@ -22,4 +22,15 @@ public interface MakMapper {
 	int getPdCount(String planCode);
 	int modPlan(PlanVO vo);
 	List<PlanVO> getPlanningList(PlanVO vo);
+	//계약 상세 상태 바꿔주기
+	int updateCont(String contDetCode);
+	int updateContr(String contDetCode);
+	
+	
+	List<PlanVO> getOrdList();
+	int getOrdCount(String ordDetCode);
+	int getLeaveQuan(String ordDetCode);
+	List<PlanVO> getOrd();
+	List<PlanVO> getConnection(String ordDetCode);
+	List<PlanVO> getOrdering(String ordDetCode);
 }

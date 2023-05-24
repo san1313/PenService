@@ -81,6 +81,13 @@ public class MatController {
 	 	 return null; 
 	 	}
 		 
+	 //당일발주등록조회
+	 @RequestMapping("/todaymatregister")
+	 @ResponseBody
+	 public List<OrderVO> todaymatregister(){
+		 List<OrderVO> list = matmapper.gettodaymatregister();
+		 return list;
+	 }
 	 
 	 //자재발주조회페이지
 	 @GetMapping("/orderlist")
@@ -114,9 +121,21 @@ public class MatController {
 	 @ResponseBody
 	 public WarehousingVO warehousingregister(@RequestBody WareRegVO vo) {
 		 System.err.println(vo.getList());
-		 
+		 int sum = 0;
+		 for(WarehousingVO in : vo.getList()) {
+			sum += in.getMatWrhqy(); 
+		 }
+		 vo.getList().get(0).setMatQnt(sum);
 		 matmapper.getwarehousingregister(vo.getList());
 		 return null;
+	 }
+	 
+	 //당일건 자재입고등록리스트
+	 @RequestMapping("/todaywarehousinglist")
+	 @ResponseBody
+	 public List<WarehousingVO> gettodaywarehousinglist(){
+		 List<WarehousingVO> list = matmapper.gettodaywarehousinglist();
+		 return list;
 	 }
 	 
 	 //반제품입고페이지

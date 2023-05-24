@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
+import com.pen.app.bns.vo.BnsConVO;
 import com.pen.app.bns.vo.BnsEmpVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
@@ -18,6 +19,7 @@ public class BnsServiceImpl implements BnsService {
 
    @Autowired BnsMapper mapper;
 
+   //--------------주문서
    @Override
    public List<BnsOrdVO> getOrdList() {
       return mapper.getOrdList();
@@ -53,10 +55,6 @@ public class BnsServiceImpl implements BnsService {
       return mapper.getOrdListCon(vo);
    }
 
-	
-
-
-
 	@Override
 		public int insertOrdList(List<BnsOrdVO> list) {
 			return mapper.insertOrdList(list);
@@ -73,6 +71,19 @@ public class BnsServiceImpl implements BnsService {
 		public int modOrdList(List<BnsOrdVO> list) {
 			return mapper.modOrdList(list);
 		}
+	
+	//주문상세 삭제
+	@Override
+		public void delOrdDetList(List<BnsOrdVO> list) {
+		
+		}
+		
+	
+	// ---------------------계약서
+		@Override
+			public List<BnsConVO> getConList() {
+			return mapper.getConList();
+			}
 
    
 }

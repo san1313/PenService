@@ -2,14 +2,14 @@
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-  
+ 
 <mapper namespace="com.pen.app.mat.mapper.MatMapper">
 	<select id="getorderlist" resultType="OrderVO">
 		select h.MAT_ORDERNUM, h.MAT_ORDERNAME, h.MAT_CHARGER, h.ACC_CODE, o.MAT_UNTPC, o.MAT_ORDER_QY, o.MAT_TOTAMT, o.MAT_ORDERNUM, o.MAT_REQDATE, o.MAT_CODE, o.MAT_NAME,o.MAT_DTAORDCODE
 		from MAT_ORDER_HEADER h, MAT_ORDER o
 		where h.MAT_ORDERNUM=o.MAT_ORDERNUM
 		and o.mat_name='자재명'
-	</select>
+	</select> 
 	
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
@@ -35,7 +35,7 @@
 		SELECT COM_CODE||'-'||LPAD((SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'MAT_ORDER_HEADER_SEQ'),6,'0') AS MAT_CODE FROM COM_CODE WHERE CODE_NAME =  '자재코드'
 	</select>
 		
-	
+	<!-- 발주등록 -->
 	<select id="getmatregister" >
 	insert all
 	into MAT_ORDER_HEADER(MAT_ORDERNUM, ACC_CODE, MAT_ORDERNAME, MAT_ORDERDATE, MAT_CHARGER) values ('MAT-ORD-'||mat_order_header_seq.nextval, #{list[0].accCode}, #{list[0].matOrdername}, sysdate, #{list[0].matCharger})	
@@ -45,34 +45,68 @@
 	</foreach>	
 	</select>
 	
+	<!-- 당일발주등록건 -->
+	<select id="gettodaymatregister" resultType="OrderVO">
+		select a.mat_ordernum,a.acc_code, b.mat_code, a.mat_ordername, a.mat_orderdate, a.mat_charger, b.mat_dtaordcode, b.mat_order_qy, b.mat_untpc, b.mat_totamt, b.mat_reqdate
+		from mat_order_header a join mat_order b on(a.mat_ordernum=b.mat_ordernum)
+		WHERE TRUNC(a.mat_orderdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'), 'YY/MM/DD')
+	</select>
+	
+	
+	<!-- 발주등록 조회 -->
+	<select id="orderlistajax" resultType="OrderVO">
+		select a.mat_ordernum, a.mat_ordername, b.mat_code, b.mat_name, a.acc_code, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt 
+		from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum)
+	</select>
+	
+	
+	
 	<!-- 자재검사내역리스트 -->
 	<select id = "getwarehousinglist" resultType="WarehousingVO">
-		select m.mat_code, m.mat_name, h.mat_ordernum, q.test_tnum_pass
+		select distinct m.mat_code, m.mat_name, h.mat_ordernum, q.test_tnum_pass,q.qip_code_list_mat,a.acc_code
 		from QIP_LIST_MAT  q JOIN  MAT_ORDER m on(q.MAT_DTAORDCODE=m.MAT_DTAORDCODE) join MAT_ORDER_HEADER  h on(m.MAT_ORDERNUM=h.MAT_ORDERNUM) join COM_CODE_ACCOUNT a on(h.ACC_CODE=a.ACC_CODE)
 		join  COM_ACCOUNT_ITEM c on(a.ACC_CODE=c.ACC_CODE)
 		JOIN COM_CODE_MAT s on(c.acc_item = s.mat_code)
 		where QIP_CODE_LIST_MAT not in (select q.QIP_CODE_LIST_MAT
-		from QIP_LIST_MAT q join MAT_WRHOUSNG m on q.QIP_CODE_LIST_MAT = m.QIP_CODE_LIST_MAT)
+		from QIP_LIST_MAT q join MAT_WRHOUSNG w on q.QIP_CODE_LIST_MAT = w.QIP_CODE_LIST_MAT)
 	</select>
 	
 	<!-- 자재입고등록 -->
 	<select id="getwarehousingregister">
 	DECLARE
+	v_lot varchar2(60);
 	BEGIN
+	
+	SELECT get_mat_lot_seq
+	INTO v_lot
+	FROM DUAL;
+	
     MERGE INTO MAT_INVNTRY a
     USING dual
-    ON (a.mat_lot = get_mat_lot_seq)
+    ON (a.mat_lot = v_lot)
     WHEN MATCHED THEN
     UPDATE 
-    SET a.MAT_QNT = get_mat_lot_seq
+    SET a.MAT_QNT = v_lot
     WHEN NOT MATCHED THEN
     INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT)
-    VALUES(get_mat_lot_seq, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt});
+    VALUES(v_lot, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt});
     <foreach collection="list" item="vo" separator=";" close="; END;">
-    insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) values (mat_wrh_seq, #{vo.matDtaordcode}, get_mat_lot_seq, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
+    insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) values (mat_wrh_seq, #{vo.qipCodeListMat}, v_lot, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
     </foreach>
-	
 	</select>
+	
+	<!-- 당일건 자재입고리스트 -->
+	<select id="gettodaywarehousinglist" resultType="WarehousingVO">
+	select a.mat_lot, b.mat_ordernum, b.acc_code, c.mat_code, a.mat_wrhqy, c.mat_name
+	from mat_wrhousng a join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat) join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode) join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
+	where TRUNC(a.mat_wrhdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'), 'YY/MM/DD')
+	</select>
+	
+	<!-- 반제품입고등록 검사내역리스트 -->
+	<select id="getsemiwarehousinglist" resultType="WarehousingVO">
+	select qip_code_list_prod, prcs_code, test_num_prod, test_num_def  from qip_list_prod
+	</select>
+	
 	
 	
 </mapper>

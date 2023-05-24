@@ -62,6 +62,21 @@
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 	tui.Grid.setLanguage('ko')
+	
+	 $.ajax({
+	  		url : "/mat/todaywarehousinglist",
+	  		method : "GET",
+	  		dataType : "JSON",
+	  		success : function(result){
+	  			console.log(result);
+	  			warehousinggrid.resetData(result);
+	  			warehousinggrid.refreshLayout();
+	  		}
+	  	});
+	
+	
+	
+	
     $.ajax({
     	url:"/mat/warehousinglist",
     	method:"GET",
@@ -91,7 +106,7 @@
     },
     {
     header: '자재내역번호',
-    name: 'matDtaordcode',
+    name: 'qipCodeListMat',
     hidden: true
     },
     {
@@ -104,6 +119,9 @@
     //이동버튼
    document.getElementById('movebtn').addEventListener('click',function(){
     	let checked = testmetgrid.getCheckedRows();
+    	checked.forEach((row)=>{
+    		row.matWrhqy = row.testTnumPass;
+    	})
     	console.log(checked)
     	warehousinggrid.appendRows(checked);
     	testmetgrid.removeCheckedRows(false);
@@ -115,9 +133,13 @@
     var warehousinggrid = new tui.Grid({
         el: document.getElementById('warehousinggrid'),
         scrollX: false,
-        scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 200,
         columns: [{
+         header: 'LOT번호',
+         name: 'matLot'
+         },
+        {
         header: '자재코드',
         name: 'matCode'
         },
@@ -131,7 +153,7 @@
         },
         {
         header: '자재내역번호',
-        name: 'matDtaordcode',
+        name: 'qipCodeListMat',
         hidden: true   
         },
         {
@@ -140,11 +162,12 @@
         },
         {
         header: '입고량',
-        name: 'testTnumPass'
+        name: 'matWrhqy'
         },
         {
-        header: '발주일자',
-        name: 'matOrderdate'
+        header: '총합격량',
+        name: 'testTnumPass',
+        hidden:true
         }
         ]
         });
@@ -177,7 +200,17 @@
 			   console.log(reject)
 		   }
 	   });
-	   
+	   $.ajax({
+	  		url : "/mat/todaywarehousinglist",
+	  		method : "GET",
+	  		dataType : "JSON",
+	  		success : function(result){
+	  			console.log(result);
+	  			warehousinggrid.resetData(result);
+	  			warehousinggrid.refreshLayout();
+	  		}
+	  	});
+
    })
     </script>
 	</div>
