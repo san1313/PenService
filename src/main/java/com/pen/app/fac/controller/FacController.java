@@ -5,7 +5,6 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -24,10 +23,12 @@ public class FacController {
    @Autowired FacService service;
    
    
-   @GetMapping("/test")
-   public void test() {
-	   
-   }
+   	@GetMapping("/test")
+   	public void test() {
+   		
+   	}
+   
+   
     @GetMapping("/management") //설비관리 페이지
        public void management() {
       
@@ -44,23 +45,29 @@ public class FacController {
     }
    
     
+      //설비전체리스트 
       @ResponseBody
-      @GetMapping("/infoListAjax") //설비전체리스트 
+      @GetMapping("/infoListAjax") 
       public List<FacInfoVO> infoListAjax(){
       List<FacInfoVO> list = dao.getList();
       System.out.println(list);
       return list;
       }
+      
+      //설비 단건검색 리스트
+      
        
+      //공정전체리스트
        @ResponseBody
-       @GetMapping("/proclistAjax") //공정전체리스트
+       @GetMapping("/proclistAjax")
        public List<FacConnProcVO> proclist(){
           List<FacConnProcVO> list = dao.getproclist();
           return list;
        }
        
+       //공정명 단건검색 리스트
        @ResponseBody
-       @RequestMapping("/procminilist") //공정명단건검색 리스트
+       @RequestMapping("/procminilist") 
       public List<FacConnProcVO> proclistAjax(@RequestParam String result){
           String data1 = "%";
           result += "%";
@@ -72,14 +79,28 @@ public class FacController {
       }
       
      //설비등록
+     @ResponseBody
      @RequestMapping("/facRegister")
-   	 @ResponseBody
    	 public int facRegister(FacInfoVO vo) {
     	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
     	 System.out.println(vo);
     	 return service.facRegister(vo);
      }
    	 
- 
+     //설비수정
+     @ResponseBody 
+     @RequestMapping("/facUpdate")
+     public int facUpdate(FacInfoVO vo) {
+    	 System.out.println("수정하려고 받은 값 : "+vo);
+    	 return service.facUpdate(vo);
+     }
+     
+     //설비삭제
+     @ResponseBody 
+     @RequestMapping("/facDelete")
+     public int facDelete(FacInfoVO vo) {
+    	 System.out.println("삭제하려고 받은 값: "+ vo);
+    	 return service.facDelete(vo);
+     }
        
 }
