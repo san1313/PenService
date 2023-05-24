@@ -36,19 +36,19 @@
 </head>
 <body>
 <div layout:fragment="title">
-		<h1>입고 관리</h1>
+		<h1>출고 관리</h1>
 	</div>
 
 	<div layout:fragment="content">
 	<h2>주문현황</h2>
-	<button style="float:right;">입고 등록</button>
-	<div id="beforeStoreGrid"></div>
-	<h2>입고내역</h2>
-	<div id="afterStoreGrid"></div>
+	<button style="float:right;">출고 등록</button>
+	<div id="beforeReleaseGrid"></div>
+	<h2>출고내역</h2>
+	<div id="afterReleaseGrid"></div>
 
 	<script>
-	 var beforeStoreGrid = new tui.Grid({
-	     el: document.getElementById('beforeStoreGrid'),
+	 var beforeReleaseGrid = new tui.Grid({
+	     el: document.getElementById('beforeReleaseGrid'),
 	     scrollX: false,
 	     scrollY: false,
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
@@ -79,8 +79,8 @@
 	   });
 	
 	
-	   var afterStoreGrid = new tui.Grid({
-		     el: document.getElementById('afterStoreGrid'),
+	   var afterReleaseGrid = new tui.Grid({
+		     el: document.getElementById('afterReleaseGrid'),
 		     scrollX: false,
 		     scrollY: false,
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],

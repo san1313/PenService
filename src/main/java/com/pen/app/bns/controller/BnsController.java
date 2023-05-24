@@ -139,13 +139,23 @@ public class BnsController {
 	   }
 
 	 
-///입고
+///입고관리페이지
 	   @GetMapping("/storeList")
 	   public String storeList(Model model, Authentication authentication) {
 			/* model.addAttribute("conList", dao.getConList()); */
 	      UserDetails user = (UserDetails) authentication.getPrincipal();
 	      model.addAttribute("userVO", user);
 	      return "bns/storeList";
+	   }  
+	   
+	   
+///출고관리페이지
+	   @GetMapping("/releaseList")
+	   public String releaseList(Model model, Authentication authentication) {
+			/* model.addAttribute("conList", dao.getConList()); */
+	      UserDetails user = (UserDetails) authentication.getPrincipal();
+	      model.addAttribute("userVO", user);
+	      return "bns/releaseList";
 	   }  
 	
 	
