@@ -33,4 +33,12 @@ public interface MakMapper {
 	List<PlanVO> getOrd();
 	List<PlanVO> getConnection(String ordDetCode);
 	List<PlanVO> getOrdering(String ordDetCode);
+	List<PlanVO> getOrder(ArrayList<String> detCoList);
+	int insertOrd(PlanVO vo);
+	int updateOrd(String ordDetCode);
+	int setPlanOrd(PlanVO vo);
+	int updateOrder(String ordDetCode);
+	
+	List<PlanVO> getOrderingList(PlanVO vo);
+	
 }

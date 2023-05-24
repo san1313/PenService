@@ -203,7 +203,7 @@
 		acc_code||acc_name||'-'||prod_name contNm,ord_det_quan-sum(plan_qnt)
 		ordDetQuan,
 		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
-		ordDueDate,ord_det_code,prod_code from conplan_view where ord_det_code
+		ordDueDate,ord_det_code,prod_code from ordplan_view where ord_det_code
 		=
 		#{ordDetCode} and (select ord_det_quan-sum(plan_qnt) contDetQuan from
 		ordplan_view where ord_det_code =
@@ -221,81 +221,59 @@
 		ordDate,to_char(ord_DUE_DATE,'yyyy-MM-dd')
 		ordDueDate,ord_PROGRESS,ord_NOTE,EMP_NUM,ord_code from ord_base_bns
 	</select>
-	<!--  계약연결코드 불러오기 비교구문용 -->
-	<select id="getConnection" resultType="PlanVO"> 
-	select * from mak_plan_to_ord where ord_det_code = #{ordDetCode}
+	<!-- 계약연결코드 불러오기 비교구문용 -->
+	<select id="getConnection" resultType="PlanVO">
+		select * from mak_plan_to_ord where ord_det_code = #{ordDetCode}
 	</select>
-	<!--  계약서 내용(가공)
-	불러오기 모달에 띄우는 용도[계획서가 없는 계약건]
+	<!-- 주문서 내용(가공) 불러오기 모달에 띄우는 용도[계획서가 없는 계약건] -->
 	<select id="getOrder" resultType="PlanVO">
 		select
-		acc_code||acc_name||'-'||prod_name contNm, ord_det_quan, prod_name, to_char(ord_due_date,'yyyy-MM-dd')
+		acc_code||acc_name||'-'||prod_name contNm, ord_det_quan,
+		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
 		ordDueDate,ord_det_code,prod_code from ord_base_bns
 		<where>
 			<foreach collection="list" item="cdc" separator=" and "> ord_det_code
-				!= #{cdc} </foreach>
+				!= #{cdc}
+			</foreach>
 		</where>
 	</select>
-	<update id="insertOrd" parameterType="PlanVO"> insert into MAK_PLAN
-		values ((select com_code from com_code where code_name =
-		'생산코드')||'-'||to_char(mak_plan_seq.nextval),#{planNm},'order',sysdate,'1111')
+	<!-- 주문서 기반 계획서 등록 -->
+	<update id="insertOrd" parameterType="PlanVO">
+		insert into MAK_PLAN
+		values
+		(get_plan_seq,#{planNm},'order',sysdate,'1111')
 	</update>
-	<update id="insertDetailOrd" parameterType="PlanVO"> insert into
-		mak_plan_detail values ((select com_code from com_code where code_name
-		=
-		'생산코드')||'-'||to_char(mak_pd_seq.nextval),#{planState},#{prodCode},#{planQnt},#{planSdate},#{planClsdate},#{priority},(select
-		com_code from com_code where code_name =
-		'생산코드')||'-'||to_char(mak_plan_seq.currval))
+
+	<!-- 주문서 참고 테이블 등록 -->
+	<update id="setPlanOrd" parameterType="PlanVO">
+		insert into mak_plan_to_ord(connect_code,ord_det_code,pd_code)
+		values
+		(get_plan_cont_seq,#{ordDetCode},'MAK-P-D-'||(select last_number-1
+		from user_sequences where sequence_name='MAK_PD_SEQ'))
 	</update>
-	<update id="setPlanOrd" parameterType="PlanVO"> insert into
-		mak_plan_to_ord(connect_code,ord_det_code,pd_code)
-		values (to_char(mak_plan_cont_seq.nextval),#{ordDetCode},(select com_code
-		from com_code where code_name =
-		'생산코드')||'-'||to_char(mak_pd_seq.currval))
+
+	<!-- 주문서상세 업데이트(등록 -->
+	<update id="updateOrd" parameterType="string">
+		update bns_order_detail
+		set
+		ord_det_progress='작업 중' where
+		ord_det_code=#{ordDetCode}
+
 	</update>
-	삭제 동일 하니 같이 쓰기
-	<delete id="delConPlan" parameterType="int"> delete
-		from mak_plan_to_ord where connect_code=#{connectCode}
-	</delete>
-	<delete id="delDPlan" parameterType="string"> delete from mak_plan_detail
-		where pd_code=#{pdCode}
-	</delete>
-	<delete id="delPlan" parameterType="string"> delete from mak_plan
-		where plan_code = #{planCode}
-	</delete>
-	주문 상세 상태 업데이트(등록)
-	<update id="updateCont" parameterType="string"> update bns_order_detail
-		set cont_det_progress='작업
-		중' where cont_det_code=#{contDetCode}
+	<!-- 주문 상세 상태 업데이트(삭제) -->
+	<update id="updateOrder" parameterType="string">
+		update bns_order_detail
+		set ord_det_progress='접수완료'
+		where
+		ord_det_code=#{ordDetCode}
 	</update>
-	숫자 어차피 계획코드로 조회하니 같이 쓰기
-	<select id="getPdCount" parameterType="string" resultType="int">
-		select count(*)
-		count from mak_plan_detail where plan_code=#{planCode}
-	</select>
-	수정도 같이 사용
-	가능
-	<update id="modPlan"> update mak_plan_detail set
-		plan_qnt=#{planQnt},priority=#{priority},plan_sdate=#{planSdate},plan_clsdate=#{planClsdate}
-		where pd_code=#{pdCode}
-	</update>
-	주문 상세 상태 업데이트(삭제)
-	<update id="updateContr" parameterType="string"> update bns_order_detail
-		set cont_det_progress='접수완료'
-		where cont_det_code=#{contDetCode}
-	</update>
-	조회는 타입이 다르니 따로 사용하기
-	<select id="getPlanningList" parameterType="PlanVO"
-		resultType="PlanVO"> select plan_nm,acc_code||acc_name||'-'||prod_name
-		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd')
-		planDate,to_char(plan_sdate,'yyyy-MM-dd')
-		planSdate,priority,cont_det_code,plan_code,pd_code,connect_code,plan_type,
-		to_char(plan_clsdate,'yyyy-MM-dd')
-		planClsdate,to_char(cont_det_release,'yyyy-MM-dd')
-		contDetRelease, plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code
-		from conplan_view where plan_type='order' and plan_date between
-		#{planSdate}
-		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by
-		pd_code
-	</select> -->
+	 
+	<select id="getOrderingList" parameterType="PlanVO" 	resultType="PlanVO">
+	 select plan_nm,acc_code||acc_name||'-'||prod_name contNm,prod_name,to_char(plan_date,'yyyy-MM-dd') planDate,
+	 to_char(plan_sdate,'yyyy-MM-dd') planSdate,priority,ord_det_code,plan_code,pd_code,connect_code,plan_type, 
+		to_char(plan_clsdate,'yyyy-MM-dd') planClsdate,to_char(ord_due_date,'yyyy-MM-dd') 
+		ordDueDate, plan_state,plan_qnt,ord_det_quan-plan_qnt ordDetQuan,prod_code 
+		from ordplan_view where plan_type='order' and plan_date between #{planSdate} 
+		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by pd_code
+		 </select>
 </mapper>

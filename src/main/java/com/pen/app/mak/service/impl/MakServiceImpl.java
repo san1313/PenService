@@ -147,26 +147,60 @@ public List<PlanVO> getOrdList() {
 
 @Override
 public int insertOrd(PlanListVO vo) {
-	// TODO Auto-generated method stub
-	return 0;
+	int result = mapper.insertOrd(vo.getPlanList().get(0));
+	for(int i=0; i<vo.getPlanList().size();i++) {
+	result += mapper.insertDetailPlan(vo.getPlanList().get(i));
+	result += mapper.setPlanOrd(vo.getPlanList().get(i));
+	result += mapper.updateOrd(vo.getPlanList().get(i).getOrdDetCode());
+	};
+	return result;
 }
 
 @Override
 public String delOrd(PlanVO vo) {
-	// TODO Auto-generated method stub
-	return null;
+	String result = "";
+	mapper.delConPlan(vo.getConnectCode());
+	int j=mapper.delDPlan(vo.getPdCode());
+	if(j>0) {
+		result="생산계획상세서 "+j+"건 삭제 되었습니다.";
+	};
+	int count=mapper.getPdCount(vo.getPlanCode()); 
+	if(count==0) {		
+		if(mapper.delPlan(vo.getPlanCode())>0) {
+			result = "생산계획상세서 "+j+"건,\n생산계획서 1건 삭제 되었습니다.";
+		};
+	};
+	if(mapper.getOrdCount(vo.getOrdDetCode())==0) {
+		mapper.updateOrder(vo.getOrdDetCode());
+	};
+	return result;
 }
 
-@Override
-public int modOrd(PlanVO vo) {
-	// TODO Auto-generated method stub
-	return 0;
-}
 
 @Override
 public List<PlanVO> selectOrd(PlanVO vo) {
-	// TODO Auto-generated method stub
-	return null;
+	List<PlanVO> list = mapper.getOrderingList(vo);
+	for(int i=0;i<list.size();i++) {
+		System.out.println(list.size());
+		System.out.println("조회된 list : "+list);
+		String contDetCode = list.get(i).getOrdDetCode();
+		System.out.println("조회된 코드 : "+contDetCode);
+		int count = mapper.getOrdCount(contDetCode);
+		System.out.println("각 계약건수 : "+count);
+		if(count>1) {
+			list.get(i).setContDetQuan(mapper.getLeaveQuan(contDetCode));
+			System.out.println("잔류수량 삽입 : "+list.get(i));
+		}else if(count<=0) {
+			System.out.println("조회조건 이상");
+		}
+	}
+	return list;
+}
+
+@Override
+public List<PlanVO> getOrder(ArrayList<String> detCoList) {
+	List<PlanVO> list = mapper.getOrder(detCoList);
+	return list;
 }
 
 
