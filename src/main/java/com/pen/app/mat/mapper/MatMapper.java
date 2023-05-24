@@ -13,13 +13,14 @@ public interface MatMapper {
 	List<OrderVO> getaccminilist(String keyword);//거래처모달검색조회
 	String getmatordercode();//발주코드
 	public void getmatregister(List<OrderVO> list); //발주등록
+	List<OrderVO> gettodaymatregister(); //당일발주등록리스트
 	
 	List<OrderVO> getorderlistajax(); //발주등록조회페이지리스트
 	
 	List<WarehousingVO> getwarehousinglist(); //자재입고페이지 검사내역리스트
 	
 	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
-	
+	List<WarehousingVO> gettodaywarehousinglist(); //당일건자재입고리스트
 	List<WarehousingVO> getsemiwarehousinglist(); //반제품입고페이지 검사내역리스트
 }
 	
