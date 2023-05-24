@@ -26,6 +26,7 @@ public class BnsController {
    
 @Autowired BnsMapper dao;
    
+	//주문서관리 페이지
    @GetMapping("/ordList")
    public String ordList(Model model, Authentication authentication) {
       model.addAttribute("ordList", dao.getOrdList());
@@ -34,7 +35,6 @@ public class BnsController {
       return "bns/ordList";
    }
    
-	
 	@ResponseBody
 	@GetMapping("/ordListAjax")
 	public List<BnsOrdVO> ordListAjax(){
@@ -53,10 +53,10 @@ public class BnsController {
 	
 	@RequestMapping("/insertOrdList")
 	@ResponseBody
-	public BnsOrdVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
+	public BnsOrdDetListVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
 		System.err.println(list.getList());
 		dao.insertOrdList(list.getList());
-		return null;
+		return list;
 	}
 	
 
@@ -110,6 +110,14 @@ public class BnsController {
 		return null;
 	}
 	
+	//주문상세 삭제
+	@RequestMapping("/delOrdDetList")
+	@ResponseBody
+	public BnsOrdVO delOrdDetList(@RequestBody BnsOrdDetListVO list) {
+		dao.delOrdDetList(list.getList());
+		return null;
+	}
+	
 	
 	@ResponseBody
 	@GetMapping("/ordCode")
@@ -120,6 +128,25 @@ public class BnsController {
 	}
 	
 	
+///계약서	
+	//계약서 관리 페이지
+	   @GetMapping("/conList")
+	   public String conList(Model model, Authentication authentication) {
+			/* model.addAttribute("conList", dao.getConList()); */
+	      UserDetails user = (UserDetails) authentication.getPrincipal();
+	      model.addAttribute("userVO", user);
+	      return "bns/conList";
+	   }
+
+	 
+///입고
+	   @GetMapping("/storeList")
+	   public String storeList(Model model, Authentication authentication) {
+			/* model.addAttribute("conList", dao.getConList()); */
+	      UserDetails user = (UserDetails) authentication.getPrincipal();
+	      model.addAttribute("userVO", user);
+	      return "bns/storeList";
+	   }  
 	
 	
 }
