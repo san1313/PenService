@@ -1,7 +1,5 @@
 package com.pen.app.fac.vo;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data

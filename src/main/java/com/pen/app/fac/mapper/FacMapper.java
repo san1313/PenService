@@ -8,13 +8,13 @@ import com.pen.app.fac.vo.FacInfoVO;
 
 public interface FacMapper {
    
-   public List<FacInfoVO> getList(); //전체조회
+   public List<FacInfoVO> getList(); //설비전체조회
    public List<FacConnProcVO> getproclist();//공정코드목록
    public List<FacConnProcVO> getprocminilist(String keyword); //공정코드조회
    
    public int facRegister(FacInfoVO vo); //설비등록
- 
-   
+   public int facUpdate(FacInfoVO vo); //설비등록
+   public int facDelete(FacInfoVO facCode); //설비삭제 
    
    public FacInfoVO getFac(String facCode); //단건조회
    

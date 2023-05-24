@@ -48,9 +48,17 @@ public int facRegister(FacInfoVO vo) {
 }
 
 @Override
-public void facUpdate(FacInfoVO vo) {
+public int facUpdate(FacInfoVO vo) {
 	// 설비수정
+	return mapper.facUpdate(vo);
 	
+	
+}
+
+@Override
+public int facDelete(FacInfoVO vo) {
+	//설비삭제
+	return mapper.facDelete(vo);
 }
 
 
