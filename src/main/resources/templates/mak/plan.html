@@ -74,21 +74,10 @@ font-size:10px;
 <label class="col-1">계획일자 기간</label>
 <input type="date" class="form-control col-2" id="sCon"> - 
 <input type="date" class="form-control col-2" id="clsCon">
-
 <button class="btn btn-primary" id="selBtn">조회</button>
-<button style="margin-left:auto;" class="btn btn-primary" id="modBtn">수정</button>
-<button style="margin-left:10px;" class="btn btn-danger" id="delBtn">삭제</button>
 
 </div>
-<!--   	//삭제버튼 넣기
-    div = document.createElement('div');
-    Btn = document.createElement('button');
-    div.setAttribute('class','form-group row col-2');
-    Btn.setAttribute('class','form-control col-8 btn btn-danger');
-    Btn.setAttribute('id','delBtn');
-    Btn.append('삭제');
-    div.appendChild(Btn);
-    div2.appendChild(div); -->
+
     <!-- 기본 그리드 -->
       <div id="grid"></div>
 
@@ -102,16 +91,21 @@ var modal_grid;
 //등록 시 넘길 데이터
 var planData = {};
 var conData=[];
+var modData=null;
 const Hfrm = document.getElementById('hiddenFrm');
 var br = document.createElement('br');
 const table = document.getElementById('grid');
 const Frm = document.getElementById('frm');
+const modal_table = document.getElementById('modal-grid');
 //등록과 수정 타입 구분해줄 전역변수 선언
 var comDev = 1;
-
+var planType = "";
 //라디오 버튼 클릭 - 계약서기반
 document.getElementById('planBtn').addEventListener('click',function(){
+	comDev=1;
+	planType="plan";
 $('#basBtn').css('display','flex');
+if(planType=="plan"){
 //계획 일자 관련 제약 조건
 document.getElementById('sCon').max=new Date().toISOString().slice(0, 10);
 $('#sCon').change(function(){
@@ -123,7 +117,7 @@ $('#sCon').change(function(){
 	//폼과 그리드 초기화
 	Frm.textContent='';
 	table.textContent='';
-	
+	modal_table.textContent='';
 	//생성자
 	let div1 = document.createElement('div');
     let input = document.createElement('input');
@@ -297,27 +291,60 @@ $('#sCon').change(function(){
     div2.appendChild(div);
     
     //등록버튼 넣기
+    div2 = document.createElement('div');
+    div2.setAttribute('class','form-group row');
     div = document.createElement('div');
     let Btn = document.createElement('button');
-    div.setAttribute('class','form-group row col-11');
+    div.setAttribute('class','form-group row col-1');
     div.setAttribute('style','text-align:right;');
-    Btn.setAttribute('class','form-control col-1 btn btn-primary');
+    Btn.setAttribute('class','form-control col-11 btn btn-primary');
     Btn.setAttribute('id','subBtn');
-    Btn.append('저장');
+    Btn.append('등록');
+    div.appendChild(Btn);
+    div1 = document.createElement('div');
+    div1.setAttribute('class','col-4');
+    div2.appendChild(div1);
+    div2.appendChild(div);
+    Frm.appendChild(div2);
+    
+    //수정 버튼 넣기
+    div = document.createElement('div');
+    Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('style','text-align:right;');
+    Btn.setAttribute('class','form-control col-11 btn btn-primary');
+    Btn.setAttribute('id','modBtn');
+    Btn.append('수정');
+    div.appendChild(Btn);
+    div2.appendChild(div);
+    
+    
+    //삭제 버튼 넣기
+        div = document.createElement('div');
+    Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('style','text-align:right;');
+    Btn.setAttribute('class','form-control col-11 btn btn-danger');
+    Btn.setAttribute('id','delBtn');
+    Btn.append('삭제');
     div.appendChild(Btn);
     div2.appendChild(div);
     
     //초기화 버튼 넣기
     div = document.createElement('div');
     Btn = document.createElement('button');
-    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('class','form-group row col-2');
     div.setAttribute('style','text-align:right;');
-    Btn.setAttribute('class','form-control col-12 btn btn-primary');
+    Btn.setAttribute('class','form-control col-7 btn btn-primary');
     Btn.setAttribute('id','resetBtn');
     Btn.append('초기화');
     div.appendChild(Btn);
     div2.appendChild(div);
-    
+  //버튼 제약 조건 걸기
+  if(comDev==1){
+	  $('#modBtn').attr('disabled',true);
+		$('#delBtn').attr('disabled',true);
+  };
     //등록버튼 기능
     $('#subBtn').click(function(e){
     	e.preventDefault();
@@ -400,7 +427,86 @@ $('#sCon').change(function(){
     	        	console.error(reject);
     	        }
     	        });
-    	}else if(comDev==2){//수정을 위한 조건, 수정등록
+    	};	
+    })
+    
+    //초기화버튼 클릭이벤트
+    $('#resetBtn').click(function(e){
+    	e.preventDefault();
+    	Hfrm.textContent="";
+    	$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
+		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
+    	$("input").val("");
+		$("#conmi option").remove();
+		$("#priorityi").val('0');
+		document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+		document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+		document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+		$("#getConNm").css('display','block');
+		$('#modBtn').attr('disabled',true);
+		$('#delBtn').attr('disabled',true);
+		grid.readData();
+		comDev=1;
+		
+    });
+    
+    //삭제버튼 클릭이벤트
+    $('#delBtn').click(function(e){
+    	e.preventDefault();
+    	console.log($("#planBtn").val());
+    	console.log(modData);
+    	
+    	if(confirm(`생산계획명 : ${modData.planNm},\n계획 일자 : ${modData.planDate},\n생산제품명 : ${modData.prodName},\n생산계획수량 : ${modData.planQnt} 건을 삭제하시겠습니까?`)){
+    		
+    		planData={connectCode:modData.connectCode,
+    				pdCode:modData.pdCode,
+    				planCode:modData.planCode,
+    				contDetCode:modData.contDetCode};
+    		
+       	 $.ajax({
+ 	        url : "/mak/delPlan",
+ 	        method : "POST",
+ 	        data: JSON.stringify(planData),
+ 	        headers: {"Content-Type": "application/json"},
+ 	        beforeSend: function (xhr) {
+                 xhr.setRequestHeader(header, token);
+               },
+ 	        success : function(result){
+					alert(result);
+					
+     	        	comDev=1;
+     	        	modal_grid.textContent="";
+					Hfrm.textContent="";
+					$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+					$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+					$("input").val("");
+					$("#conmi option").remove();
+					$("#priorityi").val('0');
+					document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+					$("#getConNm").css('display','block');
+					$('#modBtn').attr('disabled',true);
+					$('#delBtn').attr('disabled',true);
+					grid.readData();
+ 	        },
+ 	        error : function(reject){
+ 	        	console.error(reject);
+ 	        }
+ 	        });
+       	 
+    	}else{
+    		alert('삭제가 취소되었습니다.');
+    	};
+    	
+    })
+    
+    //수정버튼 클릭이벤트
+    $('#modBtn').click(function(e){
+    	e.preventDefault();
+    	
+		//수정을 위한 조건, 수정등록
+		console.log(Math.abs($("#plcoi").val()));
     		let data = {
     				"planQnt":Math.abs($("#plcoi").val()),
     				"planSdate":$("#dsti").val(),
@@ -408,6 +514,7 @@ $('#sCon').change(function(){
     				"priority":$("#priorityi").val(),
     				"pdCode" : $("#pdCode0").val()
     		};
+		console.log(data);
     	//수정 등록 아작스
     		 $.ajax({
      	        url : "/mak/updatePlan",
@@ -431,128 +538,15 @@ $('#sCon').change(function(){
 					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
 					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
 					$("#getConNm").css('display','block');
+					$('#modBtn').attr('disabled',true);
+					$('#delBtn').attr('disabled',true);
 					grid.readData();
      	        },
      	        error : function(reject){
      	        	console.error(reject);
      	        	}
      	        });
-    	}	
-    })
-    
-    //초기화버튼 클릭이벤트
-    $('#resetBtn').click(function(e){
-    	e.preventDefault();
-    	Hfrm.textContent="";
-    	$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
-		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
-    	$("input").val("");
-		$("#conmi option").remove();
-		$("#priorityi").val('0');
-		document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
-		document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
-		document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
-		$("#getConNm").css('display','block');
-		grid.readData();
-		comDev=1;
-		
-    });
-    
-    //삭제버튼 클릭이벤트
-    $('#delBtn').click(function(e){
-    	e.preventDefault();
-    	console.log($("#planBtn").val());
-    	console.log(grid.getCheckedRows());
-    	let delData=grid.getCheckedRows();
-    	if(confirm(`생산계획명 : ${delData[0].planNm},\n계획 일자 : ${delData[0].planDate},\n생산제품명 : ${delData[0].prodName},\n생산계획수량 : ${delData[0].planQnt} 건을 삭제하시겠습니까?`)){
-    		
-    		planData={connectCode:delData[0].connectCode,
-    				pdCode:delData[0].pdCode,
-    				planCode:delData[0].planCode};
-    		
-       	 $.ajax({
- 	        url : "/mak/delPlan",
- 	        method : "POST",
- 	        data: JSON.stringify(planData),
- 	        headers: {"Content-Type": "application/json"},
- 	        beforeSend: function (xhr) {
-                 xhr.setRequestHeader(header, token);
-               },
- 	        success : function(result){
-					alert(result);
-					
-					grid.removeRow(delData[0].rowKey);
-					modal_grid.textContent="";
-					Hfrm.textContent="";
-					$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
-					$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
-					$("input").val("");
-					$("#conmi option").remove();
-					$("#priorityi").val('0');
-					document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
-					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
-					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
-					grid.readData();
- 	        },
- 	        error : function(reject){
- 	        	console.error(reject);
- 	        }
- 	        });
-       	 
-    	}else{
-    		alert('삭제가 취소되었습니다.');
-    	};
     	
-    })
-    
-    //수정버튼 클릭이벤트
-    $('#modBtn').click(function(e){
-    	e.preventDefault();
-    	comDev=2;
-    	console.log(grid.getCheckedRows());
-    	let modData=grid.getCheckedRows();
-    	Hfrm.textContent="";
-		$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
-		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
-    	//계획명 수정 가능하게 바꾸기
-		$('#plnmi').attr('readonly',true);
-    	
-    	$('#plnmi').val(modData[0].planNm);
-		document.getElementById('dereli').value=modData[0].contDetRelease;
-		document.getElementById('plcoi').value=modData[0].planQnt;
-		document.getElementById('prnmi').value=modData[0].prodName;
-		document.getElementById('conmi').value=modData[0].contNm;
-		document.getElementById('dclsi').max=document.getElementById('dereli').value;
-		$("#dclsi").val(modData[0].planClsdate);
-		$("#dsti").val(modData[0].planSdate);
-		document.getElementById('dsti').min=new Date().toISOString().slice(0, 10);
-		document.getElementById('dclsi').min=$("#dsti").val();
-		
-		//옵션값 추가
-		options = document.createElement("option");
-		options.setAttribute('name',conmi);
-		options.append(modData[0].contNm);
-		document.getElementById('conmi').appendChild(options);
-		
-		//pd코드 숨겨놓기
-		let input = document.createElement('input');
-		input.setAttribute('id','pdCode0');
-		input.setAttribute('type','hidden');
-		input.value=modData[0].pdCode;
-		Hfrm.appendChild(input);
-		
-		//계약수량 숨겨놓기
-		input = document.createElement('input');
-		input.setAttribute('id','contDetQuan0');
-		input.setAttribute('type','hidden');
-		input.value=(modData[0].contDetQuan+modData[0].planQnt);
-		Hfrm.appendChild(input);
-		
-		//수정 계획수량 최대값 제한걸기.
-		document.getElementById('plcoi').max=Math.abs($("#contDetQuan0").val());
-		
-		//제품 검색 숨기기
-		$('ion-icon[name="search"]').css('display','none');
     })
     
     //조회버튼 클릭이벤트
@@ -601,12 +595,12 @@ $('#sCon').change(function(){
     
     //input 데이터 옮기기
     $('#frm input').change(function(){
+    	selectNum=$('#conmi option:selected').data('num');
     	//시작일자 변경 시 종료일자 지정일은 최소 시작일자 이후로 지정
     	if(comDev==1){
     	document.getElementById('dclsi').min=document.getElementById('dsti').value;
     	document.getElementById(this.id+selectNum).value=this.value;
-    	};
-    	if(comDev==1){
+    	
     	//변수 제어 - 제약 조건 걸기
     	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
     		alert('해당 계약건의 수량을 넘어설수 없습니다.');
@@ -673,8 +667,10 @@ $('#sCon').change(function(){
         var grid = new tui.Grid({
         el: document.getElementById('grid'),
         scrollX: false,
-        rowHeaders: ['checkbox'],
+        rowHeaders: ['rowNum'],
+        selectionUnit:'row',
         data: dataSource,
+        bodyHeight: 200,
         columns: [{
         header: '생산계획명',
         name: 'planNm'
@@ -726,16 +722,67 @@ $('#sCon').change(function(){
         grid.on("beforeRequest", function (obj) {
           obj.xhr.setRequestHeader(header, token);
         });
-        //체크박스 하나만 적용 시작
-        grid.on("check", function (e) {
-          var checkRows = grid.getCheckedRowKeys();
-          checkRows.forEach(function (key, idx) {
-            if (key != e.rowKey) {
-              grid.uncheck(key);
-            }
-          });
-        });
-        //체크박스 하나만 적용 끝
+      if(planType=="plan"){
+      	grid.on("dblclick", function(obj){
+      		console.log(obj.rowKey);
+      		console.log(grid.getRow(obj.rowKey));
+      		if(comDev==2){
+      			//수정 중복 클릭시 제어
+      	    	$("input").val("");
+      			$("#conmi option").remove();
+      			$("#priorityi").val('0');
+      			document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+      			document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+      			document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+      	    	};
+      		comDev=2;
+      		$('#modBtn').attr('disabled',false);
+      		$('#delBtn').attr('disabled',false);
+        	modData=grid.getRow(obj.rowKey);
+        	Hfrm.textContent="";
+    		$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
+    		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
+        	//계획명 수정 가능하게 바꾸기
+    		$('#plnmi').attr('readonly',true);
+        	
+        	$('#plnmi').val(modData.planNm);
+    		document.getElementById('dereli').value=modData.contDetRelease;
+    		document.getElementById('plcoi').value=modData.planQnt;
+    		document.getElementById('prnmi').value=modData.prodName;
+    		document.getElementById('conmi').value=modData.contNm;
+    		document.getElementById('dclsi').max=document.getElementById('dereli').value;
+    		$("#dclsi").val(modData.planClsdate);
+    		$("#dsti").val(modData.planSdate);
+    		document.getElementById('dsti').min=new Date().toISOString().slice(0, 10);
+    		document.getElementById('dclsi').min=$("#dsti").val();
+    		
+    		//옵션값 추가
+    		options = document.createElement("option");
+    		options.setAttribute('name',conmi);
+    		options.append(modData.contNm);
+    		document.getElementById('conmi').appendChild(options);
+    		
+    		//pd코드 숨겨놓기
+    		let input = document.createElement('input');
+    		input.setAttribute('id','pdCode0');
+    		input.setAttribute('type','hidden');
+    		input.value=modData.pdCode;
+    		Hfrm.appendChild(input);
+    		
+    		//계약수량 숨겨놓기
+    		input = document.createElement('input');
+    		input.setAttribute('id','contDetQuan0');
+    		input.setAttribute('type','hidden');
+    		input.value=(modData.contDetQuan+modData.planQnt);
+    		Hfrm.appendChild(input);
+    		
+    		//수정 계획수량 최대값 제한걸기.
+    		document.getElementById('plcoi').max=Math.abs($("#contDetQuan0").val());
+    		
+    		//제품 검색 숨기기
+    		$('ion-icon[name="search"]').css('display','none');
+      	})
+      };
       //검색버튼 모달
      document.getElementById('getConNm').addEventListener('click',function(){
         $.ajax({
@@ -743,6 +790,7 @@ $('#sCon').change(function(){
           method : "GET",
           dataType : "JSON",
           success : function(result){
+        	  modal_grid.textContent="";
             modal_grid.resetData(result);
             
         	conData.forEach(function(conCheck){
@@ -792,124 +840,239 @@ $('#sCon').change(function(){
 
      })
 
-     //모달 선택 시 데이터 내려받기
-     function planChoice(){
-     	document.getElementById('conmi').textContent="";
-     	Hfrm.textContent="";
-     	$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
-     	$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
-     	conData = modal_grid.getCheckedRows();
-     	let options=null;
-     	let input=null;
-     	console.log(conData[0]);
-     	
-     	for(let i=0;i<conData.length;i++){
-     		//계획명 수정 가능하게 바꾸기
-     		$('#plnmi').attr('readonly',false);
-     		document.getElementById('dereli').value=conData[0].contDetRelease;
-     		document.getElementById('plcoi').value=conData[0].contDetQuan;
-     		document.getElementById('prnmi').value=conData[0].prodName;
-     		document.getElementById('conmi').value=conData[0].contNm;
-     		document.getElementById('dclsi').max=document.getElementById('dereli').value;
-     		//계획명
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','plnmi'+i);
-     		Hfrm.appendChild(input);
-     		
-     		//계약명
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','contNm'+i);
-     		input.value = conData[i].contNm;
-     		Hfrm.appendChild(input);
-     		
-     		//제품명
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','prnmi'+i);
-     		input.value = conData[i].prodName;
-     		Hfrm.appendChild(input);
-     		
-     		//계약수량
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','plcoi'+i);
-     		input.value = conData[i].contDetQuan;
-     		Hfrm.appendChild(input);
-     		
-     		//계약수량 절대 기록 창
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','abplcoi'+i);
-     		input.value = conData[i].contDetQuan;
-     		Hfrm.appendChild(input);
-     		
-     		
-     		//납기일
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','dereli'+i);
-     		input.value = conData[i].contDetRelease;
-     		Hfrm.appendChild(input);
-     		
-     		//계획상세코드
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','contDetCode'+i);
-     		input.value = conData[i].contDetCode;
-     		Hfrm.appendChild(input);
-     		
-     		//계약시작일
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','dsti'+i);
-     		//오늘 날짜 넣어두기
-     		input.value=new Date().toISOString().slice(0, 10)
-     		Hfrm.appendChild(input);
-     		
-     		
-     		//계약종료일
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','dclsi'+i);
-     	    //오늘날짜 디폴트로 넣어주기
-     	    input.value=new Date().toISOString().slice(0, 10);
-     		Hfrm.appendChild(input);
-     		
-     		//우선순위
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','priorityi'+i);
-     		input.value=0;
-     		Hfrm.appendChild(input);
-     		
-     		//제품코드 넣기
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','prodCode'+i);
-     		input.value=conData[i].prodCode;
-     		Hfrm.appendChild(input);
-     		
-     		//계약명 인풋
-     		input = document.createElement('input');
-     		input.setAttribute('type','hidden');
-     		input.setAttribute('id','contNm'+i);
-     		input.value=conData[i].contNm;
-     		Hfrm.appendChild(input);
-     		
-     		//옵션값에 추가하기
-     		options = document.createElement("option");
-     		options.setAttribute('name',conmi);
-     		options.dataset.num=i;
-     		options.append(conData[i].contNm);
-     		document.getElementById('conmi').appendChild(options);
-     	}
-     	
-     	
-     };                
+};          
             
         });
+        
+//모달 선택 시 데이터 내려받기(계약서 주문서 공용)
+function planChoice(){
+	if(planType=="plan"){
+	document.getElementById('conmi').textContent="";
+	Hfrm.textContent="";
+	$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+	$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+	conData = modal_grid.getCheckedRows();
+	let options=null;
+	let input=null;
+	console.log(conData[0]);
+	
+	for(let i=0;i<conData.length;i++){
+		//계획명 수정 가능하게 바꾸기
+		$('#plnmi').attr('readonly',false);
+		document.getElementById('dereli').value=conData[0].contDetRelease;
+		document.getElementById('plcoi').value=conData[0].contDetQuan;
+		document.getElementById('prnmi').value=conData[0].prodName;
+		document.getElementById('conmi').value=conData[0].contNm;
+		document.getElementById('dclsi').max=document.getElementById('dereli').value;
+		//계획명
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','plnmi'+i);
+		Hfrm.appendChild(input);
+		
+		//계약명
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contNm'+i);
+		input.value = conData[i].contNm;
+		Hfrm.appendChild(input);
+		
+		//제품명
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','prnmi'+i);
+		input.value = conData[i].prodName;
+		Hfrm.appendChild(input);
+		
+		//계약수량
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','plcoi'+i);
+		input.value = conData[i].contDetQuan;
+		Hfrm.appendChild(input);
+		
+		//계약수량 절대 기록 창
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','abplcoi'+i);
+		input.value = conData[i].contDetQuan;
+		Hfrm.appendChild(input);
+		
+		
+		//납기일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dereli'+i);
+		input.value = conData[i].contDetRelease;
+		Hfrm.appendChild(input);
+		
+		//계획상세코드
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contDetCode'+i);
+		input.value = conData[i].contDetCode;
+		Hfrm.appendChild(input);
+		
+		//계획시작일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dsti'+i);
+		//오늘 날짜 넣어두기
+		input.value=new Date().toISOString().slice(0, 10)
+		Hfrm.appendChild(input);
+		
+		
+		//계획종료일
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','dclsi'+i);
+	    //오늘날짜 디폴트로 넣어주기
+	    input.value=new Date().toISOString().slice(0, 10);
+		Hfrm.appendChild(input);
+		
+		//우선순위
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','priorityi'+i);
+		input.value=0;
+		Hfrm.appendChild(input);
+		
+		//제품코드 넣기
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','prodCode'+i);
+		input.value=conData[i].prodCode;
+		Hfrm.appendChild(input);
+		
+		//계약명 인풋
+		input = document.createElement('input');
+		input.setAttribute('type','hidden');
+		input.setAttribute('id','contNm'+i);
+		input.value=conData[i].contNm;
+		Hfrm.appendChild(input);
+		
+		//옵션값에 추가하기
+		options = document.createElement("option");
+		options.setAttribute('name',conmi);
+		options.dataset.num=i;
+		options.append(conData[i].contNm);
+		document.getElementById('conmi').appendChild(options);
+	}
+	}else if(planType=="order"){
+		document.getElementById('conmi').textContent="";
+		Hfrm.textContent="";
+		$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+		$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+		conData = modal_grid.getCheckedRows();
+		let options=null;
+		let input=null;
+		console.log(conData[0]);
+		
+		for(let i=0;i<conData.length;i++){
+			//계획명 수정 가능하게 바꾸기
+			$('#plnmi').attr('readonly',false);
+			document.getElementById('dereli').value=conData[0].contDetRelease;
+			document.getElementById('plcoi').value=conData[0].contDetQuan;
+			document.getElementById('prnmi').value=conData[0].prodName;
+			document.getElementById('conmi').value=conData[0].contNm;
+			document.getElementById('dclsi').max=document.getElementById('dereli').value;
+			//계획명
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','plnmi'+i);
+			Hfrm.appendChild(input);
+			
+			//주문명
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','contNm'+i);
+			input.value = conData[i].contNm;
+			Hfrm.appendChild(input);
+			
+			//제품명
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','prnmi'+i);
+			input.value = conData[i].prodName;
+			Hfrm.appendChild(input);
+			
+			//주문수량
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','plcoi'+i);
+			input.value = conData[i].contDetQuan;
+			Hfrm.appendChild(input);
+			
+			//주문수량 절대 기록 창
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','abplcoi'+i);
+			input.value = conData[i].contDetQuan;
+			Hfrm.appendChild(input);
+			
+			
+			//납기일
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','dereli'+i);
+			input.value = conData[i].contDetRelease;
+			Hfrm.appendChild(input);
+			
+			//주문상세코드
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','contDetCode'+i);
+			input.value = conData[i].contDetCode;
+			Hfrm.appendChild(input);
+			
+			//계획시작일
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','dsti'+i);
+			//오늘 날짜 넣어두기
+			input.value=new Date().toISOString().slice(0, 10)
+			Hfrm.appendChild(input);
+			
+			
+			//계획종료일
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','dclsi'+i);
+		    //오늘날짜 디폴트로 넣어주기
+		    input.value=new Date().toISOString().slice(0, 10);
+			Hfrm.appendChild(input);
+			
+			//우선순위
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','priorityi'+i);
+			input.value=0;
+			Hfrm.appendChild(input);
+			
+			//제품코드 넣기
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','prodCode'+i);
+			input.value=conData[i].prodCode;
+			Hfrm.appendChild(input);
+			
+			//계약명 인풋
+			input = document.createElement('input');
+			input.setAttribute('type','hidden');
+			input.setAttribute('id','contNm'+i);
+			input.value=conData[i].contNm;
+			Hfrm.appendChild(input);
+			
+			//옵션값에 추가하기
+			options = document.createElement("option");
+			options.setAttribute('name',conmi);
+			options.dataset.num=i;
+			options.append(conData[i].contNm);
+			document.getElementById('conmi').appendChild(options);
+		}
+	}	
+
+}; 
         /* 계약서기반 끝 */
 
 
@@ -917,10 +1080,12 @@ $('#sCon').change(function(){
 
 //주문서기반 라디오 클릭 이벤트
 document.getElementById('orderBtn').addEventListener('click',function(){
+	planType="order";
+	comDev=1;
 	//조회조건 일자 초기화
 	$("#clsCon").val('');
 	$("#sCon").val('');
-	
+	if(planType=="order"){
 	//주문서 기반 조회조건 제약
 	document.getElementById('sCon').max=new Date().toISOString().slice(0, 10);
 	$('#sCon').change(function(){
@@ -933,7 +1098,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
   //폼과 그리드 초기화
 	Frm.textContent='';
 	table.textContent='';
-	
+	modal_table.textContent='';
 	//생성자
 	let div1 = document.createElement('div');
     let input = document.createElement('input');
@@ -1051,7 +1216,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     
     
     //시작일자 종료일자 납기일
-    
      //시작일자
     div2 = document.createElement('div');
     div2.setAttribute('class','form-group row');
@@ -1106,31 +1270,560 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     div.appendChild(input);
     div2.appendChild(div);
     
-    //등록버튼 넣기
+  //등록버튼 넣기
+    div2 = document.createElement('div');
+    div2.setAttribute('class','form-group row');
     div = document.createElement('div');
     let Btn = document.createElement('button');
-    div.setAttribute('class','form-group row col-11');
+    div.setAttribute('class','form-group row col-1');
     div.setAttribute('style','text-align:right;');
-    Btn.setAttribute('class','form-control col-1 btn btn-primary');
+    Btn.setAttribute('class','form-control col-11 btn btn-primary');
     Btn.setAttribute('id','subBtn');
-    Btn.append('저장');
+    Btn.append('등록');
+    div.appendChild(Btn);
+    div1 = document.createElement('div');
+    div1.setAttribute('class','col-4');
+    div2.appendChild(div1);
+    div2.appendChild(div);
+    Frm.appendChild(div2);
+    
+    //수정 버튼 넣기
+    div = document.createElement('div');
+    Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('style','text-align:right;');
+    Btn.setAttribute('class','form-control col-11 btn btn-primary');
+    Btn.setAttribute('id','modBtn');
+    Btn.append('수정');
+    div.appendChild(Btn);
+    div2.appendChild(div);
+    
+    
+    //삭제 버튼 넣기
+        div = document.createElement('div');
+    Btn = document.createElement('button');
+    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('style','text-align:right;');
+    Btn.setAttribute('class','form-control col-11 btn btn-danger');
+    Btn.setAttribute('id','delBtn');
+    Btn.append('삭제');
     div.appendChild(Btn);
     div2.appendChild(div);
     
     //초기화 버튼 넣기
     div = document.createElement('div');
     Btn = document.createElement('button');
-    div.setAttribute('class','form-group row col-1');
+    div.setAttribute('class','form-group row col-2');
     div.setAttribute('style','text-align:right;');
-    Btn.setAttribute('class','form-control col-12 btn btn-primary');
+    Btn.setAttribute('class','form-control col-7 btn btn-primary');
     Btn.setAttribute('id','resetBtn');
     Btn.append('초기화');
     div.appendChild(Btn);
     div2.appendChild(div);
+  //버튼 제약 조건 걸기
+  if(comDev==1){
+	  $('#modBtn').attr('disabled',true);
+		$('#delBtn').attr('disabled',true);
+  };
+    //등록버튼 기능
+    $('#subBtn').click(function(e){
+    	e.preventDefault();
+    	
+    	//등록을 위한 조건, 등록
+    	if(comDev==1){
+    		
+    	if($('#plnmi').val()==''){
+    		alert('계획명을 지정해주세요.');
+    		return false;
+    	};
+    	if($('#dsti').val()==$('#dclsi').val()){
+    		if(confirm("계획 시작일자와 종료일자가 동일합니다. \n그대로 진행하시겠습니까?")){
+    		}else{
+    			return false;
+    		};
+    		
+    	};
+    	planData={};
+    	let innerData=[];
+    	let reAmount=0;
+    	let size = $("#conmi option").length;
+    	
+    	/* 등록버튼 데이터 가공 */
+    	for(let i = 0; i<size;i++){
+    		console.log(i+"번 계획명 : "+$('#plnmi'+i).val());
+    		reAmount = $("#abplcoi"+i).val()-$("#plcoi"+i).val();
+    		console.log($("#planBtn").val());
+    		let data = {
+    				"planNm":$('#plnmi'+i).val(),
+    				"prodCode":$("#prodCode"+i).val(),
+    				"prodName":$("#prnmi"+i).val(),
+    				"planQnt":Math.abs($("#plcoi"+i).val()),
+    				"ordDetCode":$("#contDetCode"+i).val(),
+    				"planSdate":$("#dsti"+i).val(),
+    				"planClsdate":$("#dclsi"+i).val(),
+    				"priority":$("#priorityi"+i).val(),
+    				"planNm":$("#plnmi"+i).val(),
+    				"planDate":new Date().toISOString().slice(0, 10),
+    				"contNm":$("#contNm"+i).val(),
+    				"ordDueDate":document.getElementById("dereli"+i).value,
+    				"planState":"미작업",
+    				"contDetQuan":reAmount
+    		};
+    		/* innerData.slice("") */
+    		
+    		innerData.push(data);
+    		
+    	}
+    	planData={"planList":innerData};
+    	console.log(innerData);
+    	console.log(planData);
+    	
+    	//계획서 계획상세 연결테이블 등록
+    	 $.ajax({
+    	        url : "/mak/insertOrd",
+    	        method : "POST",
+    	        data: JSON.stringify(planData),
+    	        headers: {"Content-Type": "application/json"},
+    	        beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                  },
+    	        success : function(result){
+					alert(result);
+					grid.appendRows(innerData);
+					modal_grid.textContent="";
+					Hfrm.textContent="";
+					$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+					$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+					$("input").val("");
+					$("#conmi option").remove();
+					$("#priorityi").val('0');
+					document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+					grid.readData();
+					comDev=1;
+    	        },
+    	        error : function(reject){
+    	        	console.error(reject);
+    	        }
+    	        });
+    	};	
+    })
     
+    //초기화버튼 클릭이벤트
+    $('#resetBtn').click(function(e){
+    	e.preventDefault();
+    	Hfrm.textContent="";
+    	$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
+		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
+    	$("input").val("");
+		$("#conmi option").remove();
+		$("#priorityi").val('0');
+		document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+		document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+		document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+		$("#getConNm").css('display','block');
+		$('#modBtn').attr('disabled',true);
+		$('#delBtn').attr('disabled',true);
+		grid.readData();
+		comDev=1;
+		
+    });
+    
+    //삭제버튼 클릭이벤트
+    $('#delBtn').click(function(e){
+    	e.preventDefault();
+    	console.log($("#planBtn").val());
+    	console.log(modData);
+    	
+    	if(confirm(`생산계획명 : ${modData.planNm},\n계획 일자 : ${modData.planDate},\n생산제품명 : ${modData.prodName},\n생산계획수량 : ${modData.planQnt} 건을 삭제하시겠습니까?`)){
+    		
+    		planData={connectCode:modData.connectCode,
+    				pdCode:modData.pdCode,
+    				planCode:modData.planCode,
+    				ordDetCode:modData.contDetCode};
+    		
+       	 $.ajax({
+ 	        url : "/mak/delOrd",
+ 	        method : "POST",
+ 	        data: JSON.stringify(planData),
+ 	        headers: {"Content-Type": "application/json"},
+ 	        beforeSend: function (xhr) {
+                 xhr.setRequestHeader(header, token);
+               },
+ 	        success : function(result){
+					alert(result);
+					
+     	        	comDev=1;
+     	        	modal_grid.textContent="";
+					Hfrm.textContent="";
+					$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+					$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+					$("input").val("");
+					$("#conmi option").remove();
+					$("#priorityi").val('0');
+					document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+					$("#getConNm").css('display','block');
+					$('#modBtn').attr('disabled',true);
+					$('#delBtn').attr('disabled',true);
+					grid.readData();
+ 	        },
+ 	        error : function(reject){
+ 	        	console.error(reject);
+ 	        }
+ 	        });
+       	 
+    	}else{
+    		alert('삭제가 취소되었습니다.');
+    	};
+    	
+    })
+    
+    //수정버튼 클릭이벤트
+    $('#modBtn').click(function(e){
+    	e.preventDefault();
+    	
+		//수정을 위한 조건, 수정등록
+		console.log(Math.abs($("#plcoi").val()));
+    		let data = {
+    				"planQnt":Math.abs($("#plcoi").val()),
+    				"planSdate":$("#dsti").val(),
+    				"planClsdate":$("#dclsi").val(),
+    				"priority":$("#priorityi").val(),
+    				"pdCode" : $("#pdCode0").val()
+    		};
+		console.log(data);
+    	//수정 등록 아작스
+    		 $.ajax({
+     	        url : "/mak/updatePlan",
+     	        method : "POST",
+     	        data: JSON.stringify(data),
+     	        headers: {"Content-Type": "application/json"},
+     	        beforeSend: function (xhr) {
+                     xhr.setRequestHeader(header, token);
+                   },
+     	        success : function(result){
+     	        	alert("수정 성공");
+     	        	comDev=1;
+     	        	modal_grid.textContent="";
+					Hfrm.textContent="";
+					$("#hiddenFrm").append($("<input id=\"planBtn0\" type=hidden>"));
+					$('#hiddenFrm').append($("<input id=\"orderBtn0\" type=hidden>"));
+					$("input").val("");
+					$("#conmi option").remove();
+					$("#priorityi").val('0');
+					document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+					$("#getConNm").css('display','block');
+					$('#modBtn').attr('disabled',true);
+					$('#delBtn').attr('disabled',true);
+					grid.readData();
+     	        },
+     	        error : function(reject){
+     	        	console.error(reject);
+     	        	}
+     	        });
+    	
+    })
+    
+    //조회버튼 클릭이벤트
+    $('#selBtn').click(function(e){
+    	e.preventDefault();
+    	let sDate=$("#sCon").val();
+    	let clsDate=$("#clsCon").val();
+    	console.log(sDate);
+    	console.log(clsDate);
+    	if(sDate==''||clsDate==''){
+    		alert("계획일자 범위가 규정되지 않았습니다.");
+    	}
+    	let data={planSdate:sDate,
+    			planClsdate:clsDate};
+    	 $.ajax({
+  	        url : "/mak/selectOrd",
+  	        method : "POST",
+  	        data: JSON.stringify(data),
+  	        headers: {"Content-Type": "application/json"},
+  	        beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
+  	        success : function(result){
+ 					grid.resetData(result);
+ 					
+  	        },
+  	        error : function(rejection){
+  	        console.error(rejection);	
+  	        }
+  	        });
+    })
+    //계획수량 강화제약 조건
+    $('#plcoi').keyup(function(){
+    	if(comDev==1){
+    	  	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
+    		alert('해당 주문건의 수량을 넘어설 수 없습니다.');
+    		$('#plcoi').val($('#abplcoi'+selectNum).val());
+    	};
+    	}else if(comDev==2){
+    		if(Math.abs($("#plcoi").val())>$("#contDetQuan0").val()){
+    			alert('해당 주문의 잔류수량을 넘어설 수 없습니다.')
+    			$("#plcoi").val($("#contDetQuan0").val());
+    		};
+    	};
+    });
+    
+    //input 데이터 옮기기
+    $('#frm input').change(function(){
+    	selectNum=$('#conmi option:selected').data('num');
+    	//시작일자 변경 시 종료일자 지정일은 최소 시작일자 이후로 지정
+    	if(comDev==1){
+    	document.getElementById('dclsi').min=document.getElementById('dsti').value;
+    	document.getElementById(this.id+selectNum).value=this.value;
+    	
+    	//변수 제어 - 제약 조건 걸기
+    	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
+    		alert('해당 계약건의 수량을 넘어설수 없습니다.');
+    		$('#plcoi').val($('#abplcoi'+selectNum).val());
+    	};
+    	};
+    	if($('#dsti').val()<new Date().toISOString().slice(0, 10)){
+    		alert('계획시작일의 최소일자는 금일입니다.');
+    		document.getElementById('dsti').value=new Date().toISOString().slice(0, 10);
+    	};
+    	
+    	if($('#dclsi').val()<$('#dsti').val()){
+    		alert('계획마감일의 최소일자는 계획시작일입니다.');
+    		$('#dclsi').val($('#dsti').val());
+    	};
+    });
+    
+    //셀렉트박스 옵션 값 선택시 데이터 변경
+    $('#conmi').change(function(){
+    	selectNum=$('#conmi option:selected').data('num');
+    	
+    	//셀렉트 박스 변경시 저장된 옵션 데이터들 불러오기
+    	$('#plnmi'+selectNum).val($('#plnmi').val());
+    	$('#dclsi').val(document.getElementById('dclsi'+$('#conmi option:selected').data('num')).value);
+    	$('#dsti').val(document.getElementById('dsti'+$('#conmi option:selected').data('num')).value);
+    	$('#prnmi').val(document.getElementById('prnmi'+$('#conmi option:selected').data('num')).value);
+    	$('#dereli').val(document.getElementById('dereli'+$('#conmi option:selected').data('num')).value);
+    	$('#plcoi').val(document.getElementById('plcoi'+$('#conmi option:selected').data('num')).value);
+    	$('#priorityi').val(document.getElementById('priorityi'+$('#conmi option:selected').data('num')).value);
+    	document.getElementById('plcoi').max=$('#abplcoi'+selectNum).val();
+    	document.getElementById('dclsi').max=document.getElementById('dereli').value;
+    	if(selectNum==0){
+    		$('#plnmi').attr('readonly',false);
+    	}else{
+    		$('#plnmi').attr('readonly',true);
+    	}
+    })
+    
+   /*  $.ajax({
+        url : "/mak/planList",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	grid.resetData(result);
+        }
+         });
+    */
+    //그리드 데이터소스
+    const dataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/mak/ordList",
+                method: "GET",
+              },
+              modifyData: {
+                url: "/admin/userModifyAjax",
+                method: "POST",
+                withCredentials: true,
+              },
+            },
+          };
+    //기본그리드 layout
+        var grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        scrollX: false,
+        rowHeaders: ['rowNum'],
+        selectionUnit:'row',
+        data: dataSource,
+        bodyHeight: 200,
+        columns: [{
+        header: '생산계획명',
+        name: 'planNm'
+        },
+        {
+        header: '주문명',
+        name: 'contNm'
+        },
+        {
+        header: '제품명',
+        name: 'prodName'
+        },
+        {
+        header: '계획일자',
+        name: 'planDate'
+        },
+        {
+        header: '시작일자',
+        name: 'planSdate'
+        },
+        {
+           header: '종료일자',
+           name: 'planClsdate'
+        },
+        {
+        header: '납기일',
+        name: 'contDetRelease'
+        },
+        {
+        header: '계획수량',
+        name: 'planQnt'
+        },
+        {
+        header: '상태',
+        name: 'planState'
+        },
+        {
+        header: '잔류계약수량',
+        name: 'contDetQuan'
+        },
+        {
+            header: '우선순위',
+            name: 'priority'
+        }
+        ]
+        });
+      //그리드 세팅 시작
+        //서버에 연결전 토큰값 담는 method
+        grid.on("beforeRequest", function (obj) {
+          obj.xhr.setRequestHeader(header, token);
+        });
+      if(planType=="order"){
+      	grid.on("dblclick", function(obj){
+      		console.log(obj.rowKey);
+      		console.log(grid.getRow(obj.rowKey));
+      		if(comDev==2){
+      			//수정 중복 클릭시 제어
+      	    	$("input").val("");
+      			$("#conmi option").remove();
+      			$("#priorityi").val('0');
+      			document.getElementById("planDatei").value=new Date().toISOString().slice(0, 10);
+      			document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
+      			document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
+      	    	};
+      		comDev=2;
+      		$('#modBtn').attr('disabled',false);
+      		$('#delBtn').attr('disabled',false);
+        	modData=grid.getRow(obj.rowKey);
+        	Hfrm.textContent="";
+    		$("#hiddenFrm").append($("<input id='planBtn0' type=hidden>"));
+    		$('#hiddenFrm').append($("<input id='orderBtn0' type=hidden>"));
+        	//계획명 수정 가능하게 바꾸기
+    		$('#plnmi').attr('readonly',true);
+        	
+        	$('#plnmi').val(modData.planNm);
+    		document.getElementById('dereli').value=modData.ordDueDate;
+    		document.getElementById('plcoi').value=modData.planQnt;
+    		document.getElementById('prnmi').value=modData.prodName;
+    		document.getElementById('conmi').value=modData.contNm;
+    		document.getElementById('dclsi').max=document.getElementById('dereli').value;
+    		$("#dclsi").val(modData.planClsdate);
+    		$("#dsti").val(modData.planSdate);
+    		document.getElementById('dsti').min=new Date().toISOString().slice(0, 10);
+    		document.getElementById('dclsi').min=$("#dsti").val();
+    		
+    		//옵션값 추가
+    		options = document.createElement("option");
+    		options.setAttribute('name',conmi);
+    		options.append(modData.contNm);
+    		document.getElementById('conmi').appendChild(options);
+    		
+    		//pd코드 숨겨놓기
+    		let input = document.createElement('input');
+    		input.setAttribute('id','pdCode0');
+    		input.setAttribute('type','hidden');
+    		input.value=modData.pdCode;
+    		Hfrm.appendChild(input);
+    		
+    		//계약수량 숨겨놓기
+    		input = document.createElement('input');
+    		input.setAttribute('id','contDetQuan0');
+    		input.setAttribute('type','hidden');
+    		input.value=(modData.ordDetQuan+modData.planQnt);
+    		Hfrm.appendChild(input);
+    		
+    		//수정 계획수량 최대값 제한걸기.
+    		document.getElementById('plcoi').max=Math.abs($("#contDetQuan0").val());
+    		
+    		//제품 검색 숨기기
+    		$('ion-icon[name="search"]').css('display','none');
+      	})
+      };
+      //검색버튼 모달
+     document.getElementById('getConNm').addEventListener('click',function(){
+        $.ajax({
+          url : "/mak/ordering",
+          method : "GET",
+          dataType : "JSON",
+          success : function(result){
+        	  modal_grid.textContent="";
+            modal_grid.resetData(result);
+            
+        	conData.forEach(function(conCheck){
+        		console.log(conCheck.rowKey);
+        		modal_grid.check(conCheck.rowKey);
+        	})
+        	conData=[];
+        	
+          }
+        });     
+     });			
+   //모달내부 그리드 생성
+     modal_grid = new tui.Grid({
+       el: document.getElementById('modal-grid'),
+       scrollX: false,
+       bodyHeight:200,
+       rowHeaders: ['checkbox'],
+       columns: [{
+         header: '주문명',
+         name: 'contNm'
+       },
+       {
+         header: '제품명',
+         name: 'prodName'
+       },
+       {
+         header: '잔류수량',
+         name: 'ordDetQuan'
+       },
+       {
+     	  header: '납기일',
+     	  name : 'ordDueDate'
+       },
+       {
+     	  header:'주문상세코드',
+     	  name: 'ordDetCode',
+     	  hidden:1
+       }
+     ]
+     })
 
-})
+     $(function(){
+     $('#matmodalbtn').on('shown.bs.modal', function(){
+        modal_grid.refreshLayout();
+     });         
+           
 
+     })
+
+};          
+            
+        });
+/* 주문서 기반 끝 */
  
 
 </script>
