@@ -58,6 +58,13 @@ public class MatServiceimpl implements MatService{
 	 }
 	 
 	 @Override
+		public List<OrderVO> gettodaymatregister() {
+			// 당일발주등록리스트
+			return matmapper.gettodaymatregister();
+		}
+
+	 
+	 @Override
 	public List<OrderVO> getorderlistajax() {
 		// 발주등록조회페이지
 		return matmapper.getorderlistajax();
@@ -73,7 +80,17 @@ public class MatServiceimpl implements MatService{
 	@Override
 	public void getwarehousingregister(List<WarehousingVO> list) {
 		// 자재입고등록
-		
+		for(int i=0; i<list.size(); i++) {
+			int pass = list.get(i).getTestTnumPass();
+			list.get(i).setMatWrhqy(pass);
+		}
+		matmapper.getwarehousingregister(list);
+	}
+	
+	@Override
+	public List<WarehousingVO> gettodaywarehousinglist() {
+		// 자재입고리스트 당일건
+		return matmapper.gettodaywarehousinglist();
 	}
 
 	@Override
@@ -82,6 +99,9 @@ public class MatServiceimpl implements MatService{
 		return matmapper.getsemiwarehousinglist();
 	}
 
+	
+
+	
 	
 	
 	
