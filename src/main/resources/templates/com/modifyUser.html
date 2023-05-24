@@ -20,7 +20,6 @@
       <div style="width: 720px; margin: 0 auto">
         <div class="card card-outline">
           <div class="card-body">
-            <form action="#" method="post" id="modForm">
               <div class="form-group row">
                 <label class="text-right col-4 col-form-label" for="empId">아이디</label>
                 <input
@@ -36,7 +35,19 @@
                 <div class="col-4"></div>
               </div>
               <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="password1">비밀번호</label>
+                <label class="text-right col-4 col-form-label" for="curPw">현재 비밀번호</label>
+                <input
+                  type="password"
+                  class="form-control col-4"
+                  style="float: none; margin: 0 auto 10px auto"
+                  id="curPw"
+                  name="curPw"
+                />
+                <div class="col-4">
+                </div>
+              </div>
+              <div class="form-group row">
+                <label class="text-right col-4 col-form-label" for="password1">새 비밀번호</label>
                 <input
                   type="password"
                   class="form-control col-4"
@@ -74,12 +85,10 @@
                 />
                 <div class="col-4"></div>
               </div>
-              <small id="emailHelp" class="form-text text-muted">비밀번호를 입력하지 않아도 변경됩니다.</small>
               <hr />
               <p>비밀번호 분실시 담당자에게 연락<br />연락처 : 010-0000-0000</p>
-              <button type="submit" class="btn btn-primary">변경</button>
+              <button type="button" id="submit" class="btn btn-primary">변경</button>
               <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
-            </form>
           </div>
         </div>
       </div>
@@ -88,8 +97,8 @@
         $(function () {
           let token = $('meta[name="_csrf"]').attr("content");
           let header = $('meta[name="_csrf_header"]').attr("content");
-          $("#modForm").submit((e) => {
-            e.preventDefault();
+          $("#submit").click((e) => {
+            let curPw = $("#curPw");
             let pw1 = $("#password1");
             let pw2 = $("#password2");
             let tel = $("#tel");
@@ -114,15 +123,20 @@
             $.ajax({
               url: "/modify",
               method: "POST",
-              data: JSON.stringify({ empId: $("#empId").val(), empPw: pw1.val(), empTel: tel.val() }),
+              data: JSON.stringify({ empId: $("#empId").val(), curPw: curPw.val(), empPw: pw1.val(), empTel: tel.val() }),
               beforeSend: (xhr) => xhr.setRequestHeader(header, token),
               contentType: "application/json",
             })
               .done((r) => {
-                alert("변경 완료");
+                if(r){
+                  alert("변경 완료");
+                }else{
+                  alert("현재 비밀번호가 일치하지 않습니다.")
+                }
+                
               })
               .fail((e) => {
-                console.error(e);
+                alert("데이터 변경 중 에러가 발생했습니다.")
               });
           });
         });

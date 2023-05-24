@@ -15,9 +15,10 @@
   <update id="modifyUser">
   	UPDATE COM_INFO_EMP SET 
   	<if test="empPw != null and empPw != ''.toString()">
-  		emp_pw = ${empPw}, 
+  		emp_pw = #{empPw}, 
   	</if>
- 	emp_tel = ${empTel}
+ 	emp_tel = #{empTel}
+ 	WHERE EMP_NUM = #{empNum}
   </update>
   
   <!-- 사원 리스트 출력 -->

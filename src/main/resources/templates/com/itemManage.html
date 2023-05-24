@@ -16,6 +16,11 @@
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      tr .modified {
+        background-color: rgba(255, 255, 0, 0.3);
+      }
+    </style>
   </head>
   <body>
     <div layout:fragment="title">품목 정보 관리</div>
@@ -358,6 +363,7 @@
           matGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
+              grid.readData();
               alert("데이터가 저장되었습니다.");
             } else if (result == "Fail") {
               alert("데이터 저장중 에러가 발생했습니다.");
@@ -366,6 +372,7 @@
           semiGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
+              grid.readData();
               alert("데이터가 저장되었습니다.");
             } else if (result == "Fail") {
               alert("데이터 저장중 에러가 발생했습니다.");
@@ -374,6 +381,7 @@
           prodGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
+              grid.readData();
               alert("데이터가 저장되었습니다.");
             } else if (result == "Fail") {
               alert("데이터 저장중 에러가 발생했습니다.");
@@ -381,6 +389,24 @@
           });
           //tui grid의 언어세팅
           tui.Grid.setLanguage("ko");
+
+          //수정된 행 색칠 시작
+          matGrid.on("afterChange", (e) => {
+            console.log(e.changes);
+            let c = e.changes[0];
+            grid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          semiGrid.on("afterChange", (e) => {
+            console.log(e.changes);
+            let c = e.changes[0];
+            grid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          prodGrid.on("afterChange", (e) => {
+            console.log(e.changes);
+            let c = e.changes[0];
+            grid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          //수정된 행 색칠 끝
 
           //그리드 세팅 끝
 
@@ -489,6 +515,7 @@
               case "prod":
                 grid.appendRow({ prodCode: nextNum, prodUse: "Y" }, { focus: true });
             }
+            grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
           });
           //품목 추가 끝
 

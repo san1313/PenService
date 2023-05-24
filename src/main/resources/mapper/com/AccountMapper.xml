@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.com.mapper.AccountMapper">
+
+	<!-- 거래처 리스트 조회 -->
+	<select id="getAccountList" resultType="AccountVO">
+		SELECT * FROM COM_CODE_ACCOUNT
+	</select>
+	
+	<!-- 거래처 타입 조회 -->
+	<select id="getAccTypeList" resultType="String">
+		SELECT INNER_CODE_NAME FROM COM_INNER_CODE WHERE COM_CODE = 'ACC-TYP'
+	</select>
+	
+	<!-- 거래처 코드 가져오기 -->
+	<select id="getAccCode" resultType="String">
+		SELECT 'ACC-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
+		SEQUENCE_NAME = 'ACC_SEQ'
+	</select>
+	
+	<!-- 거래처 수정 -->
+		<update id="modifyAccList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_CODE_ACCOUNT
+			SET
+			ACC_NAME = #{vo.accName},
+			ACC_TYPE = #{vo.accType},
+			ACC_ADDRESS = #{vo.accAddress},
+			ACC_TEL = #{vo.accTel}
+			WHERE ACC_CODE = #{vo.accCode}
+		</foreach>
+	</update>
+	
+	<!-- 거래처 등록 -->
+	<insert id="insertAccList">
+		  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_CODE_ACCOUNT VALUES (
+          GET_ACC_SEQ,
+          #{vo.accName},
+          #{vo.accType},
+          #{vo.accAddress},
+          #{vo.accTel}
+    )
+    </foreach>
+	</insert>
+	
+	  <!-- 사원 삭제 -->
+  <delete id="deleteAccList">
+      DELETE FROM COM_CODE_ACCOUNT WHERE 
+    <foreach collection="list" item="vo" separator="OR">
+        ACC_CODE = #{vo.accCode} 
+    </foreach>
+  </delete>
+</mapper>
