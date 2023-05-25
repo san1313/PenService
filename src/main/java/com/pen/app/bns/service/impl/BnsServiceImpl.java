@@ -8,7 +8,7 @@ import org.springframework.stereotype.Service;
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
-import com.pen.app.bns.vo.BnsConVO;
+import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsEmpVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
@@ -81,9 +81,34 @@ public class BnsServiceImpl implements BnsService {
 	
 	// ---------------------계약서
 		@Override
-			public List<BnsConVO> getConList() {
-			return mapper.getConList();
+			public List<BnsContVO> getContList() {
+			return mapper.getContList();
 			}
+
+		@Override
+		public List<BnsContVO> getContListCon(BnsContVO vo) {
+			return mapper.getContListCon(vo);
+		}
+
+		@Override
+		public int insertContList(List<BnsContVO> list) {
+			return mapper.insertContList(list);
+		}
+
+		@Override
+		public int modContList(List<BnsContVO> list) {
+			return mapper.modContList(list);
+		}
+
+		@Override
+		public void delContDetList(List<BnsContVO> list) {
+			
+		}
+
+		@Override
+		public List<BnsContVO> getContProdModList(String keyword) {
+			return mapper.getContProdModList(keyword);
+		}
 
    
 }
