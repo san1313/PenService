@@ -75,25 +75,11 @@
   
   <div layout:fragment="content">
     <div class="ordersearch">
-      <label>발주번호</label>
-      <input id="orderCode" class="text1" readonly>
       <label>자재명</label>
-      <input class="text1" type="text" id="matmodaltest" readonly	>
-      <input class="text1" type="hidden" id="matmodaltest1" readonly	>
-      <input class="text1" type="hidden" id="matmodaltestuntpc" readonly	>
-      <input class="text1" type="hidden" id="matmodalordername" readonly	>
+      <input class="text1" type="text" id="matmodalmatname" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
-      <label>납기일</label>
-      <input class="text1" type="date" id="matReqdate"><br>
-      <label>거래처명</label>
-      <input class="text1" type="text" id="accmodaltest" readonly	>
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
-      <label>담당자</label>
-      <input class="text1" type="text" id ="matCharger">
-      <button type="button" id="addmatbtn">추가</button>
-     
-      
-      
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 
     <!-- 자재명모달 -->
@@ -116,111 +102,66 @@
   </div>
 </div>
 
-
-	<!-- 거래처목록모달 -->
-	 <div class="modal fade bd-example-modal-lg" id="accmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">거래처목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-        <label>자재명</label>
-        <input class="modaltext" type="text" id="ckacc-text">
-        <button class="ckaccmodalbtn" type="button" id="ckacc">조회</button>
-      	<div id="acc-modal-grid"></div>
-      </div>
-    </div>
-  </div>
-</div>
-
-
-<!-- 필요자재발주목록모달 -->
-	 <!-- <div class="modal fade bd-example-modal-lg" id="neccmatmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
-  <div class="modal-dialog modal-lg">
-    <div class="modal-content">
-      <div class="modal-header">
-      	<h5 class="modal-title">필요자재발주목록</h5>
-		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
-          <span aria-hidden="true">&times;</span>
-        </button>      
-      </div>
-      <div class="modal-body">
-      	<div id="neccmat-modal-grid"></div>
-      </div>
-    </div>
-  </div>
-</div> -->
 	
-	<div id="grid"></div>
-    <button type="button" class="btn btn-primary" id="suBtn">발주요청</button>
-	<button type="button" class="btn btn-danger" id="deletematbtn">삭제</button>
+	<div id="igrid"></div>
+
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-          
+    // 발주리스트
+    $.ajax({
+  		url : "/mat/orderlistajax",
+  		method : "GET",
+  		dataType : "JSON",
+  		success : function(result){
+  			console.log(result);
+  			orderlistgrid.resetData(result);
+  			orderlistgrid.refreshLayout();
+  		},
+  		error: function(reject){
+	    	 console.log(reject)
+  		}
+  	});
      
-    // $.ajax({
-    // url : "/mat/orderListAjax",
-    // method : "GET",
-    // dataType : "JSON",
-    // success : function(result){
-    // grid.resetData(result);
-    // grid.refreshLayout();
-    
-    // }
-    // });
 
-    var grid = new tui.Grid({
-    el: document.getElementById('grid'),
+    var igrid = new tui.Grid({
+    el: document.getElementById('igrid'),
     scrollX: false,
     scrollY: false,
-    rowHeaders: ['checkbox'],
+    rowHeaders: ['rowNum'],
     columns: [{
-    header: '발주번호',
+    header: '자재코드',
     name: 'matOrdernum'
     },
     {
-    header: '발주명',
-    name: 'matOrdername'
-    },
-    {
-    header: '자재코드',
-    name: 'matCode'
-    },
-    {
     header: '자재명',
-    name: 'matName'
+    name: 'matOrdername',
     },
     {
-    header: '거래처명',
+    header: '재고량',
     name: 'accCode'
     },
     {
-    header: '납기일',
-    name: 'matReqdate'
+    header: '안전재고수량',
+    name: 'accName',
+    hidden: true
     },
     {
-    header: '담당자',
-    name: 'matCharger'
+    header: '안전재고부족분',
+    name: 'matCode'
     },
     {
-    header: '단가',
-    name: 'matUntpc'
-    },
-    {
-    header: '발주량',
-    name: 'matOrderQy',
-    editor: 'text'
+    header: '안전재고',
+    name: 'matName'
     }
-    ]
+    }
     });
 
+    
+    
+    
     
   //자재명모달
     $.ajax({
@@ -259,10 +200,7 @@
     	modal_grid.refreshLayout();
     });
     })
-    
-    
-    
-    
+
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
@@ -284,8 +222,8 @@
     	     error: function(reject){
     	    	 console.log(reject)
   
-      }
-    })
+      		}
+    	})
     });
      
     //자재모달선택
@@ -300,10 +238,10 @@
       console.log(dataRow);
 
       console.log('자재코드 : ' + dataRow.matCode + ', 자재명 : ' + dataRow.matName);
-      $('#matmodaltest').val(dataRow.matName);
-      $('#matmodaltest1').val(dataRow.matCode);
-      $('#matmodaltestuntpc').val(dataRow.matUntpc);
-      $('#matmodalordername').val(dataRow.matOrdername);
+      $('#matmodalmatname').val(dataRow.matName);
+      $('#matmodalmatcode').val(dataRow.matCode);
+
+      
       $('#matmodal').modal('hide');
       
       $.ajax({
@@ -318,226 +256,35 @@
         });
     })	
 
-    
-    //거래처모달
-    $.ajax({
- 		url : "/mat/acclist",
- 		method : "GET",
- 		dataType : "JSON",
- 		success : function(result){
- 			console.log(result);
- 			accmodal_grid.resetData(result);
- 			accmodal_grid.refreshLayout();
- 		}
- 	});
-    
-    
-
-    
-    var accmodal_grid = new tui.Grid({
-      el: document.getElementById('acc-modal-grid'),
-
-      scrollX: false,
-      scrollY: false,
-      rowHeaders: ['rowNum'],
-      columns: [
-        {
-          header: '자재명',
-          name: 'matName'
-        },
-        {
-          header: '거래처코드',
-          name: 'accCode'
-        },
-        {
-          header: '거래처명',
-          name: 'accName'
-        }  
-      ]
-    });
-    
-     $(function(){  
-        $('#accmodal').on('shown.bs.modal', function(){
-        	accmodal_grid.refreshLayout();
-        });
-        })
-        
-        
-        //거래처모달검색조회
-         $("#ckacc").on('click', function(){
-        	console.log(document.getElementById('ckacc-text').value)
-        	let data1 = document.getElementById('ckacc-text').value;
-        	let result = "%";
-        	result += data1;
-        	result += "%";
-    		$("#ckacc-text").val('');
-        	
-        	$.ajax({
-        		 url : "/mat/accminilist",
-        	     method : "GET",
-        	     data : {'result' : result},
-        	     success : function(result){
-        	     accmodal_grid.resetData(result);
-        	     accmodal_grid.refreshLayout();	
-        	     },
-        	     error: function(reject){
-        	    	 console.log(reject)
-          }
-        })
-        }); 
-    
-   		//거래처모달선택
-     accmodal_grid.on('click', ev=> {
-       console.log(ev.rowKey)
-       console.log(ev.columns)
-
-       const focusCell = accmodal_grid.getFocusedCell()
-       console.log(focusCell)
-
-       let dataRow = accmodal_grid.getRow(ev.rowKey);
-       console.log(dataRow);
-
-       console.log('자재명 : ' + dataRow.matName + ', 거래처코드 : ' + dataRow.accCode + ', 거래처명 : ' + dataRow.accName);
-       $('#accmodaltest').val(dataRow.accName);
-       $('#accmodal').modal('hide');
-       
-       $.ajax({
-    		url : "/mat/acclist",
-    		method : "GET",
-    		dataType : "JSON",
-    		success : function(result){
-    			console.log(result);
-    			accmodal_grid.resetData(result);
-    			accmodal_grid.refreshLayout();
-    		}
-    	});
-     })	
          
      
-     //추가버튼
-    document.getElementById('addmatbtn').addEventListener('click', function(){
-      //grid
-    
-     if($('#matmodaltest').val()=='' || $('#matmodaltest1').val()=='' || $('#accmodaltest').val()=='' || $('#matReqdate').val()=='' || $('#matCharger').val()=='' || $('#matmodaltestuntpc').val()==''){
-    	 alert('뭔가 비어있는게 있어요');
-    	 false;
-     }else{
-     let necc = {matOrdernum: $('#orderCode').val(),
-    		 	matOrdername: $('#matmodalordername').val(),
-    		 	matName: $('#matmodaltest').val() ,
-    	  		matCode: $('#matmodaltest1').val() ,
-    	  		accCode: $('#accmodaltest').val(),
-    	  		matReqdate: $('#matReqdate').val(),
-    	  		matCharger: $('#matCharger').val(),
-    	  		matUntpc: $('#matmodaltestuntpc').val()
-      };
-     grid.appendRow(necc);
-	if(grid.getData().length>0){
-		document.getElementById('suBtn').setAttribute('style','display:block;');
-		document.getElementById('deletematbtn').setAttribute('style','display:block');
-	}
-    }
-    })
+   //조회버튼
+    document.getElementById('submitbtn').addEventListener('click',function(){
+	   var matName = document.getElementById('matmodalmatname').value;
+	   var accCode = document.getElementById('accmodalcode').value;
+	   var startDate = document.getElementById('matOrderdate1').value;
+	   var endDate = document.getElementById('matOrderdate2').value;
+    	
+    	
+		 $.ajax({
+   		 url : "/mat/orderlistsearchajax",
+   	     method : "GET",
+   	     data : {matName: matName,
+   	    		accCode: accCode,
+   	     		matOrderdate : startDate,
+   	     		matOrderdate1 : endDate}, 
+   	     dataType : "JSON",
+   	     success : function(result){
+   	    	 console.log(result)
+   	    	igrid.resetData(result);
+   	    	igrid.refreshLayout();	
+   	     },
+   	     error: function(reject){
+   	    	 console.log(reject)
+     }
+   }); 
+   })  
      
-    //삭제버튼
-     document.getElementById('deletematbtn').addEventListener('click', function(){
-       let checked = grid.getCheckedRows();
-       for(let i = 0;i<checked.length;i++){
-       grid.removeRow(checked[i].rowKey);
-       };
-       if(grid.getData().length==0){
-    	   document.getElementById('suBtn').setAttribute('style','display:none');
-    	   document.getElementById('deletematbtn').setAttribute('style','display:none');
-       }
-  })
-     
-  //발주번호
-  $.ajax({
-	  url : "/mat/matordercode",
-		method : "GET",
-  }).done((result)=>{
-	  $('#orderCode').val(result);
-  })
-  
-  
-  //발주요청버튼
-  document.getElementById('suBtn').addEventListener('click', function(){
-	  let checked = grid.getCheckedRows();
-	  $.ajax({
-  		url : "/mat/matregister",
-  		method : "POST",
-  		data : JSON.stringify({list:grid.getCheckedRows()}),
-  		beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-  		dataType : "JSON",
-  		contentType: "application/json",
-  		success : function(result3){			
-  			console.log(result3);
-  			
-  		}
-  	});
-	  
-  })
-     
-     //필요자재발주목록모달
-    /* $.ajax({
-        url : "/mat/matlist",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	console.log(result);
-          acc_modal_grid.resetData(result);
-          acc_modal_grid.refreshLayout();
-        }
-      });
-
-
-	  
-      var modal_grid = new tui.Grid({
-        el: document.getElementById('acc-modal-grid'),
-
-        scrollX: false,
-        scrollY: false,
-        rowHeaders: ['rowNum'],
-        columns: [{
-          header: '자재코드',
-          name: 'matCode'
-        },
-        {
-          header: '자재명',
-          name: 'matName'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '필요수량',
-          name: 'matUnit'
-        },
-        {
-          header: '재고량',
-          name: 'matUnit'
-        },
-        {
-          header: '안전재고',
-          name: 'matUnit'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-        },
-        {
-          header: '발주수량',
-          name: 'matUnit'
-          editor: 'text'
-          }
-        
-      ]
-    }) */
-
    
     </script>
 

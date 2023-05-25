@@ -1,7 +1,9 @@
 package com.pen.app.mat.mapper;
 
+
 import java.util.List;
 
+import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
 
@@ -16,14 +18,17 @@ public interface MatMapper {
 	List<OrderVO> gettodaymatregister(); //당일발주등록리스트
 	
 	List<OrderVO> getorderlistajax(); //발주등록조회페이지리스트
-	List<OrderVO> getorderlistsearchajax(String keyword); //발주조회다중검색
+	List<OrderVO> getorderlistsearchajax(OrderVO vo); //발주조회다중검색
 	List<WarehousingVO> getwarehousinglist(); //자재입고페이지 검사내역리스트
 	
 	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
 	List<WarehousingVO> gettodaywarehousinglist(); //당일건자재입고리스트
-	
+	List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo); //자재입고리스트 다중검색
 	List<WarehousingVO> getwarehousingmatlistajax(); //자재입고조회
 	
-	List<WarehousingVO> getsemiwarehousinglist(); //반제품입고페이지 검사내역리스트
+	//List<WarehousingVO> getsemiwarehousinglist(); //반제품입고페이지 검사내역리스트
+	
+	List<InventoryVO> getinventorysearch(InventoryVO vo); //자재재고조회 자재코드 검색
+	
 }
 	

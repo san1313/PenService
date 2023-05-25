@@ -61,8 +61,18 @@
 	
 	<!-- 발주등록 다중검색 조회--> 
 	<select id="getorderlistsearchajax" resultType="OrderVO">
-	select a.mat_ordernum, a.acc_code, a.mat_ordername, b.mat_code, b.mat_name, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt
-	from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum) where b.mat_code = #{keyword} and a.acc_code=#{keyword} and TRUNC(a.mat_orderdate) BETWEEN TO_DATE(#{a.mat_orderdate}, 'YYYY-MM-DD') AND TO_DATE(#{a.mat_orderdate}, 'YYYY-MM-DD');
+	<![CDATA[
+		select *
+		from(
+			select a.mat_ordernum, a.acc_code, a.mat_ordername, b.mat_code, b.mat_name, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt, c.acc_name
+			from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum) 
+			                                          join com_code_account c on(a.acc_code = c.acc_code) 
+			where b.mat_name = #{matName} 
+			and c.acc_code= #{accCode}
+			and a.mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
+			)
+		where mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+	]]>
 	</select>
 	
 	
@@ -109,15 +119,35 @@
 	
 	<!-- 입고등록리스트 -->
 	<select id="getwarehousingmatlistajax" resultType="WarehousingVO">
-	select a.mat_lot, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate, b.mat_code,b.mat_name from mat_wrhousng a join mat_invntry b on(a.mat_lot = b.mat_lot)
+	select distinct a.mat_lot, d.mat_ordernum, b.mat_code, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate from mat_wrhousng a join mat_invntry b on(a.mat_lot=b.mat_lot)
+	join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat) join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
 	</select>
 	
+	<!-- 입고등록리스트 다중검색 -->
+	<select id="getwarehousingsearchajax" resultType="WarehousingVO">
+	<![CDATA[
+	select *
+		from(
+			select a.mat_lot, d.mat_ordernum, b.mat_code, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate
+			from mat_wrhousng a join mat_invntry b on (a.mat_lot=b.mat_lot) 
+			                                          join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat)
+                                                      join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
+			where b.mat_code=#{matCode}
+			and a.mat_bcncname = #{matBcncname}
+			and mat_wrhdate >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
+			)
+		where mat_wrhdate <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
+	]]>
+	</select>
 	
 	<!-- 반제품입고등록 검사내역리스트 -->
-	<select id="getsemiwarehousinglist" resultType="WarehousingVO">
+	<!-- <select id="getsemiwarehousinglist" resultType="WarehousingVO">
 	select qip_code_list_prod, prcs_code, test_num_prod, test_num_def  from qip_list_prod
+	</select> -->
+	
+	<!-- 자재재고조회 자재코드 검색 -->
+	<select id="getinventorysearch" resultType="InventoryVO">
+	
 	</select>
-	
-	
 	
 </mapper>

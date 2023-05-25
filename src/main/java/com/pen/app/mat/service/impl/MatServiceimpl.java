@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
 
@@ -71,9 +72,9 @@ public class MatServiceimpl implements MatService{
 	}
 	 
 	@Override
-	public List<OrderVO> getorderlistsearchajax(String keyword) {
+	public List<OrderVO> getorderlistsearchajax(OrderVO vo) {
 		//발주조회다중검색
-		return matmapper.getorderlistsearchajax(keyword);
+		return matmapper.getorderlistsearchajax(vo);
 	}
 
 	@Override
@@ -100,17 +101,30 @@ public class MatServiceimpl implements MatService{
 	}
 	
 	@Override
+	public List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo) {
+		// 자재입고 다중검색 리스트
+		return matmapper.getwarehousingsearchajax(vo);
+	}
+
+	
+	@Override
 	public List<WarehousingVO> getwarehousingmatlistajax() {
 		// 자재입고조회
 		return matmapper.getwarehousingmatlistajax();
 	}
 
 	@Override
-	public List<WarehousingVO> getsemiwarehousinglist() {
-		// 반제품 검사내역리스트
-		return matmapper.getsemiwarehousinglist();
+	public List<InventoryVO> getinventorysearch(InventoryVO vo) {
+		// 자재재고조회 자재코드 검색
+		return matmapper.getinventorysearch(vo);
 	}
 
+	/*
+	 * @Override public List<WarehousingVO> getsemiwarehousinglist() { // 반제품
+	 * 검사내역리스트 return matmapper.getsemiwarehousinglist(); }
+	 */
+
+	
 	
 
 
