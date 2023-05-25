@@ -4,7 +4,7 @@
 	layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8">
-<title>ordList</title>
+<title>contList</title>
 <script src="https://kit.fontawesome.com/56e7c5522c.js"
 	crossorigin="anonymous"></script>
 <link rel="stylesheet"
@@ -46,16 +46,16 @@
 	text-align: left !important;
 }
 
-.ordbtn {
+.contbtn {
 	float: right;
 	margin-bottom: 1px;
 }
 
-.ordbtn button {
+.contbtn button {
 	margin-right: 2px;
 }
 
-.ordReg {
+.contReg {
 	margin-top: 30px;
 }
 
@@ -68,7 +68,7 @@
 
 <body>
 	<div layout:fragment="title">
-		<h1>주문서 관리</h1>
+		<h1>계약서 관리</h1>
 	</div>
 
 	<div layout:fragment="content">
@@ -95,16 +95,18 @@
 				data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</p> -->
 		<p>
-			주문일자 - 납기일자 <input type="date" id="orddate-text"><input
-				type="date" id="ordduedate-text">
-			<button id="searchOrd">조회</button>
+			<p>
+			계약작성일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2">
+			</p>
+				계약만료일자 <input type="date" id="contduedate-text1"> - <input type="date" id="contduedate-text2">
+			<button id="searchcont">조회</button>
 
 		</p>
-		<div class="ordbtn">
+		<div class="contbtn">
 			<button type="button" class="btn btn-outline-secondary"
-				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
+				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
 				등록</button>
-			<button id="BtnOrdCancle" class="btn btn-outline-secondary">주문서
+			<button id="BtncontCancle" class="btn btn-outline-secondary">계약서
 				취소</button>
 		</div>
 
@@ -160,14 +162,14 @@
 		<!------------------------------ 본문 모달끝 ------------------------------------->
 		<!-- 본문 조회 그리드 -->
 		<div id="grid"></div>
-		<!--------------------------- 주문서등록 modal --------------------------------------->
-		<div id="modalProdReg" class="modal fade bd-ordList-modal-lg"
+		<!--------------------------- 계약서등록 modal --------------------------------------->
+		<div id="modalProdReg" class="modal fade bd-contList-modal-lg"
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title">주문서 등록</h1>
+						<h1 class="modal-title">계약서 등록</h1>
 						<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -178,66 +180,71 @@
 					<div class="registerform">
 						<div class="productReginput" style="display: flex;">
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">주문코드
-								</label> <input type="text" id="modalOrdCode" class="form-control"
-									name="ordCode" value="" readonly>
+								<label for="recipient-name" class="col-form-label">계약코드
+								</label> <input type="text" id="modalcontCode" class="form-control"
+									name="contCode" value="" readonly>
 							</div>
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">담당자명
-								</label> <input type="text" id="ordempname" class="form-control"
+								</label> <input type="text" id="contempname" class="form-control"
 									name="empName" th:value="${#authentication.principal.username}"
 									readonly>
 							</div>
 
-							<input type="hidden" th:value="${userVO.empNum}" id="ordempnum"
+							<input type="hidden" th:value="${userVO.empNum}" id="contempnum"
 								class="form-control" name="empCode" readonly>
 
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">거래처명
 									<button type="button" class="fa-solid fa-magnifying-glass"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
-								</label> <input id="ordaccname" type="text" class="form-control"
+								</label> <input id="contaccname" type="text" class="form-control"
 									name="accName" readonly>
 							</div>
 						</div>
 						<div style="display: flex;">
 							<div style="float: left; margin-right: 10px">
 								<!-- <label for="recipient-name" class="col-form-label">거래처코드 </label> -->
-								<input type="hidden" id="ordacccode" class="form-control"
+								<input type="hidden" id="contacccode" class="form-control"
 									name="accCode" readonly>
 							</div>
 						</div>
 						<div style="display: flex;">
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">주문일자
-								</label> <input id="modalOrdDate" type="text" class="form-control"
-									name="ordDate" readonly placeholder="현재날짜">
+								<label for="recipient-name" class="col-form-label">계약작성일자
+								</label> <input id="modalcontDate" type="text" class="form-control"
+									name="contDate" readonly placeholder="현재날짜">
 							</div>
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">납기일자
-								</label> <input id="modalOrdDueDate" type="date" class="form-control"
-									name="ordDueDate">
+								<label for="recipient-name" class="col-form-label">계약시행일자
+								</label> <input id="modalcontDate" type="date" class="form-control"
+									name="contStartDate">
+							</div>
+							<div style="float: left; margin-right: 10px">
+								<label for="recipient-name" class="col-form-label">계약만료일자
+								</label> <input id="modalcontDueDate" type="date" class="form-control"
+									name="contDueDate">
 							</div>
 						</div>
 
-						<input type="hidden" id="modalOrdNote" class="form-control"
-							name="ordNote"></input> <br>
+						<input type="hidden" id="modalcontNote" class="form-control"
+							name="contNote"></input> <br>
 						<hr>
-						<h2>주문상세</h2>
+						<h2>계약상세</h2>
 						<br> <label>제품리스트</label>
 						<button type="button" class="fa-solid fa-magnifying-glass"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
 						<button style="float: right; margin-right: 5px;"
-							id="ordProdDelete">삭제</button>
+							id="contProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
 						<div class="modalbtn">
-							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
+							<button id="contregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn-secondary"
 								data-bs-dismiss="modal">취소</button>
 						</div>
 					</div>
 
-					<!-- 주문서 등록내의 거래처리스트모달 -->
+					<!-- 계약서 등록내의 거래처리스트모달 -->
 					<div class="modal fade bd-smallaccount-modal-sm"
 						id="accountRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -257,9 +264,9 @@
 							</div>
 						</div>
 					</div>
-					<!-- 주문서 등록내의 거래처리스트모달 끝 -->
+					<!-- 계약서 등록내의 거래처리스트모달 끝 -->
 
-					<!-- 주문서 등록내의 제품리스트모달 -->
+					<!-- 계약서 등록내의 제품리스트모달 -->
 					<div class="modal fade bd-smallproduct-modal-sm"
 						id="productRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -283,18 +290,18 @@
 				</div>
 			</div>
 		</div>
-		<!-- 주문서 등록내의 제품리스트 모달 끝 -->
-		<!-- 주문서 등록 모달 끝 -->
+		<!-- 계약서 등록내의 제품리스트 모달 끝 -->
+		<!-- 계약서 등록 모달 끝 -->
 
 
-		<!--------------------------- 주문서수정 modal --------------------------------------->
-		<div id="modalProdMod" class="modal fade bd-ordList-modal-lg"
+		<!--------------------------- 계약서수정 modal --------------------------------------->
+		<div id="modalProdMod" class="modal fade bd-contList-modal-lg"
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title">주문서 수정</h1>
+						<h1 class="modal-title">계약서 수정</h1>
 						<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -305,59 +312,64 @@
 						<div class="registerform">
 							<div class="productReginput" style="display: flex;">
 								<div style="float: left; margin-right: 10px">
-									<label for="recipient-name" class="col-form-label">주문코드
-									</label> <input type="text" id="modalOrdModCode" class="form-control"
-										name="ordCodeMod" value="" readonly>
+									<label for="recipient-name" class="col-form-label">계약코드
+									</label> <input type="text" id="modalcontModCode" class="form-control"
+										name="contCodeMod" value="" readonly>
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">담당자명
-									</label> <input type="text" id="ordempname" class="form-control"
+									</label> <input type="text" id="contempname" class="form-control"
 										name="empName"
 										th:value="${#authentication.principal.username}" readonly>
 								</div>
 
-								<input type="hidden" th:value="${userVO.empNum}" id="ordempnum"
+								<input type="hidden" th:value="${userVO.empNum}" id="contempnum"
 									class="form-control" name="empCode" readonly>
 
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">거래처명
 
-									</label> <input id="ordaccModname" type="text" class="form-control"
+									</label> <input id="contaccModname" type="text" class="form-control"
 										name="accNameMod" readonly>
 								</div>
 							</div>
 							<div style="display: flex;">
 								<div style="float: left; margin-right: 10px">
 									<!-- <label for="recipient-name" class="col-form-label">거래처코드 </label> -->
-									<input type="hidden" id="ordaccModcode" class="form-control"
+									<input type="hidden" id="contaccModcode" class="form-control"
 										name="accCodeMod" readonly>
 								</div>
 							</div>
 							<div style="display: flex;">
 								<div style="float: left; margin-right: 10px">
-									<label for="recipient-name" class="col-form-label">주문일자
-									</label> <input id="modalModOrdDate" type="text" class="form-control"
-										name="ordDateMod" readonly placeholder="현재날짜">
+									<label for="recipient-name" class="col-form-label">계약작성일자
+									</label> <input id="modalModcontDate" type="text" class="form-control"
+										name="contDateMod" readonly placeholder="현재날짜">
 								</div>
 								<div style="float: left; margin-right: 10px">
-									<label for="recipient-name" class="col-form-label">납기일자
-									</label> <input id="modalModOrdDueDate" type="date"
-										class="form-control" name="ordDueDateMod">
+									<label for="recipient-name" class="col-form-label">계약시행일자
+									</label> <input id="modalModcontDate" type="date" class="form-control"
+										name="contStartDateMod" readonly placeholder="현재날짜">
+								</div>
+								<div style="float: left; margin-right: 10px">
+									<label for="recipient-name" class="col-form-label">계약만료일자
+									</label> <input id="modalModcontDueDate" type="date"
+										class="form-control" name="contDueDateMod">
 								</div>
 							</div>
 							<label for="recipient-name" class="col-form-label">비고</label> <input
-								id="modalModOrdNote" class="form-control" name="ordNote"></input>
+								id="modalModcontNote" class="form-control" name="contNote"></input>
 							<br>
 							<hr>
-							<h2>주문상세</h2>
+							<h2>계약상세</h2>
 							<br> <label>제품리스트</label>
 							<button type="button" class="fa-solid fa-magnifying-glass"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
 							<button style="float: right; margin-right: 5px;"
-								id="ordProdDelete2">삭제</button>
+								id="contProdDelete2">삭제</button>
 							<div id="modProdgrid"></div>
 							<div class="modalbtn">
-								<button id="ordmodsubmit" type="submit" class="btn btn-primary">수정</button>
+								<button id="contmodsubmit" type="submit" class="btn btn-primary">수정</button>
 								<button type="button" class="btn btn-secondary"
 									data-bs-dismiss="modal">취소</button>
 							</div>
@@ -387,8 +399,8 @@
 				</div>
 			</div>
 		</div>
-		<!-- 주문서 수정내의 제품리스트 모달 끝 -->
-		<!-- 주문서 수정 모달 끝 -->
+		<!-- 계약서 수정내의 제품리스트 모달 끝 -->
+		<!-- 계약서 수정 모달 끝 -->
 
 
 		<!--------------------------------------------------------- 스크립트 ------------------------------------------->
@@ -398,7 +410,7 @@
 		$('#pageReset').on('click',function(){
 			
 			$.ajax({
-				url : "/bns/ordListAjax",
+				url : "/bns/contListAjax",
 				method : "GET",
 				dataType : "JSON",
 				success : function(result){
@@ -414,7 +426,7 @@
 		const header = $('meta[name="_csrf_header"]').attr("content");
 		
 		
-		$('#ordProdDelete').on('click' ,function(){
+		$('#contProdDelete').on('click' ,function(){
 			
 			addProdgrid.removeCheckedRows(true)
 			
@@ -422,7 +434,7 @@
 		
 		
 		
-		   //주문서 등록모달 내 제품추가 그리드생성
+		   //계약서 등록모달 내 제품추가 그리드생성
 		 var addProdgrid = new tui.Grid({
              el: document.getElementById('addProdgrid'),
              scrollX: false,
@@ -447,36 +459,39 @@
                  name: 'prodCode'
                },
                {
-                 header: '주문량',
-                 name: 'ordDetQuan',
+                 header: '계약량',
+                 name: 'contDetQuan',
                  editor:'text'
                },
                {
                    header: '단가',
-                   name: 'ordDetPrice',
+                   name: 'contDetPrice',
                    editor:'text'
                  },
                {
-                 header: '주문금액',
-                 name: 'ordDetTotPrice'
-                 
-               }
+                 header: '계약금액',
+                 name: 'contDetTotPrice'
+               },
+               {
+                header: '납기일자',
+                name: 'contDetRelease'
+              }
              ],
                summary: {
             	   height: 40,
             	    position: 'bottom',
              columnContent: {
-            	 ordDetQuan: {
+            	 contDetQuan: {
                    template: function(valueMap) {
                      return `TOTAL: ${valueMap.sum}`;
                    }
                  },
-                 ordDetPrice: {
+                 contDetPrice: {
                    template: function(valueMap) {
                      return `AVERAGE: ${valueMap.avg}원`;
                    }
                  },
-                 ordDetTotPrice: {
+                 contDetTotPrice: {
                      template: function(valueMap) {
                        return `TOTAL: ${valueMap.sum}원`;
                      }
@@ -485,34 +500,34 @@
              }  
             	});
 		   
-		   //단가X주문량=주문금액 계산
+		   //단가X계약량=계약금액 계산
           addProdgrid.on('editingFinish', function(ev){
        	  let row = addProdgrid.getRow(ev.rowKey);
-       	  if((ev.columnName=="ordDetQuan" || ev.columnName=="ordDetPrice")&&row.ordDetQuan&&row.ordDetPrice){
-       		  addProdgrid.setValue(ev.rowKey, "ordDetTotPrice", row.ordDetQuan*row.ordDetPrice, false)
+       	  if((ev.columnName=="contDetQuan" || ev.columnName=="contDetPrice")&&row.contDetQuan&&row.contDetPrice){
+       		  addProdgrid.setValue(ev.rowKey, "contDetTotPrice", row.contDetQuan*row.contDetPrice, false)
        	  }
        	  
          }) 
          
          
-         //주문서 등록 모달창의 등록 버튼클릭시
-		$('#ordregsubmit').on('click' ,function(){
+         //계약서 등록 모달창의 등록 버튼클릭시
+		$('#contregsubmit').on('click' ,function(){
 			let checked = addProdgrid.getCheckedRows();
 			checked.forEach(ele=>{
-				ele.ordCode = $('#modalOrdCode').val();
-				ele.empName = $('#ordempname').val();
-				ele.empNum = $('#ordempnum').val();
-				ele.accName = $('#ordaccname').val();
-				ele.accCode = $('#ordacccode').val();
-				ele.ordDate = $('#modalOrdDate').val();
-				ele.ordDueDate = $('#modalOrdDueDate').val();
-				ele.ordNote = $('#modalOrdNote').val();
+				ele.contCode = $('#modalcontCode').val();
+				ele.empName = $('#contempname').val();
+				ele.empNum = $('#contempnum').val();
+				ele.accName = $('#contaccname').val();
+				ele.accCode = $('#contacccode').val();
+				ele.contDate = $('#modalcontDate').val();
+				ele.contDueDate = $('#modalcontDueDate').val();
+				ele.contNote = $('#modalcontNote').val();
 			})
 			console.log(checked)
 			
 			//등록아작스
 			$.ajax({
-			url : "/bns/insertOrdList",
+			url : "/bns/insertcontList",
 			method : "POST",
 			contentType : "application/json",
 			data : JSON.stringify({ list : checked}),
@@ -526,7 +541,7 @@
 		        
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
-					url : "/bns/ordListAjax",
+					url : "/bns/contListAjax",
 					method : "GET",
 					dataType : "JSON",
 					success : function(result){
@@ -543,22 +558,22 @@
 			})
 		
 			
-         //주문서 등록 모달창 띄웠을때 제품추가 그리드 뜨게
+         //계약서 등록 모달창 띄웠을때 제품추가 그리드 뜨게
 		$(function(){
 		   	$('#modalProdReg').on('shown.bs.modal', function(){
 		   		addProdgrid.refreshLayout();
 		   	})
 		   })
 
-//주문코드 자동입력				
+//계약코드 자동입력				
       $.ajax({
-   		url : "/bns/ordCode",
+   		url : "/bns/contCode",
    		method : "GET",
    		dataType : "JSON",
    		success : function(result){
    			console.log(result);
-   			$('input[name=ordCode]').attr('value',result[0].ordCode);
-   			$('input[name=ordDate]').attr('value',result[0].ordDate);
+   			$('input[name=contCode]').attr('value',result[0].contCode);
+   			$('input[name=contDate]').attr('value',result[0].contDate);
    		}
    	});
 
@@ -619,8 +634,8 @@ $.ajax({
     
      let dataRow = accountReg_Grid.getRow(ev.rowKey);
      
-     $('#ordaccname').val(dataRow.accName);
-     $('#ordacccode').val(dataRow.accCode);
+     $('#contaccname').val(dataRow.accName);
+     $('#contacccode').val(dataRow.accCode);
      
      $('#modalregsubmit').click(function(){
    	  
@@ -731,8 +746,8 @@ $.ajax({
    	addProdgrid.appendRow(dataRow,{
  		  focus:true
  	  });
-     $('#ordprodname').val(dataRow.prodName);
-     $('#ordprodcode').val(dataRow.prodCode);
+     $('#contprodname').val(dataRow.prodName);
+     $('#contprodcode').val(dataRow.prodCode);
      
      $('#modalsubmitbtn').click(function(){
    
@@ -952,9 +967,9 @@ $.ajax({
 
 
 
-//주문서 조건검색
+//계약서 조건검색
 $.ajax({
-		url : "/bns/ordListAjax",
+		url : "/bns/contListAjax",
 		method : "GET",
 		dataType : "JSON",
 		success : function(result){
@@ -963,16 +978,16 @@ $.ajax({
 	});
 	
 	
-	$("#searchOrd").on('click', function(){
+	$("#searchcont").on('click', function(){
 		let accName = $('#accountlist-text').val();
 		let prodName = $('#productlist-text').val();
-		let ordDate = $('#orddate-text').val();
-	    let ordDueDate = $('#ordduedate-text').val(); 	
-		let data1 = {'accName':accName,'prodName':prodName,'ordDate':ordDate,'ordDueDate':ordDueDate};
+		let contDate = $('#contdate-text').val();
+	    let contDueDate = $('#contduedate-text').val(); 	
+		let data1 = {'accName':accName,'prodName':prodName,'contDate':contDate,'contDueDate':contDueDate};
 		
 		
 	$.ajax({
-		url : "/bns/ordListconAjax",
+		url : "/bns/contListconAjax",
 		method : "GET",
 		data : data1,
 		dataType : "JSON",
@@ -998,8 +1013,8 @@ $.ajax({
        ],
      columns: [
        {
-         header: '주문코드',
-         name: 'ordCode'
+         header: '계약코드',
+         name: 'contCode'
        },
        {
          header: '거래처코드',
@@ -1012,18 +1027,18 @@ $.ajax({
          filter: 'select'
        },
        {
-         header: '주문일자',
-         name: 'ordDate',
+         header: '계약일자',
+         name: 'contDate',
          sortable: true
        },
        {
-         header: '납기일자',
-         name: 'ordDueDate',
+         header: '만료일자',
+         name: 'contDueDate',
          sortable: true	
        },
        {
            header: '진행상황',
-           name: 'ordProgress',
+           name: 'contProgress',
            filter: 'select'
          },
        {
@@ -1032,7 +1047,7 @@ $.ajax({
          },
        {
            header: '비고',
-           name: 'ordNote'
+           name: 'contNote'
          }
    
      ]
@@ -1043,32 +1058,32 @@ $.ajax({
 	
 	
  	grid.on('dblclick', (ev) => {
-	if(ev.columnName == 'ordCode'){
+	if(ev.columnName == 'contCode'){
 		$('#modalProdMod').modal('show');
 		
 		let row = grid.getRow(ev.rowKey)
 		
-		$('input[name=ordCodeMod]').attr('value',row.ordCode);
+		$('input[name=contCodeMod]').attr('value',row.contCode);
 		$('input[name=accNameMod]').attr('value',row.accName);
-		$('input[name=ordDateMod]').attr('value',row.ordDate);
-		$('input[name=ordDueDateMod]').attr('value',row.ordDueDate);
-		$('input[name=ordNote]').attr('value',row.ordNote);
-	/* 	console.log(row.ordCode);
+		$('input[name=contDateMod]').attr('value',row.contDate);
+		$('input[name=contDueDateMod]').attr('value',row.contDueDate);
+		$('input[name=contNote]').attr('value',row.contNote);
+	/* 	console.log(row.contCode);
 		console.log(row.accCode);
 		console.log(row.accName);
 		console.log(row.prodName);
-		console.log(row.ordDate);
-		console.log(row.ordDueDate);
-		console.log(row.ordProgress);
+		console.log(row.contDate);
+		console.log(row.contDueDate);
+		console.log(row.contProgress);
 		console.log(row.empName);
-		console.log(row.ordNote); */
+		console.log(row.contNote); */
 		
 		$.ajax({
-			url : "/bns/prodListModAjax",
+			url : "/bns/contprodListModAjax",
 			method : "GET",
-			data : {result : row.ordCode},
-			success : function(result){
+			data : {result : row.contCode},
 			dataType : "JSON",
+			success : function(result){
 				modProdgrid.resetData(result);
 			}
 		});
@@ -1098,35 +1113,35 @@ $.ajax({
                  name: 'prodCode'
                },
                {
-                 header: '주문량',
-                 name: 'ordDetQuan',
+                 header: '계약량',
+                 name: 'contDetQuan',
                  editor:'text'
                },
                {
                    header: '단가',
-                   name: 'ordDetPrice',
+                   name: 'contDetPrice',
                    editor:'text'
                  },
                {
-                 header: '주문금액',
-                 name: 'ordDetTotPrice'
+                 header: '계약금액',
+                 name: 'contDetTotPrice'
                }
              ],
                summary: {
             	   height: 40,
             	    position: 'bottom',
              columnContent: {
-            	 ordDetQuan: {
+            	 contDetQuan: {
                    template: function(valueMap) {
                      return `TOTAL: ${valueMap.sum}`;
                    }
                  },
-                 ordDetPrice: {
+                 contDetPrice: {
                    template: function(valueMap) {
                      return `AVERAGE: ${valueMap.avg}원`;
                    }
                  },
-                 ordDetTotPrice: {
+                 contDetTotPrice: {
                      template: function(valueMap) {
                        return `TOTAL: ${valueMap.sum}원`;
                      }
@@ -1137,18 +1152,18 @@ $.ajax({
  	
  	
  	
-		 //총 주문금액 계산
+		 //총 계약금액 계산
           modProdgrid.on('editingFinish', function(ev){
        	  let row = modProdgrid.getRow(ev.rowKey);
-       	  if((ev.columnName=="ordDetQuan" || ev.columnName=="ordDetPrice")&&row.ordDetQuan&&row.ordDetPrice){
-       		  modProdgrid.setValue(ev.rowKey, "ordDetTotPrice", row.ordDetQuan*row.ordDetPrice, false)
+       	  if((ev.columnName=="contDetQuan" || ev.columnName=="contDetPrice")&&row.contDetQuan&&row.contDetPrice){
+       		  modProdgrid.setValue(ev.rowKey, "contDetTotPrice", row.contDetQuan*row.contDetPrice, false)
        	  }
        	  
          }) 
          
          
-         //주문수정 모달창의 삭제 버튼 눌렀을 때
-         $('#ordProdDelete2').on('click',function(){
+         //계약수정 모달창의 삭제 버튼 눌렀을 때
+         $('#contProdDelete2').on('click',function(){
 			modProdgrid.removeCheckedRows(true)
 			let deleted = modProdgrid.getModifiedRows().deletedRows;
 			
@@ -1157,7 +1172,7 @@ $.ajax({
 			if(deleted.length>0){
 				
 				$.ajax({
-					url : "/bns/delOrdDetList",
+					url : "/bns/delcontDetList",
 					method : "POST",
 					contentType : "application/json",
 					data : JSON.stringify({ list : deleted}),
@@ -1177,7 +1192,7 @@ $.ajax({
          
         
          //수정버튼 눌렀을 때
-		$('#ordmodsubmit').on('click' ,function(){
+		$('#contmodsubmit').on('click' ,function(){
 			let checked = modProdgrid.getCheckedRows();
 			let modified = modProdgrid.getModifiedRows();
 			console.log(modified)
@@ -1188,19 +1203,19 @@ $.ajax({
 				alert('수정된 항목이 없습니다.');
 			}else{
 			checked.forEach(ele=>{
-				ele.ordCode = $('#modalOrdModCode').val();
-				ele.empName = $('#ordempname').val();
-				ele.empNum = $('#ordempnum').val();
-				ele.accName = $('#ordaccname').val();
-				ele.accCode = $('#ordacccode').val();
-				ele.ordDate = $('#modalModOrdDate').val();
-				ele.ordDueDate = $('#modalModOrdDueDate').val();
-				ele.ordNote = $('#modalModOrdNote').val();
+				ele.contCode = $('#modalcontModCode').val();
+				ele.empName = $('#contempname').val();
+				ele.empNum = $('#contempnum').val();
+				ele.accName = $('#contaccname').val();
+				ele.accCode = $('#contacccode').val();
+				ele.contDate = $('#modalModcontDate').val();
+				ele.contDueDate = $('#modalModcontDueDate').val();
+				ele.contNote = $('#modalModcontNote').val();
 			})
 			console.log(checked)
 			
 			$.ajax({
-			url : "/bns/modOrdList",
+			url : "/bns/modcontList",
 			method : "POST",
 			contentType : "application/json",
 			data : JSON.stringify({ list : checked}),

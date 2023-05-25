@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.vo.BnsAccVO;
+import com.pen.app.bns.vo.BnsContDetListVO;
+import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
@@ -35,13 +37,14 @@ public class BnsController {
       return "bns/ordList";
    }
    
+   //주문서리스트 아작스
 	@ResponseBody
 	@GetMapping("/ordListAjax")
 	public List<BnsOrdVO> ordListAjax(){
 		List<BnsOrdVO> list = dao.getOrdList();
 		return list;
 	}
-	
+	//주문서조건검색 아작스
 	@ResponseBody
 	@GetMapping("/ordListconAjax")
 	public List<BnsOrdVO> ordListconAjax(BnsOrdVO vo){
@@ -50,7 +53,7 @@ public class BnsController {
 		System.out.println("조회 이후 나온 데이터 : "+list);
 		return list;
 	}
-	
+	//주문서 등록
 	@RequestMapping("/insertOrdList")
 	@ResponseBody
 	public BnsOrdDetListVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
@@ -59,7 +62,7 @@ public class BnsController {
 		return list;
 	}
 	
-
+	
 	@ResponseBody
 	@GetMapping("/accList")
 	public List<BnsAccVO> accList() {
@@ -118,7 +121,7 @@ public class BnsController {
 		return null;
 	}
 	
-	
+	//주문코드 자동생성
 	@ResponseBody
 	@GetMapping("/ordCode")
 	List<BnsOrdVO> ordCode() {
@@ -130,22 +133,92 @@ public class BnsController {
 	
 ///계약서	
 	//계약서 관리 페이지
-	   @GetMapping("/conList")
-	   public String conList(Model model, Authentication authentication) {
+	   @GetMapping("/contList")
+	   public String contList(Model model, Authentication authentication) {
 			/* model.addAttribute("conList", dao.getConList()); */
 	      UserDetails user = (UserDetails) authentication.getPrincipal();
 	      model.addAttribute("userVO", user);
-	      return "bns/conList";
+	      return "bns/contList";
 	   }
+	 //계약서리스트 아작스
+		@ResponseBody
+		@GetMapping("/contListAjax")
+		public List<BnsContVO> contListAjax(){
+			List<BnsContVO> list = dao.getContList();
+			return list;
+		}
+		//계약서조건검색 아작스
+		@ResponseBody
+		@GetMapping("/contListconAjax")
+		public List<BnsContVO> contListconAjax(BnsContVO vo){
+			System.out.println("아작스 통해서 들어온 데이터 : "+vo);
+			List<BnsContVO> list = dao.getContListCon(vo);
+			System.out.println("조회 이후 나온 데이터 : "+list);
+			return list;
+		}
+		//계약서 등록
+		@RequestMapping("/insertContList")
+		@ResponseBody
+		public BnsContDetListVO insertContList(@RequestBody BnsContDetListVO list) {
+			System.err.println(list.getList());
+			dao.insertContList(list.getList());
+			return list;
+		}   
+		//계약서 수정 모달창 안의 제품리스트
+		@ResponseBody
+		@GetMapping("/contprodListModAjax")
+		public List<BnsContVO> ContprodListModAjax(String result){
+			
+			System.out.println(result);
+			List<BnsContVO> list = dao.getContProdModList(result);
+			return list;
+		}
+		
+		//계약서 수정 모달창 안의 제품 수정
+		@RequestMapping("/modContList")
+		@ResponseBody
+		public BnsOrdVO modContList(@RequestBody BnsContDetListVO list) {
+			System.err.println(list.getList());
+			System.err.println(list.getList().get(1));
+			dao.modContList(list.getList());
+			return null;
+		}
+		
+		//계약상세 삭제
+		@RequestMapping("/delContDetList")
+		@ResponseBody
+		public BnsContVO delContDetList(@RequestBody BnsContDetListVO list) {
+			dao.delContDetList(list.getList());
+			return null;
+		}
+		
+		//계약코드 자동생성
+		@ResponseBody
+		@GetMapping("/contCode")
+		List<BnsContVO> contCode() {
+			List<BnsContVO> list = dao.getContCode();
+			System.out.println("계약코드 최대값 : "+list);
+			return list;
+		}
 
 	 
-///입고
+///입고관리페이지
 	   @GetMapping("/storeList")
 	   public String storeList(Model model, Authentication authentication) {
 			/* model.addAttribute("conList", dao.getConList()); */
 	      UserDetails user = (UserDetails) authentication.getPrincipal();
 	      model.addAttribute("userVO", user);
 	      return "bns/storeList";
+	   }  
+	   
+	   
+///출고관리페이지
+	   @GetMapping("/releaseList")
+	   public String releaseList(Model model, Authentication authentication) {
+			/* model.addAttribute("conList", dao.getConList()); */
+	      UserDetails user = (UserDetails) authentication.getPrincipal();
+	      model.addAttribute("userVO", user);
+	      return "bns/releaseList";
 	   }  
 	
 	
