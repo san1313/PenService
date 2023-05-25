@@ -1,6 +1,6 @@
 package com.pen.app.mat.vo;
 
-import java.util.Date;
+
 
 import lombok.Data;
 
@@ -20,7 +20,7 @@ public class OrderVO { //발주
 	int matOrderQy; //발주량
 	int matUntpc; //단가
 	int matTotamt; //총금액
-	Date matReqdate; //납기요청일
+	String matReqdate; //납기요청일
 
 	
 	String accName; //거래처명

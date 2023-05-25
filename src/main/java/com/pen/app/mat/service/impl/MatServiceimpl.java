@@ -69,6 +69,12 @@ public class MatServiceimpl implements MatService{
 		// 발주등록조회페이지
 		return matmapper.getorderlistajax();
 	}
+	 
+	@Override
+	public List<OrderVO> getorderlistsearchajax(String keyword) {
+		//발주조회다중검색
+		return matmapper.getorderlistsearchajax(keyword);
+	}
 
 	@Override
 	public List<WarehousingVO> getwarehousinglist() {
@@ -92,12 +98,22 @@ public class MatServiceimpl implements MatService{
 		// 자재입고리스트 당일건
 		return matmapper.gettodaywarehousinglist();
 	}
+	
+	@Override
+	public List<WarehousingVO> getwarehousingmatlistajax() {
+		// 자재입고조회
+		return matmapper.getwarehousingmatlistajax();
+	}
 
 	@Override
 	public List<WarehousingVO> getsemiwarehousinglist() {
 		// 반제품 검사내역리스트
 		return matmapper.getsemiwarehousinglist();
 	}
+
+	
+
+
 
 	
 

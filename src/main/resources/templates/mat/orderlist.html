@@ -26,9 +26,7 @@
       margin: 0 10px;
     }
 
-
-
-    #grid {
+    #orderlistgrid {
       margin: 20px 0 10px;
     }
 	#deletematbtn{
@@ -78,7 +76,7 @@
       <input class="text1" type="hidden" id="accmodalcode" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
       <label>납기일</label>
-      <input class="text1" type="date" id="matReqdate"> ~ <input class="text1" type="date" id="matReqdate">
+      <input class="text1" type="date" id="matReqdate"> ~ <input class="text1" type="date" id="matReqdate1">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 
@@ -132,7 +130,7 @@
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-    // 당일발주건리스트
+    // 발주리스트
     $.ajax({
   		url : "/mat/orderlistajax",
   		method : "GET",
@@ -141,6 +139,9 @@
   			console.log(result);
   			orderlistgrid.resetData(result);
   			orderlistgrid.refreshLayout();
+  		},
+  		error: function(reject){
+	    	 console.log(reject)
   		}
   	});
      
@@ -157,7 +158,6 @@
     {
     header: '발주명',
     name: 'matOrdername',
-    editor: 'text'
     },
     {
     header: '거래처코드',
@@ -177,30 +177,27 @@
     },
     {
     header: '발주량',
-    name: 'matOrderQy',
-    editor: 'text'
+    name: 'matOrderQy'
     },
     {
     header: '단가',
-    name: 'matUntpc',
-    editor: 'text'
+    name: 'matUntpc'
     },
     {
      header: '총금액',
      name: 'matTotamt'
     },
     {
-    header: '납기일',
+    header: '발주일자',
+    name: 'matOrderdate'
+    },
+    {
+    header: '납기일자',
     name: 'matReqdate'
     },
     {
     header: '담당자',
     name: 'matCharger'
-    },
-    {
-    header: '발주일자',
-    name: 'matOrderdate',
-    hidden: true
     }
     ],
     summary:{
@@ -262,10 +259,7 @@
     	modal_grid.refreshLayout();
     });
     })
-    
-    
-    
-    
+
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
@@ -415,12 +409,13 @@
          
      
    //조회버튼
-   document.getElementById('submitbtn').addEventListener('click',function(){
+    document.getElementById('submitbtn').addEventListener('click',function(){
 	   
+    	
 		$.ajax({
-   		 url : "/mat/orderlistajax",
+   		 url : "/mat/orderlistsearchajax",
    	     method : "GET",
-   	     data : {'result' : result},
+   	     data : {'result' : vo.matName},
    	     success : function(result){
    	     accmodal_grid.resetData(result);
    	     accmodal_grid.refreshLayout();	
@@ -429,7 +424,7 @@
    	    	 console.log(reject)
      }
    })
-   })
+   }) 
      
 
 

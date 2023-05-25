@@ -95,11 +95,21 @@ public class MatController {
 		 
 	 }
 	 //자재발주조회
-	 @RequestMapping("orderlistajax")
-	 public List<OrderVO> orderlistajax(){
-		 List<OrderVO> list = matmapper.getorderlistajax();
+	 @RequestMapping("/orderlistajax")
+	 @ResponseBody
+	 public List<OrderVO> matorderlistajax(){
+		 List<OrderVO> list = matmapper.getorderlistajax();	
 		 return list;
 	 }
+	 
+	 //자재발주조회 다중검색
+	 @RequestMapping("/orderlistsearchajax")
+	 @ResponseBody
+	 public List<OrderVO> orderlistsearchajax(@RequestParam String result) {
+		 List<OrderVO> list = matmapper.getorderlistsearchajax(result);
+		 return list;
+	 }
+	  
 	 
 	
 	 //자재입고페이지
@@ -137,12 +147,7 @@ public class MatController {
 		 List<WarehousingVO> list = matmapper.gettodaywarehousinglist();
 		 return list;
 	 }
-	 
-	 //반제품입고페이지
-	 @GetMapping("/semiwarehousing")
-	 public void semiwarehousing() {
-		 
-	 }
+
 	 
 	 //반제품 검사내역리스트
 	 @RequestMapping("/semiwarehousinglist")
@@ -153,13 +158,22 @@ public class MatController {
 	 }
 	 
 	 
-	 //반제품 입고등록
 	 
 	 
-	 //자재/반제품 입고조회
-	 @GetMapping("/warehousingmatlist")
+	 
+	 //자재 입고조회
+	 @GetMapping("/warehousinglist")
 	 public void warehousingmatlist() {
 		 
+	 }
+	 
+	 
+	 //자재입고조회리스트
+	 @GetMapping("/warehousingmatlistajax")
+	 @ResponseBody
+	 public List<WarehousingVO> warehousingmatlistajax(){
+		 List<WarehousingVO> list = matmapper.getwarehousingmatlistajax();
+		 return list;
 	 }
 	
 	 //자재/반제품 재고조회

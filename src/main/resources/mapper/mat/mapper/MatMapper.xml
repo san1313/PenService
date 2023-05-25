@@ -54,11 +54,16 @@
 	
 	
 	<!-- 발주등록 조회 -->
-	<select id="orderlistajax" resultType="OrderVO">
+	<select id="getorderlistajax" resultType="OrderVO">
 		select a.mat_ordernum, a.mat_ordername, b.mat_code, b.mat_name, a.acc_code, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt 
 		from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum)
 	</select>
 	
+	<!-- 발주등록 다중검색 조회--> 
+	<select id="getorderlistsearchajax" resultType="OrderVO">
+	select a.mat_ordernum, a.acc_code, a.mat_ordername, b.mat_code, b.mat_name, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt
+	from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum) where b.mat_code = #{keyword} and a.acc_code=#{keyword} and TRUNC(a.mat_orderdate) BETWEEN TO_DATE(#{a.mat_orderdate}, 'YYYY-MM-DD') AND TO_DATE(#{a.mat_orderdate}, 'YYYY-MM-DD');
+	</select>
 	
 	
 	<!-- 자재검사내역리스트 -->
@@ -101,6 +106,12 @@
 	from mat_wrhousng a join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat) join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode) join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
 	where TRUNC(a.mat_wrhdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'), 'YY/MM/DD')
 	</select>
+	
+	<!-- 입고등록리스트 -->
+	<select id="getwarehousingmatlistajax" resultType="WarehousingVO">
+	select a.mat_lot, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate, b.mat_code,b.mat_name from mat_wrhousng a join mat_invntry b on(a.mat_lot = b.mat_lot)
+	</select>
+	
 	
 	<!-- 반제품입고등록 검사내역리스트 -->
 	<select id="getsemiwarehousinglist" resultType="WarehousingVO">

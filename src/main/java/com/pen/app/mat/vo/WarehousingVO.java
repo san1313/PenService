@@ -12,7 +12,7 @@ public class WarehousingVO { //입고
 	String matLot; //lot번호
 	String matBcncname; //거래처명
 	int matWrhqy; //입고량
-	Date matWrhdate; //입고일자
+	String matWrhdate; //입고일자
 	String matWrhst; //입고상태
 	
 	String matDtaordcode; //자재내역번호
@@ -26,7 +26,7 @@ public class WarehousingVO { //입고
 	String matOrdernum;
 	String accCode; //거래처코드
 	
-	Date matOrderdate; //발주일자
+	String matOrderdate; //발주일자
 	
 	int matQnt; //재고량
 	String matState; //상태
