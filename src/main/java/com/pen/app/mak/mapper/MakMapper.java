@@ -3,6 +3,8 @@ package com.pen.app.mak.mapper;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
+
 import com.pen.app.mak.vo.PlanVO;
 
 public interface MakMapper {
@@ -41,4 +43,6 @@ public interface MakMapper {
 	
 	List<PlanVO> getOrderingList(PlanVO vo);
 	
+	List<PlanVO> getModalOrd(PlanVO vo);
+	List<PlanVO> getModalOrder(@Param("list") ArrayList<String> list,@Param("vo") PlanVO vo);
 }

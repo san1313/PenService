@@ -24,9 +24,9 @@ margin-bottm:1vh;
 #getConNm{
 margin-top:5px;
 }
-.form-control{
+.container-fluid .form-control{
 height:28px;
-font-size:10px;
+font-size:10pt;
 }
 </style>
 
@@ -53,6 +53,7 @@ font-size:10px;
 <input id="planBtn0" type=hidden>
 <input id="orderBtn0" type=hidden>
 </form>
+<!-- 모달 시작 -->
    <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -63,13 +64,21 @@ font-size:10px;
         </button>      
       </div>
       <div class="modal-body">
-        
+        <div style="display:none;" class="form-group row" id="modal-search">
+        <div class="col-12">
+        <label class="col-3">납기일자 기간</label>
+        <input type="date" class="col-3" id="sOrdCon"> - 
+		<input type="date" class="col-3" id="clsOrdCon">
+		<button class="col-2 btn btn-primary" id="modal-selBtn" onclick='getModalCon()'>조회</button>
+		</div>
+        </div>
       	<div id="modal-grid"></div>
         <button class="fa-solid fa-magnifying-glass" data-dismiss="modal" type="button" onclick='planChoice()' id="conChoice">선택</button>
       </div>
     </div>
   </div>
 </div>
+<!-- 모달 끝 -->
 <div style="text-align:left; display:none;"  id='basBtn'>
 <label class="col-1">계획일자 기간</label>
 <input type="date" class="form-control col-2" id="sCon"> - 
@@ -105,6 +114,7 @@ document.getElementById('planBtn').addEventListener('click',function(){
 	comDev=1;
 	planType="plan";
 $('#basBtn').css('display','flex');
+$('#modal-search').css('display','none');
 conData=[];
 if(planType=="plan"){
 //계획 일자 관련 제약 조건
@@ -846,7 +856,36 @@ $('#sCon').change(function(){
 };          
             
         });
-        
+function getModalCon(){
+	if(planType=="order"){
+		
+			document.getElementById('sOrdCon').min=new Date().toISOString().slice(0, 10);
+			document.getElementById('clsOrdCon').min=new Date().toISOString().slice(0, 10);
+			let sDate=$("#sOrdCon").val();
+			let clsDate=$("#clsOrdCon").val();
+			if(sDate==''||clsDate==''){
+	    		alert("납기일자 범위가 규정되지 않았습니다.");
+	    	}
+	    	let data={planSdate:sDate,
+	    			planClsdate:clsDate};
+	    	 $.ajax({
+	  	        url : "/mak/selectOrdList",
+	  	        method : "POST",
+	  	        data: JSON.stringify(data),
+	  	        headers: {"Content-Type": "application/json"},
+	  	        beforeSend: function (xhr) {
+	                  xhr.setRequestHeader(header, token);
+	                },
+	  	        success : function(result){
+	 					modal_grid.resetData(result);
+	 					
+	  	        },
+	  	        error : function(rejection){
+	  	        console.error(rejection);	
+	  	        }
+	  	        });
+	}
+}        
 //모달 선택 시 데이터 내려받기(계약서 주문서 공용)
 function planChoice(){
 	if(planType=="plan"){
@@ -1091,6 +1130,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
 	$("#clsCon").val('');
 	$("#sCon").val('');
 	if(planType=="order"){
+	$("#modal-search").css('display','block');
 	//주문서 기반 조회조건 제약
 	document.getElementById('sCon').max=new Date().toISOString().slice(0, 10);
 	$('#sCon').change(function(){
@@ -1808,6 +1848,8 @@ document.getElementById('orderBtn').addEventListener('click',function(){
      $(function(){
      $('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
+        $('#sOrdCon').val('');
+        $('#clsOrdCon').val('');
      });         
            
 

@@ -1,5 +1,9 @@
 package com.pen.app.mak.mapper;
 
-public interface MakIndMapper {
+import java.util.List;
 
+import com.pen.app.mak.vo.MakVO;
+
+public interface MakIndMapper {
+	List<MakVO> planning();
 }

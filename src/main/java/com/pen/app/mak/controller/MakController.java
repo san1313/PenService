@@ -28,9 +28,6 @@ public class MakController {
 	public void plan() {
 	}
 	
-	@GetMapping("/test")
-	void test() {
-	}
 	/* 계약서 기반 계획서 시작 */
 	
 	/* 기본 그리드 */
@@ -290,6 +287,64 @@ public class MakController {
 	}
 	
 
+	@RequestMapping("/selectOrdList")
+	@ResponseBody
+	List<PlanVO> selectOrdList(@RequestBody PlanVO vo){
+		int ordCount=0;
+		List<PlanVO> result = new ArrayList<>();
+		List<PlanVO> list = mapper.getModalOrd(vo);//검색 받은 값
+		ArrayList<String> detCoList = new ArrayList<>();
+		ArrayList<String> detCo = new ArrayList<>();
+		for(int i = 0; i<list.size();i++) {
+			String detC = list.get(i).getOrdDetCode();
+			List<PlanVO> CDC = mapper.getConnection(detC);
+			
+			if(CDC.isEmpty()) {
+				System.out.println("조건값 없음");
+			}else {
+				//이중 포문
+				for(int j=0; j<CDC.size();j++) {
+					//계약상세코드 떼기
+					if(!detCo.contains(CDC.get(j).getOrdDetCode())){
+						detCo.add(CDC.get(j).getOrdDetCode());
+					};
+					
+				};
+					//포문 이중포문
+					for(int k=0;k<detCo.size();k++) {
+						ordCount += mapper.getOrdCount(detCo.get(k));
+						//특정코드
+					List<PlanVO> plan = mapper.getOrdering(detCo.get(k));
+					if(plan.isEmpty()) {
+						if(!detCoList.contains(detCo.get(k))) {
+							detCoList.add(detCo.get(k));	
+						};
+						}else {
+							if(!detCoList.contains(detCo.get(k))) {
+								result.addAll(plan);
+								detCoList.add(detCo.get(k));
+							};
+						};
+					
+				}
+			}
+		}
+		
+		if(detCoList.isEmpty()) {
+			
+		}else {
+		List<PlanVO> result1 = mapper.getModalOrder(detCoList,vo);
+		
+		
+		result.addAll(result1);
+		};
+			if(ordCount>0&&result.isEmpty()) {
+				
+			}else if(ordCount==0&&result.isEmpty()) {
+				result=list;
+			}
+		return result;
+	}
 	
 	
 	

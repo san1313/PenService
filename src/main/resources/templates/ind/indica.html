@@ -1,0 +1,185 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8">
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<style>
+.container-fluid .col-form-label{
+font-size:10pt;
+height:28px;
+}
+.container-fluid .form-control{
+height:28px;
+font-size:10pt;
+}
+.container-fluid .form-group{
+margin-bottom:5px;
+height:28px;
+}
+</style>
+</head>
+<body>
+<h2 layout:fragment="title">생산 지시 관리</h2>
+<div layout:fragment="content">
+<!-- 생산지시 페이지 -->
+
+<div class="card card-outline">
+<div class="card-body" id="frm">
+<div class="form-group row">
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">지시명</label>
+<input class="form-control col-8" id="indNmi">
+</div>
+
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">지시일자</label>
+<input class="form-control col-8" id="indDatei">
+
+</div>
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">제품구분</label>
+<input class="form-control col-8" id="prodDevi">
+</div>
+</div>
+
+<div class="form-group row">
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">계획상세명</label>
+<input class="form-control col-6" id="planNmi">
+<ion-icon class="col-1" name="search" id="getPlanNm" data-toggle="modal" data-target=".bd-example-modal-lg">
+</div>
+
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">제품명</label>
+<input class="form-control col-8" id="prodNmi">
+</div>
+</div>
+
+<div class="form-group row">
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">지시량</label>
+<input class="form-control col-8" id="orderCnti">
+</div>
+
+<div class="form-group row col-4">
+<label class="col-4 col-form-label">생산시작일자</label>
+<input type="date" class="form-control col-8" id="indDatei">
+</div>
+</div>
+
+</div>
+</div>
+
+<form id="hiddenFrm">
+
+</form>
+<!-- 모달 시작 -->
+   <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h5 class="modal-title">계획상세목록</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+        <div class="form-group row" id="modal-search">
+        <div class="col-12">
+        <label class="col-3">계획종료기간</label>
+        <input type="date" class="col-3" id="sOrdCon"> - 
+		<input type="date" class="col-3" id="clsOrdCon">
+		<button class="col-2 btn btn-primary" id="modal-selBtn" onclick='getModalCon()'>조회</button>
+		</div>
+        </div>
+      	<div id="modal-grid"></div>
+        <button class="fa-solid fa-magnifying-glass" data-dismiss="modal" type="button" onclick='planChoice()' id="conChoice">선택</button>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 모달 끝 -->
+<!-- 화면 그리드 -->
+<div id="grid"></div>
+<div id="gird2"></div>
+<div id="gird3"></div>
+
+<script>
+//전역변수 선언부
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+var modal_grid = null;
+$(function(){
+    //그리드 데이터소스
+    const dataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/ind/indList",
+                method: "GET",
+              },
+            },
+          };
+	 //모달 내부 상세계획 구성 
+    modal_grid = new tui.Grid({
+        el: document.getElementById('modal-grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '계약상세명',
+          name: 'planNm'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        },
+        {
+          header: '계획수량',
+          name: 'planQnt'
+        },
+        {
+      	  header: '계획시작일자',
+      	  name : 'planSdate'
+        },
+        {
+      	  header:'계획종료일자',
+      	  name: 'planClsdate'
+        }
+      ]
+      })
+	
+	$('#matmodalbtn').on('shown.bs.modal', function(){
+        modal_grid.refreshLayout();
+        $.ajax({
+            url : "/ind/planning",
+            method : "GET",
+            dataType : "JSON",
+            success : function(result){
+          	  modal_grid.textContent="";
+              modal_grid.resetData(result);
+          	
+            }
+          });     
+       });			
+     }); 
+});
+//모달 내부 계획 상세 조회 기능
+function getModalCon(){
+	
+}
+</script>
+
+</div>
+</body>
+</html>
