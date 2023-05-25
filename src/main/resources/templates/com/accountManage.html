@@ -80,8 +80,7 @@
               <div id="innerGrid"></div>
             </div>
             <div class="modal-footer">
-              <button type="button" class="btn btn-primary">Save changes</button>
-              <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
             </div>
           </div>
         </div>
@@ -185,6 +184,11 @@
             rowHeaders: ["rowNum"],
             columns: [
               {
+                header: "항목코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
                 header: "항목명",
                 name: "itemName",
                 align: "center",
@@ -244,7 +248,13 @@
             $(".viewItems").click((e) => {
               let row = grid.getRow(e.target.dataset.rowKey);
               $(".modal-title").text(row.accName);
-              $.ajax({});
+              $.ajax({ url: "/admin/getItemListWithAccCode", data: { accCode: row.accCode } })
+                .done((r) => {
+                  innerGrid.resetData(r);
+                })
+                .fail((e) => {
+                  alert("데이터를 받아오는중 에러가 발생했습니다.");
+                });
               $(".itemsModal").modal("show");
             });
             // 조회 버튼 부착 끝
@@ -283,6 +293,23 @@
 
           //저장기능 끝
 
+          //비어있을때 조회 function
+          function getAllWithType() {
+            $.ajax({
+              url: "/admin/getAccListWithType",
+              method: "POST",
+              data: { accType: $("#accType").val() },
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+              },
+            })
+              .done((r) => {
+                grid.resetData(r);
+              })
+              .fail((e) => {
+                alert("데이터를 불러오는 중 에러가 발생했습니다.");
+              });
+          }
           //거래처명 조회 기능 grid.readData
           $("#accSearchBtn").click(() => {
             let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
@@ -295,14 +322,19 @@
               if (accName.val() != "") {
                 $.ajax({
                   url: "/admin/searchAccAjax",
+                  method: "POST",
                   dataType: "JSON",
-                  data: { accName: accName.val() },
+                  data: JSON.stringify({ accName: accName.val(), accType: $("#accType").val() }),
+                  beforeSend: function (xhr) {
+                    xhr.setRequestHeader(header, token);
+                  },
+                  contentType: "application/json",
                 }).done((r) => {
                   grid.resetData(r);
                 });
-                // 거래처명 input이 비어있으면 모두 조회
+                // 거래처명 input이 비어있으면 타입별 모두 조회
               } else {
-                grid.readData();
+                getAllWithType();
               }
             } else {
               // 변경점이 있다면 confirm 창을 띄운다.
@@ -311,18 +343,19 @@
                 if (accName.val() != "") {
                   $.ajax({
                     url: "/admin/searchAccAjax",
+                    method: "POST",
                     dataType: "JSON",
-                    data: { accName: accName.val() },
-                  })
-                    .done((r) => {
-                      grid.resetData(r);
-                    })
-                    .fail((e) => {
-                      alert("데이터를 조회하는 중 에러가 발생했습니다.");
-                    });
-                  // 거래처명 input이 비어있으면 모두 조회
+                    data: JSON.stringify({ accName: accName.val(), accType: $("#accType").val() }),
+                    beforeSend: function (xhr) {
+                      xhr.setRequestHeader(header, token);
+                    },
+                    contentType: "application/json",
+                  }).done((r) => {
+                    grid.resetData(r);
+                  });
+                  // 거래처명 input이 비어있으면 타입별 모두 조회
                 } else {
-                  grid.readData();
+                  getAllWithType();
                   nextNum = null;
                 }
               }

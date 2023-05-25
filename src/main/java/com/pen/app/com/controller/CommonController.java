@@ -1,6 +1,7 @@
 package com.pen.app.com.controller;
 
 import java.security.Principal;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -26,7 +27,7 @@ import com.pen.app.com.service.impl.ItemServiceImpl;
 import com.pen.app.com.service.impl.UserServiceImpl;
 import com.pen.app.com.vo.AccountVO;
 import com.pen.app.com.vo.AuthVO;
-import com.pen.app.com.vo.ComCodeVO;
+import com.pen.app.com.vo.ComCodeVO;import com.pen.app.com.vo.ItemVO;
 import com.pen.app.com.vo.MatVO;
 import com.pen.app.com.vo.ProdVO;
 import com.pen.app.com.vo.SemiVO;
@@ -47,6 +48,14 @@ public class CommonController {
 	@GetMapping(value = {"/top", "/"})
 	public String top() {
 		return "/top";
+	}
+	
+	@GetMapping("/getUser")
+	@ResponseBody
+	public UserVO getUser(String empId) {
+		UserVO vo = new UserVO();
+		vo.setEmpId(empId);
+		return userService.getUser(vo);
 	}
 	
 	//로그인유저 정보수정
@@ -285,9 +294,9 @@ public class CommonController {
 	}
 	
 	//공통코드 조회 페이지 -----------------------------------------------
-	@GetMapping("/admin/comCode")
+	@GetMapping("/admin/comCodeManage")
 	public String comCode() {
-		return "/com/comCode";
+		return "/com/comCodeManage";
 	}
 	
 	@GetMapping("/admin/getComCodeList")
@@ -322,6 +331,12 @@ public class CommonController {
 		return new ToastUiResponseDTO(accService.getAccountList());
 	}
 	
+	@PostMapping("/admin/getAccListWithType")
+	@ResponseBody
+	public List<AccountVO> getAccListWithType(String accType) {
+		return accService.getAccListWithType(accType);
+	}
+	
 	@GetMapping("/admin/getAccTypeList")
 	@ResponseBody
 	public List<String> getAccTypeList(){
@@ -337,7 +352,6 @@ public class CommonController {
 	@ResponseBody
 	@PostMapping("/admin/accModifyAjax")
 	public ToastUiResponseDTO accModifyAjax(@RequestBody Map<String, List<AccountVO>> modifiedRows) {
-		System.out.println(modifiedRows);
 		String result = "Success";
 		List<AccountVO> updatedRows = modifiedRows.get("updatedRows");
 		List<AccountVO> createdRows = modifiedRows.get("createdRows");
@@ -361,4 +375,26 @@ public class CommonController {
 		}
 		return new ToastUiResponseDTO(result);
 	}
+	
+	//거래처별 항목조회
+	@ResponseBody
+	@GetMapping("/admin/getItemListWithAccCode")
+	public List<ItemVO> getItemListWithAccCode(String accCode){
+		return accService.getItemListWithAccCode(accCode);
+	}
+	
+	//이름별 거래처 조회
+	@ResponseBody
+	@PostMapping("/admin/searchAccAjax")
+	public List<AccountVO> searchAccAjax(@RequestBody Map<String, String> map){
+		System.out.println(map);
+		return accService.searchAccList(map);
+	}
+	
+	//공정 관리 페이지
+	@GetMapping("/admin/processManage")
+	public String processManage() {
+		return "/com/processManage";
+	}
+	
 }

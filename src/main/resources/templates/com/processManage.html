@@ -1,0 +1,284 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  layout:decorate="~{layout/template}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Pen Service</title>
+    <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+    <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      tr .modified {
+        background-color: rgba(255, 255, 0, 0.3);
+      }
+    </style>
+  </head>
+  <body>
+    <div layout:fragment="title">공정 정보 관리</div>
+    <!-- 메인컨텐츠 -->
+    <div layout:fragment="content">
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="row col-3">
+          <div class="col-4">
+            <label class="col-form-label" for="procName">공정구분 :</label>
+          </div>
+          <div class="col-4">
+            <select name="procName" id="procName" class="form-control">
+              <option value="all">전체</option>
+            </select>
+          </div>
+          <div class="col-4">
+            <button
+              class="fa-solid fa-magnifying-glass btn btn-primary"
+              id="procSearchBtn"
+              style="height: 38px; float: left"
+            ></button>
+          </div>
+        </div>
+        <div class="row col-9 justify-content-end">
+          <div class="col-auto">
+            <button class="btn btn-primary" id="add" style="height: 38px">추가</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-danger" id="delete" style="height: 38px">삭제</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="reset" style="height: 38px">초기화</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="save" style="height: 38px">저장</button>
+          </div>
+        </div>
+      </div>
+      <div id="grid"></div>
+      <script src="/plugins/jquery/jquery.min.js"></script>
+      <script>
+        $(function () {
+          const token = $('meta[name="_csrf"]').attr("content");
+          const header = $('meta[name="_csrf_header"]').attr("content");
+          // 메인그리드시작;
+
+          //공정단계 select 박스 항목 받아오기 시작
+          var procList = [];
+          $.ajax({
+            url: "/getProcListAjax",
+            method: "GET",
+          })
+            .done((r) => {
+              r.forEach((ele) => {
+                procList.push({ text: ele.authName, value: ele.authName });
+              });
+            })
+            .fail((e) => {
+              alert("권한 데이터를 받아오는중 에러가 발생했습니다.");
+            });
+          //권한 select 박스 항목 받아오기 끝
+
+          //그리드폼 시작
+          const grid = new tui.Grid({
+            el: document.getElementById("grid"),
+            // data: {
+            //   contentType: "application/json",
+            //   api: {
+            //     readData: {
+            //       url: "/admin/procListAjax",
+            //       method: "GET",
+            //     },
+            //     modifyData: {
+            //       url: "/admin/procModifyAjax",
+            //       method: "POST",
+            //       withCredentials: true,
+            //     },
+            //   },
+            // },
+            bodyHeight: 680,
+            scrollX: false,
+            rowHeaders: [{ type: "checkbox", header: ` ` }],
+            columns: [
+              {
+                header: "공정코드",
+                name: "procCode",
+                align: "center",
+              },
+              {
+                header: "공정구분",
+                name: "procType",
+                editor: { type: "select", options: { listItems: procList } },
+                align: "center",
+              },
+              {
+                header: "공정명",
+                name: "procName",
+                editor: "text",
+                align: "center",
+              },
+              {
+                header: "공정설명",
+                name: "procDetail",
+                editor: "text",
+                align: "center",
+                width: 800,
+              },
+            ],
+          });
+          //그리드 폼 끝
+
+          //그리드 세팅 시작
+          //서버에 연결전 토큰값 담는 method
+          grid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+
+          //데이터 저장 여부 alert
+          grid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              grid.readData();
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
+
+          //tui grid의 언어세팅
+          tui.Grid.setLanguage("ko");
+
+          //체크박스 하나만 적용 시작
+          grid.on("check", function (e) {
+            var checkRows = grid.getCheckedRowKeys();
+            checkRows.forEach(function (key, idx) {
+              if (key != e.rowKey) {
+                grid.uncheck(key);
+              }
+            });
+          });
+          //체크박스 하나만 적용 끝
+          //수정된 행 색칠 시작
+          grid.on("afterChange", (e) => {
+            console.log(e.changes);
+            let c = e.changes[0];
+            grid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          //수정된 행 색칠 끝
+
+          //그리드 세팅 끝
+
+          //저장기능 시작
+          $("#save").click(() => {
+            //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
+            grid.finishEditing();
+            grid.request("modifyData");
+          });
+
+          //저장기능 끝
+
+          //사원명 조회 기능 grid.readData
+          $("#procSearchBtn").click(() => {
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+
+            let procName = $("#empName");
+            if (noChange) {
+              // 변경점이 없다면
+              // 사원명 input의 value로 조회해서 grid를 다시 그림
+              if (procName.val() != "") {
+                $.ajax({
+                  url: "/admin/getProcWithTypeAjax",
+                  dataType: "JSON",
+                  data: { procName: procName.val() },
+                }).done((r) => {
+                  grid.resetData(r);
+                });
+                // 사원명 input이 비어있으면 모두 조회
+              } else {
+                grid.readData();
+              }
+            } else {
+              // 변경점이 있다면 confirm 창을 띄운다.
+              if (confirm("조회시 변경된 데이터가 소실됩니다. 조회하겠습니까?")) {
+                // 사원명 input의 value로 조회해서 grid를 다시 그림
+                if (procName.val() != "") {
+                  $.ajax({
+                    url: "/admin/getProcWithTypeAjax",
+                    dataType: "JSON",
+                    data: { procName: procName.val() },
+                  })
+                    .done((r) => {
+                      grid.resetData(r);
+                    })
+                    .fail((e) => {
+                      alert("데이터를 조회하는 중 에러가 발생했습니다.");
+                    });
+                  // 사원명 input이 비어있으면 모두 조회
+                } else {
+                  grid.readData();
+                  nextNum = null;
+                }
+              }
+            }
+            procName.val("");
+          });
+          //사원명 조회기능 끝
+
+          //사원 추가 시작
+          let nextNum; // EMPCODE
+          $("#add").click((e) => {
+            //오늘 날짜 가져오기 시작
+            var today = new Date();
+            var year = today.getFullYear();
+            var month = today.getMonth() + 1;
+            var day = today.getDate();
+            var format = year + "-" + ("00" + month.toString()).slice(-2) + "-" + ("00" + day.toString()).slice(-2);
+            //오늘 날짜 가져오기 끝
+            if (!nextNum) {
+              // 코드를 가져온적이 없으면 새로 가져옴
+              $.ajax({
+                url: "/admin/getEmpCode",
+                async: false,
+              }).done((r) => {
+                nextNum = r;
+              });
+            } else {
+              // 코드를 이미 가져왔다면 코드에 1을 추가함
+              let word = nextNum.substr(0, 4);
+              let num = parseInt(nextNum.substr(4)) + 1 + "";
+              nextNum = word + num.padStart(4, "0");
+            }
+            grid.appendRow({ empNum: nextNum, hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
+          });
+          //사원 추가 끝
+
+          //사원 삭제 시작
+          $("#delete").click((e) => {
+            if (grid.getCheckedRowKeys().length == 0) {
+              alert("삭제할 행을 체크해주십시오.");
+            } else {
+              grid.removeCheckedRows(true);
+            }
+          });
+          //사원 삭제 끝
+
+          //초기화 버튼 시작
+          $("#reset").click((e) => {
+            if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
+              grid.restore();
+              nextNum = null;
+            }
+          });
+          //초기화 버튼 끝
+        });
+      </script>
+    </div>
+    <!-- 메인컨텐츠 끝 -->
+  </body>
+</html>

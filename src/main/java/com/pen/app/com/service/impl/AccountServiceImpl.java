@@ -1,21 +1,15 @@
 package com.pen.app.com.service.impl;
 
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pen.app.com.mapper.AccountMapper;
-import com.pen.app.com.mapper.ItemMapper;
-import com.pen.app.com.mapper.comCodeMapper;
 import com.pen.app.com.service.AccountService;
-import com.pen.app.com.service.ComCodeService;
-import com.pen.app.com.service.ItemService;
 import com.pen.app.com.vo.AccountVO;
-import com.pen.app.com.vo.ComCodeVO;
-import com.pen.app.com.vo.MatVO;
-import com.pen.app.com.vo.ProdVO;
-import com.pen.app.com.vo.SemiVO;
+import com.pen.app.com.vo.ItemVO;
 
 @Service
 public class AccountServiceImpl implements AccountService {
@@ -50,5 +44,20 @@ public class AccountServiceImpl implements AccountService {
 		public boolean deleteAccList(List<AccountVO> list) {
 			
 			return mapper.deleteAccList(list)>0;
+		}
+	@Override
+		public List<ItemVO> getItemListWithAccCode(String accCode) {
+			
+			return mapper.getItemListWithAccCode(accCode);
+		}
+	@Override
+		public List<AccountVO> searchAccList(Map<String, String> map) {
+			
+			return mapper.searchAccList(map);
+		}
+	@Override
+		public List<AccountVO> getAccListWithType(String accType) {
+			
+			return mapper.getAccListWithType(accType);
 		}
 }

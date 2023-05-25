@@ -130,6 +130,9 @@
               .done((r) => {
                 if(r){
                   alert("변경 완료");
+                  curPw.val('');
+                  pw1.val('');
+                  pw2.val('');
                 }else{
                   alert("현재 비밀번호가 일치하지 않습니다.")
                 }

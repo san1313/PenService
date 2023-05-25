@@ -7,53 +7,97 @@
 
 	<!-- 거래처 리스트 조회 -->
 	<select id="getAccountList" resultType="AccountVO">
-		SELECT * FROM COM_CODE_ACCOUNT
+		SELECT * FROM
+		COM_CODE_ACCOUNT
 	</select>
-	
+
+	<!-- 타입별 거래처 리스트 조회 -->
+	<select id="getAccListWithType" resultType="AccountVO">
+		<if test="accType == '전체'">
+			SELECT * FROM COM_CODE_ACCOUNT
+		</if>
+		<if test="accType != '전체'">
+			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_TYPE = #{accType}
+		</if>
+	</select>
 	<!-- 거래처 타입 조회 -->
 	<select id="getAccTypeList" resultType="String">
-		SELECT INNER_CODE_NAME FROM COM_INNER_CODE WHERE COM_CODE = 'ACC-TYP'
+		SELECT INNER_CODE_NAME
+		FROM COM_INNER_CODE WHERE COM_CODE = 'ACC-TYP'
 	</select>
-	
+
 	<!-- 거래처 코드 가져오기 -->
 	<select id="getAccCode" resultType="String">
-		SELECT 'ACC-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
+		SELECT
+		'ACC-'||LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE
 		SEQUENCE_NAME = 'ACC_SEQ'
 	</select>
-	
+
 	<!-- 거래처 수정 -->
-		<update id="modifyAccList">
+	<update id="modifyAccList">
 		<foreach collection="list" item="vo" index="index"
 			separator=";" open="DECLARE BEGIN" close="; END;">
 			UPDATE COM_CODE_ACCOUNT
 			SET
 			ACC_NAME = #{vo.accName},
 			ACC_TYPE = #{vo.accType},
-			ACC_ADDRESS = #{vo.accAddress},
+			ACC_ADDRESS =
+			#{vo.accAddress},
 			ACC_TEL = #{vo.accTel}
 			WHERE ACC_CODE = #{vo.accCode}
 		</foreach>
 	</update>
-	
+
 	<!-- 거래처 등록 -->
 	<insert id="insertAccList">
-		  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
-        separator=" ">
-    INTO COM_CODE_ACCOUNT VALUES (
-          GET_ACC_SEQ,
-          #{vo.accName},
-          #{vo.accType},
-          #{vo.accAddress},
-          #{vo.accTel}
-    )
-    </foreach>
+		<foreach collection="list" item="vo" open="INSERT ALL"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO COM_CODE_ACCOUNT VALUES (
+			GET_ACC_SEQ,
+			#{vo.accName},
+			#{vo.accType},
+			#{vo.accAddress},
+			#{vo.accTel}
+			)
+		</foreach>
 	</insert>
-	
-	  <!-- 사원 삭제 -->
-  <delete id="deleteAccList">
-      DELETE FROM COM_CODE_ACCOUNT WHERE 
-    <foreach collection="list" item="vo" separator="OR">
-        ACC_CODE = #{vo.accCode} 
-    </foreach>
-  </delete>
+
+	<!-- 거래처 삭제 -->
+	<delete id="deleteAccList">
+		DELETE FROM COM_CODE_ACCOUNT WHERE
+		<foreach collection="list" item="vo" separator="OR">
+			ACC_CODE = #{vo.accCode}
+		</foreach>
+	</delete>
+
+	<!-- 거래처별 항목 리스트 조회 -->
+	<select id="getItemListWithAccCode" resultType="ItemVO">
+		SELECT *
+		FROM (SELECT ACC_CODE, A.PROD_CODE AS ITEM_CODE,A.PROD_NAME AS
+		ITEM_NAME,PROD_STD AS ITEM_STD,PROD_UNIT AS ITEM_UNIT FROM (SELECT *
+		FROM BNS_CONTRACT JOIN BNS_CONTRACT_DETAIL USING(CONT_CODE)) A JOIN
+		COM_CODE_PROD B ON (A.PROD_CODE = B.PROD_CODE)
+		UNION
+		SELECT ACC_CODE, A.PROD_CODE AS ITEM_CODE,A.PROD_NAME AS ITEM_NAME,PROD_STD
+		AS ITEM_STD,PROD_UNIT AS ITEM_UNIT FROM (SELECT * FROM BNS_ORDER JOIN
+		BNS_ORDER_DETAIL USING(ORD_CODE)) A JOIN COM_CODE_PROD B ON
+		(A.PROD_CODE = B.PROD_CODE)
+		UNION
+		SELECT ACC_CODE, A.MAT_CODE AS ITEM_CODE,A.MAT_NAME AS ITEM_NAME, MAT_STD AS
+		ITEM_STD,MAT_UNIT AS ITEM_UNIT FROM (SELECT * FROM MAT_ORDER JOIN
+		MAT_ORDER_HEADER USING(MAT_ORDERNUM)) A JOIN COM_CODE_MAT B ON
+		(A.MAT_CODE = B.MAT_CODE))
+		WHERE ACC_CODE = #{accCode}
+	</select>
+
+	<!-- 거래처별, 거래처구분별 리스트 조회 -->
+	<select id="searchAccList" resultType="AccountVO">
+		<if test="accType == '전체'">
+			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
+		</if>
+		<if test="accType != '전체'">
+			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
+			AND ACC_TYPE = #{accType}
+		</if>
+	</select>
 </mapper>
