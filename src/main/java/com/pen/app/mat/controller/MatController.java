@@ -11,6 +11,8 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mat.mapper.MatMapper;
+import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WareRegVO;
@@ -22,7 +24,8 @@ import com.pen.app.mat.vo.WarehousingVO;
 public class MatController {
 
 @Autowired MatMapper matmapper;
-	
+@Autowired MatService matservice;
+
 	//발주페이지
 	@GetMapping("/order")
 	public void ordermain() {
@@ -95,11 +98,22 @@ public class MatController {
 		 
 	 }
 	 //자재발주조회
-	 @RequestMapping("orderlistajax")
-	 public List<OrderVO> orderlistajax(){
-		 List<OrderVO> list = matmapper.getorderlistajax();
+	 @RequestMapping("/orderlistajax")
+	 @ResponseBody
+	 public List<OrderVO> matorderlistajax(){
+		 List<OrderVO> list = matmapper.getorderlistajax();	
 		 return list;
 	 }
+	 
+	 //자재발주조회 다중검색
+	 @RequestMapping("/orderlistsearchajax")
+	 @ResponseBody
+	 public List<OrderVO> orderlistsearchajax(OrderVO orderVo) {
+		 System.err.println(orderVo);
+
+		return  matservice.getorderlistsearchajax(orderVo);
+	 }
+	  
 	 
 	
 	 //자재입고페이지
@@ -138,37 +152,55 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 //반제품입고페이지
-	 @GetMapping("/semiwarehousing")
-	 public void semiwarehousing() {
-		 
+	 //자재입고리스트 다중검색
+	 @RequestMapping("/warehousingsearchajax")
+	 @ResponseBody
+	 public List<WarehousingVO> warehousingsearchajax(WarehousingVO WarehousingVO) {
+		 System.err.println(WarehousingVO);
+
+		return  matservice.getwarehousingsearchajax(WarehousingVO);
 	 }
 	 
+	 
 	 //반제품 검사내역리스트
-	 @RequestMapping("/semiwarehousinglist")
+	 /*@RequestMapping("/semiwarehousinglist")
 	 @ResponseBody
 	 public List<WarehousingVO> semiwarehousinglist(){
 		List<WarehousingVO> list = matmapper.getsemiwarehousinglist();
 		return list;
-	 }
+	 }*/
 	 
-	 
-	 //반제품 입고등록
-	 
-	 
-	 //자재/반제품 입고조회
-	 @GetMapping("/warehousingmatlist")
+
+	 //자재 입고조회
+	 @GetMapping("/warehousinglist")
 	 public void warehousingmatlist() {
 		 
 	 }
+	 
+	 
+	 //자재입고조회리스트
+	 @GetMapping("/warehousingmatlistajax")
+	 @ResponseBody
+	 public List<WarehousingVO> warehousingmatlistajax(){
+		 List<WarehousingVO> list = matmapper.getwarehousingmatlistajax();
+		 return list;
+	 }
 	
-	 //자재/반제품 재고조회
+	 //자재 재고조회
 	 @GetMapping("/inventory")
 	 public void inventory() {
 		 
 	 }
 	 
+	 //자재 재고조회 자재코드검색
+	 @RequestMapping("/inventorysearch")
+	 @ResponseBody
+	 public List<InventoryVO> inventorysearch(InventoryVO InventoryVo){
+		 
+		 return matservice.getinventorysearch(InventoryVo);
+	 }
 	 
+	 	 
 	 //재고조정관리
 	 @GetMapping("/matadjust")
 	 public void matadjust(){
