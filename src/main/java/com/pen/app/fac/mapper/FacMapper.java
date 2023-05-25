@@ -14,7 +14,7 @@ public interface FacMapper {
    public List<FacConnProcVO> getprocminilist(String keyword); //공정코드조회
    
    
-   //public int insertFacList(List<FacInfoVO> list); //설비등록2
+   public int insertFacList(List<FacInfoVO> list); //설비등록2
    public int facRegister(FacInfoVO vo); //설비등록
    public int facUpdate(FacInfoVO vo); //설비수정
    public int facDelete(FacInfoVO facCode); //설비삭제 

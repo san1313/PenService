@@ -25,7 +25,7 @@ public class FacController {
    @Autowired FacService service;
    
    
-   	@GetMapping("/test")
+   	@GetMapping("/infoManage")
    	public void test() {
    		
    	}
@@ -82,22 +82,23 @@ public class FacController {
          
     
      //설비등록2
-//      @ResponseBody
-//      @RequestMapping("/insertFacList")
-//      public FacInfoListVO insertFacList(@RequestBody FacInfoListVO list) {
-//    	  System.out.println(list.getList());
-//    	  dao.insertFacList(list.getList());
-//    	  return list;
-//      }
+      @ResponseBody
+      @RequestMapping("/insertFacList")
+      public FacInfoVO insertFacList(@RequestBody FacInfoListVO list) {
+    	  System.err.println(list.getList());
+    	  System.out.println(list.getList().get(0));
+    	  dao.insertFacList(list.getList());
+    	  return null;
+      }
        
-      
-     @ResponseBody
-     @RequestMapping("/facRegister")
-   	 public int facRegister(FacInfoVO vo) {
-    	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
-    	 System.out.println(vo);
-    	 return service.facRegister(vo);
-     }
+     //설비등록
+//     @ResponseBody
+//     @RequestMapping("/facRegister")
+//   	 public int facRegister(FacInfoVO vo) {
+//    	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
+//    	 System.out.println(vo);
+//    	 return service.facRegister(vo);
+//     }
    	 
      //설비수정
      @ResponseBody 
