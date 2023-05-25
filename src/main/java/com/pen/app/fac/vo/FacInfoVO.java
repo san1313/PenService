@@ -19,6 +19,6 @@ public class FacInfoVO {
 	String EmpNum; //사원번호
 	
 
-	
-	List<FacConnProcVO> list;//한 설비에 연결된 공정 데이터들
+	//한 설비에 연결된 공정 데이터들
+	List<FacConnProcVO> list;
 }
