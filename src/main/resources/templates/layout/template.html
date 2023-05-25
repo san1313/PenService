@@ -273,9 +273,9 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="/fac/" class="nav-link">
+                    <a href="/fac/register" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>자재 발주 관리</p>
+                      <p>설비 정보 관리</p>
                     </a>
                   </li>
                 </ul>
@@ -373,8 +373,8 @@
     <script src="../dist/js/adminlte.js"></script>
 
     <!-- OPTIONAL SCRIPTS -->
-    <script src="../plugins/chart.js/Chart.min.js"></script>
-    <script src="../dist/js/pages/dashboard3.js"></script>
+<!--     <script src="../plugins/chart.js/Chart.min.js"></script> -->
+<!--     <script src="../dist/js/pages/dashboard3.js"></script> -->
     <script>
       function logout() {
         $("#logout").submit();
@@ -437,7 +437,7 @@
             $("#matNav").find("a[href='/mat/inventory']").addClass("active");
             break;
         }
-      } else if (path.startsWith("mak") || path.startsWith("ind")) {
+      } else if (path.startsWith("/mak") || path.startsWith("/ind")) {
         $("#makNav").addClass("menu-open");
         $("#makNav").children("a").addClass("active");
         switch (path.substr(5)) {
@@ -449,6 +449,14 @@
             break;
           case "dirindica":
             $("#makNav").find("a[href='/ind/dirindica']").addClass("active");
+            break;
+        }
+      } else if (path.startsWith("/fac")) {
+        $("#facNav").addClass("menu-open");
+        $("#facNav").children("a").addClass("active");
+        switch (path.substr(5)) {
+          case "register":
+            $("#facNav").find("a[href='/fac/register']").addClass("active");
             break;
         }
       }

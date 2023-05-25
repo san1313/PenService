@@ -316,19 +316,16 @@
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
 
             let accName = $("#accName");
+            console.log(accName.val());
+            console.log($("#accType").val());
             if (noChange) {
               // 변경점이 없다면
               // 거래처명 input의 value로 조회해서 grid를 다시 그림
               if (accName.val() != "") {
                 $.ajax({
                   url: "/admin/searchAccAjax",
-                  method: "POST",
                   dataType: "JSON",
-                  data: JSON.stringify({ accName: accName.val(), accType: $("#accType").val() }),
-                  beforeSend: function (xhr) {
-                    xhr.setRequestHeader(header, token);
-                  },
-                  contentType: "application/json",
+                  data: { accName: accName.val(), accType: $("#accType").val() },
                 }).done((r) => {
                   grid.resetData(r);
                 });
@@ -343,21 +340,16 @@
                 if (accName.val() != "") {
                   $.ajax({
                     url: "/admin/searchAccAjax",
-                    method: "POST",
                     dataType: "JSON",
-                    data: JSON.stringify({ accName: accName.val(), accType: $("#accType").val() }),
-                    beforeSend: function (xhr) {
-                      xhr.setRequestHeader(header, token);
-                    },
-                    contentType: "application/json",
+                    data: { accName: accName.val(), accType: $("#accType").val() },
                   }).done((r) => {
                     grid.resetData(r);
                   });
                   // 거래처명 input이 비어있으면 타입별 모두 조회
                 } else {
                   getAllWithType();
-                  nextNum = null;
                 }
+                  nextNum = null;
               }
             }
             accName.val("");

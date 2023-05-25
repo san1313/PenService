@@ -9,21 +9,22 @@
 	<select id="getAccountList" resultType="AccountVO">
 		SELECT * FROM
 		COM_CODE_ACCOUNT
+		ORDER BY ACC_CODE
 	</select>
 
 	<!-- 타입별 거래처 리스트 조회 -->
 	<select id="getAccListWithType" resultType="AccountVO">
 		<if test="accType == '전체'">
-			SELECT * FROM COM_CODE_ACCOUNT
+			SELECT * FROM COM_CODE_ACCOUNT ORDER BY ACC_CODE
 		</if>
 		<if test="accType != '전체'">
-			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_TYPE = #{accType}
+			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_TYPE = #{accType} ORDER BY ACC_CODE
 		</if>
 	</select>
 	<!-- 거래처 타입 조회 -->
 	<select id="getAccTypeList" resultType="String">
 		SELECT INNER_CODE_NAME
-		FROM COM_INNER_CODE WHERE COM_CODE = 'ACC-TYP'
+		FROM COM_INNER_CODE WHERE COM_CODE = 'ACC-TYP' ORDER BY COM_INNER_CODE
 	</select>
 
 	<!-- 거래처 코드 가져오기 -->
@@ -87,17 +88,17 @@
 		ITEM_STD,MAT_UNIT AS ITEM_UNIT FROM (SELECT * FROM MAT_ORDER JOIN
 		MAT_ORDER_HEADER USING(MAT_ORDERNUM)) A JOIN COM_CODE_MAT B ON
 		(A.MAT_CODE = B.MAT_CODE))
-		WHERE ACC_CODE = #{accCode}
+		WHERE ACC_CODE = #{accCode} ORDER BY ITEM_CODE
 	</select>
 
 	<!-- 거래처별, 거래처구분별 리스트 조회 -->
 	<select id="searchAccList" resultType="AccountVO">
 		<if test="accType == '전체'">
-			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
+			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%' ORDER BY ACC_CODE
 		</if>
 		<if test="accType != '전체'">
 			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
-			AND ACC_TYPE = #{accType}
+			AND ACC_TYPE = #{accType} ORDER BY ACC_CODE
 		</if>
 	</select>
 </mapper>

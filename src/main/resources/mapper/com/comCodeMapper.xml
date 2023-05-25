@@ -7,16 +7,16 @@
 
 	<!-- 공통코드 리스트 조회 -->
 	<select id="getComCodeList" resultType="ComCodeVO">
-		SELECT * FROM COM_CODE
+		SELECT * FROM COM_CODE ORDER BY COM_CODE
 	</select>
 	
 	<!-- 공통코드 이름으로 조회 -->
 	<select id="getComCodeWithName" resultType="ComCodeVO">
-		SELECT * FROM COM_CODE WHERE CODE_NAME LIKE '%'||#{codeName}||'%'
+		SELECT * FROM COM_CODE WHERE CODE_NAME LIKE '%'||#{codeName}||'%' ORDER BY COM_CODE
 	</select>
 	
 	<!-- 상세코드 조회 -->
 	<select id="getInnerCodeList" resultType="ComCodeVO">
-		SELECT * FROM COM_INNER_CODE WHERE COM_CODE = #{comCode}
+		SELECT * FROM COM_INNER_CODE WHERE COM_CODE = #{comCode} ORDER BY COM_INNER_CODE
 	</select>
 </mapper>

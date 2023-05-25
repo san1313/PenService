@@ -16,5 +16,5 @@ public interface AccountMapper {
 	int insertAccList(List<AccountVO> list);
 	int deleteAccList(List<AccountVO> list);
 	List<ItemVO> getItemListWithAccCode(String accCode);
-	List<AccountVO> searchAccList(Map<String, String> map);
+	List<AccountVO> searchAccList(String accName, String accType);
 }
