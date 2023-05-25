@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
 @Service
@@ -60,6 +61,11 @@ public int facDelete(FacInfoVO vo) {
 	//설비삭제
 	return mapper.facDelete(vo);
 }
+
+
+
+
+
 
 
 }

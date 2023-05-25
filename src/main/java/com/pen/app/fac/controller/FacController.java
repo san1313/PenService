@@ -5,6 +5,7 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
 
@@ -77,8 +79,18 @@ public class FacController {
       System.out.println(list);
       return list;
       }
+         
+    
+     //설비등록2
+//      @ResponseBody
+//      @RequestMapping("/insertFacList")
+//      public FacInfoListVO insertFacList(@RequestBody FacInfoListVO list) {
+//    	  System.out.println(list.getList());
+//    	  dao.insertFacList(list.getList());
+//    	  return list;
+//      }
+       
       
-     //설비등록
      @ResponseBody
      @RequestMapping("/facRegister")
    	 public int facRegister(FacInfoVO vo) {
