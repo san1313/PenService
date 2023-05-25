@@ -28,9 +28,6 @@ public class MakController {
 	public void plan() {
 	}
 	
-	@GetMapping("/test")
-	void test() {
-	}
 	/* 계약서 기반 계획서 시작 */
 	
 	/* 기본 그리드 */
@@ -199,8 +196,8 @@ public class MakController {
 				//이중 포문
 				for(int j=0; j<CDC.size();j++) {
 					//계약상세코드 떼기
-					if(!detCo.contains(CDC.get(j).getContDetCode())){
-						detCo.add(CDC.get(j).getContDetCode());
+					if(!detCo.contains(CDC.get(j).getOrdDetCode())){
+						detCo.add(CDC.get(j).getOrdDetCode());
 						System.out.println("CDC 포문 : "+j+"번 : "+CDC.get(j));
 					};
 					
@@ -235,7 +232,7 @@ public class MakController {
 			
 		}else {
 		System.out.println("detCoList 출력 : "+detCoList);
-		List<PlanVO> result1 = service.getContr(detCoList);
+		List<PlanVO> result1 = service.getOrder(detCoList);
 		
 				System.out.println("조회되는 최종값 : "+result1);
 		
@@ -281,19 +278,6 @@ public class MakController {
 	}
 	
 	
-	@RequestMapping("/updateOrd")
-	@ResponseBody
-	String updateOrd(@RequestBody PlanVO vo) {
-	String result ="";
-	System.out.println("수정 받아오는 데이터 : "+vo);
-	if(service.modOrd(vo)>0) {
-		result="수정성공";
-	}else{
-		result ="수정실패";
-	};
-	return result;
-	}
-	
 	@RequestMapping("/selectOrd")
 	@ResponseBody
 	List<PlanVO> selectOrd(@RequestBody PlanVO vo){
@@ -303,6 +287,64 @@ public class MakController {
 	}
 	
 
+	@RequestMapping("/selectOrdList")
+	@ResponseBody
+	List<PlanVO> selectOrdList(@RequestBody PlanVO vo){
+		int ordCount=0;
+		List<PlanVO> result = new ArrayList<>();
+		List<PlanVO> list = mapper.getModalOrd(vo);//검색 받은 값
+		ArrayList<String> detCoList = new ArrayList<>();
+		ArrayList<String> detCo = new ArrayList<>();
+		for(int i = 0; i<list.size();i++) {
+			String detC = list.get(i).getOrdDetCode();
+			List<PlanVO> CDC = mapper.getConnection(detC);
+			
+			if(CDC.isEmpty()) {
+				System.out.println("조건값 없음");
+			}else {
+				//이중 포문
+				for(int j=0; j<CDC.size();j++) {
+					//계약상세코드 떼기
+					if(!detCo.contains(CDC.get(j).getOrdDetCode())){
+						detCo.add(CDC.get(j).getOrdDetCode());
+					};
+					
+				};
+					//포문 이중포문
+					for(int k=0;k<detCo.size();k++) {
+						ordCount += mapper.getOrdCount(detCo.get(k));
+						//특정코드
+					List<PlanVO> plan = mapper.getOrdering(detCo.get(k));
+					if(plan.isEmpty()) {
+						if(!detCoList.contains(detCo.get(k))) {
+							detCoList.add(detCo.get(k));	
+						};
+						}else {
+							if(!detCoList.contains(detCo.get(k))) {
+								result.addAll(plan);
+								detCoList.add(detCo.get(k));
+							};
+						};
+					
+				}
+			}
+		}
+		
+		if(detCoList.isEmpty()) {
+			
+		}else {
+		List<PlanVO> result1 = mapper.getModalOrder(detCoList,vo);
+		
+		
+		result.addAll(result1);
+		};
+			if(ordCount>0&&result.isEmpty()) {
+				
+			}else if(ordCount==0&&result.isEmpty()) {
+				result=list;
+			}
+		return result;
+	}
 	
 	
 	

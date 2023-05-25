@@ -24,9 +24,9 @@ margin-bottm:1vh;
 #getConNm{
 margin-top:5px;
 }
-.form-control{
+.container-fluid .form-control{
 height:28px;
-font-size:10px;
+font-size:10pt;
 }
 </style>
 
@@ -53,6 +53,7 @@ font-size:10px;
 <input id="planBtn0" type=hidden>
 <input id="orderBtn0" type=hidden>
 </form>
+<!-- 모달 시작 -->
    <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
@@ -63,13 +64,21 @@ font-size:10px;
         </button>      
       </div>
       <div class="modal-body">
-        
+        <div style="display:none;" class="form-group row" id="modal-search">
+        <div class="col-12">
+        <label class="col-3">납기일자 기간</label>
+        <input type="date" class="col-3" id="sOrdCon"> - 
+		<input type="date" class="col-3" id="clsOrdCon">
+		<button class="col-2 btn btn-primary" id="modal-selBtn" onclick='getModalCon()'>조회</button>
+		</div>
+        </div>
       	<div id="modal-grid"></div>
         <button class="fa-solid fa-magnifying-glass" data-dismiss="modal" type="button" onclick='planChoice()' id="conChoice">선택</button>
       </div>
     </div>
   </div>
 </div>
+<!-- 모달 끝 -->
 <div style="text-align:left; display:none;"  id='basBtn'>
 <label class="col-1">계획일자 기간</label>
 <input type="date" class="form-control col-2" id="sCon"> - 
@@ -105,6 +114,8 @@ document.getElementById('planBtn').addEventListener('click',function(){
 	comDev=1;
 	planType="plan";
 $('#basBtn').css('display','flex');
+$('#modal-search').css('display','none');
+conData=[];
 if(planType=="plan"){
 //계획 일자 관련 제약 조건
 document.getElementById('sCon').max=new Date().toISOString().slice(0, 10);
@@ -421,6 +432,7 @@ $('#sCon').change(function(){
 					document.getElementById("dclsi").value=new Date().toISOString().slice(0, 10);
 					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
 					grid.readData();
+					conData=[];
 					comDev=1;
     	        },
     	        error : function(reject){
@@ -736,6 +748,7 @@ $('#sCon').change(function(){
       			document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
       	    	};
       		comDev=2;
+      		$("#conmi option").remove();
       		$('#modBtn').attr('disabled',false);
       		$('#delBtn').attr('disabled',false);
         	modData=grid.getRow(obj.rowKey);
@@ -843,7 +856,36 @@ $('#sCon').change(function(){
 };          
             
         });
-        
+function getModalCon(){
+	if(planType=="order"){
+		
+			document.getElementById('sOrdCon').min=new Date().toISOString().slice(0, 10);
+			document.getElementById('clsOrdCon').min=new Date().toISOString().slice(0, 10);
+			let sDate=$("#sOrdCon").val();
+			let clsDate=$("#clsOrdCon").val();
+			if(sDate==''||clsDate==''){
+	    		alert("납기일자 범위가 규정되지 않았습니다.");
+	    	}
+	    	let data={planSdate:sDate,
+	    			planClsdate:clsDate};
+	    	 $.ajax({
+	  	        url : "/mak/selectOrdList",
+	  	        method : "POST",
+	  	        data: JSON.stringify(data),
+	  	        headers: {"Content-Type": "application/json"},
+	  	        beforeSend: function (xhr) {
+	                  xhr.setRequestHeader(header, token);
+	                },
+	  	        success : function(result){
+	 					modal_grid.resetData(result);
+	 					
+	  	        },
+	  	        error : function(rejection){
+	  	        console.error(rejection);	
+	  	        }
+	  	        });
+	}
+}        
 //모달 선택 시 데이터 내려받기(계약서 주문서 공용)
 function planChoice(){
 	if(planType=="plan"){
@@ -971,8 +1013,8 @@ function planChoice(){
 		for(let i=0;i<conData.length;i++){
 			//계획명 수정 가능하게 바꾸기
 			$('#plnmi').attr('readonly',false);
-			document.getElementById('dereli').value=conData[0].contDetRelease;
-			document.getElementById('plcoi').value=conData[0].contDetQuan;
+			document.getElementById('dereli').value=conData[0].ordDueDate;
+			document.getElementById('plcoi').value=conData[0].ordDetQuan;
 			document.getElementById('prnmi').value=conData[0].prodName;
 			document.getElementById('conmi').value=conData[0].contNm;
 			document.getElementById('dclsi').max=document.getElementById('dereli').value;
@@ -1000,14 +1042,14 @@ function planChoice(){
 			input = document.createElement('input');
 			input.setAttribute('type','hidden');
 			input.setAttribute('id','plcoi'+i);
-			input.value = conData[i].contDetQuan;
+			input.value = conData[i].ordDetQuan;
 			Hfrm.appendChild(input);
 			
 			//주문수량 절대 기록 창
 			input = document.createElement('input');
 			input.setAttribute('type','hidden');
 			input.setAttribute('id','abplcoi'+i);
-			input.value = conData[i].contDetQuan;
+			input.value = conData[i].ordDetQuan;
 			Hfrm.appendChild(input);
 			
 			
@@ -1015,14 +1057,14 @@ function planChoice(){
 			input = document.createElement('input');
 			input.setAttribute('type','hidden');
 			input.setAttribute('id','dereli'+i);
-			input.value = conData[i].contDetRelease;
+			input.value = conData[i].ordDueDate;
 			Hfrm.appendChild(input);
 			
 			//주문상세코드
 			input = document.createElement('input');
 			input.setAttribute('type','hidden');
-			input.setAttribute('id','contDetCode'+i);
-			input.value = conData[i].contDetCode;
+			input.setAttribute('id','ordDetCode'+i);
+			input.value = conData[i].ordDetCode;
 			Hfrm.appendChild(input);
 			
 			//계획시작일
@@ -1082,10 +1124,13 @@ function planChoice(){
 document.getElementById('orderBtn').addEventListener('click',function(){
 	planType="order";
 	comDev=1;
+	$('#basBtn').css('display','flex');
+	conData=[];
 	//조회조건 일자 초기화
 	$("#clsCon").val('');
 	$("#sCon").val('');
 	if(planType=="order"){
+	$("#modal-search").css('display','block');
 	//주문서 기반 조회조건 제약
 	document.getElementById('sCon').max=new Date().toISOString().slice(0, 10);
 	$('#sCon').change(function(){
@@ -1358,7 +1403,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     				"prodCode":$("#prodCode"+i).val(),
     				"prodName":$("#prnmi"+i).val(),
     				"planQnt":Math.abs($("#plcoi"+i).val()),
-    				"ordDetCode":$("#contDetCode"+i).val(),
+    				"ordDetCode":$("#ordDetCode"+i).val(),
     				"planSdate":$("#dsti"+i).val(),
     				"planClsdate":$("#dclsi"+i).val(),
     				"priority":$("#priorityi"+i).val(),
@@ -1367,7 +1412,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     				"contNm":$("#contNm"+i).val(),
     				"ordDueDate":document.getElementById("dereli"+i).value,
     				"planState":"미작업",
-    				"contDetQuan":reAmount
+    				"ordDetQuan":reAmount
     		};
     		/* innerData.slice("") */
     		
@@ -1402,6 +1447,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
 					document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
 					grid.readData();
 					comDev=1;
+					conData=[];
     	        },
     	        error : function(reject){
     	        	console.error(reject);
@@ -1441,7 +1487,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     		planData={connectCode:modData.connectCode,
     				pdCode:modData.pdCode,
     				planCode:modData.planCode,
-    				ordDetCode:modData.contDetCode};
+    				ordDetCode:modData.ordDetCode};
     		
        	 $.ajax({
  	        url : "/mak/delOrd",
@@ -1618,16 +1664,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     		$('#plnmi').attr('readonly',true);
     	}
     })
-    
-   /*  $.ajax({
-        url : "/mak/planList",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	grid.resetData(result);
-        }
-         });
-    */
+
     //그리드 데이터소스
     const dataSource = {
             contentType: "application/json",
@@ -1635,11 +1672,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
               readData: {
                 url: "/mak/ordList",
                 method: "GET",
-              },
-              modifyData: {
-                url: "/admin/userModifyAjax",
-                method: "POST",
-                withCredentials: true,
               },
             },
           };
@@ -1677,7 +1709,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
         },
         {
         header: '납기일',
-        name: 'contDetRelease'
+        name: 'ordDueDate'
         },
         {
         header: '계획수량',
@@ -1689,7 +1721,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
         },
         {
         header: '잔류계약수량',
-        name: 'contDetQuan'
+        name: 'ordDetQuan'
         },
         {
             header: '우선순위',
@@ -1716,6 +1748,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
       			document.getElementById("dsti").value=new Date().toISOString().slice(0, 10);
       	    	};
       		comDev=2;
+      		$("#conmi option").remove();
       		$('#modBtn').attr('disabled',false);
       		$('#delBtn').attr('disabled',false);
         	modData=grid.getRow(obj.rowKey);
@@ -1815,6 +1848,8 @@ document.getElementById('orderBtn').addEventListener('click',function(){
      $(function(){
      $('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
+        $('#sOrdCon').val('');
+        $('#clsOrdCon').val('');
      });         
            
 
