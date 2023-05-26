@@ -1,7 +1,5 @@
 package com.pen.app.fac.vo;
 
-import java.util.List;
-
 import lombok.Data;
 
 @Data
@@ -18,7 +16,12 @@ public class FacInfoVO {
 	String operateCheck; //가동유무
 	String EmpNum; //사원번호
 	
-
+	
+	String facProc;
+	String procCode;
 	//한 설비에 연결된 공정 데이터들
-	List<FacConnProcVO> list;
+	//COM_CODE_PROC 테이블 필드
+		String procName;//공정이름
+		String procType; //공정타입
+		String procDetail; //공정설명
 }

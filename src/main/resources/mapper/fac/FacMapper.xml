@@ -27,11 +27,22 @@
 		using(fac_code) join COM_CODE_PROC using(proc_code)
 	</select> -->
 
-	<!-- 설비등록 -->
+	<!-- 설비등록-->
 	<insert id="facRegister" parameterType="FacInfoVO">
 		insert into fac_info
 		values('EQMAN'||fac_seq.nextval,#{facName},#{installDate},#{tempMin},#{tempMax},#{makerName},#{checkCycle},#{operateCheck},#{empNum})
-	</insert>
+	</insert> 
+	
+	
+	<!-- 공정+설비등록 -->
+
+  <insert id="insertFacList" parameterType="FacInfoListVO">
+  insert all into fac_info values('EQMAN'||fac_seq.nextval,#{list[0].facName},#{list[0].installDate},#{list[0].tempMin},#{list[0].tempMax},#{list[0].makerName},#{list[0].checkCycle},#{list[0].operateCheck},#{list[0].empNum}) 
+  <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
+        into FAC_CONN_PROC values(fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
+    </foreach>
+  </insert>
+
 	
 	<!-- 설비수정 -->
 	<update id="facUpdate" parameterType="FacInfoVO">
@@ -56,7 +67,7 @@
 		select proc_code, proc_name from COM_CODE_PROC
 	</select>
 	
-	<!-- 공정코드검사조회 -->
+	<!-- 공정코드검색조회 -->
 	<select id="getprocminilist" resultType="FacConnProcVO">
 		select proc_code, proc_name from COM_CODE_PROC where proc_name like
 		#{keyword}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>PenServiceMES</title>
+<style>
+
+</style>
+
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+</head>
+
+<body>
+<div layout:fragment="title">설비점검관리</div>
+<!-- 메인콘텐츠 -->
+	<div layout:fragment="content">
+		<div class="fac_confirm" style="text-align:left">
+			<div class = "col-12 fac_confirm">
+				<label for="confirm_code" hidden>점검코드
+				<input type="text"id="confirm_code" placeholder="confirm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;
+				</label>
+				
+				<label for="fac_code">설비코드
+				<input type="text"id="fac_code">
+				<button type="button" data-bs-toggle="modal" data-bs-target="#faccodeModal"><i class="fa fa-search"></i></button>
+				</label>&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="fac_name">설비명
+				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;
+				</label> 
+				
+				<label for="confirm_date">점검일자
+				<input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> 
+	
+				<label for="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="regular_confirm" value="정기점검" checked> 정기점검
+				<input type="radio" name="occasional_confirm" value="수시점검"> 수시점검
+				<input type="radio" name="emergency_confirm" value="긴급점검"> 긴급점검
+				</label>
+				
+				<br>
+				
+				<label for="emp_num">담당자
+				<input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				</label>
+				
+				<label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<select name="confirm_issue">
+					<option value="선택" selected="selected">---선택---</option>
+					<option value="점검">점검</option>
+					<option value="고장">고장</option>
+				</select> <label for="action_history">조치내역</label>
+				<input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp; 	
+				
+				<br>
+				<br>
+				
+				<div class="col-12">
+				<div class="col-8" style="margin:0 auto">
+				<button class="w-30 btn btn-primary btn-lg" id="register" type="submit">등록</button>
+				<button class="w-30 btn btn-warning btn-lg" id="update" type="button">수정</button>
+				<button class="w-20 btn btn-danger btn-lg" id="delete" type="button">삭제</button>
+				<button class="w-30 btn btn-success btn-lg" id="reset" type="reset">초기화</button>
+				</div>
+				</div>
+	</div>
+	</div>
+	</div>
+			
+</body>
+</html>
