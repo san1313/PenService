@@ -474,7 +474,8 @@
                },
                {
                 header: '납기일자',
-                name: 'contDetRelease'
+                name: 'contDetRelease',
+                editor:'datePicker'
               }
              ],
                summary: {
@@ -536,9 +537,9 @@
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				/* addProdgrid.resetData(result);
-		        addProdgrid.refreshLayout(); */
-		        
+				 addProdgrid.resetData(result);
+		        addProdgrid.refreshLayout(); 
+		        console.log('성공');
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
 					url : "/bns/contListAjax",
