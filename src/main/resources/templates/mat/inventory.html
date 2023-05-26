@@ -57,7 +57,9 @@
     #lotgrid{
     display:none;
     }
-
+	.tui-grid-cell.cell-red{
+	background-color:red;
+	}
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
@@ -119,7 +121,6 @@
     var igrid = new tui.Grid({
     el: document.getElementById('igrid'),
     scrollX: false,
-    scrollY: false,
     rowHeaders: ['rowNum'],
     bodyHeight : 200,
     columns: [{
@@ -256,8 +257,24 @@
    	     data : {'result' : data1}, 
    	     success : function(result){
    	    	 console.log(result)
+   	    	 result.forEach(function(ele){
+   	    		 if(ele.matdef<0){
+   	    			 ele.matdef=0;
+   	    		 }
+   	    	 })
    	    	igrid.resetData(result);
+   	    	
+   	    	
    	    	igrid.refreshLayout();	
+   	    	
+   	     let data2 = igrid.getData();
+	    	data2.forEach(function(ele){
+	    		console.log(ele);
+	    		if(ele.matdef>0){
+	    			igrid.addCellClassName(ele.rowKey,'matdef','cell-red');
+	    		}
+	    	});
+   	    	
    	     },
    	     error: function(reject){
    	    	 console.log(reject)
