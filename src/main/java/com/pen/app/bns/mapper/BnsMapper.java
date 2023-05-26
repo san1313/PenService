@@ -20,6 +20,7 @@ public interface BnsMapper {
 	int insertOrdList(List<BnsOrdVO> list);// 주문서 등록
 	int modOrdList(List<BnsOrdVO> list);// 주문서 수정
 	void delOrdDetList(List<BnsOrdVO> list);// 주문서 삭제
+	void delOrdList(List<BnsOrdVO> list);// 주문서 삭제
 	List<BnsOrdVO> getOrdCode();//주문코드 조회
 	
 	//계약서
@@ -29,5 +30,6 @@ public interface BnsMapper {
 	int insertContList(List<BnsContVO> list);// 계약서 등록
 	int modContList(List<BnsContVO> list);// 계약서 수정
 	void delContDetList(List<BnsContVO> list);// 계약서 삭제
+	void delContList(List<BnsContVO> list);// 주문서 삭제
 	List<BnsContVO> getContCode();//계약코드 조회
 }

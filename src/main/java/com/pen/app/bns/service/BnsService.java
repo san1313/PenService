@@ -17,7 +17,8 @@ public interface BnsService {
 	public List<BnsProdVO> getProdKeyList(String keyword);
 	public int insertOrdList(List<BnsOrdVO> list);
 	public int modOrdList(List<BnsOrdVO> list);//주문서 수정
-	public void delOrdDetList(List<BnsOrdVO> list);//주문서 삭제
+	public void delOrdDetList(List<BnsOrdVO> list);//주문수정할때 제품 삭제
+	public void delOrdList(List<BnsOrdVO> list);//주문서 삭제
 	public List<BnsOrdVO> getProdModList(String keyword);
 	/* public void insertOrdDetList (BnsOrdDetListVO bnsOrdDetListVo); */
 	
@@ -27,6 +28,7 @@ public interface BnsService {
 	public int insertContList(List<BnsContVO> list);
 	public int modContList(List<BnsContVO> list);//주문서 수정
 	public void delContDetList(List<BnsContVO> list);//주문서 삭제
+	public void delContList(List<BnsContVO> list);//계약서 삭제
 	public List<BnsContVO> getContProdModList(String keyword);
 	
 }

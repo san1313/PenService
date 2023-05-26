@@ -94,12 +94,14 @@
 			<button id="productList" class="fa-solid fa-magnifying-glass"
 				data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</p> -->
-		<p>
-			주문일자 - 납기일자 <input type="date" id="orddate-text"><input
-				type="date" id="ordduedate-text">
+		
+			<p>
+			주문일자 <input type="date" id="orddate-text"> - <input type="date" id="orddate-text">
+			</p>
+			납기일자 <input type="date" id="ordduedate-text"> - <input type="date" id="ordduedate-text">
 			<button id="searchOrd">조회</button>
 
-		</p>
+		
 		<div class="ordbtn">
 			<button type="button" class="btn btn-outline-secondary"
 				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
@@ -1174,6 +1176,37 @@ $.ajax({
         	 
         	 
          })
+         
+         //주문수정 모달창의 삭제 버튼 눌렀을 때
+         $('#BtnOrdCancle').on('click',function(){
+			grid.removeCheckedRows(true)
+			let deleted = grid.getModifiedRows().deletedRows;
+			
+			console.log(deleted)
+        	 
+			if(deleted.length>0){
+				
+				$.ajax({
+					url : "/bns/delOrdList",
+					method : "POST",
+					contentType : "application/json",
+					data : JSON.stringify({ list : deleted}),
+					dataType : "JSON",
+					beforeSend: function (xhr) {
+			            xhr.setRequestHeader(header, token);
+			          },
+					success : function(result){
+						grid.resetData(result);
+				        grid.refreshLayout();
+					}
+					});
+			}
+        	 
+        	 
+         })
+         
+         
+         
          
         
          //수정버튼 눌렀을 때
