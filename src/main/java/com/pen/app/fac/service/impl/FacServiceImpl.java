@@ -18,7 +18,6 @@ public class FacServiceImpl implements FacService {
 
 @Override
 public FacInfoVO getFac(FacInfoVO vo) {
-	// TODO Auto-generated method stub
 	return null;
 }
 
@@ -37,8 +36,8 @@ public List<FacConnProcVO> getprocminilist(String keyword) {
 
 @Override
 public FacInfoVO getFac(String facCode) {
-	// TODO Auto-generated method stub
-	return null;
+	//단건조회
+	return mapper.getFac(facCode);
 }
 
 @Override
@@ -63,6 +62,11 @@ public int facDelete(FacInfoVO vo) {
 }
 
 
+@Override
+public int insertFacList(FacInfoListVO list) {
+	
+	return mapper.insertFacList(list);
+}
 
 
 

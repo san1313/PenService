@@ -16,6 +16,7 @@ public interface FacService {
 	public List<FacConnProcVO> getprocminilist(String keyword); //공정코드조회
 	
 	public int facRegister(FacInfoVO vo); //설비등록
+	public int insertFacList(FacInfoListVO list); //설비+공정등록
 	public int facUpdate(FacInfoVO vo); //설비수정
 	public int facDelete(FacInfoVO vo); //설비삭제
 	   
