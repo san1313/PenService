@@ -51,9 +51,9 @@ public class AccountServiceImpl implements AccountService {
 			return mapper.getItemListWithAccCode(accCode);
 		}
 	@Override
-		public List<AccountVO> searchAccList(Map<String, String> map) {
+		public List<AccountVO> searchAccList(String accName, String accType) {
 			
-			return mapper.searchAccList(map);
+			return mapper.searchAccList(accName, accType);
 		}
 	@Override
 		public List<AccountVO> getAccListWithType(String accType) {

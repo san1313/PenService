@@ -41,12 +41,12 @@
   
   <!-- 이름으로 사원 조회 -->
   <select id="getUserWithName" resultType="UserVO">
-  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME LIKE '%'||#{empName}||'%'
+  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING (AUTH_CODE) WHERE EMP_NAME LIKE '%'||#{empName}||'%' ORDER BY EMP_NUM
   </select>
   
   <!-- 모든 권한 리스트 조회 -->
   <select id="getAuthList" resultType="AuthVO">
-  	select * from com_code_auth
+  	select * from com_code_auth ORDER BY TO_NUMBER(AUTH_CODE)
   </select>
   
   <!-- 유저 비밀번호 변경 -->

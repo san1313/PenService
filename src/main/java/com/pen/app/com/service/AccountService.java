@@ -15,5 +15,5 @@ public interface AccountService {
 	boolean insertAccList(List<AccountVO> list);
 	boolean deleteAccList(List<AccountVO> list);
 	List<ItemVO> getItemListWithAccCode(String accCode);
-	List<AccountVO> searchAccList(Map<String, String> map);
+	List<AccountVO> searchAccList(String accName, String accType);
 }

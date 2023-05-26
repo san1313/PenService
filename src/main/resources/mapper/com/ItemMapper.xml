@@ -7,12 +7,12 @@
 	<!-- 자재기능 시작 -->
 	<!-- 자재 전체 리스트 조회 -->
 	<select id="getMatList" resultType="MatVO">
-		SELECT * FROM COM_CODE_MAT
+		SELECT * FROM COM_CODE_MAT ORDER BY MAT_CODE
 	</select>
 
 	<!-- 자재 이름으로 조회 -->
 	<select id="getMatWithName" resultType="MatVO">
-		SELECT * FROM COM_CODE_MAT WHERE MAT_NAME LIKE '%'||#{matName}||'%'
+		SELECT * FROM COM_CODE_MAT WHERE MAT_NAME LIKE '%'||#{matName}||'%' ORDER BY MAT_CODE
 	</select>
 
 	<!-- 자재 코드 가져오기 -->
@@ -55,7 +55,7 @@
 	<!-- 반제품기능 시작 -->
 	<!-- 반제품 전체 리스트 조회 -->
 	<select id="getSemiList" resultType="SemiVO">
-		SELECT * FROM COM_CODE_SEMI
+		SELECT * FROM COM_CODE_SEMI ORDER BY SEMI_CODE
 	</select>
 
 	<!-- 반제품 코드 가져오기 -->
@@ -66,7 +66,7 @@
 
 	<!-- 반자재 이름으로 조회 -->
 	<select id="getSemiWithName" resultType="SemiVO">
-		SELECT * FROM COM_CODE_SEMI WHERE SEMI_NAME = #{semiName}
+		SELECT * FROM COM_CODE_SEMI WHERE SEMI_NAME LIKE '%'||#{semiName}||'%' ORDER BY SEMI_CODE
 	</select>
 	
 		<!-- 반제품 정보수정 -->
@@ -101,12 +101,12 @@
 	<!-- 완제품기능 시작 -->
 	<!-- 완제품 전체 리스트 조회 -->
 	<select id="getProdList" resultType="ProdVO">
-		SELECT * FROM COM_CODE_PROD
+		SELECT * FROM COM_CODE_PROD ORDER BY PROD_CODE
 	</select>
 
 	<!-- 완제품 이름으로 조회 -->
 	<select id="getProdWithName" resultType="ProdVO">
-		SELECT * FROM COM_CODE_PROD WHERE PROD_NAME = #{prodName}
+		SELECT * FROM COM_CODE_PROD WHERE PROD_NAME LIKE '%'||#{prodName}||'%' ORDER BY PROD_CODE
 	</select>
 
 	<!-- 완제품 코드 가져오기 -->
