@@ -195,9 +195,18 @@ public class MatController {
 	 //자재 재고조회 자재코드검색
 	 @RequestMapping("/inventorysearch")
 	 @ResponseBody
-	 public List<InventoryVO> inventorysearch(InventoryVO InventoryVo){
-		 
-		 return matservice.getinventorysearch(InventoryVo);
+	 public List<InventoryVO> inventorysearch(@RequestParam String result){
+		 System.out.println(result);
+		 List<InventoryVO> list = matmapper.getinventorysearch(result);
+		 return list;
+	 }
+	 
+	 //자재 lot 조회
+	 @RequestMapping("/inventorysearchlot")
+	 @ResponseBody
+	 public List<InventoryVO> inventorysearchlot(@RequestParam String matCode){
+		 List<InventoryVO> list = matmapper.getinventorysearchlot(matCode);
+		 return list;
 	 }
 	 
 	 	 
@@ -206,4 +215,6 @@ public class MatController {
 	 public void matadjust(){
 	 
 	 }
+	 
+	 
 }

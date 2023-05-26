@@ -371,7 +371,7 @@
      //조회버튼
     document.getElementById('submitbtn').addEventListener('click',function(){
 	   var matName = document.getElementById('matmodalmatname').value;
-	   var matBcncname = document.getElementById('accmodalname').value;
+	   var accCode = document.getElementById('accmodalcode').value;
 	   var startDate = document.getElementById('matReqdate').value;
 	   var endDate = document.getElementById('matReqdate1').value;
     	
@@ -380,12 +380,12 @@
    		 url : "/mat/warehousingsearchajax",
    	     method : "GET",
    	     data : {matName: matName,
-   	    		accName: matBcncname,
+   	    		accCode: accCode,
    	    		matWrhdate : startDate,
    	    		matWrhdate1 : endDate}, 
    	     dataType : "JSON",
    	     success : function(result){
-   	    	 console.log('dd',result)
+   	    	 console.log(result)
    	    	warehousinglistgrid.resetData(result);
    	    	warehousinglistgrid.refreshLayout();	
    	     },

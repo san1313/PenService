@@ -38,7 +38,7 @@
       margin: 0 10px;
     }
 
-    #grid {
+    #igrid {
       margin: 20px 0 10px;
     }
 	#deletematbtn{
@@ -53,6 +53,9 @@
     .text1 {
       margin: 15px;
       padding: 0 5px 0 0;
+    }
+    #lotgrid{
+    display:none;
     }
 
   </style>
@@ -104,62 +107,45 @@
 
 	
 	<div id="igrid"></div>
+	<div id="lotgrid"></div>
 
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-    // 발주리스트
-    $.ajax({
-  		url : "/mat/orderlistajax",
-  		method : "GET",
-  		dataType : "JSON",
-  		success : function(result){
-  			console.log(result);
-  			orderlistgrid.resetData(result);
-  			orderlistgrid.refreshLayout();
-  		},
-  		error: function(reject){
-	    	 console.log(reject)
-  		}
-  	});
-     
+
 
     var igrid = new tui.Grid({
     el: document.getElementById('igrid'),
     scrollX: false,
     scrollY: false,
     rowHeaders: ['rowNum'],
+    bodyHeight : 200,
     columns: [{
     header: '자재코드',
-    name: 'matOrdernum'
-    },
-    {
-    header: '자재명',
-    name: 'matOrdername',
-    },
-    {
-    header: '재고량',
-    name: 'accCode'
-    },
-    {
-    header: '안전재고수량',
-    name: 'accName',
-    hidden: true
-    },
-    {
-    header: '안전재고부족분',
     name: 'matCode'
     },
     {
-    header: '안전재고',
+    header: '자재명',
     name: 'matName'
+    },
+    {
+    header: '재고량',
+    name: 'matQnt'
+    },
+    {
+    header: '안전재고',
+    name: 'matSfst'
+    },
+    {
+    header: '안전재고 부족분',
+    name: 'matdef'
     }
-    }
+    ]
     });
 
-    
+	
     
     
     
@@ -259,21 +245,15 @@
          
      
    //조회버튼
-    document.getElementById('submitbtn').addEventListener('click',function(){
-	   var matName = document.getElementById('matmodalmatname').value;
-	   var accCode = document.getElementById('accmodalcode').value;
-	   var startDate = document.getElementById('matOrderdate1').value;
-	   var endDate = document.getElementById('matOrderdate2').value;
-    	
-    	
+	$("#submitbtn").on('click', function(){
+		console.log(document.getElementById('matmodalmatname').value)
+		let data1 = document.getElementById('matmodalmatname').value;
+
+		$("#matmodalmatname").val("");
 		 $.ajax({
-   		 url : "/mat/orderlistsearchajax",
+   		 url : "/mat/inventorysearch",
    	     method : "GET",
-   	     data : {matName: matName,
-   	    		accCode: accCode,
-   	     		matOrderdate : startDate,
-   	     		matOrderdate1 : endDate}, 
-   	     dataType : "JSON",
+   	     data : {'result' : data1}, 
    	     success : function(result){
    	    	 console.log(result)
    	    	igrid.resetData(result);
@@ -283,7 +263,67 @@
    	    	 console.log(reject)
      }
    }); 
-   })  
+	})
+  
+
+	//자재선택
+  var lotgrid = new tui.Grid({
+      el: document.getElementById('lotgrid'),
+      scrollX: false,
+      scrollY: false,
+      rowHeaders: ['rowNum'],
+      bodyHeight : 200,
+      columns: [{
+      header: '자재코드',
+      name: 'matCode'
+      },
+      {
+      header: '자재명',
+      name: 'matName'
+      },
+      {
+      header: 'LOT번호',
+      name: 'matLot'
+      },
+      {
+      header: '거래처명',
+      name: 'matBcncname'
+      },
+      {
+      header: '실재고량',
+      name: 'matQntt'
+      },
+      {
+      header: '홀드수량',
+      name: 'cnt'
+      },
+      {
+      header: '재고량',
+      name: 'matQnt'
+      }
+      ]
+      });
+      
+	igrid.on('click', ev =>{
+		console.log('클릭');
+		document.getElementById('lotgrid').setAttribute('style', 'display:block;');
+		var matCode = igrid.getRow(ev.rowKey).matCode;
+		console.log(matCode)	
+		
+		$.ajax({
+	   		 url : "/mat/inventorysearchlot",
+	   	     method : "GET",
+	   	     data : {"matCode" : matCode},
+	   	     success : function(result){
+	   	    	 console.log(result)
+	   	    	lotgrid.resetData(result);
+	   	    	lotgrid.refreshLayout();	
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	     }
+	   }); 
+	})
      
    
     </script>

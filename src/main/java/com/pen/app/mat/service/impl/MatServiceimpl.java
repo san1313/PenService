@@ -114,9 +114,15 @@ public class MatServiceimpl implements MatService{
 	}
 
 	@Override
-	public List<InventoryVO> getinventorysearch(InventoryVO vo) {
+	public List<InventoryVO> getinventorysearch(String keyword) {
 		// 자재재고조회 자재코드 검색
-		return matmapper.getinventorysearch(vo);
+		return matmapper.getinventorysearch(keyword);
+	}
+
+	@Override
+	public List<InventoryVO> getinventorysearchlot(String matCode) {
+		// 자재재고조회 lot
+		return matmapper.getinventorysearchlot(matCode);
 	}
 
 	/*

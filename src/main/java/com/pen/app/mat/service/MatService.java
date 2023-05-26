@@ -29,6 +29,7 @@ public interface MatService {
 	public List<WarehousingVO> getwarehousingmatlistajax(); //자재입고조회
 	//public List<WarehousingVO> getsemiwarehousinglist(); //반제품 검사내역리스트
 	
-	public List<InventoryVO> getinventorysearch(InventoryVO vo); //자재재고조회 자재코드검색
+	public List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드검색
+	public List<InventoryVO> getinventorysearchlot(String matCode); //자재재고조회 lot
 	
 }

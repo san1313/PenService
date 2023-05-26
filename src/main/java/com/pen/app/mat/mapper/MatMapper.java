@@ -28,7 +28,7 @@ public interface MatMapper {
 	
 	//List<WarehousingVO> getsemiwarehousinglist(); //반제품입고페이지 검사내역리스트
 	
-	List<InventoryVO> getinventorysearch(InventoryVO vo); //자재재고조회 자재코드 검색
-	
+	List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드 검색
+	List<InventoryVO> getinventorysearchlot(String matCode);//자재재고조회 lot
 }
 	

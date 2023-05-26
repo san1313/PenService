@@ -25,7 +25,7 @@ public class WarehousingVO { //입고
 	String matName;
 	String matOrdernum;
 	String accCode; //거래처코드
-	
+	String accName;
 	String matOrderdate; //발주일자
 	
 	int matQnt; //재고량

@@ -133,7 +133,7 @@
 			                                          join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat)
                                                       join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
 			where b.mat_code=#{matCode}
-			and a.mat_bcncname = #{matBcncname}
+			and a.mat_bcncname = #{accName}
 			and mat_wrhdate >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
 			)
 		where mat_wrhdate <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
@@ -147,7 +147,10 @@
 	
 	<!-- 자재재고조회 자재코드 검색 -->
 	<select id="getinventorysearch" resultType="InventoryVO">
-	
+		select a.mat_code, a.mat_name, a.mat_qnt, b.mat_sfst, (b.mat_sfst - a.mat_qnt) as matdef from mat_invntry a join com_code_mat b on(a.mat_code=b.mat_code) where a.mat_name=#{keyword} order by 1
 	</select>
-	
+	<!-- 자재재고조회 lot -->
+	<select id="getinventorysearchlot" resultType="InventoryVO">
+		select distinct a.mat_code, a.mat_name, a.mat_lot, b.mat_bcncname,(c.cnt + a.mat_qnt) as matQntt ,c.cnt, a.mat_qnt from mat_invntry a left join mat_wrhousng b on(a.mat_lot = b.mat_lot) left join MAK_HOLD c on(a.mat_lot=c.mat_lot) where a.mat_code = #{matCode}
+	</select>
 </mapper>
