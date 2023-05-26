@@ -23,7 +23,7 @@
     </style>
   </head>
   <body>
-    <div layout:fragment="title">공정 정보 관리</div>
+    <div layout:fragment="title">공정 코드 관리</div>
     <!-- 메인컨텐츠 -->
     <div layout:fragment="content">
       <div class="row justify-content-center" style="margin-bottom: 10px">
@@ -194,7 +194,7 @@
               }
             } else {
               // 변경점이 있다면 confirm 창을 띄운다.
-              if (confirm("조회시 변경된 데이터가 소실됩니다. 조회하겠습니까?")) {
+              if (confirm("조회시 저장되지않은 데이터가 소실됩니다. 조회하겠습니까?")) {
                 // 타입이 전체가 아니면
                 if (procType.val() != "전체") {
                   $.ajax({

@@ -19,4 +19,36 @@
 	<select id="getInnerCodeList" resultType="ComCodeVO">
 		SELECT * FROM COM_INNER_CODE WHERE COM_CODE = #{comCode} ORDER BY COM_INNER_CODE
 	</select>
+	
+	<!-- 세부코드 정보수정 -->
+  <update id="modifyICodeList">
+  	<foreach collection="list" item="vo" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
+        	UPDATE COM_INNER_CODE
+           	SET
+           	  INNER_CODE_NAME = #{vo.innerCodeName},
+	 	      INNER_CODE_DETAIL = #{vo.innerCodeDetail}
+    	    WHERE COM_INNER_CODE = #{vo.comInnerCode}
+    </foreach>
+  </update>
+  
+  <!-- 세부코드 추가 -->
+  <insert id="insertICodeList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_INNER_CODE VALUES (
+          #{vo.comInnerCode},
+          #{vo.innerCodeName},
+          #{vo.innerCodeDetail},
+          #{vo.comCode}
+    )
+    </foreach>
+  </insert>
+  
+  <!-- 세부코드 삭제 -->
+  <delete id="deleteICodeList">
+      DELETE FROM COM_INNER_CODE WHERE 
+    <foreach collection="list" item="vo" separator="OR">
+        COM_INNER_CODE = #{vo.comInnerCode} 
+    </foreach>
+  </delete>
 </mapper>

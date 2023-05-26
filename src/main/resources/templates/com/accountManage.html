@@ -335,7 +335,7 @@
               }
             } else {
               // 변경점이 있다면 confirm 창을 띄운다.
-              if (confirm("조회시 변경된 데이터가 소실됩니다. 조회하겠습니까?")) {
+              if (confirm("조회시 저장되지않은 데이터가 소실됩니다. 조회하겠습니까?")) {
                 // 거래처명 input의 value로 조회해서 grid를 다시 그림
                 if (accName.val() != "") {
                   $.ajax({

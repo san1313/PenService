@@ -24,6 +24,7 @@ import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.com.service.impl.AccountServiceImpl;
 import com.pen.app.com.service.impl.ComCodeServiceImpl;
 import com.pen.app.com.service.impl.ItemServiceImpl;
+import com.pen.app.com.service.impl.ProcFlowServiceImpl;
 import com.pen.app.com.service.impl.ProcessServiceImpl;
 import com.pen.app.com.service.impl.UserServiceImpl;
 import com.pen.app.com.vo.AccountVO;
@@ -35,6 +36,7 @@ import com.pen.app.com.vo.ProcessVO;
 import com.pen.app.com.vo.ProdVO;
 import com.pen.app.com.vo.SemiVO;
 import com.pen.app.com.vo.UserVO;
+import com.pen.app.com.vo.iCodeVO;
 
 /**
  * Handles requests for the application home page.
@@ -54,6 +56,8 @@ public class CommonController {
 	AccountServiceImpl accService;
 	@Autowired
 	ProcessServiceImpl procService;
+	@Autowired
+	ProcFlowServiceImpl flowService;
 
 	@GetMapping(value = { "/top", "/" })
 	public String top() {
@@ -320,7 +324,7 @@ public class CommonController {
 		return new ToastUiResponseDTO(result);
 	}
 
-	// 공통코드 조회 페이지 -----------------------------------------------
+	// 공통코드 관리 페이지 -----------------------------------------------
 	@GetMapping("/admin/comCodeManage")
 	public String comCode() {
 		return "/com/comCodeManage";
@@ -345,6 +349,18 @@ public class CommonController {
 	@ResponseBody
 	public List<ComCodeVO> getInnerCodeList(String comCode) {
 		return comCodeService.getInnerCodeList(comCode);
+	}
+
+	@PostMapping("/admin/iCodeModifyAjax")
+	@ResponseBody
+	public ToastUiResponseDTO innerCodeModifyAjax(@RequestBody Map<String, List<iCodeVO>> modifiedRows) {
+		return comCodeService.modifyICodeList(modifiedRows);
+	}
+
+	@GetMapping("/void")
+	@ResponseBody
+	public ToastUiResponseDTO voidReturn() {
+		return new ToastUiResponseDTO(new ArrayList<Integer>());
 	}
 
 	// 거래처관리 페이지-------------------------------------------------
@@ -463,5 +479,25 @@ public class CommonController {
 	@ResponseBody
 	public ToastUiResponseDTO procModifyAjax(@RequestBody Map<String, List<ProcessVO>> modifiedRows) {
 		return procService.modifyProcList(modifiedRows);
+	}
+
+	// 공정 흐름 페이지-----------------------------------------------
+	@GetMapping("/admin/procFlowManage")
+	public String procFlowManage() {
+		return "/com/procFlowManage";
+	}
+	
+	// 제품 리스트 조회
+	@GetMapping("/admin/getFlowItemList")
+	@ResponseBody
+	public ToastUiResponseDTO getFlowItemList() {
+		return new ToastUiResponseDTO(flowService.getFlowItemList());
+	}
+	
+	// 이름으로 제품 조회
+	@GetMapping("/admin/getFlowItemListWithName")
+	@ResponseBody
+	public List<Map<String, String>> getFlowItemListWithName(String itemName){
+		return flowService.getFlowItemListWithName(itemName);
 	}
 }

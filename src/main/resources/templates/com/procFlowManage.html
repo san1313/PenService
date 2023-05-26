@@ -17,13 +17,13 @@
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
     <style>
-      #comCodeGrid .tui-grid-cell-current-row > td {
+      #itemCodeGrid .tui-grid-cell-current-row > td {
         background-color: #00a9ff33;
       }
-      #comCodeGrid .tui-grid-body-container {
+      #itemCodeGrid .tui-grid-body-container {
         cursor: pointer;
       }
-      #comCodeGrid .tui-grid-layer-focus-border {
+      #itemCodeGrid .tui-grid-layer-focus-border {
         background-color: transparent;
       }
       tr .modified {
@@ -32,21 +32,21 @@
     </style>
   </head>
   <body>
-    <div layout:fragment="title">공통 코드 관리</div>
+    <div layout:fragment="title">공정 흐름 관리</div>
     <!-- 메인컨텐츠 -->
     <div layout:fragment="content">
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-4">
           <div class="col-3">
-            <label class="col-form-label" for="codeName">코드명</label>
+            <label class="col-form-label" for="itemName">제품명</label>
           </div>
           <div class="col-7">
-            <input type="text" class="form-control" id="codeName" name="codeName" placeholder="빈 칸이면 전체 조회" />
+            <input type="text" class="form-control" id="itemName" name="itemName" placeholder="빈 칸이면 전체 조회" />
           </div>
           <div class="col-2">
             <button
               class="fa-solid fa-magnifying-glass btn btn-primary"
-              id="comCodeSearchBtn"
+              id="itemSearchBtn"
               style="height: 38px; float: left"
             ></button>
           </div>
@@ -68,11 +68,11 @@
       </div>
       <div class="row justify-content-center">
         <div class="row col-4">
-          <div class="col" id="comCodeGrid"></div>
+          <div class="col" id="itemCodeGrid"></div>
         </div>
         <div class="row col-8">
           <div class="col-1"></div>
-          <div class="col-11" id="innerCodeGrid"></div>
+          <div class="col-11" id="procFlowGrid"></div>
         </div>
       </div>
       <script src="/plugins/jquery/jquery.min.js"></script>
@@ -83,12 +83,12 @@
           // 메인그리드시작;
 
           //그리드폼 시작
-          const comCodeGrid = new tui.Grid({
-            el: document.getElementById("comCodeGrid"),
+          const itemCodeGrid = new tui.Grid({
+            el: document.getElementById("itemCodeGrid"),
             data: {
               api: {
                 readData: {
-                  url: "/admin/getComCodeList",
+                  url: "/admin/getFlowItemList",
                   method: "GET",
                 },
               },
@@ -97,19 +97,24 @@
             scrollX: false,
             columns: [
               {
-                header: "공통코드",
-                name: "comCode",
+                header: "제품코드",
+                name: "itemCode",
                 align: "center",
               },
               {
-                header: "공통코드명",
-                name: "codeName",
+                header: "제품명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "제품구분",
+                name: "itemType",
                 align: "center",
               },
             ],
           });
-          const innerCodeGrid = new tui.Grid({
-            el: document.getElementById("innerCodeGrid"),
+          const procFlowGrid = new tui.Grid({
+            el: document.getElementById("procFlowGrid"),
             bodyHeight: 680,
             scrollX: false,
             rowHeaders: ["checkbox"],
@@ -128,49 +133,39 @@
               },
               initialRequest: false,
             },
+            rowHeaders: [{ type: "rowNum", header: "공정순서", width: "100" }],
             columns: [
               {
-                header: "공통코드",
-                name: "comCode",
+                header: "공정코드",
+                name: "procCode",
                 align: "center",
               },
               {
-                header: "세부코드",
-                name: "comInnerCode",
+                header: "공정명",
+                name: "procName",
                 align: "center",
-                editor: "text",
-                validation: {
-                  unique: true,
-                },
               },
               {
-                header: "세부코드명",
-                name: "innerCodeName",
+                header: "공정코드설명",
+                name: "procDetail",
                 align: "center",
-                editor: "text",
-              },
-              {
-                header: "세부코드설명",
-                name: "innerCodeDetail",
-                align: "center",
-                editor: "text",
-                width: 450,
+                width: 550,
               },
             ],
           });
           //그리드 폼 끝
           //그리드 세팅 시작
           //서버에 연결전 토큰값 담는 method
-          innerCodeGrid.on("beforeRequest", function (obj) {
+          procFlowGrid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
           });
 
           //데이터 저장 여부 alert
-          innerCodeGrid.on("response", (e) => {
+          procFlowGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
-              innerCodeGrid.resetOriginData();
-              innerCodeGrid.restore();
+              procFlowGrid.resetOriginData();
+              procFlowGrid.restore();
               alert("데이터가 저장되었습니다.");
             } else if (result == "Fail") {
               alert("데이터 저장중 에러가 발생했습니다.");
@@ -188,46 +183,44 @@
             },
           });
           //수정된 행 색칠 시작
-          innerCodeGrid.on("afterChange", (e) => {
+          procFlowGrid.on("afterChange", (e) => {
             let c = e.changes[0];
-            innerCodeGrid.addCellClassName(c.rowKey, c.columnName, "modified");
+            procFlowGrid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
           //수정된 행 색칠 끝
-          innerCodeGrid.disableColumn("comInnerCode"); // 컬럼 비활성
           //그리드 세팅 끝
 
           //이름으로 조회 기능 시작
-          $("#comCodeSearchBtn").click(() => {
-            let codeName = $("#codeName");
-            if (codeName.val() != "") {
+          $("#itemSearchBtn").click(() => {
+            let itemName = $("#itemName");
+            if (itemName.val() != "") {
               $.ajax({
-                url: "/admin/getComCodeWithName",
-                dataType: "JSON",
-                data: { codeName: codeName.val() },
+                url: "/admin/getFlowItemListWithName",
+                data: { itemName: itemName.val() },
               }).done((r) => {
-                comCodeGrid.resetData(r);
+                itemCodeGrid.resetData(r);
               });
               // 코드명 input이 비어있으면 모두 조회
             } else {
-              comCodeGrid.readData();
+              itemCodeGrid.readData();
             }
-            codeName.val("");
+            itemName.val("");
           });
           // 이름으로 조회기능 끝
 
           //공통코드 그리드 클릭시 세부코드 조회
           let comCode;
-          comCodeGrid.on("click", (e) => {
-            let tmp = innerCodeGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+          itemCodeGrid.on("click", (e) => {
+            let tmp = procFlowGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
-            comCode = comCodeGrid.getRow(e.rowKey).comCode;
+            comCode = itemCodeGrid.getRow(e.rowKey).comCode;
             if (noChange) {
               $.ajax({
                 url: "/admin/getInnerCodeList",
                 data: { comCode: comCode },
               })
                 .done((r) => {
-                  innerCodeGrid.resetData(r);
+                  procFlowGrid.resetData(r);
                 })
                 .fail((e) => {
                   alert("데이터를 불러오는 중 에러가 발생했습니다.");
@@ -239,7 +232,7 @@
                   data: { comCode: comCode },
                 })
                   .done((r) => {
-                    innerCodeGrid.resetData(r);
+                    procFlowGrid.resetData(r);
                   })
                   .fail((e) => {
                     alert("데이터를 불러오는 중 에러가 발생했습니다.");
@@ -253,7 +246,7 @@
             if (!comCode) {
               alert("공통코드를 먼저 선택해주십시오.");
             } else {
-              let vd = innerCodeGrid.validate(); // grid 만들때 설정한 validation 옵션에 걸리는 행들
+              let vd = procFlowGrid.validate(); // grid 만들때 설정한 validation 옵션에 걸리는 행들
               let unique = 0; // 행 안의 세부코드가 문제인 경우의 수
               if (vd.length != 0) {
                 vd.forEach((arr) => {
@@ -270,8 +263,8 @@
               }
               //유효성 검사 끝
               //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
-              innerCodeGrid.finishEditing();
-              innerCodeGrid.request("modifyData");
+              procFlowGrid.finishEditing();
+              procFlowGrid.request("modifyData");
             }
           });
 
@@ -282,10 +275,9 @@
             if (!comCode) {
               alert("공통코드를 먼저 선택해주십시오.");
             } else {
-              innerCodeGrid.appendRow({ comCode: comCode }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
-              let rowKey = innerCodeGrid.getFocusedCell().rowKey;
-              innerCodeGrid.addRowClassName(rowKey, "modified");
-              innerCodeGrid.enableCell(rowKey, "comInnerCode"); // 비활성 컬럼이지만 새로 추가된 셀은 활성화
+              procFlowGrid.appendRow({ comCode: comCode }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+              let rowKey = procFlowGrid.getFocusedCell().rowKey;
+              procFlowGrid.addRowClassName(rowKey, "modified");
             }
           });
           //추가 버튼 끝
@@ -295,10 +287,10 @@
             if (!comCode) {
               alert("공통코드를 먼저 선택해주십시오.");
             } else {
-              if (innerCodeGrid.getCheckedRowKeys().length == 0) {
+              if (procFlowGrid.getCheckedRowKeys().length == 0) {
                 alert("삭제할 행을 체크해주십시오.");
               } else {
-                innerCodeGrid.removeCheckedRows(true);
+                procFlowGrid.removeCheckedRows(true);
               }
             }
           });
@@ -310,7 +302,7 @@
               alert("공통코드를 먼저 선택해주십시오.");
             } else {
               if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
-                innerCodeGrid.restore();
+                procFlowGrid.restore();
               }
             }
           });
