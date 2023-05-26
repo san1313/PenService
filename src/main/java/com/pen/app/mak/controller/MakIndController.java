@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mak.service.MakIndService;
-import com.pen.app.mak.vo.MakVO;
+import com.pen.app.mak.vo.PlanVO;
 
 @Controller
 @RequestMapping("/ind")
@@ -24,8 +24,8 @@ public class MakIndController {
 	
 	@GetMapping("/planning")
 	@ResponseBody
-	List<MakVO> planning(){
-		List<MakVO> list = service.planning();
+	List<PlanVO> planning(){
+		List<PlanVO> list = service.planning();
 		return list;
 	}
 	

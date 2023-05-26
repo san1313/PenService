@@ -7,15 +7,16 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.mak.mapper.MakIndMapper;
 import com.pen.app.mak.service.MakIndService;
-import com.pen.app.mak.vo.MakVO;
+import com.pen.app.mak.vo.PlanVO;
 
 @Service
 public class MakIndServiceImpl implements MakIndService{
 	@Autowired MakIndMapper mapper;
 	
 	@Override
-	public List<MakVO> planning() {
-		List<MakVO> list = mapper.planning();
+	public List<PlanVO> planning() {
+		List<PlanVO> list = mapper.ordPlanning();
+		list.addAll(mapper.contPlanning());
 		return list;
 	}
 
