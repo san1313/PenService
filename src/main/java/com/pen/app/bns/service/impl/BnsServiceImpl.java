@@ -77,6 +77,12 @@ public class BnsServiceImpl implements BnsService {
 		public void delOrdDetList(List<BnsOrdVO> list) {
 		
 		}
+	
+	//주문서 취소
+	@Override
+		public void delOrdList(List<BnsOrdVO> list) {
+			
+		}
 		
 	
 	// ---------------------계약서
@@ -102,7 +108,6 @@ public class BnsServiceImpl implements BnsService {
 
 		@Override
 		public void delContDetList(List<BnsContVO> list) {
-			
 		}
 
 		@Override
@@ -110,5 +115,9 @@ public class BnsServiceImpl implements BnsService {
 			return mapper.getContProdModList(keyword);
 		}
 
+		@Override
+			public void delContList(List<BnsContVO> list) {
+				
+			}
    
 }

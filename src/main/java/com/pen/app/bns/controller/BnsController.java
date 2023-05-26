@@ -57,7 +57,6 @@ public class BnsController {
 	@RequestMapping("/insertOrdList")
 	@ResponseBody
 	public BnsOrdDetListVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
-		System.err.println(list.getList());
 		dao.insertOrdList(list.getList());
 		return list;
 	}
@@ -106,18 +105,25 @@ public class BnsController {
 	//주문서 수정 모달창 안의 제품 수정
 	@RequestMapping("/modOrdList")
 	@ResponseBody
-	public BnsOrdVO modOrdList(@RequestBody BnsOrdDetListVO list) {
-		System.err.println(list.getList());
-		System.err.println(list.getList().get(1));
+	public BnsOrdDetListVO modOrdList(@RequestBody BnsOrdDetListVO list) {
+		
 		dao.modOrdList(list.getList());
 		return null;
 	}
 	
-	//주문상세 삭제
+	//주문수정 제품삭제
 	@RequestMapping("/delOrdDetList")
 	@ResponseBody
-	public BnsOrdVO delOrdDetList(@RequestBody BnsOrdDetListVO list) {
+	public BnsOrdDetListVO delOrdDetList(@RequestBody BnsOrdDetListVO list) {
 		dao.delOrdDetList(list.getList());
+		return null;
+	}
+	
+	//주문서 취소
+	@RequestMapping("/delOrdList")
+	@ResponseBody
+	public BnsOrdDetListVO delOrdList(@RequestBody BnsOrdDetListVO list) {
+		dao.delOrdList(list.getList());
 		return null;
 	}
 	
@@ -157,10 +163,10 @@ public class BnsController {
 			return list;
 		}
 		//계약서 등록
-		@RequestMapping("/insertContList")
+		@RequestMapping("/insertcontList")
 		@ResponseBody
 		public BnsContDetListVO insertContList(@RequestBody BnsContDetListVO list) {
-			System.err.println(list.getList());
+			
 			dao.insertContList(list.getList());
 			return list;
 		}   
@@ -177,18 +183,24 @@ public class BnsController {
 		//계약서 수정 모달창 안의 제품 수정
 		@RequestMapping("/modContList")
 		@ResponseBody
-		public BnsOrdVO modContList(@RequestBody BnsContDetListVO list) {
-			System.err.println(list.getList());
-			System.err.println(list.getList().get(1));
+		public BnsContDetListVO modContList(@RequestBody BnsContDetListVO list) {
 			dao.modContList(list.getList());
-			return null;
+			return list;
 		}
 		
 		//계약상세 삭제
 		@RequestMapping("/delContDetList")
 		@ResponseBody
-		public BnsContVO delContDetList(@RequestBody BnsContDetListVO list) {
+		public BnsContDetListVO delContDetList(@RequestBody BnsContDetListVO list) {
 			dao.delContDetList(list.getList());
+			return list;
+		}
+		
+		//계약서 취소
+		@RequestMapping("/delContList")
+		@ResponseBody
+		public BnsContDetListVO delContList(@RequestBody BnsContDetListVO list) {
+			dao.delContList(list.getList());
 			return null;
 		}
 		

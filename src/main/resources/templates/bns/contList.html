@@ -94,23 +94,20 @@
 			<button id="productList" class="fa-solid fa-magnifying-glass"
 				data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</p> -->
-		<p>
 			<p>
 			계약작성일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2">
 			</p>
 				계약만료일자 <input type="date" id="contduedate-text1"> - <input type="date" id="contduedate-text2">
 			<button id="searchcont">조회</button>
-
-		</p>
 		<div class="contbtn">
 			<button type="button" class="btn btn-outline-secondary"
 				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
 				등록</button>
-			<button id="BtncontCancle" class="btn btn-outline-secondary">계약서
+			<button id="BtnContCancle" class="btn btn-outline-secondary">계약서
 				취소</button>
 		</div>
 
-		<br>
+		
 
 		<!------------------------------ 본문 모달 ------------------------------------->
 		<!-- 거래처리스트 모달 -->
@@ -217,7 +214,7 @@
 							</div>
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">계약시행일자
-								</label> <input id="modalcontDate" type="date" class="form-control"
+								</label> <input id="modalcontStartDate" type="date" class="form-control"
 									name="contStartDate">
 							</div>
 							<div style="float: left; margin-right: 10px">
@@ -318,13 +315,13 @@
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">담당자명
-									</label> <input type="text" id="contempname" class="form-control"
-										name="empName"
+									</label> <input type="text" id="contModempname" class="form-control"
+										name="ModempName"
 										th:value="${#authentication.principal.username}" readonly>
 								</div>
 
-								<input type="hidden" th:value="${userVO.empNum}" id="contempnum"
-									class="form-control" name="empCode" readonly>
+								<input type="hidden" th:value="${userVO.empNum}" id="contModempnum"
+									class="form-control" name="ModempCode" readonly>
 
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">거래처명
@@ -348,8 +345,8 @@
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">계약시행일자
-									</label> <input id="modalModcontDate" type="date" class="form-control"
-										name="contStartDateMod" readonly placeholder="현재날짜">
+									</label> <input id="modalModcontStartDate" type="date" class="form-control"
+										name="contStartDateMod" >
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">계약만료일자
@@ -358,7 +355,7 @@
 								</div>
 							</div>
 							<label for="recipient-name" class="col-form-label">비고</label> <input
-								id="modalModcontNote" class="form-control" name="contNote"></input>
+								id="modalModcontNote" class="form-control" name="contNoteMod"></input>
 							<br>
 							<hr>
 							<h2>계약상세</h2>
@@ -474,7 +471,8 @@
                },
                {
                 header: '납기일자',
-                name: 'contDetRelease'
+                name: 'contDetRelease',
+                editor:'datePicker'
               }
              ],
                summary: {
@@ -512,6 +510,7 @@
          
          //계약서 등록 모달창의 등록 버튼클릭시
 		$('#contregsubmit').on('click' ,function(){
+			addProdgrid.finishEditing();
 			let checked = addProdgrid.getCheckedRows();
 			checked.forEach(ele=>{
 				ele.contCode = $('#modalcontCode').val();
@@ -520,6 +519,7 @@
 				ele.accName = $('#contaccname').val();
 				ele.accCode = $('#contacccode').val();
 				ele.contDate = $('#modalcontDate').val();
+				ele.contStartDate = $('#modalcontStartDate').val();
 				ele.contDueDate = $('#modalcontDueDate').val();
 				ele.contNote = $('#modalcontNote').val();
 			})
@@ -536,9 +536,9 @@
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				/* addProdgrid.resetData(result);
-		        addProdgrid.refreshLayout(); */
-		        
+				  addProdgrid.resetData(result);
+		        addProdgrid.refreshLayout();  
+		        alert('주문서 등록완료');
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
 					url : "/bns/contListAjax",
@@ -551,10 +551,7 @@
 		        
 				}
 			});
-			
 		   	$('#modalProdReg').modal('hide');
-			
-		   	
 			})
 		
 			
@@ -852,7 +849,7 @@ $.ajax({
    })
    
    //거래처 리스트 그리드 클릭 시 
-   account_Grid.on('click', ev=> {
+   account_Grid.on('dblclick', ev=> {
     
 
      const focusCell = account_Grid.getFocusedCell()
@@ -911,7 +908,7 @@ $.ajax({
    	})
    })
    
-   <!-- 제품조회검색 아작스 -->
+   // 제품조회검색 아작스 
    $("#searchprod").on('click', function(){
    	const result = $("#searchprod-text").val()
 		$("#searchprod-text").val('');
@@ -967,7 +964,7 @@ $.ajax({
 
 
 
-//계약서 조건검색
+//계약서 리스트뜨게
 $.ajax({
 		url : "/bns/contListAjax",
 		method : "GET",
@@ -985,7 +982,7 @@ $.ajax({
 	    let contDueDate = $('#contduedate-text').val(); 	
 		let data1 = {'accName':accName,'prodName':prodName,'contDate':contDate,'contDueDate':contDueDate};
 		
-		
+	//조건검색 아작스	
 	$.ajax({
 		url : "/bns/contListconAjax",
 		method : "GET",
@@ -1027,10 +1024,15 @@ $.ajax({
          filter: 'select'
        },
        {
-         header: '계약일자',
+         header: '작성일자',
          name: 'contDate',
          sortable: true
        },
+       {
+           header: '시행일자',
+           name: 'contStartDate',
+           sortable: true
+         },
        {
          header: '만료일자',
          name: 'contDueDate',
@@ -1056,7 +1058,7 @@ $.ajax({
 	
 	
 	
-	
+	//계약상세화면 모달창 뜨게
  	grid.on('dblclick', (ev) => {
 	if(ev.columnName == 'contCode'){
 		$('#modalProdMod').modal('show');
@@ -1066,17 +1068,20 @@ $.ajax({
 		$('input[name=contCodeMod]').attr('value',row.contCode);
 		$('input[name=accNameMod]').attr('value',row.accName);
 		$('input[name=contDateMod]').attr('value',row.contDate);
+		$('input[name=contStartDateMod]').attr('value',row.contStartDate);
 		$('input[name=contDueDateMod]').attr('value',row.contDueDate);
-		$('input[name=contNote]').attr('value',row.contNote);
+		$('input[name=contNoteMod]').attr('value',row.contNote);
 	/* 	console.log(row.contCode);
 		console.log(row.accCode);
 		console.log(row.accName);
 		console.log(row.prodName);
 		console.log(row.contDate);
 		console.log(row.contDueDate);
-		console.log(row.contProgress);
-		console.log(row.empName);
+		console.log(row.contDueDate);
 		console.log(row.contNote); */
+		
+		console.log(row.empName);
+		console.log(row.contStartDate);
 		
 		$.ajax({
 			url : "/bns/contprodListModAjax",
@@ -1102,7 +1107,7 @@ $.ajax({
                  { type: 'checkbox'}	
                			],
              columns: [
-            	
+            	 
                {
                  header: '제품명',
                  name: 'prodName'
@@ -1126,6 +1131,12 @@ $.ajax({
                  header: '계약금액',
                  name: 'contDetTotPrice'
                }
+                 ,
+                 {
+                	 header: '납기일자',
+                     name: 'contDetRelease',
+                     editor:'datePicker'
+                 }
              ],
                summary: {
             	   height: 40,
@@ -1152,6 +1163,7 @@ $.ajax({
  	
  	
  	
+ 	
 		 //총 계약금액 계산
           modProdgrid.on('editingFinish', function(ev){
        	  let row = modProdgrid.getRow(ev.rowKey);
@@ -1172,7 +1184,7 @@ $.ajax({
 			if(deleted.length>0){
 				
 				$.ajax({
-					url : "/bns/delcontDetList",
+					url : "/bns/delContDetList",
 					method : "POST",
 					contentType : "application/json",
 					data : JSON.stringify({ list : deleted}),
@@ -1183,6 +1195,7 @@ $.ajax({
 					success : function(result){
 						modProdgrid.resetData(result);
 				        modProdgrid.refreshLayout();
+						alert('제품삭제 완료');
 					}
 					});
 			}
@@ -1190,6 +1203,34 @@ $.ajax({
         	 
          })
          
+   		//계약서 삭제
+         $('#BtnContCancle').on('click',function(){
+			grid.removeCheckedRows(true)
+			let deleted = grid.getModifiedRows().deletedRows;
+			
+			console.log(deleted)
+        	 
+			if(deleted.length>0){
+				
+				$.ajax({
+					url : "/bns/delContList",
+					method : "POST",
+					contentType : "application/json",
+					data : JSON.stringify({ list : deleted}),
+					dataType : "JSON",
+					beforeSend: function (xhr) {
+			            xhr.setRequestHeader(header, token);
+			          },
+					success : function(result){
+						alert('계약서 삭제 완료')
+						grid.resetData(result);
+				        grid.refreshLayout();
+					}
+					});
+			}
+        	 
+        	 
+         })
         
          //수정버튼 눌렀을 때
 		$('#contmodsubmit').on('click' ,function(){
@@ -1204,21 +1245,22 @@ $.ajax({
 			}else{
 			checked.forEach(ele=>{
 				ele.contCode = $('#modalcontModCode').val();
-				ele.empName = $('#contempname').val();
-				ele.empNum = $('#contempnum').val();
-				ele.accName = $('#contaccname').val();
-				ele.accCode = $('#contacccode').val();
+				ele.empName = $('#contModempname').val();
+				ele.empNum = $('#contModempnum').val();
+				ele.accName = $('#contaccModname').val();
+				ele.accCode = $('#contaccModcode').val();
 				ele.contDate = $('#modalModcontDate').val();
+				ele.contStartDate = $('#modalModcontStartDate').val();
 				ele.contDueDate = $('#modalModcontDueDate').val();
 				ele.contNote = $('#modalModcontNote').val();
 			})
 			console.log(checked)
 			
 			$.ajax({
-			url : "/bns/modcontList",
+			url : "/bns/modContList",
 			method : "POST",
 			contentType : "application/json",
-			data : JSON.stringify({ list : checked}),
+			data : JSON.stringify({list : checked}),
 			dataType : "JSON",
 			beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);
@@ -1226,6 +1268,7 @@ $.ajax({
 			success : function(result){
 				modProdgrid.resetData(result);
 		        modProdgrid.refreshLayout();
+		        alert('계약서 수정 완료');
 			}
 			});
 			

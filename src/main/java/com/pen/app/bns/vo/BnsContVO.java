@@ -13,6 +13,7 @@ public class BnsContVO {
 	String contNote;
 	String empNum;
 	String contStartDate;
+	String empName;
 	
 	String contDetCode;
 	String prodCode;
