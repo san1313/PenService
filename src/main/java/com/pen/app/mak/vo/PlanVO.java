@@ -59,5 +59,15 @@ public class PlanVO {
 
 	int count;
 	
+	String indicaCode; 
+	String indicaNm; 
+	String indicaDate;         
+	String prodDev;
+	int ordrQnt;    
+	String sDate;         
+	String clsDate;         
+	String indicaState; 
+	
+	int reQnt;
 	
 }

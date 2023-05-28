@@ -25,7 +25,7 @@ height:28px;
 font-size:10pt;
 }
 .container-fluid .form-group{
-margin-bottom:5px;
+margin-bottom:10px;
 height:28px;
 }
 </style>
@@ -34,9 +34,9 @@ height:28px;
 <h2 layout:fragment="title">생산 지시 관리</h2>
 <div layout:fragment="content">
 <!-- 생산지시 페이지 -->
-
-<div class="card card-outline" style="float:left">
-<div class="card-body" id="frm">
+<div  style="text-align:left;">
+<div class="card card-outline" style="display:inline-block;">
+<div class="card-body" id="frm0" style="float:left; width:800px;">
 <div class="form-group row">
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">지시명</label>
@@ -64,28 +64,57 @@ height:28px;
 <label class="col-5 col-form-label">제품명</label>
 <input class="form-control col-7" id="prodNmi" readonly>
 </div>
+
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-primary" disabled id="modBtn">수정</button>
+</div>
 </div>
 
 <div class="form-group row">
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">지시량</label>
-<input class="form-control col-7" type="number" id="orderCnti">
+<input class="form-control col-7" type="number" id="ordrQnti">
+</div>
+<label class="col-5 col-form-label">미지시량</label>
+<input class="form-control col-7" type="number" id="reQnti" readonly>
 </div>
 </div>
 
 <div class="form-group row">
 <div class="form-group row col-5">
-<label class="col-5 col-form-label">생산시작일자</label>
-<input type="date" class="form-control col-7" id="indSdatei">
+<label class="col-5 col-form-label">지시시작일자</label>
+<input type="date" class="form-control col-7" id="sDatei">
 </div>
 <div class="form-group row col-5">
-<label class="col-5 col-form-label">생산종료일자</label>
-<input type="date" class="form-control col-7" id="indClsdatei">
+<label class="col-5 col-form-label">지시종료일자</label>
+<input type="date" class="form-control col-7" id="clsDatei">
+</div>
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-danger" disabled id="delBtn">삭제</button>
 </div>
 </div>
 </div>
+<div class="card-body" style="float:left; width:700px;">
+<div id="grid"></div>
 </div>
-
+</div>
+</div>
+<div style="text-align:left;">
+<div class="card card-outline" style="display:inline-block;">
+<div class="card-body" style="float:left; width:500px;">
+<h5>제조공정</h5>
+<div id="proc_grid"></div>
+</div>
+<div class="card-body" style="float:left; width:700px;">
+<h5>투입자재</h5>
+<div id="bom_grid"></div>
+</div>
+<div class="card-body" style="float:left; width:300px;">
+<h5>자재재고현황</h5>
+<div id="mat_grid"></div>
+</div>
+</div>
+</div>
 <form id="hiddenFrm">
 
 </form>
@@ -109,23 +138,33 @@ height:28px;
 		</div>
         </div>
       	<div id="modal-grid"></div>
-        <button class="fa-solid fa-magnifying-glass" data-dismiss="modal" type="button" onclick='planChoice()' id="conChoice">선택</button>
       </div>
     </div>
   </div>
 </div>
 <!-- 모달 끝 -->
 <!-- 화면 그리드 -->
-<div id="grid"></div>
-<div id="gird2"></div>
-<div id="gird3"></div>
+
+
 
 <script>
 //전역변수 선언부
 const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
+var grid = null;
 var modal_grid = null;
-$(function(){
+var grid2 = null;
+var grid3 = null;
+var grid4 = null;
+var planData=[];
+var procData=[];
+$(function () {
+	//기본값 설정
+    $('#indDatei').val(new Date().toISOString().slice(0, 10));
+    $('#sDatei').val(new Date().toISOString().slice(0, 10));
+    $('#clsDatei').val(new Date().toISOString().slice(0, 10));
+    document.getElementById('sDatei').min=new Date().toISOString().slice(0, 10);
+    document.getElementById('clsDatei').min=new Date().toISOString().slice(0, 10);
     //그리드 데이터소스
     const dataSource = {
             contentType: "application/json",
@@ -136,6 +175,97 @@ $(function(){
               },
             },
           };
+	//그리드 구성
+	//기본 그리드(지시서 등록 내용)
+	grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        scrollX: false,
+        bodyHeight: 100,
+        rowHeaders: ['rowNum'],
+        columns: [{
+          header: '지시명',
+          name: 'indicaNm'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        },
+        {
+          header: '지시수량',
+          name: 'indicaQnt'
+        },
+        {
+      	  header: '지시시작일자',
+      	  name : 'sDate'
+        },
+        {
+      	  header:'지시종료일자',
+      	  name: 'clsDate'
+        },
+        {
+        	  header:'지시상태',
+        	  name: 'indicaState'
+          }
+      ]
+      });
+	//
+	grid2 = new tui.Grid({
+        el: document.getElementById('proc_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '공정순서',
+          name: 'lev'
+        },
+        {
+       	  header: '공정분류',
+       	  name : 'procType'
+          },
+        {
+          header: '공정명',
+          name: 'procName'
+        }
+      ]
+      });
+	//
+	grid3 = new tui.Grid({
+        el: document.getElementById('bom_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [
+        {
+          header: '자재명',
+          name: 'bomProdName'
+        },
+        {
+          header: '필요자재량(1ea)',
+          name: 'bomMatUsage'
+        },
+        {
+            header: '투입예정량',
+            name: 'makUsage'
+          },
+        {
+      	  header: '투입공정',
+      	  name : 'procName'
+        }
+      ]
+      });
+	
+	grid4 = new tui.Grid({
+        el: document.getElementById('mat_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '자재명',
+          name: 'matName'
+        },
+        {
+          header: '재고량',
+          name: 'matQnt'
+        }
+      ]
+      });
 	 //모달 내부 상세계획 구성 
     modal_grid = new tui.Grid({
         el: document.getElementById('modal-grid'),
@@ -162,8 +292,62 @@ $(function(){
       	  name: 'planClsdate'
         }
       ]
+      });
+	 
+	 
+    //모달 그리드 설정
+    modal_grid.on("dblclick",function(e){
+    	let planModalData = modal_grid.getRow(e.rowKey);
+    	let planProdCode = modal_grid.getRow(e.rowKey).prodCode;
+    	console.log(planModalData);
+  	  $('#matmodalbtn').modal('hide'); 
+      $('#matmodalbtn').hide();
+      $('.bd-example-modal-lg').hide();
+      //인풋에 데이터 넣기
+      
+      $('#planNmi').val(planModalData.planNm);
+      $('#prodNmi').val(planModalData.prodName);
+      $('#sDatei').val(new Date().toISOString().slice(0, 10));
+      $('#ordrQnti').val(planModalData.ordDetQuan);
+      document.getElementById('clsDatei').max=planModalData.planClsdate;
+      //공정 bom 데이터 넣기
+      $.ajax({
+          url : "/ind/planFlow",
+          method : "POST",
+          data : {"prodCode":planProdCode},
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+            },
+          success : function(result){
+        	grid2.textContent="";
+        	grid3.textContent="";
+            grid2.resetData(result);
+            grid3.resetData(result);
+            
+            let limit = grid3.getData();
+            limit.forEach(function(ele,idx){
+          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#ordrQnti').val()*ele.bomMatUsage),false);
+            })
+          }
+        });
+
+		//재고명별 자재재고량 데이터 넣어두기
+      $.ajax({
+    	  url : "/ind/matList",
+    	  method:"get",
+    	  success: function(result){
+    		  grid4.resetData(result);
+    	  }
       })
-	
+    });
+    //keyup이벤트
+    $('#ordrQnti').keyup(function(e){
+    	  let limit = grid3.getData();
+            limit.forEach(function(ele,idx){
+          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#ordrQnti').val()*ele.bomMatUsage),false);
+            });
+    })
+    grid.setWidth(660);
 	$('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
         $.ajax({
@@ -175,6 +359,8 @@ $(function(){
               modal_grid.resetData(result);
           	
             }
+        
+        
           });     
        });			
      }); 

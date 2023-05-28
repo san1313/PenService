@@ -70,7 +70,6 @@ public int insertPlan(PlanListVO vo) {
 	for(int i=0; i<vo.getPlanList().size();i++) {
 	result += mapper.insertDetailPlan(vo.getPlanList().get(i));
 	result += mapper.setPlanCont(vo.getPlanList().get(i));
-	result += mapper.updateCont(vo.getPlanList().get(i).getContDetCode());
 	};
 	return result;
 }
@@ -89,9 +88,6 @@ public String delPlan(PlanVO vo) {
 		if(mapper.delPlan(vo.getPlanCode())>0) {
 			result = "생산계획상세서 "+j+"건,\n생산계획서 1건 삭제 되었습니다.";
 		};
-	};
-	if(mapper.getContCount(vo.getContDetCode())==0) {
-		mapper.updateContr(vo.getContDetCode());
 	};
 	return result;
 }
