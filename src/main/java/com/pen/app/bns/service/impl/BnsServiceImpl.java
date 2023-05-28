@@ -9,10 +9,10 @@ import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContVO;
-import com.pen.app.bns.vo.BnsEmpVO;
-import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsStoreListVO;
+import com.pen.app.bns.vo.BnsStoreVO;
 
 @Service
 public class BnsServiceImpl implements BnsService {
@@ -119,5 +119,36 @@ public class BnsServiceImpl implements BnsService {
 			public void delContList(List<BnsContVO> list) {
 				
 			}
-   
+
+		//입고
+		
+		//입고 전 그리드
+		@Override
+		public List<BnsStoreVO> getbeforeStoreList() {
+			return mapper.getbeforeStoreList();
+		}
+		
+		//입고 후 그리드
+		@Override
+			public List<BnsStoreVO> getafterStoreList() {
+				return mapper.getafterStoreList();
+			}
+		
+		@Override
+			public void insertStoreList(BnsStoreListVO list) {
+				for(int i=0; i<list.getList().size(); i++) {
+					
+					mapper.insertStore(list.getList().get(i));
+				}
+			}
+
+		@Override
+		public void delStoreList(BnsStoreListVO list) {
+			for(int i=0; i<list.getList().size(); i++) {
+				
+				mapper.delStoreList(list.getList().get(i));
+			}
+		}
+
+		
 }

@@ -395,6 +395,8 @@
 
 		<!--------------------------------------------------------- 스크립트 ------------------------------------------->
 		<script>
+		const token = $('meta[name="_csrf"]').attr("content");
+		const header = $('meta[name="_csrf_header"]').attr("content");
 		
 		//초기화 버튼 클릭 시
 		$('#pageReset').on('click',function(){
@@ -412,8 +414,6 @@
 		
 		
 		
-		const token = $('meta[name="_csrf"]').attr("content");
-		const header = $('meta[name="_csrf_header"]').attr("content");
 		
 		
 		$('#ordProdDelete').on('click' ,function(){
@@ -499,7 +499,9 @@
          
          //주문서 등록 모달창의 등록 버튼클릭시
 		$('#ordregsubmit').on('click' ,function(){
-			let checked = addProdgrid.getCheckedRows();
+			addProdgrid.finishEditing();
+			let checked = addProdgrid.getData();
+			console.log(checked);
 			checked.forEach(ele=>{
 				ele.ordCode = $('#modalOrdCode').val();
 				ele.empName = $('#ordempname').val();
@@ -1211,7 +1213,7 @@ $.ajax({
         
          //수정버튼 눌렀을 때
 		$('#ordmodsubmit').on('click' ,function(){
-			let checked = modProdgrid.getCheckedRows();
+			let checked = modProdgrid.getData();
 			let modified = modProdgrid.getModifiedRows();
 			console.log(modified)
 			let none = modified.updatedRows.length+modified.createdRows.length+modified.deletedRows.length == 0;

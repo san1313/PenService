@@ -6,6 +6,8 @@ import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsStoreListVO;
+import com.pen.app.bns.vo.BnsStoreVO;
 
 public interface BnsService {
 	//주문서
@@ -30,5 +32,11 @@ public interface BnsService {
 	public void delContDetList(List<BnsContVO> list);//주문서 삭제
 	public void delContList(List<BnsContVO> list);//계약서 삭제
 	public List<BnsContVO> getContProdModList(String keyword);
+	
+	//입고
+	public List<BnsStoreVO> getbeforeStoreList(); //입고전 그리드 조회
+	public List<BnsStoreVO> getafterStoreList(); //입고후 그리드 조회
+	public void insertStoreList(BnsStoreListVO list); //입고 등록
+	public void delStoreList(BnsStoreListVO list);//입고 취소
 	
 }

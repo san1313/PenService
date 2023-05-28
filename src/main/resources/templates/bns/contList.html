@@ -511,7 +511,7 @@
          //계약서 등록 모달창의 등록 버튼클릭시
 		$('#contregsubmit').on('click' ,function(){
 			addProdgrid.finishEditing();
-			let checked = addProdgrid.getCheckedRows();
+			let checked = addProdgrid.getData();
 			checked.forEach(ele=>{
 				ele.contCode = $('#modalcontCode').val();
 				ele.empName = $('#contempname').val();
@@ -1234,7 +1234,7 @@ $.ajax({
         
          //수정버튼 눌렀을 때
 		$('#contmodsubmit').on('click' ,function(){
-			let checked = modProdgrid.getCheckedRows();
+			let checked = modProdgrid.getData();
 			let modified = modProdgrid.getModifiedRows();
 			console.log(modified)
 			let none = modified.updatedRows.length+modified.createdRows.length+modified.deletedRows.length == 0;

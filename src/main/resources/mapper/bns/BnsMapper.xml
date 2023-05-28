@@ -173,9 +173,6 @@
 		where ord_code = #{keyword}
 	</select>
 
-
-
-
 	<!-- 계약서 전체 조회 -->
 	<select id="getContList" resultType="BnsContVO">
 		select distinct c.cont_code
@@ -212,8 +209,7 @@
 	<!-- 계약서 등록 -->
 	<insert id="insertContList">
 		insert all into bns_contract
-		values('bns_cont_'||LPAD(cont_seq.nextval, 3,
-		'0'),#{list[0].accCode},#{list[0].accName},#{list[0].contDate},#{list[0].contDueDate},'접수완료','비고',#{list[0].empNum},
+		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},#{list[0].contDate},#{list[0].contDueDate},'접수완료','비고',#{list[0].empNum},
 		#{list[0].contStartDate})
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
@@ -289,5 +285,34 @@
 		from bns_contract_detail
 		where cont_code = #{keyword}
 	</select>
+
+<!-- 입고전 그리드 조회 -->
+	<select id="getbeforeStoreList" resultType="BnsStoreVO">
+	select prdt_lot, prcs_code, prod_code, prdt_nm, cnt, to_char(prdt_date,'yyyy-mm-dd') prdt_date, prdt_unit, qip_code_list_prod, prdt_state from MAK_PRDT where prdt_state = '입고대기' order by prdt_lot desc
+	<!-- 수정해야 될 쿼리 select * from mak_prdt join mak_proc_prod using(prcs_code) where proc_code='PROC8' -->
+	</select>
+
+<!-- 입고후 그리드 조회 -->
+	<select id="getafterStoreList" resultType="BnsStoreVO">
+	select prdt_lot, prdt_nm, bns_store_quan, to_char(bns_store_date,'yyyy-mm-dd') bns_store_date, e.emp_name emp_name, bns_store_note from bns_store b join com_info_emp e on(b.emp_num = e.emp_num)order by prdt_lot desc
+	</select>
+	
+	<!-- 입고 등록 -->
+	<insert id="insertStore" statementType="CALLABLE">
+		
+		{call prdt_store_register (
+			#{prdtLot, mode=IN, jdbcType=VARCHAR},
+			#{prdtNm, mode=IN, jdbcType=VARCHAR},
+			#{cnt, mode=IN, jdbcType=VARCHAR}
+		)}
+	</insert>
+	
+	<!-- 입고 취소 -->
+	<delete id="delStoreList" statementType="CALLABLE">
+	{call prdt_store_cancle (
+			#{prdtLot, mode=IN, jdbcType=VARCHAR}
+		)}
+	</delete>
+
 
 </mapper>

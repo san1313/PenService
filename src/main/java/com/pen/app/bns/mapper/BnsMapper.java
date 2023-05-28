@@ -6,6 +6,8 @@ import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsStoreListVO;
+import com.pen.app.bns.vo.BnsStoreVO;
 
 public interface BnsMapper {
 	
@@ -32,4 +34,11 @@ public interface BnsMapper {
 	void delContDetList(List<BnsContVO> list);// 계약서 삭제
 	void delContList(List<BnsContVO> list);// 주문서 삭제
 	List<BnsContVO> getContCode();//계약코드 조회
+	
+	//입고
+	List<BnsStoreVO> getbeforeStoreList(); //입고 전 그리드
+	List<BnsStoreVO> getafterStoreList(); //입고 후 그리드
+	void insertStore(BnsStoreVO list);// 입고 등록
+	void delStoreList(BnsStoreVO list);// 주문서 삭제
+	
 }
