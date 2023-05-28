@@ -1,0 +1,90 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.com.mapper.BomMapper">
+	<select id="getBomList" resultType="BomVO">
+		SELECT * FROM COM_BOM WHERE
+		BOM_PROD_CODE = #{itemCode}
+	</select>
+
+	<select id="getBomProcList" resultType="map">
+		SELECT DISTINCT PROC_CODE
+		AS "procCode", PROC_NAME AS "procName" FROM
+		COM_PROC_FLOW JOIN
+		COM_CODE_PROC USING(PROC_CODE) WHERE FLOW_PROD_CODE
+		= #{itemCode} AND
+		PROC_NAME NOT LIKE '%검사' ORDER BY 2
+	</select>
+
+	<select id="getBomMatList" resultType="ItemVO">
+		SELECT MAT_CODE AS
+		ITEM_CODE, MAT_NAME AS ITEM_NAME, MAT_UNIT AS ITEM_UNIT,
+		'자재' AS
+		ITEM_TYPE FROM COM_CODE_MAT WHERE MAT_USE = 'Y'
+		UNION
+		SELECT SEMI_CODE
+		AS ITEM_CODE, SEMI_NAME AS ITEM_NAME, SEMI_UNIT AS
+		ITEM_UNIT, '반제품' AS
+		ITEM_TYPE FROM COM_CODE_SEMI WHERE SEMI_USE = 'Y'
+		ORDER BY 4 DESC, 1
+	</select>
+
+	<select id="getBomMatWithName" resultType="ItemVO">
+		SELECT *
+		FROM(SELECT
+		MAT_CODE AS ITEM_CODE, MAT_NAME AS ITEM_NAME, MAT_UNIT AS ITEM_UNIT,
+		'자재' AS ITEM_TYPE FROM COM_CODE_MAT WHERE MAT_USE = 'Y'
+		UNION
+		SELECT
+		SEMI_CODE AS ITEM_CODE, SEMI_NAME AS ITEM_NAME, SEMI_UNIT AS
+		ITEM_UNIT, '반제품' AS ITEM_TYPE FROM COM_CODE_SEMI WHERE SEMI_USE = 'Y')
+		WHERE ITEM_NAME LIKE '%'||#{itemName}||'%'
+		ORDER BY 4 DESC, 1
+	</select>
+
+	<!-- BOM 정보수정 -->
+	<update id="modifyBomList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_BOM
+			SET
+			BOM_PROD_CODE = #{vo.bomProdCode},
+			BOM_PROD_NAME = #{vo.bomProdName},
+			BOM_MAT_TYPE = #{vo.bomMatType},
+			BOM_MAT_CODE = #{vo.bomMatCode},
+			BOM_MAT_NAME = #{vo.bomMatName},
+			BOM_MAT_UNIT = #{vo.bomMatUnit},
+			BOM_MAT_USAGE = #{vo.bomMatUsage},
+			PROC_CODE = #{vo.procCode}
+			WHERE BOM_CODE = #{vo.bomCode}
+		</foreach>
+	</update>
+
+	<!-- BOM 추가 -->
+	<insert id="insertBomList">
+		<foreach collection="list" item="vo" open="INSERT ALL"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO COM_BOM VALUES (
+			GET_BOM_SEQ,
+			#{vo.bomProdCode},
+			#{vo.bomProdName},
+			#{vo.bomMatType},
+			#{vo.bomMatCode},
+			#{vo.bomMatName},
+			#{vo.bomMatUnit},
+			#{vo.bomMatUsage},
+			#{vo.procCode}
+			)
+		</foreach>
+	</insert>
+
+	<!-- BOM 삭제 -->
+	<delete id="deleteBomList">
+		DELETE FROM COM_BOM WHERE
+		<foreach collection="list" item="vo" separator="OR">
+			BOM_CODE = #{vo.bomCode}
+		</foreach>
+	</delete>
+</mapper>

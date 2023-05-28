@@ -8,4 +8,7 @@ public class ProcFlowVO {
 	int procOrder;
 	String procCode;
 	String flowProdCode;
+	String procType;
+	String procName;
+	String procDetail;
 }

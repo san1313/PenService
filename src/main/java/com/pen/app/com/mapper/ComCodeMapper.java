@@ -5,7 +5,7 @@ import java.util.List;
 import com.pen.app.com.vo.ComCodeVO;
 import com.pen.app.com.vo.iCodeVO;
 
-public interface comCodeMapper {
+public interface ComCodeMapper {
 	// 공통코드 리스트 조회
 	List<ComCodeVO> getComCodeList();
 

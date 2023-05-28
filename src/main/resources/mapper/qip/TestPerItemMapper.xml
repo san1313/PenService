@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.qip.mapper.TestPerItemMapper">
+
+	<!-- 검사항목 리스트 조회 -->
+	<select id="getTestItemList" resultType="TestItemVO">
+		SELECT MAT_CODE AS
+		ITEM_CODE, MAT_NAME AS ITEM_NAME, '자재' AS ITEM_TYPE FROM
+		COM_CODE_MAT
+		WHERE MAT_USE = 'Y'
+		UNION
+		SELECT SEMI_CODE AS ITEM_CODE, SEMI_NAME AS
+		ITEM_NAME, '반제품' AS ITEM_TYPE
+		FROM COM_CODE_SEMI WHERE SEMI_USE = 'Y'
+		UNION
+		SELECT PROD_CODE AS ITEM_CODE, PROD_NAME AS ITEM_NAME, '완제품' AS
+		ITEM_TYPE
+		FROM COM_CODE_PROD WHERE PROD_USE = 'Y'
+		ORDER BY 3 DESC, 1
+	</select>
+
+	<!-- 이름으로 검사항목 조회 -->
+	<select id="getTestItemWithName" resultType="TestItemVO">
+		SELECT *
+		FROM(SELECT MAT_CODE AS ITEM_CODE, MAT_NAME AS ITEM_NAME, '자재' AS ITEM_TYPE FROM
+		COM_CODE_MAT WHERE MAT_USE = 'Y'
+		UNION
+		SELECT SEMI_CODE AS ITEM_CODE, SEMI_NAME AS ITEM_NAME, '반제품' AS ITEM_TYPE
+		FROM COM_CODE_SEMI WHERE SEMI_USE = 'Y'
+		UNION
+		SELECT PROD_CODE AS ITEM_CODE, PROD_NAME AS ITEM_NAME, '완제품' AS ITEM_TYPE
+		FROM COM_CODE_PROD WHERE PROD_USE = 'Y')
+		WHERE ITEM_NAME LIKE '%'||#{itemName}||'%'
+		ORDER BY 3 DESC, 1
+	</select>
+	
+	<!-- 항목별 검사목록 조회 -->
+	<select id="getTPIList" resultType="TestPerItemVO">
+	SELECT * FROM QIP_TEST_PER_ITEM JOIN QIP_CODE_TEST USING(TEST_CODE) WHERE TEST_ITEM_CODE = #{itemCode} ORDER BY TEST_ORDER
+	</select>
+
+	<!-- 검사코드 정보수정 -->
+	<update id="modifyTPI">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE QIP_TEST_PER_ITEM
+			SET
+			TEST_ITEM_CODE = #{vo.testItemCode},
+			TEST_ORDER = #{vo.testOrder},
+			TEST_CODE = #{vo.testCode}
+			WHERE
+			TEST_PER_ITEM_NUM = #{vo.testPerItemNum}
+		</foreach>
+	</update>
+
+	<!-- 검사코드 추가 -->
+	<insert id="insertTPI">
+		<foreach collection="list" item="vo" open="INSERT ALL"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO QIP_TEST_PER_ITEM VALUES (
+			GET_TPI_SEQ,
+			#{vo.testItemCode},
+			#{vo.testOrder},
+			#{vo.testCode}
+			)
+		</foreach>
+	</insert>
+
+	<!-- 검사코드 삭제 -->
+	<delete id="deleteTPI">
+		DELETE FROM QIP_TEST_PER_ITEM WHERE
+		<foreach collection="list" item="vo" separator="OR">
+			TEST_PER_ITEM_NUM =
+			#{vo.testPerItemNum}
+		</foreach>
+	</delete>
+</mapper>

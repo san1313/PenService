@@ -38,19 +38,19 @@
       tr .modified {
         background-color: rgba(255, 255, 0, 0.3);
       }
-      #procFlowGrid td[data-column-name="procCode"] {
+      #tpiGrid td[data-column-name="testCode"] {
         background-color: transparent;
       }
     </style>
   </head>
   <body>
-    <div layout:fragment="title">공정 흐름 관리</div>
+    <div layout:fragment="title">항목별 검사 관리</div>
     <!-- 메인컨텐츠 -->
     <div layout:fragment="content">
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-4">
           <div class="col-3">
-            <label class="col-form-label" for="itemName">제품명</label>
+            <label class="col-form-label" for="itemName">항목명</label>
           </div>
           <div class="col-7">
             <input type="text" class="form-control" id="itemName" name="itemName" placeholder="빈 칸이면 전체 조회" />
@@ -84,32 +84,36 @@
         </div>
         <div class="row col-8">
           <div class="col-1"></div>
-          <div class="col-11" id="procFlowGrid"></div>
+          <div class="col-11" id="tpiGrid"></div>
         </div>
       </div>
-      <div class="modal fade procCodeModal" tabindex="-1" role="dialog">
+      <div class="modal fade testCodeModal" tabindex="-1" role="dialog">
         <div class="modal-dialog modal-lg">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">공정코드</h5>
+              <h5 class="modal-title">검사코드</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
             </div>
             <div class="modal-body">
               <div class="row col-6">
-                <div class="col-4">
-                  <label class="col-form-label" for="procType">공정구분 :</label>
+                <div class="col-3">
+                  <label class="col-form-label" for="testName">검사명 :</label>
                 </div>
-                <div class="col-6">
-                  <select name="procType" id="procType" class="form-control">
-                    <option value="전체">전체</option>
-                  </select>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="testName"
+                    name="testName"
+                    placeholder="빈 칸이면 전체 조회"
+                  />
                 </div>
                 <div class="col-2">
                   <button
                     class="fa-solid fa-magnifying-glass btn btn-primary"
-                    id="procSearchBtn"
+                    id="testSearchBtn"
                     style="height: 38px; float: left"
                   ></button>
                 </div>
@@ -128,22 +132,6 @@
         $(function () {
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
-          //공정단계 select 박스 항목 받아오기 시작
-          var procList = [];
-          $.ajax({
-            url: "/admin/getProcTypeList",
-            method: "GET",
-          })
-            .done((r) => {
-              r.forEach((ele) => {
-                procList.push({ text: ele, value: ele });
-                $("#procType").append(`<option value="${ele}">${ele}</option>`);
-              });
-            })
-            .fail((e) => {
-              alert("공정 구분 데이터를 받아오는중 에러가 발생했습니다.");
-            });
-          //권한 select 박스 항목 받아오기 끝
 
           // 메인그리드시작;
 
@@ -154,7 +142,7 @@
             data: {
               api: {
                 readData: {
-                  url: "/admin/getFlowItemList",
+                  url: "/qip/getTestItemList",
                   method: "GET",
                 },
               },
@@ -163,12 +151,12 @@
             scrollX: false,
             columns: [
               {
-                header: "제품코드",
+                header: "항목코드",
                 name: "itemCode",
                 align: "center",
               },
               {
-                header: "제품명",
+                header: "항목명",
                 name: "itemName",
                 align: "center",
               },
@@ -179,8 +167,8 @@
               },
             ],
           });
-          const procFlowGrid = new tui.Grid({
-            el: document.getElementById("procFlowGrid"),
+          const tpiGrid = new tui.Grid({
+            el: document.getElementById("tpiGrid"),
             contextMenu: null,
             bodyHeight: 680,
             scrollX: false,
@@ -189,11 +177,11 @@
               contentType: "application/json",
               api: {
                 readData: {
-                  url: "#",
+                  url: "/qip/getTPIList",
                   method: "GET",
                 },
                 modifyData: {
-                  url: "/admin/procFlowModifyAjax",
+                  url: "/qip/tpiModifyAjax",
                   method: "POST",
                   withCredentials: true,
                 },
@@ -203,42 +191,34 @@
             rowHeaders: [{ type: "checkbox" }],
             columns: [
               {
-                header: "공정순서",
-                name: "procOrder",
+                header: "검사순서",
+                name: "testOrder",
                 align: "center",
               },
               {
-                header: "공정코드",
-                name: "procCode",
-                align: "center",
-                validation: {
-                  required: true,
-                },
-              },
-              {
-                header: "공정명",
-                name: "procName",
+                header: "검사코드",
+                name: "testCode",
                 align: "center",
               },
               {
-                header: "공정구분",
-                name: "procType",
+                header: "검사명",
+                name: "testName",
                 align: "center",
               },
               {
-                header: "공정코드설명",
-                name: "procDetail",
+                header: "검사설명",
+                name: "testDetail",
                 align: "center",
                 width: 450,
               },
               {
-                header: "제품코드",
-                name: "flowProdCode",
+                header: "항목코드",
+                name: "testItemCode",
                 hidden: true,
               },
               {
-                header: "공정흐름코드",
-                name: "procFlowCode",
+                header: "항목별검사번호",
+                name: "testPerItemNum",
                 hidden: true,
               },
             ],
@@ -251,56 +231,43 @@
             data: {
               api: {
                 readData: {
-                  url: "/admin/getProcList",
+                  url: "/qip/getTCodeList",
                   method: "GET",
                 },
               },
             },
             columns: [
               {
-                header: "공정코드",
-                name: "procCode",
+                header: "검사코드",
+                name: "testCode",
                 align: "center",
               },
               {
-                header: "공정명",
-                name: "procName",
+                header: "검사명",
+                name: "testName",
                 align: "center",
               },
               {
-                header: "공정구분",
-                name: "procType",
+                header: "검사설명",
+                name: "testDetail",
                 align: "center",
-              },
-              {
-                header: "공정코드설명",
-                name: "procDetail",
-                align: "center",
-                width: 350,
+                width: 450,
               },
             ],
           });
           //그리드 폼 끝
           //그리드 세팅 시작
           //서버에 연결전 토큰값 담는 method
-          procFlowGrid.on("beforeRequest", function (obj) {
+          tpiGrid.on("beforeRequest", function (obj) {
             obj.xhr.setRequestHeader(header, token);
           });
 
           //데이터 저장 여부 alert
-          procFlowGrid.on("response", (e) => {
+          tpiGrid.on("response", (e) => {
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
-              $.ajax({
-                url: "/admin/getFlowList",
-                data: { itemCode: itemCode },
-              })
-                .done((r) => {
-                  procFlowGrid.resetData(r);
-                })
-                .fail((e) => {
-                  alert("저장 후 데이터를 불러오는 중 에러가 발생했습니다.");
-                });
+              tpiGrid.setRequestParams({ itemCode: itemCode });
+              tpiGrid.readData();
               alert("데이터가 저장되었습니다.");
             } else if (result == "Fail") {
               alert("데이터 저장중 에러가 발생했습니다.");
@@ -321,34 +288,36 @@
             },
           });
           //수정된 행 색칠 시작
-          procFlowGrid.on("afterChange", (e) => {
+          tpiGrid.on("afterChange", (e) => {
             let c = e.changes[0];
-            procFlowGrid.addCellClassName(c.rowKey, c.columnName, "modified");
+            tpiGrid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
           //수정된 행 색칠 끝
 
           //그리드 더블 클릭시 모달
           let targetRowKey;
           let targetOrder;
-          let targetFlowCode;
-          procFlowGrid.on("dblclick", (e) => {
+          let targetTestCode;
+          let targetTPINum;
+          tpiGrid.on("dblclick", (e) => {
             targetRowKey = e.rowKey;
             if (targetRowKey === undefined) {
               return;
             }
-            let row = procFlowGrid.getRow(e.rowKey);
-            targetOrder = row.procOrder;
-            targetFlowCode = row.procFlowCode;
-            if (e.columnName == "procCode") {
-              $(".procCodeModal").modal("show");
+            let row = tpiGrid.getRow(e.rowKey);
+            targetOrder = row.testOrder;
+            targetTestCode = row.testCode;
+            targetTPINum = row.testPerItemNum;
+            if (e.columnName == "testCode") {
+              $(".testCodeModal").modal("show");
             }
           });
 
           //순서 변경시 반영
-          procFlowGrid.on("drop", (e) => {
-            procFlowGrid.getData().forEach((row) => {
+          tpiGrid.on("drop", (e) => {
+            tpiGrid.getData().forEach((row) => {
               let rowKey = row.rowKey;
-              procFlowGrid.setValue(rowKey, "procOrder", row._attributes.rowNum);
+              tpiGrid.setValue(rowKey, "testOrder", row._attributes.rowNum);
             });
           });
           //그리드 세팅 끝
@@ -357,12 +326,9 @@
           $("#itemSearchBtn").click(() => {
             let itemName = $("#itemName");
             if (itemName.val() != "") {
-              $.ajax({
-                url: "/admin/getFlowItemListWithName",
-                data: { itemName: itemName.val() },
-              }).done((r) => {
-                itemCodeGrid.resetData(r);
-              });
+              itemCodeGrid.setRequestParams({ itemName: itemName.val() });
+              itemCodeGrid.readData();
+              itemCodeGrid.setRequestParams();
               // 코드명 input이 비어있으면 모두 조회
             } else {
               itemCodeGrid.readData();
@@ -371,38 +337,22 @@
           });
           // 이름으로 조회기능 끝
 
-          //제품코드 그리드 클릭시 공정흐름 조회
+          //항목코드 그리드 클릭시 항목별 검사 조회
           let itemCode;
           itemCodeGrid.on("click", (e) => {
             if (e.rowKey === undefined) {
               return;
             }
-            let tmp = procFlowGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let tmp = tpiGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
             itemCode = itemCodeGrid.getRow(e.rowKey).itemCode;
             if (noChange) {
-              $.ajax({
-                url: "/admin/getFlowList",
-                data: { itemCode: itemCode },
-              })
-                .done((r) => {
-                  procFlowGrid.resetData(r);
-                })
-                .fail((e) => {
-                  alert("데이터를 불러오는 중 에러가 발생했습니다.");
-                });
+              tpiGrid.setRequestParams({ itemCode: itemCode });
+              tpiGrid.readData();
             } else {
               if (confirm("저장되지않은 데이터가 소실됩니다. 조회하시겠습니까?")) {
-                $.ajax({
-                  url: "/admin/getFlowList",
-                  data: { itemCode: itemCode },
-                })
-                  .done((r) => {
-                    procFlowGrid.resetData(r);
-                  })
-                  .fail((e) => {
-                    alert("데이터를 불러오는 중 에러가 발생했습니다.");
-                  });
+                tpiGrid.setRequestParams({ itemCode: itemCode });
+                tpiGrid.readData();
               }
             }
           });
@@ -411,15 +361,15 @@
           $("#save").click(() => {
             if (!itemCode) {
               // 제품을 선택 안했을시
-              alert("제품코드를 먼저 선택해주십시오.");
+              alert("항목코드를 먼저 선택해주십시오.");
             } else {
-              let mod = procFlowGrid.getModifiedRows();
+              let mod = tpiGrid.getModifiedRows();
               let cre = mod.createdRows;
               let check = false;
               cre.forEach((ele) => {
-                if (!ele.procCode) {
+                if (!ele.testCode) {
                   // 빈칸 체크
-                  alert("공정코드를 입력해주십시오.");
+                  alert("검사코드를 입력해주십시오.");
                   check = true;
                 }
               });
@@ -427,8 +377,9 @@
                 // 빈칸이 있으면 저장x
                 return;
               }
-              procFlowGrid.finishEditing();
-              procFlowGrid.request("modifyData");
+              tpiGrid.finishEditing();
+              tpiGrid.setRequestParams();
+              tpiGrid.request("modifyData");
             }
           });
 
@@ -437,12 +388,12 @@
           //추가 버튼 시작
           $("#add").click((e) => {
             if (!itemCode) {
-              alert("제품코드를 먼저 선택해주십시오.");
+              alert("항목코드를 먼저 선택해주십시오.");
             } else {
-              procFlowGrid.appendRow({ flowProdCode: itemCode }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
-              let rowKey = procFlowGrid.getFocusedCell().rowKey;
-              procFlowGrid.addRowClassName(rowKey, "modified");
-              procFlowGrid.setValue(rowKey, "procOrder", procFlowGrid.getRow(rowKey)._attributes.rowNum, false);
+              tpiGrid.appendRow({ itemCode: itemCode }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+              let rowKey = tpiGrid.getFocusedCell().rowKey;
+              tpiGrid.addRowClassName(rowKey, "modified");
+              tpiGrid.setValue(rowKey, "testOrder", tpiGrid.getRow(rowKey)._attributes.rowNum, false);
             }
           });
           //추가 버튼 끝
@@ -450,15 +401,15 @@
           //삭제 버튼 시작
           $("#delete").click((e) => {
             if (!itemCode) {
-              alert("제품코드를 먼저 선택해주십시오.");
+              alert("항목코드를 먼저 선택해주십시오.");
             } else {
-              if (procFlowGrid.getCheckedRowKeys().length == 0) {
+              if (tpiGrid.getCheckedRowKeys().length == 0) {
                 alert("삭제할 행을 체크해주십시오.");
               } else {
-                procFlowGrid.removeCheckedRows(true);
-                procFlowGrid.getData().forEach((row) => {
+                tpiGrid.removeCheckedRows(true);
+                tpiGrid.getData().forEach((row) => {
                   let rowKey = row.rowKey;
-                  procFlowGrid.setValue(rowKey, "procOrder", row._attributes.rowNum);
+                  tpiGrid.setValue(rowKey, "testOrder", row._attributes.rowNum);
                 });
               }
             }
@@ -468,35 +419,31 @@
           //초기화 버튼 시작
           $("#reset").click((e) => {
             if (!itemCode) {
-              alert("제품코드를 먼저 선택해주십시오.");
+              alert("항목코드를 먼저 선택해주십시오.");
             } else {
               if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
-                procFlowGrid.restore();
+                tpiGrid.restore();
               }
             }
           });
           //초기화 버튼 끝
 
           //모달 그리드 새로고침 시작
-          $(".procCodeModal").on("shown.bs.modal", (e) => {
+          $(".testCodeModal").on("shown.bs.modal", (e) => {
             innerGrid.refreshLayout();
           });
           //모달 그리드 새로고침 끝
 
           //공정 조회 기능 grid.readData
-          $("#procSearchBtn").click(() => {
-            let procType = $("#procType");
-            // 타입이 전체가 아니면
-            if (procType.val() != "전체") {
-              $.ajax({
-                url: "/admin/getProcWithType",
-                dataType: "JSON",
-                data: { procType: procType.val() },
-              }).done((r) => {
-                innerGrid.resetData(r);
-              });
-              // 타입이 전체면
+          $("#testSearchBtn").click(() => {
+            let testName = $("#testName");
+            // input이 빈칸이 아니면
+            if (testName.val() != "") {
+              innerGrid.setRequestParams({ testName: testName.val() });
+              innerGrid.readData();
+              // input이 빈칸이면
             } else {
+              innerGrid.setRequestParams();
               innerGrid.readData();
             }
           });
@@ -506,12 +453,12 @@
           innerGrid.on("click", (e) => {
             let row = innerGrid.getRow(e.rowKey);
             delete row.rowKey;
-            row.flowProdCode = itemCode;
-            row.procOrder = targetOrder;
-            row.procFlowCode = targetFlowCode;
-            procFlowGrid.setRow(targetRowKey, row);
-            procFlowGrid.addRowClassName(targetRowKey, "modified");
-            $(".procCodeModal").modal("hide");
+            row.testItemCode = itemCode;
+            row.testOrder = targetOrder;
+            row.testPerItemNum = targetTPINum;
+            tpiGrid.setRow(targetRowKey, row);
+            tpiGrid.addRowClassName(targetRowKey, "modified");
+            $(".testCodeModal").modal("hide");
           });
           //모달 그리드 클릭이벤트 끝
         });

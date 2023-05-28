@@ -1,0 +1,561 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  layout:decorate="~{layout/template}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Pen Service</title>
+    <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+    <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      tr .modified {
+        background-color: rgba(255, 255, 0, 0.3);
+      }
+      #itemCode {
+        background-color: #fff;
+      }
+      #itemGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #itemGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #itemGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+      #matGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #matGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #matGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+      #grid td[data-column-name="bomMatCode"] {
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div layout:fragment="title">BOM 관리</div>
+    <!-- 메인컨텐츠 -->
+    <div layout:fragment="content">
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="row col-6">
+          <div class="col-2">
+            <label class="col-form-label" for="accName">제품 코드</label>
+          </div>
+          <div class="col-4">
+            <input type="text" class="form-control" id="itemCode" name="itemCode" readonly />
+          </div>
+          <div class="col-2">
+            <label for="" class="col-form-label">제품명 :</label>
+          </div>
+          <div class="col-4">
+            <input type="text" class="form-control" id="itemName" name="itemName" readonly />
+          </div>
+          <div class="row col-4"></div>
+        </div>
+        <div class="row col-6 justify-content-end">
+          <div class="col-auto">
+            <button class="btn btn-light" id="export" style="height: 38px">
+              <img src="/excel.png" style="width: 30px" alt="엑셀로 출력" />
+            </button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="add" style="height: 38px">추가</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-danger" id="delete" style="height: 38px">삭제</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="reset" style="height: 38px">초기화</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="save" style="height: 38px">저장</button>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade itemsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">제품 코드</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row col-6">
+                <div class="col-4">
+                  <label class="col-form-label" for="innerItem">제품명 :</label>
+                </div>
+                <div class="col-6">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="innerItem"
+                    name="innerItem"
+                    placeholder="빈 칸이면 전체 조회"
+                  />
+                </div>
+                <div class="col-2">
+                  <button
+                    class="fa-solid fa-magnifying-glass btn btn-primary"
+                    id="itemSearchBtn"
+                    style="height: 38px; float: left"
+                  ></button>
+                </div>
+              </div>
+              <hr />
+              <div id="itemGrid"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="modal fade matsModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">재료 코드</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row col-6">
+                <div class="col-4">
+                  <label class="col-form-label" for="innerMat">재료명 :</label>
+                </div>
+                <div class="col-6">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="innerMat"
+                    name="innerMat"
+                    placeholder="빈 칸이면 전체 조회"
+                  />
+                </div>
+                <div class="col-2">
+                  <button
+                    class="fa-solid fa-magnifying-glass btn btn-primary"
+                    id="matSearchBtn"
+                    style="height: 38px; float: left"
+                  ></button>
+                </div>
+              </div>
+              <hr />
+              <div id="matGrid"></div>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <div id="grid"></div>
+      <script src="/plugins/jquery/jquery.min.js"></script>
+      <script>
+        $(function () {
+          const token = $('meta[name="_csrf"]').attr("content");
+          const header = $('meta[name="_csrf_header"]').attr("content");
+          // 메인그리드시작;
+
+          let procNameList = [];
+          let chk = true;
+          let targetRowKey;
+
+          //그리드폼 시작
+          const grid = new tui.Grid({
+            el: document.getElementById("grid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/admin/getBomList",
+                  method: "GET",
+                },
+                modifyData: {
+                  url: "/admin/bomModifyAjax",
+                  method: "POST",
+                  withCredentials: true,
+                },
+              },
+              initialRequest: false,
+            },
+            bodyHeight: 680,
+            scrollX: false,
+            rowHeaders: [{ type: "checkbox" }],
+            columns: [
+              {
+                header: "bom코드",
+                name: "bomCode",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "제품 코드",
+                name: "bomProdCode",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "제품명",
+                name: "bomProdName",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "재료 코드",
+                name: "bomMatCode",
+                align: "center",
+              },
+              {
+                header: "재료명",
+                name: "bomMatName",
+                align: "center",
+              },
+              {
+                header: "재료구분",
+                name: "bomMatType",
+                align: "center",
+              },
+              {
+                header: "사용공정명",
+                name: "procCode",
+                align: "center",
+                formatter: "listItemText",
+                editor: {
+                  type: "select",
+                  options: {
+                    listItems: procNameList,
+                  },
+                },
+              },
+              {
+                header: "사용량",
+                name: "bomMatUsage",
+                align: "center",
+                editor: "text",
+              },
+              {
+                header: "단위",
+                name: "bomMatUnit",
+                align: "center",
+              },
+            ],
+          });
+
+          const itemGrid = new tui.Grid({
+            el: document.getElementById("itemGrid"),
+            contextMenu: null,
+            bodyHeight: 550,
+            scrollX: false,
+            data: {
+              api: {
+                readData: {
+                  url: "/admin/getFlowItemList",
+                  method: "GET",
+                },
+              },
+            },
+            columns: [
+              {
+                header: "제품 코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
+                header: "제품명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "제품 구분",
+                name: "itemType",
+                align: "center",
+              },
+            ],
+          });
+
+          const matGrid = new tui.Grid({
+            el: document.getElementById("matGrid"),
+            contextMenu: null,
+            bodyHeight: 550,
+            scrollX: false,
+            data: {
+              api: {
+                readData: {
+                  url: "/admin/getBomMatList",
+                  method: "GET",
+                },
+              },
+            },
+            columns: [
+              {
+                header: "재료 코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
+                header: "재료명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "재료 구분",
+                name: "itemType",
+                align: "center",
+              },
+              {
+                header: "재료 단위",
+                name: "itemUnit",
+                align: "center",
+              },
+            ],
+          });
+          //그리드 폼 끝
+
+          //그리드 세팅 시작
+          //서버에 연결전 토큰값 담는 method
+          grid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+
+          //데이터 저장 여부 alert
+          grid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              grid.setRequestParams({ itemCode: $("#itemCode").val() });
+              grid.readData();
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
+
+          //수정된 행 색칠 시작
+          grid.on("afterChange", (e) => {
+            let c = e.changes[0];
+            grid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          //수정된 행 색칠 끝
+
+          //tui grid의 언어세팅
+          tui.Grid.setLanguage("ko", {
+            display: {
+              noData: "데이터가 존재하지 않습니다.",
+            },
+            net: {
+              confirmModify: "데이터를 저장하시겠습니까?",
+            },
+          });
+
+          //그리드 세팅 끝
+
+          //저장기능 시작
+          $("#save").click(() => {
+            if (chk) {
+              alert("제품코드를 먼저 입력해주십시오.");
+              return;
+            }
+            let mod = grid.getModifiedRows();
+            let cre = mod.createdRows;
+            let check = false;
+            cre.forEach((ele) => {
+              for (colName in ele) {
+                if (ele[colName] === null && colName != "bomCode") {
+                  // 빈칸 체크
+                  check = true;
+                  console.log(colName);
+                }
+              }
+            });
+            if (check) {
+              // 빈칸이 있으면 저장x
+              alert("빈 칸이 존재합니다.");
+              return;
+            }
+            //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
+            grid.finishEditing();
+            grid.setRequestParams();
+            grid.request("modifyData");
+          });
+
+          //저장기능 끝
+
+          //재료 추가 시작
+          $("#add").click((e) => {
+            if (chk) {
+              alert("제품코드를 먼저 입력해주십시오.");
+              return;
+            }
+            grid.appendRow({ bomProdCode: $("#itemCode").val(), bomProdName: $("#itemName").val() }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            grid.addRowClassName(grid.getFocusedCell().rowKey, "modified"); // 색칠
+          });
+          //재료 추가 끝
+
+          //재료 삭제 시작
+          $("#delete").click((e) => {
+            if (chk) {
+              alert("제품코드를 먼저 입력해주십시오.");
+              return;
+            }
+            if (grid.getCheckedRowKeys().length == 0) {
+              alert("삭제할 행을 체크해주십시오.");
+            } else {
+              grid.removeCheckedRows(true);
+            }
+          });
+          //재료 삭제 끝
+
+          //초기화 버튼 시작
+          $("#reset").click((e) => {
+            if (chk) {
+              alert("제품코드를 먼저 입력해주십시오.");
+              return;
+            }
+            if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
+              grid.restore();
+              nextNum = null;
+            }
+          });
+          //초기화 버튼 끝
+
+          // 제품코드 input 클릭시 모달 띄우기 시작
+          $("#itemCode").click((e) => {
+            grid.finishEditing();
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+            if (noChange) {
+              $(".itemsModal").modal("show");
+            } else {
+              if (confirm("저장되지 않은 데이터가 존재합니다. 조회하시겠습니까?")) {
+                $(".itemsModal").modal("show");
+              }
+            }
+          });
+          // 제품코드 input 클릭시 모달 띄우기 끝
+
+          // 모달 그리드 새로고침 시작
+          $(".itemsModal").on("shown.bs.modal", (e) => {
+            itemGrid.refreshLayout();
+          });
+          // 모달 그리드 새로고침 끝
+
+          // 모달 제품명으로 조회 기능 시작
+          $("#itemSearchBtn").click(() => {
+            let itemName = $("#innerItem");
+            if (itemName.val() != "") {
+              $.ajax({
+                url: "/admin/getFlowItemListWithName",
+                data: { itemName: itemName.val() },
+              }).done((r) => {
+                itemGrid.resetData(r);
+              });
+              // 코드명 input이 비어있으면 모두 조회
+            } else {
+              itemGrid.readData();
+            }
+            itemName.val("");
+          });
+          // 모달 제품명으로 조회 기능 끝
+
+          // 모달 클릭시 값 가져오기 시작
+          itemGrid.on("click", (e) => {
+            let row = itemGrid.getRow(e.rowKey);
+            procNameList.length = 0;
+            $("#itemCode").val(row.itemCode);
+            $("#itemName").val(row.itemName);
+            $.ajax({
+              url: "/admin/getBomProcList",
+              data: { itemCode: row.itemCode },
+            })
+              .done((r) => {
+                console.log(r);
+                r.forEach((ele) => {
+                  procNameList.push({ text: ele.procName, value: ele.procCode });
+                });
+                grid.setRequestParams({ itemCode: row.itemCode });
+                grid.readData();
+                $(".itemsModal").modal("hide");
+              })
+              .fail((e) => {
+                alert("공정 데이터를 받아오는중 에러가 발생했습니다.");
+              });
+            chk = false;
+          });
+          // 모달 클릭시 값 가져오기 끝
+
+          // 재료코드 더블클릭시 모달 띄우기 시작
+          grid.on("dblclick", (e) => {
+            if (e.rowKey !== undefined && e.columnName == "bomMatCode") {
+              targetRowKey = e.rowKey;
+              $(".matsModal").modal("show");
+            }
+          });
+          // 재료코드 더블클릭시 모달 띄우기 끝
+
+          // 모달 그리드 새로고침 시작
+          $(".matsModal").on("shown.bs.modal", (e) => {
+            matGrid.refreshLayout();
+          });
+          // 모달 그리드 새로고침 끝
+
+          // 모달 제품명으로 조회 기능 시작
+          $("#matSearchBtn").click(() => {
+            let itemName = $("#innerMat");
+            if (itemName.val() != "") {
+              $.ajax({
+                url: "/admin/getBomMatWithName",
+                data: { itemName: itemName.val() },
+              }).done((r) => {
+                matGrid.resetData(r);
+              });
+              // 코드명 input이 비어있으면 모두 조회
+            } else {
+              matGrid.readData();
+            }
+            itemName.val("");
+          });
+          // 모달 제품명으로 조회 기능 끝
+
+          // 재료 모달 클릭시 값 입력 시작
+          matGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+            let row = matGrid.getRow(e.rowKey);
+            let target = grid.getRow(targetRowKey);
+            target.bomMatCode = row.itemCode;
+            target.bomMatName = row.itemName;
+            target.bomMatType = row.itemType;
+            target.bomMatUnit = row.itemUnit;
+            grid.setRow(targetRowKey, target);
+            grid.addCellClassName(targetRowKey, "bomMatCode", "modified");
+            grid.addCellClassName(targetRowKey, "bomMatName", "modified");
+            grid.addCellClassName(targetRowKey, "bomMatType", "modified");
+            grid.addCellClassName(targetRowKey, "bomMatUnit", "modified");
+            $(".matsModal").modal("hide");
+          });
+          // 재료 모달 클릭시 값 입력 끝
+        });
+      </script>
+    </div>
+    <!-- 메인컨텐츠 끝 -->
+  </body>
+</html>

@@ -154,6 +154,12 @@
                       <p>공정 흐름 관리</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/admin/bomManage" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>BOM 관리</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <!-- 공통 메뉴 끝 -->
@@ -298,9 +304,15 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="/mak/" class="nav-link">
+                    <a href="/qip/testCodeManage" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
-                      <p>자재 발주 관리</p>
+                      <p>검사 코드 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/qip/testPerItemManage" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>항목별 검사 관리</p>
                     </a>
                   </li>
                 </ul>
@@ -408,6 +420,9 @@
           case "procFlowManage":
             $("#comNav").find("a[href='/admin/procFlowManage']").addClass("active");
             break;
+          case "bomManage":
+            $("#comNav").find("a[href='/admin/bomManage']").addClass("active");
+            break;
         }
       } else if (path.startsWith("/bns")) {
         $("#bnsNav").addClass("menu-open");
@@ -466,6 +481,17 @@
         switch (path.substr(5)) {
           case "register":
             $("#facNav").find("a[href='/fac/register']").addClass("active");
+            break;
+        }
+      } else if (path.startsWith("/qip")) {
+        $("#qipNav").addClass("menu-open");
+        $("#qipNav").children("a").addClass("active");
+        switch (path.substr(5)) {
+          case "testCodeManage":
+            $("#qipNav").find("a[href='/qip/testCodeManage']").addClass("active");
+            break;
+          case "testPerItemManage":
+            $("#qipNav").find("a[href='/qip/testPerItemManage']").addClass("active");
             break;
         }
       }

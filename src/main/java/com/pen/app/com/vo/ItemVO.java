@@ -9,4 +9,5 @@ public class ItemVO {
 	String itemName;
 	String itemStd;
 	String itemUnit;
+	String itemType;
 }

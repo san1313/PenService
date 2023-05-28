@@ -4,6 +4,7 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.com.mapper.ProcFlowMapper">
+	<!-- 제품 리스트 조회 -->
 	<select id="getFlowItemList" resultType="map">
 		SELECT PROD_CODE AS "itemCode",PROD_NAME AS "itemName",'완제품' AS "itemType" FROM
 		COM_CODE_PROD
@@ -12,6 +13,7 @@
 		ORDER BY 1
 	</select>
 	
+	<!-- 제품 이름으로 조회 -->
 	<select id="getFlowItemListWithName" resultType="map">
 		SELECT *
         FROM(SELECT PROD_CODE AS "itemCode",PROD_NAME AS "itemName",'완제품' AS "itemType" FROM
@@ -21,4 +23,41 @@
 		)WHERE "itemName" LIKE '%'||#{itemName}||'%'
         ORDER BY 1
 	</select>
+	
+	<!-- 제품별 공정흐름 조회 -->
+	<select id="getFlowList" resultType="ProcFlowVO">
+		SELECT * FROM COM_PROC_FLOW JOIN COM_CODE_PROC USING(PROC_CODE) WHERE FLOW_PROD_CODE = #{itemCode} ORDER BY PROC_ORDER
+	</select>
+	
+	<!-- 공정흐름 정보수정 -->
+  <update id="modifyFlowList">
+  	<foreach collection="list" item="vo" index="index" separator=";" open="DECLARE BEGIN" close="; END;">
+        	UPDATE COM_PROC_FLOW
+           	SET
+	  	      PROC_ORDER = #{vo.procOrder},
+	 	      PROC_CODE = #{vo.procCode}
+           	  WHERE PROC_FLOW_CODE = #{vo.procFlowCode}
+    </foreach>
+  </update>
+  
+  <!-- 공정흐름 추가 -->
+  <insert id="insertFlowList">
+  <foreach collection="list" item="vo" open="INSERT ALL" close="SELECT * FROM DUAL" 
+        separator=" ">
+    INTO COM_PROC_FLOW VALUES (
+          GET_FLOW_SEQ,
+          #{vo.procOrder},
+          #{vo.procCode},
+          #{vo.flowProdCode}
+    )
+    </foreach>
+  </insert>
+  
+  <!-- 공정흐름 삭제 -->
+  <delete id="deleteFlowList">
+      DELETE FROM COM_PROC_FLOW WHERE 
+    <foreach collection="list" item="vo" separator="OR">
+        PROC_FLOW_CODE = #{vo.procFlowCode} 
+    </foreach>
+  </delete>
 </mapper>

@@ -4,10 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.pen.app.com.dto.ToastUiResponseDTO;
-import com.pen.app.com.vo.AccountVO;
-import com.pen.app.com.vo.ItemVO;
 import com.pen.app.com.vo.ProcessVO;
-import com.pen.app.com.vo.ProdVO;
 
 public interface ProcessService {
 	// 공정 구분 리스트 받아오기

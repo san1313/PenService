@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.qip.mapper.TestCodeMapper">
+
+	<!-- 검사코드 리스트 조회 -->
+	<select id="getTCodeList" resultType="TestCodeVO">
+		SELECT * FROM QIP_CODE_TEST
+	</select>
+
+	<!-- 이름으로 검사코드 조회 -->
+	<select id="getTCodeWithName" resultType="TestCodeVO">
+		SELECT * FROM
+		QIP_CODE_TEST WHERE TEST_NAME LIKE '%'||#{testName}||'%'
+	</select>
+
+	<!-- 다음 검사코드 가져오기 -->
+	<select id="getTestCode" resultType="String">
+		SELECT 'TEST-'||
+		LPAD(LAST_NUMBER,5,'0') FROM USER_SEQUENCES WHERE SEQUENCE_NAME =
+		'TEST_CODE_SEQ'
+	</select>
+
+	<!-- 검사코드 정보수정 -->
+	<update id="modifyTCode">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE QIP_CODE_TEST
+			SET
+			TEST_NAME = #{vo.testName},
+			TEST_DETAIL = #{vo.testDetail}
+			WHERE TEST_CODE = #{vo.testCode}
+		</foreach>
+	</update>
+
+	<!-- 검사코드 추가 -->
+	<insert id="insertTCode">
+		<foreach collection="list" item="vo" open="INSERT ALL"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO QIP_CODE_TEST VALUES (
+			GET_TEST_CODE_SEQ,
+			#{vo.testName},
+			#{vo.testDetail}
+			)
+		</foreach>
+	</insert>
+
+	<!-- 검사코드 삭제 -->
+	<delete id="deleteTCode">
+		DELETE FROM QIP_CODE_TEST WHERE
+		<foreach collection="list" item="vo" separator="OR">
+			TEST_CODE = #{vo.testCode}
+		</foreach>
+	</delete>
+</mapper>

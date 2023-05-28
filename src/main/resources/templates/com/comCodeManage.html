@@ -24,7 +24,7 @@
         cursor: pointer;
       }
       #comCodeGrid .tui-grid-layer-focus-border {
-        background-color: transparent;
+        display: none;
       }
       tr .modified {
         background-color: rgba(255, 255, 0, 0.3);
@@ -85,6 +85,7 @@
           //그리드폼 시작
           const comCodeGrid = new tui.Grid({
             el: document.getElementById("comCodeGrid"),
+            contextMenu: null,
             data: {
               api: {
                 readData: {
@@ -110,6 +111,7 @@
           });
           const innerCodeGrid = new tui.Grid({
             el: document.getElementById("innerCodeGrid"),
+            contextMenu: null,
             bodyHeight: 680,
             scrollX: false,
             rowHeaders: ["checkbox"],
@@ -218,6 +220,9 @@
           //공통코드 그리드 클릭시 세부코드 조회
           let comCode;
           comCodeGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
             let tmp = innerCodeGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
             comCode = comCodeGrid.getRow(e.rowKey).comCode;

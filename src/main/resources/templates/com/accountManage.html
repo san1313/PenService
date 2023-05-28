@@ -114,6 +114,7 @@
           //그리드폼 시작
           const grid = new tui.Grid({
             el: document.getElementById("grid"),
+            contextMenu: null,
             data: {
               contentType: "application/json",
               api: {
@@ -179,6 +180,7 @@
 
           const innerGrid = new tui.Grid({
             el: document.getElementById("innerGrid"),
+            contextMenu: null,
             bodyHeight: 550,
             scrollX: false,
             rowHeaders: ["rowNum"],
@@ -226,7 +228,6 @@
 
           //수정된 행 색칠 시작
           grid.on("afterChange", (e) => {
-            console.log(e.changes);
             let c = e.changes[0];
             grid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
@@ -316,8 +317,6 @@
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
 
             let accName = $("#accName");
-            console.log(accName.val());
-            console.log($("#accType").val());
             if (noChange) {
               // 변경점이 없다면
               // 거래처명 input의 value로 조회해서 grid를 다시 그림

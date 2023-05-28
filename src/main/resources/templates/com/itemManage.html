@@ -133,6 +133,7 @@
           //그리드폼 시작
           const matGrid = new tui.Grid({
             el: document.getElementById("matGrid"),
+            contextMenu: null,
             data: matDataSource,
             bodyHeight: 630,
             scrollX: false,
@@ -188,6 +189,7 @@
           });
           const semiGrid = new tui.Grid({
             el: document.getElementById("semiGrid"),
+            contextMenu: null,
             data: semiDataSource,
             bodyHeight: 630,
             rowHeaders: ["rowNum"],
@@ -237,6 +239,7 @@
           });
           const prodGrid = new tui.Grid({
             el: document.getElementById("prodGrid"),
+            contextMenu: null,
             data: prodDataSource,
             rowHeaders: ["rowNum"],
             bodyHeight: 630,
@@ -392,17 +395,14 @@
 
           //수정된 행 색칠 시작
           matGrid.on("afterChange", (e) => {
-            console.log(e.changes);
             let c = e.changes[0];
             grid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
           semiGrid.on("afterChange", (e) => {
-            console.log(e.changes);
             let c = e.changes[0];
             grid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
           prodGrid.on("afterChange", (e) => {
-            console.log(e.changes);
             let c = e.changes[0];
             grid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
@@ -412,7 +412,6 @@
 
           //저장기능 시작
           $("#save").click(() => {
-            console.log(grid);
 
             //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
             grid.finishEditing();

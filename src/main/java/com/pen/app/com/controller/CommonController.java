@@ -5,13 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import javax.servlet.http.HttpSession;
-
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.autoconfigure.neo4j.Neo4jProperties.Authentication;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -22,6 +17,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.com.service.impl.AccountServiceImpl;
+import com.pen.app.com.service.impl.BomServiceImpl;
 import com.pen.app.com.service.impl.ComCodeServiceImpl;
 import com.pen.app.com.service.impl.ItemServiceImpl;
 import com.pen.app.com.service.impl.ProcFlowServiceImpl;
@@ -29,9 +25,11 @@ import com.pen.app.com.service.impl.ProcessServiceImpl;
 import com.pen.app.com.service.impl.UserServiceImpl;
 import com.pen.app.com.vo.AccountVO;
 import com.pen.app.com.vo.AuthVO;
+import com.pen.app.com.vo.BomVO;
 import com.pen.app.com.vo.ComCodeVO;
 import com.pen.app.com.vo.ItemVO;
 import com.pen.app.com.vo.MatVO;
+import com.pen.app.com.vo.ProcFlowVO;
 import com.pen.app.com.vo.ProcessVO;
 import com.pen.app.com.vo.ProdVO;
 import com.pen.app.com.vo.SemiVO;
@@ -58,6 +56,8 @@ public class CommonController {
 	ProcessServiceImpl procService;
 	@Autowired
 	ProcFlowServiceImpl flowService;
+	@Autowired
+	BomServiceImpl bomService;
 
 	@GetMapping(value = { "/top", "/" })
 	public String top() {
@@ -499,5 +499,55 @@ public class CommonController {
 	@ResponseBody
 	public List<Map<String, String>> getFlowItemListWithName(String itemName){
 		return flowService.getFlowItemListWithName(itemName);
+	}
+	
+	// 공정 흐름 리스트 조회
+	@GetMapping("/admin/getFlowList")
+	@ResponseBody
+	public List<ProcFlowVO> getFlowList(String itemCode){
+		return flowService.getFlowList(itemCode);
+	}
+	
+	// 저장 버튼 동작
+	@PostMapping("/admin/procFlowModifyAjax")
+	@ResponseBody
+	public ToastUiResponseDTO procFlowModifyAjax(@RequestBody Map<String, List<ProcFlowVO>> modifiedRows) {
+		return flowService.modifyFlowList(modifiedRows);
+	}
+	
+	// BOM 관리 페이지 ---------------------------------------------------
+	@GetMapping("/admin/bomManage")
+	public String bomManage() {
+		return "/com/bomManage";
+	}
+	
+	@GetMapping("/admin/getBomList")
+	@ResponseBody
+	public ToastUiResponseDTO getBomList(String itemCode) {
+		return new ToastUiResponseDTO(bomService.getBomList(itemCode));
+	}
+	
+	@GetMapping("/admin/getBomProcList")
+	@ResponseBody
+	public List<Map<String, String>> getBomProcList(String itemCode){
+		return bomService.getBomProcList(itemCode);
+	}
+	
+	@GetMapping("/admin/getBomMatList")
+	@ResponseBody
+	public ToastUiResponseDTO getBomMatList() {
+		return new ToastUiResponseDTO(bomService.getBomMatList());
+	}
+	
+	@GetMapping("/admin/getBomMatWithName")
+	@ResponseBody
+	public List<ItemVO> getBomMatWithName(String itemName){
+		return bomService.getBomMatWithName(itemName);
+	}
+	
+	@PostMapping("/admin/bomModifyAjax")
+	@ResponseBody
+	public ToastUiResponseDTO bomModifyAjax(@RequestBody Map<String, List<BomVO>> modifiedRows) {
+		return bomService.modifyBomList(modifiedRows);
 	}
 }

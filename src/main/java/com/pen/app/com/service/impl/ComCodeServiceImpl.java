@@ -7,7 +7,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.pen.app.com.dto.ToastUiResponseDTO;
-import com.pen.app.com.mapper.comCodeMapper;
+import com.pen.app.com.mapper.ComCodeMapper;
 import com.pen.app.com.service.ComCodeService;
 import com.pen.app.com.vo.ComCodeVO;
 import com.pen.app.com.vo.iCodeVO;
@@ -15,7 +15,7 @@ import com.pen.app.com.vo.iCodeVO;
 @Service
 public class ComCodeServiceImpl implements ComCodeService {
 
-@Autowired comCodeMapper mapper;
+@Autowired ComCodeMapper mapper;
 	@Override
 		public List<ComCodeVO> getComCodeList() {
 			

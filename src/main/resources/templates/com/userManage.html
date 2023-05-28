@@ -106,6 +106,7 @@
           //그리드폼 시작
           const grid = new tui.Grid({
             el: document.getElementById("grid"),
+            contextMenu: null,
             data: dataSource,
             bodyHeight: 680,
             scrollX: false,
@@ -188,7 +189,6 @@
           //체크박스 하나만 적용 끝
           //수정된 행 색칠 시작
           grid.on("afterChange", (e) => {
-            console.log(e.changes);
             let c = e.changes[0];
             grid.addCellClassName(c.rowKey, c.columnName, "modified");
           });
