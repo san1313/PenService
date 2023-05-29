@@ -15,6 +15,7 @@
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
     <style>
       tr .modified {
@@ -59,7 +60,7 @@
             <input type="text" class="form-control" id="itemCode" name="itemCode" readonly />
           </div>
           <div class="col-2">
-            <label for="" class="col-form-label">제품명 :</label>
+            <label for="" class="col-form-label">제품명</label>
           </div>
           <div class="col-4">
             <input type="text" class="form-control" id="itemName" name="itemName" readonly />
@@ -197,7 +198,7 @@
               },
               initialRequest: false,
             },
-            bodyHeight: 680,
+            bodyHeight: 700,
             scrollX: false,
             rowHeaders: [{ type: "checkbox" }],
             columns: [
@@ -553,6 +554,19 @@
             $(".matsModal").modal("hide");
           });
           // 재료 모달 클릭시 값 입력 끝
+
+          // 엑셀출력 시작
+          $("#export").click((e) => {
+            if (!$("#itemName").val()) {
+              return;
+            }
+            console.log("Asd");
+            grid.export("xlsx", {
+              includeHiddenColumns: true,
+              fileName: "BOM-" + $("#itemName").val(),
+            });
+          });
+          // 엑셀출력 끝
         });
       </script>
     </div>

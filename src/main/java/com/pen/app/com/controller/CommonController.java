@@ -36,8 +36,9 @@ import com.pen.app.com.vo.SemiVO;
 import com.pen.app.com.vo.UserVO;
 import com.pen.app.com.vo.iCodeVO;
 
-/**
- * Handles requests for the application home page.
+/*
+ * 배창우
+ * 공통부분
  */
 @Controller
 public class CommonController {

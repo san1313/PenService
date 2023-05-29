@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  layout:decorate="~{layout/template}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Pen Service</title>
+    <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+    <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      tr .modified {
+        background-color: rgba(255, 255, 0, 0.3);
+      }
+      .inputContainer {
+        border: 1px solid #aaa;
+        margin-bottom: 10px;
+        padding: 10px 0;
+      }
+      #matOrderNum {
+        background-color: white;
+      }
+      #matModalGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #matModalGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #matModalGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+
+      div .tui-grid-cell-required {
+        background-color: #fff;
+      }
+    </style>
+  </head>
+  <body>
+    <div layout:fragment="title">검사</div>
+    <!-- 메인컨텐츠 -->
+    <div layout:fragment="content">
+      <div class="row col-4" style="margin-bottom: 10px">
+        <div class="col-3">
+          <label class="col-form-label" for="">검사항목</label>
+        </div>
+        <div class="col-auto">
+          <input type="radio" id="mat" name="type" value="mat" style="margin-right: 5px" checked />
+          <label class="col-form-label" for="mat">자재입고</label>
+        </div>
+        <div class="col-auto">
+          <input type="radio" id="item" name="type" value="item" style="margin-right: 5px" />
+          <label class="col-form-label" for="item">제품</label>
+        </div>
+        <div class="col-auto">
+          <input type="radio" id="expired" name="type" value="expired" style="margin-right: 5px" />
+          <label class="col-form-label" for="expired">보관기간초과</label>
+        </div>
+      </div>
+
+      <!-- 자재입고검사 시작-->
+      <div class="inputContainer">
+        <div id="matInputs">
+          <div class="row">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matTestDate">검사일자</label>
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" id="matTestDate" name="matTestDate" />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matOrderNum">발주번호</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matOrderNum" name="matOrderNum" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matEmpName">담당자</label>
+            </div>
+            <div class="col-2">
+              <input
+                type="text"
+                class="form-control"
+                id="matEmpName"
+                name="matEmpName"
+                readonly
+                th:value="${#authentication.principal.empName}"
+              />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <input type="hidden" class="form-control" id="matDtaordcode" name="matDtaordcode" readonly />
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matCode">자재코드</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matCode" name="matCode" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matName">자재명</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matName" name="matName" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matOrderQy">수량</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matOrderQy" name="matOrderQy" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matUnit">단위</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matUnit" name="matUnit" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="accName">거래처명</label>
+            </div>
+            <div style="display: none">
+              <input type="text" class="form-control" id="accCode" name="accCode" readonly />
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="accName" name="accName" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="accTel">거래처연락처</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="accTel" name="accTel" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="matReqDate">발주일자</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="matReqDate" name="matReqDate" readonly />
+            </div>
+          </div>
+        </div>
+
+        <!-- 자재입고검사 끝-->
+
+        <!-- 제품검사 시작-->
+        <div id="itemInputs" style="display: none">
+          <div class="row">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemTestDate">검사일자</label>
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" id="itemTestDate" name="itemTestDate" />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemLot">제품LOT</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemLot" name="itemLot" />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemEmpName">담당자</label>
+            </div>
+            <div class="col-2">
+              <input
+                type="text"
+                class="form-control"
+                id="itemEmpName"
+                name="itemEmpName"
+                readonly
+                th:value="${#authentication.principal.empName}"
+              />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemCode">제품코드</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemCode" name="itemCode" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemName">제품명</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemName" name="itemName" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemNum">수량</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemNum" name="itemNum" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemDate">생산일자</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemDate" name="itemDate" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="itemProcOrder">공정순서</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="itemProcOrder" name="itemProcOrder" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="prevProc">직전공정명</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="prevProc" name="prevProc" readonly />
+            </div>
+          </div>
+        </div>
+
+        <!-- 제품검사 끝-->
+
+        <!-- 보관기한 초과자재검사 시작-->
+        <div id="expInputs" style="display: none">
+          <div class="row">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expTestDate">검사일자</label>
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" id="expTestDate" name="expTestDate" />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expLot">자재LOT</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="expLot" name="expLot" />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expEmpName">담당자</label>
+            </div>
+            <div class="col-2">
+              <input
+                type="text"
+                class="form-control"
+                id="expEmpName"
+                name="expEmpName"
+                readonly
+                th:value="${#authentication.principal.empName}"
+              />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expCode">자재코드</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="expCode" name="expCode" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expName">자재명</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="expName" name="expName" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expNum">수량</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="expNum" name="expNum" readonly />
+            </div>
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expUnit">단위</label>
+            </div>
+            <div class="col-2">
+              <input type="text" class="form-control" id="expUnit" name="expUnit" readonly />
+            </div>
+          </div>
+          <div class="row" style="margin-top: 10px">
+            <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+              <label class="col-form-label" for="expDate">보관기한</label>
+            </div>
+            <div class="col-2">
+              <input type="date" class="form-control" id="expDate" name="expDate" />
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-end" style="margin-bottom: 10px">
+        <div class="col-auto">
+          <button class="btn btn-primary" id="save" style="height: 38px">검사 완료</button>
+        </div>
+      </div>
+
+      <!-- 보관기한 초과자재검사 끝-->
+
+      <!-- 자재입고검사 발주번호 모달 시작 -->
+
+      <div class="modal fade matModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">검사코드</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="matModalGrid"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 자재입고검사 발주번호 모달 끝 -->
+
+      <div id="grid"></div>
+      <script src="/plugins/jquery/jquery.min.js"></script>
+      <script>
+        $(function () {
+          const token = $('meta[name="_csrf"]').attr("content");
+          const header = $('meta[name="_csrf_header"]').attr("content");
+          // 메인그리드시작;
+
+          //그리드폼 시작
+          const grid = new tui.Grid({
+            el: document.getElementById("grid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/getTPIList",
+                  method: "GET",
+                },
+                updateData: {
+                  url: "/qip/testUpdateAjax",
+                  method: "POST",
+                  withCredentials: true,
+                },
+              },
+              initialRequest: false,
+            },
+            bodyHeight: 420,
+            scrollX: false,
+            columns: [
+              {
+                header: "검사순서",
+                name: "testOrder",
+                align: "center",
+              },
+              {
+                header: "검사코드",
+                name: "testCode",
+                align: "center",
+              },
+              {
+                header: "검사명",
+                name: "testName",
+                align: "center",
+              },
+              {
+                header: "검사설명",
+                name: "testDetail",
+                align: "center",
+              },
+              {
+                header: "불량량",
+                name: "testNumDef",
+                align: "center",
+                editor: "text",
+                validation: {
+                  required: true,
+                  dataType: "number",
+                },
+              },
+            ],
+            summary: {
+              position: "bottom",
+              height: 50,
+              columnContent: {
+                testNumDef: {
+                  template(summary) {
+                    return "총 불량량 : " + summary.sum;
+                  },
+                },
+              },
+            },
+          });
+
+          const matModalGrid = new tui.Grid({
+            el: document.getElementById("matModalGrid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/matTestList",
+                  method: "GET",
+                },
+              },
+            },
+            bodyHeight: 490,
+            scrollX: false,
+            columns: [
+              {
+                header: "발주상세코드",
+                name: "matDtaordcode",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "발주번호",
+                name: "matOrdernum",
+                align: "center",
+              },
+              {
+                header: "발주일자",
+                name: "matOrderdate",
+                align: "center",
+              },
+              {
+                header: "자재코드",
+                name: "matCode",
+                align: "center",
+              },
+              {
+                header: "자재명",
+                name: "matName",
+                align: "center",
+              },
+              {
+                header: "수량",
+                name: "matOrderQy",
+                align: "center",
+              },
+              {
+                header: "단위",
+                name: "matUnit",
+                align: "center",
+              },
+              {
+                header: "거래처코드",
+                name: "accCode",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "거래처명",
+                name: "accName",
+                align: "center",
+              },
+              {
+                header: "거래처연락처",
+                name: "accTel",
+                align: "center",
+              },
+            ],
+          });
+          //그리드 폼 끝
+
+          //그리드 세팅 시작
+          //서버에 연결전 토큰값 담는 method
+          grid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+
+          //데이터 저장 여부 alert
+          grid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              grid.readData();
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
+          //tui grid의 언어세팅
+          tui.Grid.setLanguage("ko");
+
+          //그리드 세팅 끝
+
+          //검사일자에 Default 오늘날짜 시작
+          let today = new Date();
+          let year = today.getFullYear();
+          let month = ("0" + (today.getMonth() + 1)).substr(-2);
+          let day = ("0" + today.getDate()).substr(-2);
+          today = `${year}-${month}-${day}`;
+          $("#matTestDate").val(today);
+          $("#itemTestDate").val(today);
+          $("#expTestDate").val(today);
+          //검사일자에 Default 오늘날짜 끝
+
+          //라디오버튼 동작 시작
+          let radioVal = "mat";
+          $("input[name=type]").on("change", (e) => {
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+            let mat = $("#matInputs");
+            let item = $("#itemInputs");
+            let exp = $("#expInputs");
+            if (noChange) {
+              radioVal = $("input[name=type]:checked").val();
+              if (radioVal == "mat") {
+                item.hide();
+                exp.hide();
+                mat.show();
+              } else if (radioVal == "item") {
+                mat.hide();
+                exp.hide();
+                item.show();
+              } else {
+                mat.hide();
+                item.hide();
+                exp.show();
+              }
+            } else {
+              if (confirm("검사항목 변경시 저장되지않은 데이터가 소실됩니다.\n변경하시겠습니까?")) {
+                radioVal = $("input[name=type]:checked").val();
+                grid.restore();
+                if (radioVal == "mat") {
+                  grid = matGrid;
+                  item.hide();
+                  exp.hide();
+                  mat.show();
+                  grid.refreshLayout();
+                } else if (radioVal == "item") {
+                  grid = itemGrid;
+                  mat.hide();
+                  exp.hide();
+                  item.show();
+                  grid.refreshLayout();
+                } else {
+                  grid = expiredGrid;
+                  mat.hide();
+                  item.hide();
+                  exp.show();
+                  grid.refreshLayout();
+                }
+              } else {
+                $(this).prop("checked", false);
+                $('input[name=type][value="' + radioVal + '"]').prop("checked", true);
+              }
+            }
+          });
+          //라디오버튼 동작 끝
+
+          //검사완료 기능 시작
+          $("#save").click(() => {
+            //덜 닫힌 input창을 저장시키고
+            grid.finishEditing();
+            //유효성 검사 시작
+            if (grid.validate().length) {
+              alert("불량량이 숫자가 아니거나 비어있습니다.");
+              return;
+            }
+            if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
+              alert("총 불량량이 수량보다 큽니다.");
+              return;
+            }
+            //유효성 검사 끝
+
+            //검사 결과를 서버로 전송
+            $.ajax({
+              url: "matTestInsert",
+              method: "POST",
+              body: {
+                matDtaordcode: $("#matDtaordcode").val(),
+                testDate: $("#matTestDate").val(),
+                empNum: "[[${#authentication.principal.empNum}]]",
+                testNumMat: $("#matOrderQy").val(),
+                testTnumDef: grid.getSummaryValues("testNumDef").sum,
+                testTnumPass: $("#matOrderQy").val() - grid.getSummaryValues("testNumDef").sum,
+              },
+              beforeSend: function (xhr) {
+                xhr.setRequestHeader(header, token);
+              },
+            })
+              .done((r) => {
+                console.log(r);
+              })
+              .fail((e) => {
+                alert("데이터를 저장하는중 에러가 발생했습니다.");
+              });
+          });
+          //검사완료 기능 끝
+
+          //발주번호 클릭시 발주번호 모달 시작
+          $("#matOrderNum").click((e) => {
+            $(".matModal").modal("show");
+          });
+          $(".matModal").on("shown.bs.modal", (e) => {
+            matModalGrid.refreshLayout();
+          });
+          //발주번호 클릭시 발주번호 모달 끝
+
+          //발주번호 모달 그리드 클릭시 데이터 채워넣기 시작
+          matModalGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+
+            let row = matModalGrid.getRow(e.rowKey);
+            $("#matDtaordcode").val(row.matDtaordcode);
+            $("#matOrderNum").val(row.matOrdernum);
+            $("#matCode").val(row.matCode);
+            $("#matName").val(row.matName);
+            $("#matOrderQy").val(row.matOrderQy);
+            $("#matUnit").val(row.matUnit);
+            $("#accCode").val(row.accCode);
+            $("#accName").val(row.accName);
+            $("#accTel").val(row.accTel);
+            $("#matReqDate").val(row.matOrderdate);
+
+            grid.setRequestParams({ itemCode: row.matCode });
+            grid.readData();
+
+            $(".matModal").modal("hide");
+          });
+          //발주번호 모달 그리드 클릭시 데이터 채워넣기 끝
+        });
+      </script>
+    </div>
+    <!-- 메인컨텐츠 끝 -->
+  </body>
+</html>

@@ -29,7 +29,7 @@
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-4">
           <div class="col-3">
-            <label class="col-form-label" for="">조회항목 : </label>
+            <label class="col-form-label" for="">조회항목 </label>
           </div>
           <div class="row col-9">
             <div class="col-4">
@@ -135,7 +135,7 @@
             el: document.getElementById("matGrid"),
             contextMenu: null,
             data: matDataSource,
-            bodyHeight: 630,
+            bodyHeight: 650,
             scrollX: false,
             rowHeaders: ["rowNum"],
             columns: [
@@ -191,7 +191,7 @@
             el: document.getElementById("semiGrid"),
             contextMenu: null,
             data: semiDataSource,
-            bodyHeight: 630,
+            bodyHeight: 650,
             rowHeaders: ["rowNum"],
             scrollX: false,
             columns: [
@@ -242,7 +242,7 @@
             contextMenu: null,
             data: prodDataSource,
             rowHeaders: ["rowNum"],
-            bodyHeight: 630,
+            bodyHeight: 650,
             scrollX: false,
             columns: [
               {
@@ -297,14 +297,15 @@
 
           //라디오 버튼 누를시 타겟 grid 변경
           let grid = matGrid;
+          let radioVal = "mat";
           $("input[name=type]").on("change", (e) => {
             let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
             let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
-            let radioVal = $("input[name=type]:checked").val();
             let mat = $("#matGrid");
             let semi = $("#semiGrid");
             let prod = $("#prodGrid");
             if (noChange) {
+              radioVal = $("input[name=type]:checked").val();
               if (radioVal == "mat") {
                 grid = matGrid;
                 semi.hide();
@@ -326,6 +327,7 @@
               }
             } else {
               if (confirm("조회항목 변경시 저장되지않은 데이터가 소실됩니다. 변경하시겠습니까?")) {
+                radioVal = $("input[name=type]:checked").val();
                 grid.restore();
                 if (radioVal == "mat") {
                   grid = matGrid;
@@ -347,6 +349,9 @@
                   grid.refreshLayout();
                 }
                 nextNum = null;
+              } else {
+                $(this).prop("checked", false);
+                $('input[name=type][value="' + radioVal + '"]').prop("checked", true);
               }
             }
           });
@@ -412,7 +417,6 @@
 
           //저장기능 시작
           $("#save").click(() => {
-
             //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
             grid.finishEditing();
             grid.request("modifyData");

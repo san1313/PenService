@@ -1,6 +1,7 @@
 package com.pen.app.qip.controller;
 
 import java.util.List;
+
 import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,9 +15,15 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.qip.service.impl.TestCodeServiceImpl;
 import com.pen.app.qip.service.impl.TestPerItemServiceImpl;
+import com.pen.app.qip.service.impl.TestServiceImpl;
+import com.pen.app.qip.vo.MatResultVO;
 import com.pen.app.qip.vo.TestCodeVO;
 import com.pen.app.qip.vo.TestPerItemVO;
 
+/*
+ * 배창우
+ * 품질검사
+ */
 
 @Controller
 @RequestMapping("/qip")
@@ -26,6 +33,8 @@ public class QualityController {
 	TestCodeServiceImpl tCodeService;
 	@Autowired
 	TestPerItemServiceImpl tpiService;
+	@Autowired
+	TestServiceImpl testService;
 	
 	
 	// 검사코드 관리 페이지 ------------------------------------------------
@@ -94,5 +103,25 @@ public class QualityController {
 	@ResponseBody
 	ToastUiResponseDTO tpiModifyAjax(@RequestBody Map<String, List<TestPerItemVO>> modifiedRows) {
 		return tpiService.modifyTCode(modifiedRows);
+	}
+	
+	// 검사 페이지 -----------------------------------------------------
+	@GetMapping("/test")
+	String test() {
+		return "/qip/itemTest";
+	}
+	
+	// 발주 리스트 조회
+	@GetMapping("/matTestList")
+	@ResponseBody
+	ToastUiResponseDTO matTestList() {
+		return new ToastUiResponseDTO(testService.matTestList());
+	}
+	
+	@PostMapping("/matTestInsert")
+	@ResponseBody
+	boolean matTestInsert(MatResultVO vo) {
+		System.err.println(vo);
+		return true;
 	}
 }

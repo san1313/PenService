@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.pen.app.qip.mapper.TestMapper">
+	<!-- 자재 입고검사 모달 리스트 조회 -->
+	<select id="matTestList" resultType="TestMatModalVO">
+		SELECT MAT_DTAORDCODE, MAT_ORDERNUM, TO_CHAR(MAT_ORDERDATE,'YYYY-MM-DD') AS MAT_ORDERDATE,
+		MAT_CODE, MAT_NAME, MAT_ORDER_QY, MAT_UNIT, ACC_CODE, ACC_NAME,
+		ACC_TEL FROM(SELECT MAT_DTAORDCODE, MAT_ORDERNUM, MAT_ORDERDATE,
+		MAT_CODE, MAT_ORDER_QY, ACC_CODE, ACC_NAME, ACC_TEL FROM MAT_ORDER
+		JOIN MAT_ORDER_HEADER USING(MAT_ORDERNUM) JOIN COM_CODE_ACCOUNT
+		USING(ACC_CODE)) JOIN COM_CODE_MAT USING(MAT_CODE)
+		WHERE MAT_DTAORDCODE NOT IN (SELECT MAT_DTAORDCODE FROM QIP_LIST_MAT)ORDER
+		BY MAT_ORDERDATE
+	</select>
+</mapper>
