@@ -11,6 +11,7 @@ import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsReleaseVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
@@ -25,6 +26,10 @@ public class BnsServiceImpl implements BnsService {
       return mapper.getOrdList();
    }
 
+   @Override
+	public BnsOrdVO getOrdCode() {
+		return mapper.getOrdCode();
+	}
    //주문서 등록
   
 
@@ -86,6 +91,11 @@ public class BnsServiceImpl implements BnsService {
 		
 	
 	// ---------------------계약서
+	@Override
+		public List<BnsContVO> getContCode() {
+			return mapper.getContCode();
+		}
+	
 		@Override
 			public List<BnsContVO> getContList() {
 			return mapper.getContList();
@@ -108,6 +118,7 @@ public class BnsServiceImpl implements BnsService {
 
 		@Override
 		public void delContDetList(List<BnsContVO> list) {
+			mapper.delContDetList(list);
 		}
 
 		@Override
@@ -149,6 +160,19 @@ public class BnsServiceImpl implements BnsService {
 				mapper.delStoreList(list.getList().get(i));
 			}
 		}
+
+		
+//출고
+		@Override
+			public List<BnsReleaseVO> getbeforeReleaseContList() {
+				return mapper.getbeforeReleaseContList();
+			}
+		
+		@Override
+			public List<BnsReleaseVO> getbeforeReleaseOrdList() {
+				return mapper.getbeforeReleaseOrdList();
+			}
+		
 
 		
 }

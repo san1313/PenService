@@ -6,7 +6,7 @@ import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
-import com.pen.app.bns.vo.BnsStoreListVO;
+import com.pen.app.bns.vo.BnsReleaseVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
 public interface BnsMapper {
@@ -23,7 +23,7 @@ public interface BnsMapper {
 	int modOrdList(List<BnsOrdVO> list);// 주문서 수정
 	void delOrdDetList(List<BnsOrdVO> list);// 주문서 삭제
 	void delOrdList(List<BnsOrdVO> list);// 주문서 삭제
-	List<BnsOrdVO> getOrdCode();//주문코드 조회
+	BnsOrdVO getOrdCode();//주문코드 조회
 	
 	//계약서
 	List<BnsContVO> getContList(); //계약서 전체 조회
@@ -31,7 +31,7 @@ public interface BnsMapper {
 	List<BnsContVO> getContProdModList(String keyword); // 계약서 수정 모달창 내의 제품리스트
 	int insertContList(List<BnsContVO> list);// 계약서 등록
 	int modContList(List<BnsContVO> list);// 계약서 수정
-	void delContDetList(List<BnsContVO> list);// 계약서 삭제
+	void delContDetList(List<BnsContVO> list);// 모달창 주문제품 삭제
 	void delContList(List<BnsContVO> list);// 주문서 삭제
 	List<BnsContVO> getContCode();//계약코드 조회
 	
@@ -41,4 +41,8 @@ public interface BnsMapper {
 	void insertStore(BnsStoreVO list);// 입고 등록
 	void delStoreList(BnsStoreVO list);// 주문서 삭제
 	
+	
+	//출고
+	List<BnsReleaseVO> getbeforeReleaseContList(); //출고전 계약서 그리드
+	List<BnsReleaseVO> getbeforeReleaseOrdList(); //출고전 주문서 그리드
 }

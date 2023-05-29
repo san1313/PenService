@@ -536,8 +536,7 @@
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				  addProdgrid.resetData(result);
-		        addProdgrid.refreshLayout();  
+				
 		        alert('주문서 등록완료');
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
@@ -1137,6 +1136,12 @@ $.ajax({
                      name: 'contDetRelease',
                      editor:'datePicker'
                  }
+                 ,
+                 {
+                	 header: '현황',
+                     name: 'contDetProgress'
+                    
+                 }
              ],
                summary: {
             	   height: 40,
@@ -1176,7 +1181,7 @@ $.ajax({
          
          //계약수정 모달창의 삭제 버튼 눌렀을 때
          $('#contProdDelete2').on('click',function(){
-			modProdgrid.removeCheckedRows(true)
+			modProdgrid.removeCheckedRows(true);
 			let deleted = modProdgrid.getModifiedRows().deletedRows;
 			
 			console.log(deleted)
@@ -1193,9 +1198,8 @@ $.ajax({
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						modProdgrid.resetData(result);
-				        modProdgrid.refreshLayout();
-						alert('제품삭제 완료');
+						
+						
 					}
 					});
 			}
@@ -1266,9 +1270,7 @@ $.ajax({
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				modProdgrid.resetData(result);
-		        modProdgrid.refreshLayout();
-		        alert('계약서 수정 완료');
+				
 			}
 			});
 			
