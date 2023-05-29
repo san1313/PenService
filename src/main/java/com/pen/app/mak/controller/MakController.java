@@ -134,9 +134,7 @@ public class MakController {
 	@ResponseBody
 	String delPlan(@RequestBody PlanVO vo) {
 	
-	System.out.println("삭제 받아오는 데이터 : "+vo);
 	String result = service.delPlan(vo);
-	System.out.println("결과 문자 : "+result);
 	
 	return result;
 	}
@@ -329,12 +327,10 @@ public class MakController {
 				}
 			}
 		}
-		
 		if(detCoList.isEmpty()) {
 			
 		}else {
 		List<PlanVO> result1 = mapper.getModalOrder(detCoList,vo);
-		
 		
 		result.addAll(result1);
 		};

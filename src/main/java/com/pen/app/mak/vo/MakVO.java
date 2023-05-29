@@ -12,7 +12,7 @@ public class MakVO{
 	String prodDev;
 	String prodCode;
 	int ordrQnt;    
-	String sDate;         
+	String stDate;       
 	String clsDate;         
 	String indicaState; 
 	String pdCode;
@@ -31,7 +31,22 @@ public class MakVO{
 	int bomMatUsage;
 	String procType;
 	String procName;
-	
-	
+	String prodName;
+	//설비
+	String facCode; 
+	String facName; 
+	String operateCheck; 
+	int procOrder;
+		
+	//생산 BOM
+	 int makBomCode;
+	 int makFlowCode;
+	 int makStep;
+	 int amount;
+	 String planIndica;
+	 
+	 //생산공정
+	 int makFlowStep;
+	 
 	
 }

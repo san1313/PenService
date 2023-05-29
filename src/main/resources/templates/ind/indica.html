@@ -28,6 +28,7 @@ font-size:10pt;
 margin-bottom:10px;
 height:28px;
 }
+
 </style>
 </head>
 <body>
@@ -75,24 +76,28 @@ height:28px;
 <label class="col-5 col-form-label">지시량</label>
 <input class="form-control col-7" type="number" id="ordrQnti">
 </div>
+<div class="form-group row col-5">
 <label class="col-5 col-form-label">미지시량</label>
 <input class="form-control col-7" type="number" id="reQnti" readonly>
 </div>
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-danger" disabled id="delBtn">삭제</button>
 </div>
-
+</div>
 <div class="form-group row">
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">지시시작일자</label>
-<input type="date" class="form-control col-7" id="sDatei">
+<input type="date" class="form-control col-7" id="stDatei">
 </div>
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">지시종료일자</label>
 <input type="date" class="form-control col-7" id="clsDatei">
 </div>
 <div class="form-group row col-2">
-<button style="margin-left:20px;" class="btn btn-danger" disabled id="delBtn">삭제</button>
+<button style="margin-left:20px;" class="btn btn-primary" id="resetBtn">초기화</button>
 </div>
 </div>
+
 </div>
 <div class="card-body" style="float:left; width:700px;">
 <div id="grid"></div>
@@ -102,15 +107,15 @@ height:28px;
 <div style="text-align:left;">
 <div class="card card-outline" style="display:inline-block;">
 <div class="card-body" style="float:left; width:500px;">
-<h5>제조공정</h5>
+<h5 class="font-weight-bold">제조공정</h5>
 <div id="proc_grid"></div>
 </div>
 <div class="card-body" style="float:left; width:700px;">
-<h5>투입자재</h5>
+<h5 class="font-weight-bold">투입자재</h5>
 <div id="bom_grid"></div>
 </div>
 <div class="card-body" style="float:left; width:300px;">
-<h5>자재재고현황</h5>
+<h5 class="font-weight-bold">설비가동여부</h5>
 <div id="mat_grid"></div>
 </div>
 </div>
@@ -158,23 +163,15 @@ var grid3 = null;
 var grid4 = null;
 var planData=[];
 var procData=[];
+var prodCode="";
+var pdCode ="";
 $(function () {
 	//기본값 설정
     $('#indDatei').val(new Date().toISOString().slice(0, 10));
-    $('#sDatei').val(new Date().toISOString().slice(0, 10));
+    $('#stDatei').val(new Date().toISOString().slice(0, 10));
     $('#clsDatei').val(new Date().toISOString().slice(0, 10));
-    document.getElementById('sDatei').min=new Date().toISOString().slice(0, 10);
+    document.getElementById('stDatei').min=new Date().toISOString().slice(0, 10);
     document.getElementById('clsDatei').min=new Date().toISOString().slice(0, 10);
-    //그리드 데이터소스
-    const dataSource = {
-            contentType: "application/json",
-            api: {
-              readData: {
-                url: "/ind/indList",
-                method: "GET",
-              },
-            },
-          };
 	//그리드 구성
 	//기본 그리드(지시서 등록 내용)
 	grid = new tui.Grid({
@@ -192,11 +189,11 @@ $(function () {
         },
         {
           header: '지시수량',
-          name: 'indicaQnt'
+          name: 'ordrQnt'
         },
         {
       	  header: '지시시작일자',
-      	  name : 'sDate'
+      	  name : 'stDate'
         },
         {
       	  header:'지시종료일자',
@@ -208,14 +205,14 @@ $(function () {
           }
       ]
       });
-	//
+	//공정(검수제외?)
 	grid2 = new tui.Grid({
         el: document.getElementById('proc_grid'),
         scrollX: false,
         bodyHeight: 200,
         columns: [{
           header: '공정순서',
-          name: 'lev'
+          name: 'procOrder'
         },
         {
        	  header: '공정분류',
@@ -227,7 +224,7 @@ $(function () {
         }
       ]
       });
-	//
+	//투입 자재
 	grid3 = new tui.Grid({
         el: document.getElementById('bom_grid'),
         scrollX: false,
@@ -251,18 +248,22 @@ $(function () {
         }
       ]
       });
-	
+	//현재 자재명별 자재재고
 	grid4 = new tui.Grid({
         el: document.getElementById('mat_grid'),
         scrollX: false,
         bodyHeight: 200,
         columns: [{
-          header: '자재명',
-          name: 'matName'
+          header: '설비명',
+          name: 'facName'
         },
         {
-          header: '재고량',
-          name: 'matQnt'
+          header: '가동여부',
+          name: 'operateCheck'
+        },
+        {
+        	header: '공정명',
+        	name:'procName'
         }
       ]
       });
@@ -284,6 +285,10 @@ $(function () {
           name: 'planQnt'
         },
         {
+          header: '미지시량',
+          name: 'reQnt'
+        },
+        {
       	  header: '계획시작일자',
       	  name : 'planSdate'
         },
@@ -293,52 +298,107 @@ $(function () {
         }
       ]
       });
-	 
-	 
+    $.ajax({
+		url:"/ind/indList",
+		method : "GET",
+		success:function(result){
+			grid.resetData(result);
+		}
+	})
     //모달 그리드 설정
     modal_grid.on("dblclick",function(e){
     	let planModalData = modal_grid.getRow(e.rowKey);
     	let planProdCode = modal_grid.getRow(e.rowKey).prodCode;
+    	prodCode = planProdCode;
+    	pdCode = modal_grid.getRow(e.rowKey).pdCode;
     	console.log(planModalData);
   	  $('#matmodalbtn').modal('hide'); 
       $('#matmodalbtn').hide();
       $('.bd-example-modal-lg').hide();
       //인풋에 데이터 넣기
-      
       $('#planNmi').val(planModalData.planNm);
       $('#prodNmi').val(planModalData.prodName);
-      $('#sDatei').val(new Date().toISOString().slice(0, 10));
+      //시작일자 지정
+      if(planModalData.planSdate<new Date().toISOString().slice(0, 10)){
+      $('#stDatei').val(new Date().toISOString().slice(0, 10));
+      }else{
+    	  $('#stDatei').val(planModalData.planSdate);
+    	  document.getElementById('stDatei').min=planModalData.planSdate;
+      };
+      //지시종료일자 지정
+      $('#clsDatei').val(planModalData.planClsdate);
+      if(planModalData.ordDetQuan>0){
+    	  //계약서 수량인지 주문서 수량인지에 따라가기
       $('#ordrQnti').val(planModalData.ordDetQuan);
+      }else if(planModalData.contDetQuan>0){
+    	  $('#ordrQnti').val(planModalData.contDetQuan);
+      }
       document.getElementById('clsDatei').max=planModalData.planClsdate;
+      
       //공정 bom 데이터 넣기
-      $.ajax({
-          url : "/ind/planFlow",
-          method : "POST",
-          data : {"prodCode":planProdCode},
-          beforeSend: function (xhr) {
-              xhr.setRequestHeader(header, token);
-            },
-          success : function(result){
-        	grid2.textContent="";
-        	grid3.textContent="";
-            grid2.resetData(result);
-            grid3.resetData(result);
-            
-            let limit = grid3.getData();
-            limit.forEach(function(ele,idx){
-          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#ordrQnti').val()*ele.bomMatUsage),false);
-            })
-          }
-        });
+	      $.ajax({
+	          url : "/ind/planFlow",
+	          method : "POST",
+	          data : {"prodCode":planProdCode},
+	          beforeSend: function (xhr) {
+	              xhr.setRequestHeader(header, token);
+	            },
+	          success : function(result){
+	        	grid2.textContent="";
+	        	grid3.textContent="";
+	            
+	            grid3.resetData(result);
+	            let limit = grid3.getData();
+	            //결과값 받아온 수량과 매칭해서 소모예정량 수정
+	            limit.forEach(function(ele,idx){
+	          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#ordrQnti').val()*ele.bomMatUsage),false);
+	            })
+	            
+	            let innerData = [];
+	            //결과값에서 추출하는 반복문
+	          	  result.forEach(function(ele){
+	          		  if(ele.parentCode!=null){
+	          	  let leastData = {"bomMatType":ele.bomMatType,
+	          			  "bomProdCode":ele.bomProdCode,
+	          			  "parentCode":ele.parentCode,
+	          			  "procCode":ele.procCode};
+	          	innerData.push(leastData);
+	          		  };
+	          	  })
+	          	  //반복문 끝
+	          	  
+	          	  let flowCondition={"list":innerData};
+	            //공정정보 불러오기
+	          	  $.ajax({
+	          		  url:"/ind/getFlowList",
+	          		  method:"POST",
+	          		  data:JSON.stringify(flowCondition),
+	          		  contentType : "application/json",
+	          		 beforeSend: function (xhr) {
+	   	              xhr.setRequestHeader(header, token);
+	   	            },
+	   	            success : function(resolve){
+	   	            	grid2.resetData(resolve);
+	   	            }
+	          	  });
+	          	//설비 가동여부 불러오기
+	          	 $.ajax({
+	          		  url:"/ind/operateCheck",
+	          		  method:"POST",
+	          		  data:JSON.stringify(flowCondition),
+	          		  contentType : "application/json",
+	          		 beforeSend: function (xhr) {
+	   	              xhr.setRequestHeader(header, token);
+	   	            },
+	   	            success : function(result2){
+	   	            	grid4.resetData(result2);
+	   	            }
+	          	  });
+	            
+	          }
+	        });
 
-		//재고명별 자재재고량 데이터 넣어두기
-      $.ajax({
-    	  url : "/ind/matList",
-    	  method:"get",
-    	  success: function(result){
-    		  grid4.resetData(result);
-    	  }
-      })
+
     });
     //keyup이벤트
     $('#ordrQnti').keyup(function(e){
@@ -348,21 +408,203 @@ $(function () {
             });
     })
     grid.setWidth(660);
+    //모달창 열릴떄 작동
 	$('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
         $.ajax({
             url : "/ind/planning",
             method : "GET",
-            dataType : "JSON",
             success : function(result){
           	  modal_grid.textContent="";
+          	  result.forEach(function(ele,i){
+          		  if(result[i].reQnt==0){
+          			  result[i].reQnt=result[i].planQnt;
+          		  }
+          	  })
               modal_grid.resetData(result);
-          	
             }
-        
-        
           });     
-       });			
+       });	
+    //등록버튼 클릭시 이벤트
+	$('#subBtn').click(function(){
+		
+		if($('#indNmi').val()==''){
+    		alert('지시명을 지정해주세요.');
+    		return false;
+    	};
+    	if($('#stDatei').val()==$('#clsDatei').val()){
+    		if(confirm("지시 시작일자와 종료일자가 동일합니다. \n그대로 진행하시겠습니까?")){
+    		}else{
+    			return false;
+    		};
+    	};
+    	let makFlow = grid2.getData();
+    	let makMat = grid3.getData();
+    	console.log($('#stDatei').val());
+    	let insertData = {
+    			"indicaNm" : $('#indNmi').val(),
+    			"indicaDate" : $('#indDatei').val(),
+    			"prodCode" : prodCode,
+    			"ordrQnt" : $('#ordrQnti').val(),
+    			"stDate" : $('#stDatei').val(),
+    			"clsDate" : $('#clsDatei').val(),
+    			"pdCode" : pdCode
+    	};
+    	console.log($('#stDatei').val());
+    	console.log(insertData);
+    	let outerFlow ={};
+    	let innerFlow = [];
+    	//공정정보 가공
+    	makFlow.forEach(function(ele,i){
+    		console.log("grid2 : "+makFlow[i].procName);	
+    	});
+    	
+    	//필요자재정보 가공
+    	let innerMat = [];
+    	let outerMat = {};
+    	makMat.forEach(function(ele,i){
+    	console.log("gird3 : "+makMat[i].bomProdName);
+    	});
+    	//등록 아작스 시작
+    	$.ajax({
+    		url:"/ind/insertIndica",
+    		method : "POST",
+    		data : JSON.stringify(insertData),
+    		contentType : "application/json",
+    		 beforeSend: function (xhr) {
+  	              xhr.setRequestHeader(header, token);
+  	            },
+    		success : function(result){
+    			console.log(result);
+    			$.ajax({
+    				url:"/ind/indList",
+    				method : "GET",
+    				success:function(result){
+    					grid.resetData(result);
+    				}
+    			})
+    		},
+    		error:function(reject){
+    			console.error(reject);
+    		}
+    	}); 
+    	//등록 아작스 끝
+	});
+    //등록버튼 끝
+    
+    grid.on('dblclick',function(e){
+    	let modData = grid.getRow(e.rowKey);
+    	//수정버튼 활성화
+    	if(modData.indicaState=="미작업"||modData.indicaState=="작업중"){
+    		$('#modBtn').attr('disabled',false);
+    	}
+    	//삭제버튼 활성화
+    	if(modData.indicaState=="미작업"){
+    		$('#delBtn').attr('disabled',false);
+    	}
+    	$('#indNmi').val(modData.indicaNm);
+    	$('#ordrQnti').val(modData.ordrQnt);
+    	$('#clsDatei').val(modData.clsDate);
+    	$('#stDatei').val(modData.stDate);
+    	
+    	
+    	//검색버튼 숨기기
+    	$('ion-icon[name="search"]').css('display','none');
+    	//공정 bom 데이터 넣기
+	      $.ajax({
+	          url : "/ind/planFlow",
+	          method : "POST",
+	          data : {"prodCode":modData.prodCode},
+	          beforeSend: function (xhr) {
+	              xhr.setRequestHeader(header, token);
+	            },
+	          success : function(result){
+	        	grid2.textContent="";
+	        	grid3.textContent="";
+	            
+	            grid3.resetData(result);
+	            let limit = grid3.getData();
+	            //결과값 받아온 수량과 매칭해서 소모예정량 수정
+	            limit.forEach(function(ele,idx){
+	          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#ordrQnti').val()*ele.bomMatUsage),false);
+	            })
+	            
+	            let innerData = [];
+	            //결과값에서 추출하는 반복문
+	          	  result.forEach(function(ele){
+	          		  if(ele.parentCode!=null){
+	          	  let leastData = {"bomMatType":ele.bomMatType,
+	          			  "bomProdCode":ele.bomProdCode,
+	          			  "parentCode":ele.parentCode,
+	          			  "procCode":ele.procCode};
+	          	innerData.push(leastData);
+	          		  };
+	          	  })
+	          	  //반복문 끝
+	          	  
+	          	  let flowCondition={"list":innerData};
+	            //공정정보 불러오기
+	          	  $.ajax({
+	          		  url:"/ind/getFlowList",
+	          		  method:"POST",
+	          		  data:JSON.stringify(flowCondition),
+	          		  contentType : "application/json",
+	          		 beforeSend: function (xhr) {
+	   	              xhr.setRequestHeader(header, token);
+	   	            },
+	   	            success : function(resolve){
+	   	            	grid2.resetData(resolve);
+	   	            }
+	          	  });
+	          	//설비 가동여부 불러오기
+	          	 $.ajax({
+	          		  url:"/ind/operateCheck",
+	          		  method:"POST",
+	          		  data:JSON.stringify(flowCondition),
+	          		  contentType : "application/json",
+	          		 beforeSend: function (xhr) {
+	   	              xhr.setRequestHeader(header, token);
+	   	            },
+	   	            success : function(result2){
+	   	            	grid4.resetData(result2);
+	   	            }
+	          	  });
+	            
+	          }
+	        });
+    });
+    //그리드 더블클릭 끝
+    //초기화버튼 시작
+    $('#resetBtn').click(function(){
+    	//인풋 초기화
+    	$('#indNmi').val('');
+    	$('#planNmi').val('');
+    	$('#ordrQnti').val('');
+    	$('#reQnti').val('');
+    	$('#prodNmi').val('');
+    	$('#clsDatei').val(new Date().toISOString().slice(0, 10));
+    	//검색버튼 활성화
+    	$('ion-icon[name="search"]').css('display','block');
+    	//버튼 비활성화
+    	$('#modBtn').attr('disabled',true);
+    	$('#delBtn').attr('disabled',true);
+    	
+    	//그리드 내용 삭제
+    	 let grid2Rows = grid2.getData();
+    	grid2Rows.forEach(function(ele,i){
+    		grid2.removeRow(grid2Rows[i].rowKey);
+    	});
+    	let grid3Rows = grid3.getData();
+    	grid3Rows.forEach(function(ele,i){
+    		grid3.removeRow(grid3Rows[i].rowKey);
+    	});
+    	let grid4Rows = grid4.getData();
+    	grid4Rows.forEach(function(ele,i){
+    		grid4.removeRow(grid4Rows[i].rowKey);
+    	})
+    	
+    })
+	
      }); 
 //모달 내부 계획 상세 조회 기능
 function getModalCon(){

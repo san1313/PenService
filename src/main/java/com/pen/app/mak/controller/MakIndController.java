@@ -5,14 +5,20 @@ import java.util.List;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mak.service.MakIndService;
+import com.pen.app.mak.vo.IndicaListVO;
 import com.pen.app.mak.vo.IndicaVO;
 import com.pen.app.mak.vo.MakVO;
 import com.pen.app.mak.vo.PlanVO;
+
+/*
+ * 최준호 - 생산지시서 컨트롤러 
+ */
 
 @Controller
 @RequestMapping("/ind")
@@ -21,9 +27,11 @@ public class MakIndController {
 	@Autowired
 	MakIndService service;
 	
+	//생산지시서 페이지
 	@GetMapping("/indica")
 	public void plan() {
 	}
+	//생산지시서(직접지시) 페이지
 	@GetMapping("/dirindica")
 	public void dirplan() {
 	}
@@ -50,10 +58,24 @@ public class MakIndController {
 		return service.planFlow(prodCode);
 	}
 	
-	@GetMapping("/matList")
+	@RequestMapping("/operateCheck")
 	@ResponseBody
-	List<IndicaVO> matList(){
-		return service.getMatList();
+	List<MakVO> matList(@RequestBody IndicaListVO list){
+		return service.getOperateCheck(list);
 	}
 	
+	@RequestMapping("/getFlowList")
+	@ResponseBody
+	List<MakVO> getFlowList(@RequestBody IndicaListVO list){
+		System.out.println("넘겨받은 값 : "+list);
+		return service.getFlowList(list);
+	}
+	
+	@RequestMapping("/insertIndica")
+	@ResponseBody
+	String insertIndica(@RequestBody MakVO vo) {
+		String result = service.insertIndica(vo);
+			
+		return result;
+	}
 }
