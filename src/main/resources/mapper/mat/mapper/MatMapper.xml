@@ -153,4 +153,19 @@
 	<select id="getinventorysearchlot" resultType="InventoryVO">
 		select distinct a.mat_code, a.mat_name, a.mat_lot, b.mat_bcncname,(c.cnt + a.mat_qnt) as matQntt ,c.cnt, a.mat_qnt from mat_invntry a left join mat_wrhousng b on(a.mat_lot = b.mat_lot) left join MAK_HOLD c on(a.mat_lot=c.mat_lot) where a.mat_code = #{matCode}
 	</select>
+	
+	<!-- 자재출고조회 -->
+	<select id="getmatdlivylist" resultType="DlivyVO">
+	select * from mat_dlivy
+	</select>
+	
+	<!-- 자재출고조회 다중검색 -->
+	<select id = "getmatdlivysearchlist" resultType="DlivyVO">
+	<![CDATA[
+		select * 
+		from mat_dlivy
+		where mat_name=#{matName} and mat_dlivydate >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
+		and mat_dlivydate <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
+	]]>
+	</select>
 </mapper>

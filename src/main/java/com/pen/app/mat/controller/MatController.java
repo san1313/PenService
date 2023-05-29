@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
@@ -23,7 +24,7 @@ import com.pen.app.mat.vo.WarehousingVO;
 @RequestMapping("/mat")
 public class MatController {
 
-@Autowired MatMapper matmapper;
+
 @Autowired MatService matservice;
 
 	//발주페이지
@@ -36,7 +37,7 @@ public class MatController {
 	@ResponseBody
 	@GetMapping("/matlist")
 	public List<OrderVO> matlist(){
-		List<OrderVO> list = matmapper.getmatlist();
+		List<OrderVO> list = matservice.getmatlist();
 		System.out.println(list);
 		return list;
 	}
@@ -45,7 +46,7 @@ public class MatController {
 	@RequestMapping("/matminilist")
 	@ResponseBody
 	public List<OrderVO> matminilist(@RequestParam String result){
-		List<OrderVO> list = matmapper.getmatminilist(result);
+		List<OrderVO> list = matservice.getmatminilist(result);
 		return list;
 	}
 	
@@ -53,7 +54,7 @@ public class MatController {
 	@ResponseBody
 	@GetMapping("/acclist")
 	public List<OrderVO> acclist(){
-		List<OrderVO> list = matmapper.getacclist();
+		List<OrderVO> list = matservice.getacclist();
 		return list;
 	}
 	
@@ -62,17 +63,17 @@ public class MatController {
 	@ResponseBody
 	public List<OrderVO> accminilist(@RequestParam String result){
 		System.out.println(result);
-		List<OrderVO> list = matmapper.getaccminilist(result);
+		List<OrderVO> list = matservice.getaccminilist(result);
 		return list;
 	}
 	
 	//발주번호
-	@ResponseBody
-	@GetMapping("/matordercode")
-	public String matordercode(){
-		String result = matmapper.getmatordercode();
-		return result;
-	}
+	/*
+	 * @ResponseBody
+	 * 
+	 * @GetMapping("/matordercode") public String matordercode(){ String result =
+	 * matservice.getmatordercode(); return result; }
+	 */
 	
 	//발주등록
 	 @RequestMapping("/matregister")
@@ -80,7 +81,7 @@ public class MatController {
 	 public OrderVO matregister(@RequestBody MatOrdVO vo){
 		 System.err.println(vo.getList());
 		 System.out.println(vo.getList().get(0));
-		 matmapper.getmatregister(vo.getList());		 
+		 matservice.getmatregister(vo.getList());		 
 	 	 return null; 
 	 	}
 		 
@@ -88,7 +89,7 @@ public class MatController {
 	 @RequestMapping("/todaymatregister")
 	 @ResponseBody
 	 public List<OrderVO> todaymatregister(){
-		 List<OrderVO> list = matmapper.gettodaymatregister();
+		 List<OrderVO> list = matservice.gettodaymatregister();
 		 return list;
 	 }
 	 
@@ -101,7 +102,7 @@ public class MatController {
 	 @RequestMapping("/orderlistajax")
 	 @ResponseBody
 	 public List<OrderVO> matorderlistajax(){
-		 List<OrderVO> list = matmapper.getorderlistajax();	
+		 List<OrderVO> list = matservice.getorderlistajax();	
 		 return list;
 	 }
 	 
@@ -126,7 +127,7 @@ public class MatController {
 	 @RequestMapping("/warehousinglist")
 	 @ResponseBody
 	 public List<WarehousingVO> warehousinglist(){
-		 List<WarehousingVO> list = matmapper.getwarehousinglist();
+		 List<WarehousingVO> list = matservice.getwarehousinglist();
 		 return list;
 	 }
 	 
@@ -140,7 +141,7 @@ public class MatController {
 			sum += in.getMatWrhqy(); 
 		 }
 		 vo.getList().get(0).setMatQnt(sum);
-		 matmapper.getwarehousingregister(vo.getList());
+		 matservice.getwarehousingregister(vo.getList());
 		 return null;
 	 }
 	 
@@ -148,7 +149,7 @@ public class MatController {
 	 @RequestMapping("/todaywarehousinglist")
 	 @ResponseBody
 	 public List<WarehousingVO> gettodaywarehousinglist(){
-		 List<WarehousingVO> list = matmapper.gettodaywarehousinglist();
+		 List<WarehousingVO> list = matservice.gettodaywarehousinglist();
 		 return list;
 	 }
 	 
@@ -182,7 +183,7 @@ public class MatController {
 	 @GetMapping("/warehousingmatlistajax")
 	 @ResponseBody
 	 public List<WarehousingVO> warehousingmatlistajax(){
-		 List<WarehousingVO> list = matmapper.getwarehousingmatlistajax();
+		 List<WarehousingVO> list = matservice.getwarehousingmatlistajax();
 		 return list;
 	 }
 	
@@ -197,7 +198,7 @@ public class MatController {
 	 @ResponseBody
 	 public List<InventoryVO> inventorysearch(@RequestParam String result){
 		 System.out.println(result);
-		 List<InventoryVO> list = matmapper.getinventorysearch(result);
+		 List<InventoryVO> list = matservice.getinventorysearch(result);
 		 return list;
 	 }
 	 
@@ -205,7 +206,7 @@ public class MatController {
 	 @RequestMapping("/inventorysearchlot")
 	 @ResponseBody
 	 public List<InventoryVO> inventorysearchlot(@RequestParam String matCode){
-		 List<InventoryVO> list = matmapper.getinventorysearchlot(matCode);
+		 List<InventoryVO> list = matservice.getinventorysearchlot(matCode);
 		 return list;
 	 }
 	 
@@ -213,8 +214,33 @@ public class MatController {
 	 //재고조정관리
 	 @GetMapping("/matadjust")
 	 public void matadjust(){
-	 
+		
 	 }
 	 
+	 
+	 
+	 
+	 //자재출고조회
+	 @GetMapping("/matdlivy")
+	 public void matdlivy() {
+		 
+	 }
+	 
+	 //자재출고조회
+	 @GetMapping("/matdlivylist")
+	 @ResponseBody
+	 public List<DlivyVO> matdlivylist() {
+		 List<DlivyVO> list = matservice.getmatdlivylist();
+		 return list;
+	 }
+	 
+	 //자재출고조회 다중검색
+	 @GetMapping("/matdlivysearchlist")
+	 @ResponseBody
+	 public List<DlivyVO> matdlivysearchlist(DlivyVO dlivyVO){
+		 System.err.println(dlivyVO);
+		 
+		 return matservice.getmatdlivysearchlist(dlivyVO);
+	 }
 	 
 }

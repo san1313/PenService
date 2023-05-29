@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.mybatis.spring.annotation.MapperScan;
 
+import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -17,6 +18,7 @@ public interface MatService {
 	public List<OrderVO> getmatminilist(String keyword);
 	public List<OrderVO> getacclist(); //모달거래처목록
 	public List<OrderVO> getaccminilist(String keyword);
+	//String getmatordercode();//발주코드
 	public void getmatregister(List<OrderVO> list); //발주등록
 	public List<OrderVO> gettodaymatregister(); //당일발주등록리스트
 	public List<OrderVO> getorderlistajax(); //발주등록조회페이지
@@ -32,4 +34,6 @@ public interface MatService {
 	public List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드검색
 	public List<InventoryVO> getinventorysearchlot(String matCode); //자재재고조회 lot
 	
+	public List<DlivyVO> getmatdlivylist(); //자재출고리스트
+	public List<DlivyVO> getmatdlivysearchlist(DlivyVO vo); //자재출고리스트 다중검색
 }
