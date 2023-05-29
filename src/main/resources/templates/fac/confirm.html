@@ -24,47 +24,48 @@
 <!-- 메인콘텐츠 -->
    <div layout:fragment="content">
    
-<div class="fac_confirm">
+<div class="fac_confirm" style="text-align:left">
    <div class = "col-12 fac_confirm">
-            <label for="confirm_code" hidden>점검코드
-            <input type="text"id="confirm_code" placeholder="confirm" readonly>&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="confirm_code" hidden>점검코드&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text"id="confirm_code" placeholder="CONFIRM" readonly>&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
-            <label for="fac_code">설비코드
-            <input type="text"id="fac_code">
-            <button type="button" data-bs-toggle="modal" data-bs-target="#faccodeModal">
-            <i class="fa fa-search"></i></button>
-            </label>&nbsp;&nbsp;&nbsp;&nbsp; 
+            <label for="confirm_date">점검일시</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
+            <label for="fac_code">설비코드&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <input type="text"id="fac_code">
+            <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
+                
             <label for="fac_name">설비명&nbsp;&nbsp;&nbsp;
             <input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label> 
-            
-            
+                       
             <label for="confirm_category" id="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="radio" name="regular_confirm" value="정기점검" checked> 정기점검
-            <input type="radio" name="occasional_confirm" value="수시점검"> 수시점검
-            <input type="radio" name="emergency_confirm" value="긴급점검"> 긴급점검
+            <input type="radio" name="regular_confirm" value="정기점검" checked> 정기점검&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="occasional_confirm" value="수시점검"> 수시점검&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="emergency_confirm" value="긴급점검"> 긴급점검&nbsp;&nbsp;&nbsp;
             
             <br>
-            <label for="action_history">조치내역</label>
-            <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="action_history">조치내역</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;
+              
+            <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;
+            <select name="confirm_issue" style="width:190px; height:30px;" >
+               <option value="선택" selected="selected">----------사항선택----------</option>
+               <option value="점검">점검</option>
+               <option value="고장">고장</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                   
+            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;
             <input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
-            <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;&nbsp;
-            <select name="confirm_issue">
-               <option value="선택" selected="selected">---선택---</option>
-               <option value="점검">점검</option>
-               <option value="고장">고장</option>
-            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <label for="confirm_date">점검일자
-            <input type="date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label> 
-
-            <br>
+            <label for ="decision">판정&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <input type="radio" name="fit" value="적합" checked>&nbsp;&nbsp;적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="unfit" value="부적합">&nbsp;&nbsp;부적합 
+           	
+            <br><br>
             
             <div class="col-12">
                <div class="col-8" style="margin:0 auto">
@@ -77,7 +78,6 @@
    </div>
    
 </div>
-<hr>
 
 <!--설비조회 모달-->
 <div class="modal fade bd-example-modal-lg" id="chfacmodalbtn" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
@@ -101,19 +101,10 @@
       </div>
     </div>
   </div>
-</div>   
+</div> 
 
-<!----설비검색시작---->
-     <div class="info_search" style="text-align:left">
-      <select name = "fac_info">
-         <option value="선택" selected="selected">---선택---</option>
-         <option value="설비명">설비명</option>
-        <option value="설비코드">설비코드</option>
-        <option value="담당자">담당자</option>
-      </select>
-     <input type="text" id="search_name">
-     <button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
-  
+<hr>
+
  <!-- 그리드화면 -->
  <div id="grid"></div>
        
@@ -129,6 +120,31 @@
    
     $(function(){  
       
+    	
+    	
+		//설비코드버튼
+		$('#facSelectmodalbtn').click(function(){
+				
+			$.ajax({
+				url : "/fac/infoListAjax",
+				method : "GET",
+				dataType : "JSON",
+				success : function(result){
+					console.log(result)
+					grid2.resetData(result);
+					
+					$('#chfacmodalbtn').modal('show');
+					 $('#chfacmodalbtn').on('shown.bs.modal', function (e){
+						 console.log('open');
+						 setTimeout(()=> grid2.refreshLayout(), 100);
+					 })	
+				},error : function(reject){
+					console.log(reject)
+				}
+			});
+		})
+    	
+    	
           //점검목록리스트그리드
           $.ajax({
                url : "/fac/confirmListAjax",
@@ -167,13 +183,14 @@
               name: 'confirmIssue'
             },
             {
+                header: '판정',
+                name: 'decision'
+              },
+            {
               header: '점검일자',
               name: 'confirmDate'
             },
-            {
-              header: '차기점검일',
-              name: 'nextConfirmDate'
-            },
+
             {
               header: '담당자',
               name: 'empNum'
@@ -417,8 +434,8 @@
           
           
        });
-             
-    });
+            
+   
 
     function getProc(){
    getProcRows=grid2.getCheckedRows();

@@ -16,7 +16,12 @@ import com.pen.app.fac.vo.FacConnProcVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
-
+/*
+ * 개발자:김미진
+ * 내용: 설비파트 
+ * 작성일자:
+ * 수정일자:
+ */
 @Controller
 @RequestMapping("/fac")
 public class FacController {
@@ -50,14 +55,18 @@ public class FacController {
       //설비전체리스트 
       @ResponseBody
       @GetMapping("/infoListAjax") 
-      public List<FacInfoVO> infoListAjax(){
-      List<FacInfoVO> list = dao.getList();
-      System.out.println(list);
-      return list;
+      public List<FacInfoVO> infoListAjax(FacInfoVO vo){
+	      List<FacInfoVO> list = dao.getList(vo);
+	      return list;
       }
       
-      //설비 단건검색 리스트
-      
+      //설비별 공정리스트
+      @ResponseBody
+      @GetMapping("/getFacConnProcList")
+      public List<FacConnProcVO> getFacConnProcList(String facCode){
+    	  List<FacConnProcVO> list = dao.getFacConnProcList(facCode);
+    	  return list;
+      }
        
       //공정전체리스트
        @ResponseBody
@@ -71,48 +80,29 @@ public class FacController {
        @ResponseBody
        @RequestMapping("/procminilist") 
       public List<FacConnProcVO> proclistAjax(@RequestParam String result){
-          String data1 = "%";
-          result += "%";
-          data1 +=result;
-          System.out.println(result);
-      List<FacConnProcVO> list = dao.getprocminilist(data1);
-      System.out.println(list);
-      return list;
+    	   List<FacConnProcVO> list = dao.getprocminilist(result);
+    	   return list;
       }
-         
-    
-     //설비등록2
-//      @ResponseBody
-//      @RequestMapping("/insertFacList")
-//      public FacInfoVO insertFacList(@RequestBody FacInfoListVO list) {
-//    	  System.err.println(list.getList());
-//    	  System.out.println(list.getList().get(0));
-//    	  dao.insertFacList(list.getList());
-//    	  return null;
-//      }
-       
+             
      //설비등록
      @ResponseBody
      @RequestMapping("/facRegister")
    	 public int facRegister(@RequestBody FacInfoListVO list) {
     	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
-    	 System.out.println("설비와 공정 동시 등록 : "+list);
     	 return service.insertFacList(list);
      }
    	 
      //설비수정
      @ResponseBody 
      @RequestMapping("/facUpdate")
-     public int facUpdate(FacInfoVO vo) {
-    	 System.out.println("수정하려고 받은 값 : "+vo);
-    	 return service.facUpdate(vo);
+     public int facUpdate(@RequestBody FacInfoListVO list) {
+    	 return service.facUpdate(list);
      }
      
      //설비삭제
      @ResponseBody 
      @RequestMapping("/facDelete")
      public int facDelete(FacInfoVO vo) {
-    	 System.out.println("삭제하려고 받은 값: "+ vo);
     	 return service.facDelete(vo);
      }
        

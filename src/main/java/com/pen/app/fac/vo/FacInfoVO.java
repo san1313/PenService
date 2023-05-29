@@ -20,8 +20,12 @@ public class FacInfoVO {
 	String facProc;
 	String procCode;
 	//한 설비에 연결된 공정 데이터들
+	
 	//COM_CODE_PROC 테이블 필드
-		String procName;//공정이름
-		String procType; //공정타입
-		String procDetail; //공정설명
+	String procName;//공정이름
+	String procType; //공정타입
+	String procDetail; //공정설명
+	
+	String searchDiv;
+	String searchName;
 }
