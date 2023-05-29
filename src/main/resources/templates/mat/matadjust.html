@@ -34,17 +34,28 @@
 	float:right;
 	margin-right:10px;
 	}
-	#suBtn{
-	display:none;
-	float:right;
-	}
+	
     .text1 {
       margin: 15px;
       padding: 0 5px 0 0;
     }
     
+    #deletebtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+	}
+	#subtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+	}
+    
     #ckgrid{
      margin-top: 30px;
+    }
+    #matadjustgrid{
+     display:none;
     }
 
   </style>
@@ -95,66 +106,61 @@
 </div>
 
 
-
-
-	
+	<div id="lotadjustgride"></div>
 	<div id="matadjustgrid"></div>
-
-
+	
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+     <button type="button" class="btn btn-primary" id="subtn">입고</button>
+     <button type="button" class="btn btn-primary" id="deletebtn">출고</button>
+	</div>
+	
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
-
-     
-
-    var matadjustgrid = new tui.Grid({
-    el: document.getElementById('matadjustgrid'),
-    scrollX: false,
-    scrollY: false,
-    rowHeaders: ['rowNum'],
-    columns: [{
-    header: 'LOT번호',
-    name: 'matOrdernum'
-    },
-    {
-    header: '자재코드',
-    name: 'matOrdername',
-    },
-    {
-    header: '자재명',
-    name: 'accCode'
-    },
-    {
-    header: '자재코드',
-    name: 'matCode'
-    },
-    {
-    header: '입고',
-    name: 'matName'
-    },
-    {
-    header: '출고',
-    name: 'matOrderQy'
-    },
-    {
-    header: '자재조정수량',
-    name: 'matUntpc'
-    },
-    {
-     header: '조정구분',
-     name: 'matTotamt'
-    },
-    {
-    header: '조정사유',
-    name: 'matOrderdate'
-    }
-    ]
-    });
-
+    //lot리스트
+    var lotadjustgride = new tui.Grid({
+        el: document.getElementById('lotadjustgride'),
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['rowNum'],
+        bodyHeight : 200,
+        columns: [{
+        header: 'LOT번호',
+        name: 'matLot'
+        },
+        {
+        header: '자재명',
+        name: 'matName'
+        },
+        {
+        header: '자재코드',
+        name: 'matCode'
+        },
+        {
+        header: '거래처명',
+        name: 'matBcncname'
+        },
+        {
+        header: '수량',
+        name: 'matQnt'
+        },
+        ]
+        });
     
     
-    
+    $.ajax({
+        url : "/mat/matadjustlotlist",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	console.log(result);
+        	lotadjustgride.resetData(result);
+        	lotadjustgride.refreshLayout();
+        }
+      });
+	
+       
     
   //자재명모달
     $.ajax({
@@ -250,35 +256,97 @@
     })	
 
     
-         
+   
+   
+    
      
-   //조회버튼
-    document.getElementById('submitbtn').addEventListener('click',function(){
-	   var matName = document.getElementById('matmodalmatname').value;
-	   var accCode = document.getElementById('accmodalcode').value;
-	   var startDate = document.getElementById('matOrderdate1').value;
-	   var endDate = document.getElementById('matOrderdate2').value;
+	//조정수량
+   var matadjustgrid = new tui.Grid({
+    el: document.getElementById('matadjustgrid'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['checkbox'],
+    columns: [{
+    header: 'LOT번호',
+    name: 'matLot'
+    },
+    {
+    header: '자재코드',
+    name: 'matCode',
+    },
+    {
+    header: '자재명',
+    name: 'matName'
+    },
+    {
+    header: '수량',
+    name: 'matQnt'
+    },
+    {
+    header: '자재조정수량',
+    name: 'matMdatqnt',
+    editor: 'text'
+    },
+    {
+    header: '조정사유',
+    name: 'matMdatresn',
+    editor:'text'
+    }
+    ]
+    });
+
+    lotadjustgride.on('click', ev =>{
+    	console.log('클릭');
+    	document.getElementById('matadjustgrid').setAttribute('style', 'display:block;');
+    	var matLot = lotadjustgride.getRow(ev.rowKey).matLot;
+    	console.log(matLot)
+    	
+    	$.ajax({
+	   		 url : "/mat/matadjustlot",
+	   	     method : "GET",
+	   	     data : {"matLot" : matLot},
+	   	     success : function(result){
+	   	    	 console.log(result)
+	   	    	matadjustgrid.resetData(result);
+	   	    	matadjustgrid.refreshLayout();
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	     }
+	   }); 
     	
     	
-		 $.ajax({
-   		 url : "/mat/orderlistsearchajax",
-   	     method : "GET",
-   	     data : {matName: matName,
-   	    		accCode: accCode,
-   	     		matOrderdate : startDate,
-   	     		matOrderdate1 : endDate}, 
-   	     dataType : "JSON",
-   	     success : function(result){
-   	    	 console.log(result)
-   	    	matadjustgrid.resetData(result);
-   	    	matadjustgrid.refreshLayout();	
-   	     },
-   	     error: function(reject){
-   	    	 console.log(reject)
-     }
-   }); 
-   })  
-     
+    })
+    
+    //입고버튼
+    document.getElementById('subtn').addEventListener('click', function(){
+    	let checked = matadjustgrid.getCheckedRows();
+    	// checked.forEach(functioin(ele,i){
+    	// 	checked[i].matMdatdate = new Date().toISOString().slice(0,10);
+    	// )}
+    	
+    	console.log(checked);
+    	 $.ajax({
+    	  		url : "/mat/matadjustregister",
+    	  		method : "POST",
+    	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+    	  		beforeSend: function (xhr) {
+    	            xhr.setRequestHeader(header, token);
+    	          },
+    	  		dataType : "JSON",
+    	  		contentType: "application/json",
+    	  		success : function(result3){
+    	  			console.log(result3);
+    	  		},
+    	  		error: function(reject){
+    	  			console.log(reject)
+    	  		}
+    	         
+    	  	});
+    	 	
+    	
+    })
+  
    
     </script>
 

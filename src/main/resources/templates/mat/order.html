@@ -501,7 +501,7 @@
 	  $.ajax({
   		url : "/mat/matregister",
   		method : "POST",
-  		data : JSON.stringify({list:grid.getCheckedRows()}),
+  		data : JSON.stringify(grid.getCheckedRows()),
   		beforeSend: function (xhr) {
             xhr.setRequestHeader(header, token);
           },
