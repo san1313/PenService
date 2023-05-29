@@ -121,14 +121,15 @@
 
 <!----설비검색시작---->
   	<div class="col-lg-12" style="text-align:left">
-  	 <select name = "fac_info">
-  	 	<option value="선택" selected="selected">---선택---</option>
-  	 	<option value="설비명">설비명</option>
- 	 	<option value="설비코드">설비코드</option>
-  		<option value="담당자">담당자</option>
+  	 <select name = "searchDiv">
+  	 	<option value="" selected="selected">---선택---</option>
+  	 	<option value="fac_name">설비명</option>
+ 	 	<option value="fac_code">설비코드</option>
+  		<option value="emp_num">담당자</option>
   	 </select>
-  	<input type="text" id="search_name">
-  	<button type="button" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  	<input type="text" id="searchName">
+  	<button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  	<button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>
   
  <!-- 그리드화면 -->
  <div id="grid"></div>
@@ -144,17 +145,39 @@
     var Progaddgrid = null;
 	
     $(function(){  
+    		
+    		//조건검색기능초기화 버튼이벤트
+    		$('#facInitBtn').on("click", function(e){
+    			$('[name="searchDiv"]').val("");
+    			$('#searchName').val("");
+    		})
+    		
+    		//조건검색돋보기 버튼이벤트 
+    		$('#facBtn').on("click",function(e){
+    			let searchDiv = $('[name="searchDiv"]').val();
+    			let searchName = $('#searchName').val();
+    			let search
+    			//if (searchDiv != '' && searchName )
+    			let data = { searchDiv, searchName }
+    			facListSearch(data);
+    		})
 		
 		    //설비목록리스트그리드
-		    $.ajax({
-		   		url : "/fac/infoListAjax",
-		   		method : "GET",
-		   		dataType : "JSON", //키:값 형식으로 가져온다.
-		   		success : function(result){
-		   		 grid.resetData(result);
-		   		 grid.refreshLayout();
-		   		}
-		   		});
+		    function facListSearch(data){
+			    $.ajax({
+			   		url : "/fac/infoListAjax",
+			   		method : "GET",
+			   		dataType : "JSON", //키:값 형식으로 가져온다.
+			   		data:data,
+			   		success : function(result){
+			   		 grid.resetData(result);
+			   		 grid.refreshLayout();
+			   		}
+			   	});
+		    }
+		    
+		    facListSearch(null);
+		    
 		      
 		   var grid = new tui.Grid({
 		    el: document.getElementById('grid'),
@@ -349,22 +372,35 @@
    
 	 //설비수정버튼 이벤트
 	$("#update").on('click',function(){
-
+		let insertProcData = Progaddgrid.getData();
+		let facInsertData={};
+		let innerData=[];
+		insertProcData.forEach(function(ele){
+			console.log(ele);
+			console.log(ele.procCode);
+			 facInsertData = {
+	    			   facCode : $("#fac_code").val(), 
+	 				   facName : $("#fac_name").val(),
+					   operateCheck : $("input[name=operate_check]:checked").val(),
+					   checkCycle : $("#check_cycle").val(),
+					   installDate : $("#install_date").val(),
+					   makerName : $("#maker_name").val(),
+					   tempMin : $("#temp_min").val(),
+					   tempMax : $("#temp_max").val(),
+					   empNum : $("#emp_num").val(),
+					   procCode : ele.procCode
+					   };
+	    			innerData.push(facInsertData)
+		})
+		      
+		facInsertData={"list":innerData};
 		$.ajax({
 			url: "/fac/facUpdate", //컨트롤러에 연결된 주소
 			method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
 			//json형태인 키:값 형태로 데이터넘김
-			data: {
-				facCode : $('#fac_code').val(),
-			   	facName : $('#fac_name').val(),
-			   	operateCheck :$('input[name=operate_check]:checked').val(),
-			   	checkCycle : $('#check_cycle').val(),
-			   	installDate : $("#install_date").val(),
-			   	makerName : $('#maker_name').val(),
-			   	tempMin : $('#temp_min').val(),
-			   	tempMax : $('#temp_max').val(),
-			   	empNum : $('#emp_num').val()
-			   	},
+			contentType : "application/json",
+    			//json형태인 키:값 형태로 데이터넘김
+    		data: JSON.stringify(facInsertData),
 		   	beforeSend: function (xhr) {
 	        	xhr.setRequestHeader(header, token);
 	        },
@@ -384,12 +420,11 @@
 				error:function(reject){
 				console.log(reject)
 			}
-		
+			
 		})
 	});
    		//설비등록버튼 이벤트
     	$("#register").on('click',function(){
-    		console.log(Progaddgrid.getData());
     		let insertProcData = Progaddgrid.getData();
     		let facInsertData={};
     		let innerData=[];
@@ -453,9 +488,7 @@
     	grid.on("dblclick",function (e){
     		console.log(grid.getRow(e.rowKey));
     		dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
-
-    		console.log(dblclickRows);
-    		
+    		   		
     		//값을 input창에 다시 담아줌
     		$('#fac_code').val(dblclickRows.facCode);
     		$('#fac_name').val(dblclickRows.facName);
@@ -466,6 +499,19 @@
     		$('#temp_min').val(dblclickRows.tempMin);
     		$('#temp_max').val(dblclickRows.tempMax);
     		
+    		$.ajax({
+    			url:"/fac/getFacConnProcList",
+    			method: "GET",
+    			dataType: "JSON",
+    			data: {facCode : dblclickRows.facCode},
+    			success: function(result){
+    				Progaddgrid.resetData(result);
+    			},
+    			error : function(reject){
+    				console.log(reject);
+    			}
+    				
+    		})
     		
     	});
     			

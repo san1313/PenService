@@ -4,27 +4,16 @@ import lombok.Data;
 
 @Data
 public class FacConfirmVO {
+
+	String confirmCode; //점검코드
+
+	String confirmCategory; //점검구분
+	String actionHistory; //조치내역
+	String confirmIssue; //점검사항
+	String confirmDate; //점검일시
+	String decision; //판정 
 	
-	/*
-	CONFIRM_CODE VARCHAR2(15) NOT NULL,
-	CONFIRM_DATE DATE NOT NULL,
-	CONFIRM_CATEGORY VARCHAR2(50) NOT NULL,
-	ACTION_HISTORY VARCHAR2(100) NOT NULL,
-	DECISION VARCHAR2(50) NOT NULL,
-	FAC_NAME VARCHAR2(100) NOT NULL,
-	NEXT_CONFIRM_DATE DATE	NULL,
-	CONFIRM_TIME DATE NOT NULL,
-	EMP_NUM	VARCHAR2(15) NOT NULL,
-	FAC_CODE VARCHAR2(15) NOT NULL,
-	CONFIRM_ISSUE VARCHAR2(50) NOT NULL
-	 * */
-	String confirm_code;
-	String fac_code;
-	String downTime_reason;
-	String downTime_start_day;
-	String start_time;
-	String downTime_end_day;
-	String end_time;
-	String reason_explain;
-	String emp_num;
-}
+	String emp_num; //담당자
+	String facCode; //설비코드
+	String facName; //설비명
+}	

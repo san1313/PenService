@@ -11,10 +11,24 @@
 		where fac_code = #{facCode}
 	</select>
 	
-	<!-- 설비전체조회 -->
+	<!-- 설비 검색조회 -->
 	<select id ="getList" resultType="FacInfoVO">
- 	select fac_code,fac_name,operate_check,check_cycle,to_char(install_date,'yyyy-MM-dd') 
-	installDate,maker_name,temp_min,temp_max,emp_num from fac_info
+ 	select fac_code,
+ 	       fac_name,
+ 	       operate_check,
+ 	       check_cycle,
+ 	       to_char(install_date,'yyyy-MM-dd') 
+	       installDate,
+	       maker_name,
+	       temp_min,
+	       temp_max,
+	       emp_num 
+	  from fac_info
+	<where>
+	 <if test ="searchDiv != null and searchDiv != ''" > 
+	  	${searchDiv} = #{searchName} 
+	  </if> 
+	</where>
 	</select>
 	
 	<!-- 설비정보목록조회
@@ -29,20 +43,50 @@
 
 	<!-- 설비등록-->
 	<insert id="facRegister" parameterType="FacInfoVO">
-		insert into fac_info
+		insert into fac_info 
 		values('EQMAN'||fac_seq.nextval,#{facName},#{installDate},#{tempMin},#{tempMax},#{makerName},#{checkCycle},#{operateCheck},#{empNum})
 	</insert> 
 	
 	
-	<!-- 공정+설비등록 -->
-
+<!-- 공정+설비등록 -->
   <insert id="insertFacList" parameterType="FacInfoListVO">
-  insert all into fac_info values('EQMAN'||fac_seq.nextval,#{list[0].facName},#{list[0].installDate},#{list[0].tempMin},#{list[0].tempMax},#{list[0].makerName},#{list[0].checkCycle},#{list[0].operateCheck},#{list[0].empNum}) 
-  <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
+  insert all into fac_info 
+      values('EQMAN'||fac_seq.nextval,
+      		  #{list[0].facName},
+              #{list[0].installDate},
+              #{list[0].tempMin},
+              #{list[0].tempMax},
+              #{list[0].makerName},
+              #{list[0].checkCycle},
+              #{list[0].operateCheck},
+              #{list[0].empNum}) 
+    <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
         into FAC_CONN_PROC values(fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
     </foreach>
   </insert>
 
+<!-- 설비별 공정수정 -->	
+ <insert id="insertProcList" parameterType="String">
+  insert all 
+    <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
+        into FAC_CONN_PROC values(fac_conn_proc_seq.nextval,#{vo.facCode},#{vo.procCode})
+    </foreach>
+  </insert>
+	
+	<!-- 설비 별 공정조회 -->
+	<select id="getFacConnProcList" parameterType="String" resultType="FacConnProcVO">
+	select a.proc_code,
+	       b.proc_name 
+	  from FAC_CONN_PROC a
+	  JOIN com_code_proc b
+	    ON a.proc_code = b.proc_code
+	 where fac_code=#{facCode}
+	</select>
+	
+	<!-- 해당설비 공정삭제 -->
+	<delete id="facConnProcDelete" parameterType="String">
+	delete from FAC_CONN_PROC where fac_code=#{facCode}
+	</delete>
 	
 	<!-- 설비수정 -->
 	<update id="facUpdate" parameterType="FacInfoVO">
@@ -57,6 +101,7 @@
 	where fac_code = #{facCode}
 	</update>
 	
+	
 	<!-- 설비삭제 -->	
 	<delete id="facDelete" parameterType="FacInfoVO">
 	delete from fac_info where fac_code=#{facCode}
@@ -69,8 +114,10 @@
 	
 	<!-- 공정코드검색조회 -->
 	<select id="getprocminilist" resultType="FacConnProcVO">
-		select proc_code, proc_name from COM_CODE_PROC where proc_name like
-		#{keyword}
+		select proc_code, 
+		       proc_name 
+	      from COM_CODE_PROC 
+		 where proc_name  like '%'|| #{keyword} || '%'
 	</select>
 
 

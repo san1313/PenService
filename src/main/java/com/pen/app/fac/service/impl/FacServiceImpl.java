@@ -14,71 +14,60 @@ import com.pen.app.fac.vo.FacInfoVO;
 @Service
 public class FacServiceImpl implements FacService {
 
-@Autowired FacMapper mapper;
+	@Autowired
+	FacMapper mapper;
 
-@Override
-public FacInfoVO getFac(FacInfoVO vo) {
-	return null;
-}
+	@Override
+	public List<FacConnProcVO> getproclist() {
+		return mapper.getproclist();
+	}
 
-@Override
-public List<FacConnProcVO> getproclist() {
-	// TODO Auto-generated method stub
-	return null;
-}
+	@Override
+	public List<FacConnProcVO> getprocminilist(String keyword) {
+		// TODO Auto-generated method stub
+		return null;
+	}
 
-@Override
-public List<FacConnProcVO> getprocminilist(String keyword) {
-	// TODO Auto-generated method stub
-	return null;
-}
+	@Override
+	public FacInfoVO getFac(String facCode) {
+		// 단건조회
+		return mapper.getFac(facCode);
+	}
 
+	@Override
+	public int facRegister(FacInfoVO vo) {
+		// 설비등록
+		return mapper.facRegister(vo);
 
-@Override
-public FacInfoVO getFac(String facCode) {
-	//단건조회
-	return mapper.getFac(facCode);
-}
+	}
 
-@Override
-public int facRegister(FacInfoVO vo) {
-	// 설비등록
-	return mapper.facRegister(vo);
-	
-}
+	@Override
+	public int facUpdate(FacInfoListVO list) {
+		//해당설비 공정삭제
+		 mapper.facConnProcDelete(list.getList().get(0).getFacCode());
+		//공정수정
+		 mapper.insertProcList(list);
+		// 설비수정
+		return mapper.facUpdate(list.getList().get(0));
 
-@Override
-public int facUpdate(FacInfoVO vo) {
-	// 설비수정
-	return mapper.facUpdate(vo);
-	
-	
-}
+	}
 
-@Override
-public int facDelete(FacInfoVO vo) {
-	//설비삭제
-	return mapper.facDelete(vo);
-}
+	@Override
+	public int facDelete(FacInfoVO vo) {
+		// 설비삭제
+		return mapper.facDelete(vo);
+	}
 
+	@Override
+	public int insertFacList(FacInfoListVO list) {
+		// 설비+공정등록
+		return mapper.insertFacList(list);
+	}
 
-@Override
-public int insertFacList(FacInfoListVO list) {
-	
-	return mapper.insertFacList(list);
-}
-
-
-
-
+	@Override
+	public List<FacConnProcVO> getFacConnProcList(String facCode) {
+		// 설비별 공정조회
+		return mapper.getFacConnProcList(facCode);
+	}
 
 }
-
-
-
-
-
-
-
-
-
