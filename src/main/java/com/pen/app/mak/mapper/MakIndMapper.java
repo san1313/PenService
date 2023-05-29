@@ -11,5 +11,8 @@ public interface MakIndMapper {
 	List<PlanVO> contPlanning();
 	List<MakVO> indList();
 	List<MakVO> planFlow(String prodCode);
-	List<IndicaVO> getMatList();
+	
+	List<MakVO> getFlowList(List<MakVO> list);
+	List<MakVO> getOperateCheck(List<MakVO> list);
+	int insertIndica(MakVO vo);
 }

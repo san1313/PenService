@@ -6,45 +6,101 @@
 <mapper namespace="com.pen.app.mak.mapper.MakIndMapper">
 
 <select id="ordPlanning" resultType="PlanVO">
-select ord_code,ord_det_code,pd_code,plan_code,plan_nm||'-'||prod_name planNm,plan_type,to_char(plan_date,'yyyy-MM-dd') planDate, mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-MM-dd') planSdate, to_char(plan_clsdate,'yyyy-MM-dd') planClsdate, priority, connect_code,prod_code,prod_name,ord_det_price,ord_det_quan,acc_code,acc_name,ord_date,ord_due_date from ordplan_view
+	select ord_code,ord_det_code,pd_code,plan_code,plan_nm||'-'||prod_name planNm,plan_type,to_char(plan_date,'yyyy-MM-dd') planDate, mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-MM-dd') planSdate, to_char(plan_clsdate,'yyyy-MM-dd') planClsdate, priority, connect_code,prod_code,prod_name,ord_det_price,ord_det_quan,acc_code,acc_name,ord_date,ord_due_date from ordplan_view
 </select>
 
 <select id="contPlanning" resultType="PlanVO">
-select cont_code,cont_det_code,pd_code,plan_code,plan_nm||'-'||prod_name planNm,plan_type,to_char(plan_date,'yyyy-mm-dd') planDate,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') planSdate, to_char(plan_clsdate,'yyyy-mm-dd') planClsdate, priority, connect_code,prod_code,prod_name,cont_det_quan,cont_det_release,cont_det_progress,acc_code,acc_name,to_char(cont_date,'yyyy-mm-dd') contDate,to_char(cont_due_date,'yyyy-MM-dd') contDueDate from conplan_view
+	select cont_code,cont_det_code,pd_code,plan_code,plan_nm||'-'||prod_name planNm,plan_type,to_char(plan_date,'yyyy-mm-dd') planDate,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') planSdate, to_char(plan_clsdate,'yyyy-mm-dd') planClsdate, priority, connect_code,prod_code,prod_name,cont_det_quan,cont_det_release,cont_det_progress,acc_code,acc_name,to_char(cont_date,'yyyy-mm-dd') contDate,to_char(cont_due_date,'yyyy-MM-dd') contDueDate from conplan_view
 </select>
 
 <select id="indList" resultType="MakVO">
-select * from mak_indica where pd_code!=null;
+	select plan_nm,pd_code, prod_code,indica_code,indica_nm,emp_num,ordr_qnt,indica_date,st_date,cls_date,indica_state,prod_name,plan_qnt,plan_clsdate,plan_sdate from mak_indica join com_code_prod using(prod_code) join mak_plan_detail using(pd_code) join mak_plan using(plan_code) where pd_code != 'null' and cls_date>sysdate
 </select>
 
 <select id="planFlow" parameterType="string" resultType="MakVO">
-select * from(SELECT 
-    LEVEL LEV,
-    PARENT_CODE,
-    BOM_MAT_TYPE,
-    BOM_PROD_CODE,
-    BOM_PROD_NAME,
-    BOM_MAT_UNIT,
-    BOM_MAT_USAGE,
-    PROC_CODE
-FROM (SELECT  B.BOM_PROD_CODE AS PARENT_CODE, BOM_MAT_TYPE, A.BOM_PROD_CODE, A.BOM_PROD_NAME, BOM_MAT_UNIT, BOM_MAT_USAGE, PROC_CODE
-FROM (SELECT BOM_PROD_CODE, BOM_PROD_NAME
-FROM
-(SELECT BOM_PROD_CODE, BOM_PROD_NAME, BOM_MAT_CODE, BOM_MAT_NAME FROM COM_BOM
-WHERE BOM_PROD_CODE = #{prodCode} OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))
-UNION
-SELECT BOM_MAT_CODE, BOM_MAT_NAME
-FROM
-(SELECT BOM_PROD_CODE, BOM_PROD_NAME, BOM_MAT_CODE, BOM_MAT_NAME FROM COM_BOM
-WHERE BOM_PROD_CODE = #{prodCode} OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))) A LEFT OUTER JOIN COM_BOM B ON (A.BOM_PROD_CODE = B.BOM_MAT_CODE))
-START WITH PARENT_CODE IS NULL
-CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)  left outer join com_code_proc using(proc_code) order by lev desc
+	select * 
+		from(SELECT 
+	    	LEVEL LEV,
+	    	PARENT_CODE,
+	    	BOM_MAT_TYPE,
+	    	BOM_PROD_CODE,
+	    	BOM_PROD_NAME,
+	    	BOM_MAT_UNIT,
+	    	BOM_MAT_USAGE,
+	    	PROC_CODE
+			FROM (SELECT  
+				B.BOM_PROD_CODE AS PARENT_CODE,
+				BOM_MAT_TYPE,
+				A.BOM_PROD_CODE,
+				A.BOM_PROD_NAME,
+				BOM_MAT_UNIT,
+				BOM_MAT_USAGE,
+				PROC_CODE
+				FROM (SELECT
+					BOM_PROD_CODE,
+					BOM_PROD_NAME
+					FROM (SELECT
+						BOM_PROD_CODE,
+						BOM_PROD_NAME,
+						BOM_MAT_CODE,
+						BOM_MAT_NAME 
+						FROM COM_BOM
+						WHERE 
+							BOM_PROD_CODE = #{prodCode}
+							OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))
+								UNION
+									SELECT BOM_MAT_CODE, 
+									BOM_MAT_NAME
+									FROM (SELECT 
+										BOM_PROD_CODE, 
+										BOM_PROD_NAME, 
+										BOM_MAT_CODE, 
+										BOM_MAT_NAME 
+										FROM COM_BOM
+										WHERE BOM_PROD_CODE = #{prodCode} 
+											OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))) A 
+												LEFT OUTER JOIN COM_BOM B ON (A.BOM_PROD_CODE = B.BOM_MAT_CODE))
+													START WITH PARENT_CODE IS NULL
+													CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)
+														left outer join com_code_proc using(proc_code) order by lev desc
 </select>
 
-<select id="getMatList" resultType="IndicaVO">
-select mat_code,mat_name, sum(mat_qnt) matQnt from mat_invntry where mat_state='검사완료' group by mat_name, mat_code
+<select id="getOperateCheck" parameterType="MakVO" resultType="MakVO" >
+	select fac_name,fac_code,operate_check,proc_code,proc_name from fac_info join fac_conn_proc using(fac_code) join com_code_proc using(proc_code) where proc_code in (
+	<foreach collection="list" item="pc" separator="," close=")">
+		#{pc.procCode}
+	</foreach>
+	order by fac_code
 </select>
 
+<select id="getFlowList" parameterType="MakVO" resultType="MakVO">
+	select * from com_proc_flow a join com_code_proc b using(proc_code) where flow_prod_code in (
+	<foreach collection="list" item="pc" separator="," close=")">
+		#{pc.parentCode}
+	</foreach>
+	order by proc_order
+</select>
+
+<update id="insertIndica" parameterType="MakVO">
+	insert into mak_indica(indica_code,
+						   indica_nm,
+						   emp_num,
+						   prod_code,
+						   ordr_qnt,
+						   indica_date,
+						   st_date,
+						   cls_date,
+						   pd_code) values
+						             (get_indica_seq(),
+						             #{indicaNm},
+						             '1111',
+						             #{prodCode},
+						             #{ordrQnt},
+						             to_date(#{indicaDate},'yyyy-mm-dd'),
+						             to_date(#{stDate},'yyyy-mm-dd'),
+						             to_date(#{clsDate},'yyyy-mm-dd'),
+						             #{pdCode})
+</update>
 
  <!-- 사원 리스트 출력 -->
   <!-- <select id="getUserList" resultType="UserVO">

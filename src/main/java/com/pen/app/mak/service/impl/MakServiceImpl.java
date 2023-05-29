@@ -142,17 +142,23 @@ public List<PlanVO> getOrdList() {
 }
 
 @Override
+@Transactional
 public int insertOrd(PlanListVO vo) {
+	//생산 계획서 등록
 	int result = mapper.insertOrd(vo.getPlanList().get(0));
 	for(int i=0; i<vo.getPlanList().size();i++) {
-	result += mapper.insertDetailPlan(vo.getPlanList().get(i));
-	result += mapper.setPlanOrd(vo.getPlanList().get(i));
-	result += mapper.updateOrd(vo.getPlanList().get(i).getOrdDetCode());
+		//생산계획 상세 등록
+		result += mapper.insertDetailPlan(vo.getPlanList().get(i));
+		//생산계획과 참고 테이블 등록
+		result += mapper.setPlanOrd(vo.getPlanList().get(i));
+		//주문상세에 작업상태에 대한 업데이트
+		result += mapper.updateOrd(vo.getPlanList().get(i).getOrdDetCode());
 	};
 	return result;
 }
 
 @Override
+@Transactional
 public String delOrd(PlanVO vo) {
 	String result = "";
 	mapper.delConPlan(vo.getConnectCode());
@@ -174,6 +180,7 @@ public String delOrd(PlanVO vo) {
 
 
 @Override
+@Transactional
 public List<PlanVO> selectOrd(PlanVO vo) {
 	List<PlanVO> list = mapper.getOrderingList(vo);
 	for(int i=0;i<list.size();i++) {
@@ -200,6 +207,7 @@ public List<PlanVO> getOrder(ArrayList<String> detCoList) {
 }
 
 @Override
+@Transactional
 public List<PlanVO> selectOrdList(PlanVO vo) {
 	List<PlanVO> list = mapper.getOrderingList(vo);
 	for(int i=0;i<list.size();i++) {

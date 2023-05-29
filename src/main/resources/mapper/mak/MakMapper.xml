@@ -8,15 +8,21 @@
 	<!-- 계약서 기반 계획서 시작 -->
 	<!-- 계획서가 존재하는 계약 내용들 즉 현재 수립된 계획서 불러오기 비교 구문용(기본그리드) -->
 	<select id="getPlanList" resultType="PlanVO">
-		select
-		plan_nm,acc_code||acc_name
-		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd')
-		planDate,to_char(plan_sdate,'yyyy-MM-dd')
-		planSdate,priority,cont_det_code,plan_code,pd_code,connect_code,plan_type,
-		to_char(plan_clsdate,'yyyy-MM-dd')
-		planClsdate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
-		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code from
-		conplan_view where plan_type='plan' order by pd_code desc
+		select	plan_nm,acc_code||acc_name	contNm,
+		        prod_name,
+		        to_char(plan_date,'yyyy-MM-dd')
+		        planDate,to_char(plan_sdate,'yyyy-MM-dd')
+		        planSdate,
+		        priority,cont_det_code,plan_code,pd_code,connect_code,plan_type,
+		        to_char(plan_clsdate,'yyyy-MM-dd') planClsdate,
+		        to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
+		        plan_state,
+		        plan_qnt,
+		        (cont_det_quan - plan_qnt) contDetQuan,
+		        prod_code 
+		   from	conplan_view 
+		  where plan_type='plan' 
+		  order by pd_code desc
 	</select>
 
 	<!-- 조회 조건을 위해 계약별 계획건 수 조회 -->
@@ -30,23 +36,27 @@
 	<!-- 마지막 조건 잔류수량 구하는 조회 -->
 	<select id="getLeftQuan" resultType="int" parameterType="string">
 		select
-		cont_det_quan-sum(plan_qnt) contDetQuan from conplan_view where
+		cont_det_quan - sum(plan_qnt) contDetQuan from conplan_view where
 		cont_det_code=#{contDetCode} and cont_det_progress='납기필요' group by cont_det_quan,cont_det_code
 	</select>
 
 	<!-- 현재 잔존하는 계약수량 존재하는 계약 내용 불러오기 모달에 뜨는 xml -->
 	<select id="getPlanning" resultType="PlanVO">
-		select
-		acc_code||acc_name||'-'||prod_name contNm,cont_det_quan-sum(plan_qnt)
-		contDetQuan,
-		prod_name, to_char(cont_det_release,'yyyy-MM-dd')
-		contDetRelease,cont_det_code,prod_code from conplan_view where
-		cont_det_code =
-		#{contDetCode} and (select cont_det_quan-sum(plan_qnt)
-		contDetQuan from conplan_view where cont_det_code =
-		#{contDetCode}
-		group by cont_det_quan)>0 and cont_det_progress='납기필요' group by cont_det_code,
-		cont_det_quan,prod_name,cont_det_release,acc_code||acc_name,prod_code
+		select	acc_code||acc_name||'-'||prod_name contNm,
+		        cont_det_quan - sum(plan_qnt)
+		        contDetQuan,
+		        prod_name, 
+		        to_char(cont_det_release,'yyyy-MM-dd')
+		        contDetRelease,cont_det_code,prod_code 
+		  from conplan_view 
+		 where cont_det_code =	#{contDetCode} 
+		   and (select cont_det_quan-sum(plan_qnt)
+		               contDetQuan 
+		          from conplan_view 
+		         where cont_det_code = #{contDetCode}
+		         group by cont_det_quan)>0 
+	 	   and cont_det_progress='납기필요' 
+		 group by cont_det_code, cont_det_quan,prod_name,cont_det_release,acc_code||acc_name,prod_code
 	</select>
 
 	<!-- 현재 존재하는 계약서들 불러오기 비교구문용 -->
@@ -84,33 +94,32 @@
 	<!-- 계획 등록 -->
 	<update id="insertPlan" parameterType="PlanVO">
 		insert into MAK_PLAN
-		values (get_plan_seq,#{planNm},'plan',sysdate,'1111')
+		values (get_plan_seq(), #{planNm}, 'plan', sysdate, '1111')
 	</update>
 
 	<!-- 계획 상세 등록 -->
 	<update id="insertDetailPlan" parameterType="PlanVO">
 		insert into
 		mak_plan_detail values
-		(get_pd_seq,#{planState},#{prodCode},#{planQnt},#{planSdate},#{planClsdate},#{priority},'MAK-PLAN-'||(select
-		last_number-1 from user_sequences where sequence_name='MAK_PLAN_SEQ'))
+		   (get_pd_seq(),
+		    #{planState},
+		    #{prodCode},
+		    #{planQnt},
+		    #{planSdate},
+		    #{planClsdate},
+		    #{priority},
+		    'MAK-PLAN-'||(select last_number-1 from user_sequences where sequence_name='MAK_PLAN_SEQ'))
 	</update>
 
 	<!-- 참고테이블 등록 -->
 	<update id="setPlanCont" parameterType="PlanVO">
 		insert into
 		mak_plan_to_ord(connect_code,cont_det_code,pd_code) values
-		(get_plan_cont_seq,#{contDetCode},'MAK-P-D-'||(select last_number-1
+		(get_plan_cont_seq(),
+		#{contDetCode},'MAK-P-D-'||(select last_number-1
 		from user_sequences where sequence_name='MAK_PD_SEQ'))
 	</update>
 
-	<!-- 계약 상세 상태 업데이트(등록) -->
-	<!-- <update id="updateCont" parameterType="string">
-		update bns_contract_detail
-		set cont_det_progress='작업 중' where
-		cont_det_code=#{contDetCode}
-
-	</update>
- -->
 	<!-- 계획참고 테이블 삭제 -->
 	<delete id="delConPlan" parameterType="int">
 		delete from
@@ -129,13 +138,6 @@
 		plan_code = #{planCode}
 	</delete>
 
-	<!-- 계약 상세 상태 업데이트(삭제) -->
-	<!-- <update id="updateContr" parameterType="string">
-		update
-		bns_contract_detail set cont_det_progress='접수완료' where
-		cont_det_code=#{contDetCode}
-	</update>
- -->
 
 
 	<!-- 계획서 하나에 걸린 계획상세 건 수 조회 -->
@@ -145,23 +147,27 @@
 
 	<!-- 계획 수정 -->
 	<update id="modPlan">
-		update mak_plan_detail set
-		plan_qnt=#{planQnt},priority=#{priority},plan_sdate=#{planSdate},plan_clsdate=#{planClsdate}
-		where pd_code=#{pdCode}
+		update mak_plan_detail 
+		   set
+		       plan_qnt    = #{planQnt},
+		       priority    = #{priority},
+		       plan_sdate  = #{planSdate},
+		       plan_clsdate= #{planClsdate}
+		 where pd_code=#{pdCode}
 	</update>
 
-	<select id="getPlanningList" parameterType="PlanVO"
-		resultType="PlanVO">
-		select plan_nm,acc_code||acc_name||'-'||prod_name
-		contNm,prod_name,to_char(plan_date,'yyyy-MM-dd')
+	<!-- 계획만료기간 내에 조회 조건에 따른 검색 -->
+	<select id="getPlanningList" parameterType="PlanVO" resultType="PlanVO">
+		select plan_nm,acc_code||acc_name||'-'||prod_name contNm,prod_name,to_char(plan_date,'yyyy-MM-dd')
 		planDate,to_char(plan_sdate,'yyyy-MM-dd')
 		planSdate,priority,cont_det_code,plan_code,pd_code,connect_code,plan_type,
 		to_char(plan_clsdate,'yyyy-MM-dd')
 		planClsdate,to_char(cont_det_release,'yyyy-MM-dd') contDetRelease,
-		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code from
-		conplan_view where plan_type='plan' and plan_date between #{planSdate}
-		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order
-		by pd_code
+		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code 
+		from conplan_view 
+		where plan_type='plan' 
+		  and trunc(plan_date)	between #{planSdate} and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+		order by pd_code
 	</select>
 
 	<!-- 계약서 기반 계획서 끝 -->
@@ -233,8 +239,8 @@
 		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
 		ordDueDate,ord_det_code,prod_code from ord_base_bns
 		<where>
-			<foreach collection="list" item="cdc" separator=" and "> ord_det_code
-				!= #{cdc}
+			<foreach collection="list" item="cdc" separator=" and ">
+			ord_det_code != #{cdc}
 			</foreach>
 		</where>
 	</select>
@@ -281,7 +287,7 @@
 		 <select id="getModalOrd" resultType="PlanVO">
 		select acc_code||acc_name||'-'||prod_name contNm, ord_det_quan,
 		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
-		ordDueDate,ord_det_code,prod_code from ord_base_bns where ord_due_date between #{planSdate} 
+		ordDueDate,ord_det_code,prod_code from ord_base_bns where ord_due_date between to_date(#{planSdate},'yyyy-mm-dd') 
 		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by ord_due_date desc
 		</select>
 		
@@ -291,11 +297,11 @@
 		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
 		ordDueDate,ord_det_code,prod_code from ord_base_bns
 		<where>
-			<foreach collection="list" item="cdc" separator=" and "> ord_det_code
-				!= #{cdc}
+			<foreach collection="list" item="cdc" separator=" and ">
+			ord_det_code != #{cdc}
 			</foreach>
 		</where>
-		and ord_due_date between #{vo.planSdate} 
+		and ord_due_date between to_date(#{vo.planSdate},'yyyy-mm-dd') 
 		and to_date(#{vo.planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by ord_due_date desc
 	</select>
 </mapper>

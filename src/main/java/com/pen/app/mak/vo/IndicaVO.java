@@ -43,4 +43,27 @@ public class IndicaVO {
 	String matState;
 	String matKeepdate;
 	
+	
+	//생산지시서
+	String indicaNm; 
+	String indicaDate;         
+	String prodDev;
+	int ordrQnt;    
+	String sDate;         
+	String clsDate;         
+	String indicaState; 
+	String pdCode;
+	
+	int reQnt;
+	
+	//공통bom flow
+	int lev;
+	String parentCode;
+	String bomMatType;
+	String bomProdCode;
+	String bomProdName;
+	String bomMatUnit;
+	int bomMatUsage;
+	String procType;
+	String procName;
 }
