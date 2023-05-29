@@ -5,34 +5,55 @@
  
 <mapper namespace="com.pen.app.mat.mapper.MatMapper">
 	<select id="getorderlist" resultType="OrderVO">
-		select h.MAT_ORDERNUM, h.MAT_ORDERNAME, h.MAT_CHARGER, h.ACC_CODE, o.MAT_UNTPC, o.MAT_ORDER_QY, o.MAT_TOTAMT, o.MAT_ORDERNUM, o.MAT_REQDATE, o.MAT_CODE, o.MAT_NAME,o.MAT_DTAORDCODE
-		from MAT_ORDER_HEADER h, MAT_ORDER o
-		where h.MAT_ORDERNUM=o.MAT_ORDERNUM
-		and o.mat_name='자재명'
+		select h.MAT_ORDERNUM, 
+		       h.MAT_ORDERNAME, h.MAT_CHARGER, h.ACC_CODE, o.MAT_UNTPC, o.MAT_ORDER_QY, o.MAT_TOTAMT, o.MAT_ORDERNUM, o.MAT_REQDATE, o.MAT_CODE, o.MAT_NAME,o.MAT_DTAORDCODE
+		  from MAT_ORDER_HEADER h, MAT_ORDER o
+		 where h.MAT_ORDERNUM=o.MAT_ORDERNUM
+		   and o.mat_name='자재명'
 	</select> 
 	
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
-		select a.acc_code, a.acc_name, c.mat_code, c.mat_name from COM_CODE_ACCOUNT a join COM_ACCOUNT_ITEM b on (a.acc_code = b.acc_code) join COM_CODE_MAT c on (b.acc_item = c.mat_code)
+		select a.acc_code, 
+		       a.acc_name, 
+		       c.mat_code, 
+		       c.mat_name 
+		  from COM_CODE_ACCOUNT a 
+		  join COM_ACCOUNT_ITEM b 
+		    on (a.acc_code = b.acc_code) 
+		  join COM_CODE_MAT c 
+		    on (b.acc_item = c.mat_code)
 	</select>
 	
 	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
-		select a.acc_code, a.acc_name, c.mat_code, c.mat_name from COM_CODE_ACCOUNT a join COM_ACCOUNT_ITEM b on (a.acc_code = b.acc_code) join COM_CODE_MAT c on (b.acc_item = c.mat_code) where c.mat_name like #{keyword}
+		select a.acc_code, 
+		       a.acc_name, 
+		       c.mat_code, 
+		       c.mat_name 
+		  from COM_CODE_ACCOUNT a 
+		  join COM_ACCOUNT_ITEM b on (a.acc_code = b.acc_code) 
+		  join COM_CODE_MAT c on (b.acc_item = c.mat_code) 
+		 where c.mat_name like #{keyword}
 	</select>
 	
 	<!-- 모달거래처목록 -->
 	<select id="getacclist" resultType="OrderVO">
-		SELECT * FROM COM_CODE_ACCOUNT
+		SELECT * FROM COM_CODE_ACCOUNT 
 	</select>
 	
 	<!-- 모달거래처검색조회 -->
 	<select id="getaccminilist" resultType="OrderVO">
-		SELECT * FROM COM_CODE_ACCOUNT where ACC_CODE like #{keyword}
+		SELECT * 
+		  FROM COM_CODE_ACCOUNT 
+		 where ACC_CODE like #{keyword}
 	</select>
 	
+	<!-- 발주번호 -->
 	<select id="getmatordercode" resultType="String">
-		SELECT COM_CODE||'-'||LPAD((SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'MAT_ORDER_HEADER_SEQ'),6,'0') AS MAT_CODE FROM COM_CODE WHERE CODE_NAME =  '자재코드'
+		SELECT COM_CODE||'-'||LPAD((SELECT LAST_NUMBER FROM USER_SEQUENCES WHERE SEQUENCE_NAME = 'MAT_ORDER_HEADER_SEQ'),6,'0') AS MAT_CODE 
+		  FROM COM_CODE 
+		 WHERE CODE_NAME = '자재코드'
 	</select>
 		
 	<!-- 발주등록 -->
@@ -41,48 +62,97 @@
 	into MAT_ORDER_HEADER(MAT_ORDERNUM, ACC_CODE, MAT_ORDERNAME, MAT_ORDERDATE, MAT_CHARGER) values ('MAT-ORD-'||mat_order_header_seq.nextval, #{list[0].accCode}, #{list[0].matOrdername}, sysdate, #{list[0].matCharger})	
 	<foreach collection="list" item="vo" close="select * from dual" index="idx" separator=" ">
 	into MAT_ORDER (MAT_DTAORDCODE, MAT_ORDERNUM, MAT_CODE, MAT_NAME, MAT_ORDER_QY, MAT_UNTPC, MAT_TOTAMT, MAT_REQDATE)
-    values(GET_ORDER_SEQ, 'MAT-ORD-'||mat_order_header_seq.currval, #{vo.matCode}, #{vo.matName}, #{vo.matOrderQy}, #{vo.matUntpc}, #{vo.matTotamt},  to_date('2023-05-30','YYYY-MM-DD'))   
+    values(GET_ORDER_SEQ, 'MAT-ORD-'||mat_order_header_seq.currval, #{vo.matCode}, #{vo.matName}, #{vo.matOrderQy}, #{vo.matUntpc}, #{vo.matTotamt}, to_date(#{vo.matReqdate},'YYYY-MM-DD'))   
 	</foreach>	
 	</select>
 	
 	<!-- 당일발주등록건 -->
 	<select id="gettodaymatregister" resultType="OrderVO">
-		select a.mat_ordernum,a.acc_code, b.mat_code, a.mat_ordername, a.mat_orderdate, a.mat_charger, b.mat_dtaordcode, b.mat_order_qy, b.mat_untpc, b.mat_totamt, b.mat_reqdate
+		select a.mat_ordernum,
+			   a.acc_code, 
+			   b.mat_code, 
+			   a.mat_ordername, 
+			   a.mat_orderdate, 
+			   a.mat_charger, 
+			   b.mat_dtaordcode, 
+			   b.mat_order_qy, 
+			   b.mat_untpc, 
+			   b.mat_totamt, 
+			   b.mat_reqdate
 		from mat_order_header a join mat_order b on(a.mat_ordernum=b.mat_ordernum)
-		WHERE TRUNC(a.mat_orderdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'), 'YY/MM/DD')
+		WHERE TRUNC(a.mat_orderdate) = TRUNC(SYSDATE)
 	</select>
 	
 	
 	<!-- 발주등록 조회 -->
 	<select id="getorderlistajax" resultType="OrderVO">
-		select a.mat_ordernum, a.mat_ordername, b.mat_code, b.mat_name, a.acc_code, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt 
-		from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum)
+		select a.mat_ordernum, 
+			   a.mat_ordername, 
+			   b.mat_code, 
+			   b.mat_name, 
+			   a.acc_code, 
+			   a.mat_orderdate, 
+			   b.mat_reqdate, 
+			   a.mat_charger, 
+			   b.mat_untpc, 
+			   b.mat_order_qy, 
+			   b.mat_totamt 
+		from mat_order_header a 
+		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
 	</select>
 	
 	<!-- 발주등록 다중검색 조회--> 
 	<select id="getorderlistsearchajax" resultType="OrderVO">
-	<![CDATA[
+	
 		select *
 		from(
-			select a.mat_ordernum, a.acc_code, a.mat_ordername, b.mat_code, b.mat_name, a.mat_orderdate, b.mat_reqdate, a.mat_charger, b.mat_untpc, b.mat_order_qy, b.mat_totamt, c.acc_name
-			from mat_order_header a join mat_order b on (a.mat_ordernum=b.mat_ordernum) 
-			                                          join com_code_account c on(a.acc_code = c.acc_code) 
-			where b.mat_name = #{matName} 
-			and c.acc_code= #{accCode}
-			and a.mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
-			)
-		where mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+			select a.mat_ordernum, 
+				   a.acc_code, 
+				   a.mat_ordername, 
+				   b.mat_code, 
+				   b.mat_name, 
+				   a.mat_orderdate, 
+				   b.mat_reqdate, 
+				   a.mat_charger, 
+				   b.mat_untpc, 
+				   b.mat_order_qy, 
+				   b.mat_totamt, 
+				   c.acc_name
+			  from mat_order_header a 
+			  	join mat_order b on (a.mat_ordernum=b.mat_ordernum) 
+			  	join com_code_account c on(a.acc_code = c.acc_code) 
+			 		where b.mat_name = #{matName} 
+			   		and c.acc_code= #{accCode}
+			   <if test="matOrderdate != null and matOrderdate !=''">
+	<![CDATA[		   
+			   and a.mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
 	]]>
+			   </if>
+			)
+			 <if test="matOrderdate != null and matOrderdate !=''">
+	<![CDATA[
+		where mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+		]]>
+			</if>
+		
 	</select>
 	
 	
 	<!-- 자재검사내역리스트 -->
 	<select id = "getwarehousinglist" resultType="WarehousingVO">
-		select distinct m.mat_code, m.mat_name, h.mat_ordernum, q.test_tnum_pass,q.qip_code_list_mat,a.acc_code
-		from QIP_LIST_MAT  q JOIN  MAT_ORDER m on(q.MAT_DTAORDCODE=m.MAT_DTAORDCODE) join MAT_ORDER_HEADER  h on(m.MAT_ORDERNUM=h.MAT_ORDERNUM) join COM_CODE_ACCOUNT a on(h.ACC_CODE=a.ACC_CODE)
-		join  COM_ACCOUNT_ITEM c on(a.ACC_CODE=c.ACC_CODE)
-		JOIN COM_CODE_MAT s on(c.acc_item = s.mat_code)
-		where QIP_CODE_LIST_MAT not in (select q.QIP_CODE_LIST_MAT
+		select distinct m.mat_code, 
+						m.mat_name, 
+						h.mat_ordernum, 
+						q.test_tnum_pass,
+						q.qip_code_list_mat,
+						a.acc_code
+		from QIP_LIST_MAT q 
+		    join MAT_ORDER m on(q.MAT_DTAORDCODE=m.MAT_DTAORDCODE) 
+			join MAT_ORDER_HEADER  h on(m.MAT_ORDERNUM=h.MAT_ORDERNUM) 
+			join COM_CODE_ACCOUNT a on(h.ACC_CODE=a.ACC_CODE)
+			join  COM_ACCOUNT_ITEM c on(a.ACC_CODE=c.ACC_CODE)
+			JOIN COM_CODE_MAT s on(c.acc_item = s.mat_code)
+		 where QIP_CODE_LIST_MAT not in (select q.QIP_CODE_LIST_MAT
 		from QIP_LIST_MAT q join MAT_WRHOUSNG w on q.QIP_CODE_LIST_MAT = w.QIP_CODE_LIST_MAT)
 	</select>
 	
@@ -106,26 +176,42 @@
     INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT)
     VALUES(v_lot, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt});
     <foreach collection="list" item="vo" separator=";" close="; END;">
-    insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) values (mat_wrh_seq, #{vo.qipCodeListMat}, v_lot, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
+    insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) 
+    values (mat_wrh_seq, #{vo.qipCodeListMat}, v_lot, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
     </foreach>
 	</select>
 	
 	<!-- 당일건 자재입고리스트 -->
 	<select id="gettodaywarehousinglist" resultType="WarehousingVO">
-	select a.mat_lot, b.mat_ordernum, b.acc_code, c.mat_code, a.mat_wrhqy, c.mat_name
-	from mat_wrhousng a join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat) join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode) join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
+	select a.mat_lot, 
+		   b.mat_ordernum, 
+		   b.acc_code, 
+		   c.mat_code, 
+		   a.mat_wrhqy, 
+		   c.mat_name
+	from mat_wrhousng a 
+		join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat) 
+		join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode) 
+		join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
 	where TRUNC(a.mat_wrhdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'), 'YY/MM/DD')
 	</select>
 	
 	<!-- 입고등록리스트 -->
 	<select id="getwarehousingmatlistajax" resultType="WarehousingVO">
-	select distinct a.mat_lot, d.mat_ordernum, b.mat_code, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate from mat_wrhousng a join mat_invntry b on(a.mat_lot=b.mat_lot)
-	join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat) join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
+	select distinct a.mat_lot, 
+					d.mat_ordernum, 
+					b.mat_code, 
+					a.mat_bcncname, 
+					a.mat_wrhqy, 
+					a.mat_wrhdate 
+	from mat_wrhousng a 
+		join mat_invntry b on(a.mat_lot=b.mat_lot)
+		join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat) 
+		join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
 	</select>
 	
 	<!-- 입고등록리스트 다중검색 -->
 	<select id="getwarehousingsearchajax" resultType="WarehousingVO">
-	<![CDATA[
 	select *
 		from(
 			select a.mat_lot, d.mat_ordernum, b.mat_code, a.mat_bcncname, a.mat_wrhqy, a.mat_wrhdate
@@ -134,10 +220,18 @@
                                                       join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
 			where b.mat_code=#{matCode}
 			and a.mat_bcncname = #{accName}
+			<if test="matWrhdate != null and matWrhdate != ''">
+	<![CDATA[
 			and mat_wrhdate >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
+	]]>
+			</if>
+	
 			)
+			<if test="matWrhdate1 != null and matWrhdate1 != ''">
+	<![CDATA[		
 		where mat_wrhdate <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
 	]]>
+		</if>
 	</select>
 	
 	<!-- 반제품입고등록 검사내역리스트 -->
@@ -147,11 +241,28 @@
 	
 	<!-- 자재재고조회 자재코드 검색 -->
 	<select id="getinventorysearch" resultType="InventoryVO">
-		select a.mat_code, a.mat_name, a.mat_qnt, b.mat_sfst, (b.mat_sfst - a.mat_qnt) as matdef from mat_invntry a join com_code_mat b on(a.mat_code=b.mat_code) where a.mat_name=#{keyword} order by 1
+		select a.mat_code, 
+			   a.mat_name, 
+			   a.mat_qnt, 
+			   b.mat_sfst, 
+			   (b.mat_sfst - a.mat_qnt) as matdef 
+		 from mat_invntry a 
+			join com_code_mat b on(a.mat_code=b.mat_code) 
+		where a.mat_name=#{keyword} order by 1
 	</select>
 	<!-- 자재재고조회 lot -->
 	<select id="getinventorysearchlot" resultType="InventoryVO">
-		select distinct a.mat_code, a.mat_name, a.mat_lot, b.mat_bcncname,(c.cnt + a.mat_qnt) as matQntt ,c.cnt, a.mat_qnt from mat_invntry a left join mat_wrhousng b on(a.mat_lot = b.mat_lot) left join MAK_HOLD c on(a.mat_lot=c.mat_lot) where a.mat_code = #{matCode}
+		select distinct a.mat_code, 
+						a.mat_name, 
+						a.mat_lot, 
+						b.mat_bcncname,
+						(c.cnt + a.mat_qnt) as matQntt ,
+						c.cnt, 
+						a.mat_qnt 
+		from mat_invntry a 
+			left join mat_wrhousng b on(a.mat_lot = b.mat_lot) 
+			left join MAK_HOLD c on(a.mat_lot=c.mat_lot) 
+		where a.mat_code = #{matCode}
 	</select>
 	
 	<!-- 자재출고조회 -->
@@ -163,9 +274,43 @@
 	<select id = "getmatdlivysearchlist" resultType="DlivyVO">
 	<![CDATA[
 		select * 
-		from mat_dlivy
-		where mat_name=#{matName} and mat_dlivydate >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
-		and mat_dlivydate <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
+			from mat_dlivy
+			where mat_name=#{matName} and mat_dlivydate >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
+			and mat_dlivydate <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
 	]]>
+	</select>
+	
+	<!-- 자재조정 lot리스트 -->
+	<select id="getmatadjustlotlist" resultType="AdjustVO">
+		select distinct a.mat_code, 
+						a.mat_name, 
+						a.mat_lot, 
+						b.mat_bcncname,			
+						a.mat_qnt 
+		from mat_invntry a 
+			join mat_wrhousng b on(a.mat_lot = b.mat_lot)
+	</select>
+	
+	<!-- 자재조정 lot 단건조회 -->
+	<select id="getmatadjustlot" resultType="AdjustVO">
+		select distinct a.mat_code, 
+						a.mat_name, 
+						a.mat_lot, 
+						b.mat_bcncname,			
+						a.mat_qnt 
+		from mat_invntry a 
+			join mat_wrhousng b on(a.mat_lot = b.mat_lot)
+            where a.mat_lot = #{matLot}
+	</select>
+	
+	<!-- 조정입고등록 -->
+	<select id="getmatadjustregister" statementType="CALLABLE">
+	{call v_inv_proc(
+	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matMdatresn, mode=IN, jdbcType=VARCHAR},
+	#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
+	#{matWrhqy, mode=IN, jdbcType=VARCHAR},
+	#{matQnt, mode=IN, jdbcType=VARCHAR}	
+	)}
 	</select>
 </mapper>

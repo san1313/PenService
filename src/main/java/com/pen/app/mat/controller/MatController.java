@@ -10,22 +10,23 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.AdjustVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
-import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
-import com.pen.app.mat.vo.WareRegVO;
 import com.pen.app.mat.vo.WarehousingVO;
-
+/*
+ * 최규리
+ * 자재관리,조회
+ */
 
 @Controller
 @RequestMapping("/mat")
 public class MatController {
 
 
-@Autowired MatService matservice;
+	@Autowired MatService matservice;
 
 	//발주페이지
 	@GetMapping("/order")
@@ -38,7 +39,6 @@ public class MatController {
 	@GetMapping("/matlist")
 	public List<OrderVO> matlist(){
 		List<OrderVO> list = matservice.getmatlist();
-		System.out.println(list);
 		return list;
 	}
 	
@@ -68,22 +68,23 @@ public class MatController {
 	}
 	
 	//발주번호
-	/*
-	 * @ResponseBody
-	 * 
-	 * @GetMapping("/matordercode") public String matordercode(){ String result =
-	 * matservice.getmatordercode(); return result; }
-	 */
+	 @ResponseBody	  
+	 @GetMapping("/matordercode") 
+	 public String matordercode(){
+		 String result = matservice.getmatordercode();
+		 return result; 
+	 }
+	 
 	
 	//발주등록
 	 @RequestMapping("/matregister")
 	 @ResponseBody 
-	 public OrderVO matregister(@RequestBody MatOrdVO vo){
-		 System.err.println(vo.getList());
-		 System.out.println(vo.getList().get(0));
-		 matservice.getmatregister(vo.getList());		 
+	 public OrderVO matregister(@RequestBody List<OrderVO> list){
+		 System.err.println(list);
+		 //System.out.println(vo.getList().get(0));
+		 matservice.getmatregister(list);		 
 	 	 return null; 
-	 	}
+	 }
 		 
 	 //당일발주등록조회
 	 @RequestMapping("/todaymatregister")
@@ -134,14 +135,10 @@ public class MatController {
 	 //자재 입고등록
 	 @RequestMapping("/warehousingregister")
 	 @ResponseBody
-	 public WarehousingVO warehousingregister(@RequestBody WareRegVO vo) {
-		 System.err.println(vo.getList());
-		 int sum = 0;
-		 for(WarehousingVO in : vo.getList()) {
-			sum += in.getMatWrhqy(); 
-		 }
-		 vo.getList().get(0).setMatQnt(sum);
-		 matservice.getwarehousingregister(vo.getList());
+	 public WarehousingVO warehousingregister(@RequestBody List<WarehousingVO> list) {
+		 System.err.println(list);
+		 
+		 matservice.getwarehousingregister(list);
 		 return null;
 	 }
 	 
@@ -217,7 +214,31 @@ public class MatController {
 		
 	 }
 	 
+	 //자재조정lot리스트
+	 @GetMapping("/matadjustlotlist")
+	 @ResponseBody
+	 public List<AdjustVO> matadjustlotlist(){
+		 List<AdjustVO> list = matservice.getmatadjustlotlist();
+		 return list;
+	 }
 	 
+	 //자재조정 lot 상세
+	 @RequestMapping("/matadjustlot")
+	 @ResponseBody
+	 public List<AdjustVO> matadjustlot(@RequestParam String matLot){
+		 List<AdjustVO> list = matservice.getmatadjustlot(matLot);
+		 return list;
+	 }
+	 
+	 //자재조정
+	 @RequestMapping("/matadjustregister")
+	 @ResponseBody
+	 public AdjustVO matadjustregister(@RequestBody List<AdjustVO> list) {
+		 System.err.println(list);
+		 
+		 matservice.getmatadjustregister(list);
+		 return null;
+	 }
 	 
 	 
 	 //자재출고조회
