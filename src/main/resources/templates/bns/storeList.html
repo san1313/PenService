@@ -158,15 +158,14 @@
 		            xhr.setRequestHeader(header, token);
 		          },
 				success : function(result){
-					 alert(`제품 : ${checked.prdtNm}
-						   입고수량 : ${checked.cnt}
-						          입고완료`) 
+					
+					
 					//입고전 테이블 초기화
 					$.ajax({
 						url : "/bns/beforeStoreListAjax",
 						method : "GET",
-						success : function(result){
-							beforeStoreGrid.resetData(result);
+						success : function(result1){
+							beforeStoreGrid.resetData(result1);
 						},
 						error: function(reject){
 							console.log(reject);
@@ -178,8 +177,8 @@
 						url : "/bns/afterStoreListAjax",
 						method : "GET",
 						dataType : "JSON",
-						success : function(result){
-							afterStoreGrid.resetData(result);
+						success : function(result2){
+							afterStoreGrid.resetData(result2);
 						}
 					});
 					
@@ -206,13 +205,13 @@
 		            xhr.setRequestHeader(header, token);
 		          },
 				success : function(result){
-					 
+					 console.log(result);
 					//입고전 테이블 초기화
 					$.ajax({
 						url : "/bns/beforeStoreListAjax",
 						method : "GET",
-						success : function(result){
-							beforeStoreGrid.resetData(result);
+						success : function(result1){
+							beforeStoreGrid.resetData(result1);
 						}
 					});
 					
@@ -220,8 +219,8 @@
 					$.ajax({
 						url : "/bns/afterStoreListAjax",
 						method : "GET",
-						success : function(result){
-							afterStoreGrid.resetData(result);
+						success : function(result2){
+							afterStoreGrid.resetData(result2);
 						}
 					});
 					

@@ -525,8 +525,7 @@
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				/* addProdgrid.resetData(result);
-		        addProdgrid.refreshLayout(); */
+				
 		        
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
@@ -561,8 +560,8 @@
    		dataType : "JSON",
    		success : function(result){
    			console.log(result);
-   			$('input[name=ordCode]').attr('value',result[0].ordCode);
-   			$('input[name=ordDate]').attr('value',result[0].ordDate);
+   			$('input[name=ordCode]').attr('value',result.ordCode);
+   			$('input[name=ordDate]').attr('value',result.ordDate);
    		}
    	});
 
@@ -1198,8 +1197,7 @@ $.ajax({
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						grid.resetData(result);
-				        grid.refreshLayout();
+						
 					}
 					});
 			}
@@ -1244,8 +1242,7 @@ $.ajax({
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
-				modProdgrid.resetData(result);
-		        modProdgrid.refreshLayout();
+				
 			}
 			});
 			

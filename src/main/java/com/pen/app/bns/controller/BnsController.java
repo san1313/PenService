@@ -13,7 +13,6 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
-import com.pen.app.bns.mapper.BnsMapper;
 import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContDetListVO;
@@ -21,71 +20,79 @@ import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsReleaseVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
+/*
+ * 김선재
+ * 영업관리
+ */
    
 @Controller
 @RequestMapping("/bns")
 public class BnsController {
    
-@Autowired BnsMapper dao;
 
-@Autowired BnsService bnsService;
+
+	@Autowired BnsService bnsService;
    
 	//주문서관리 페이지
    @GetMapping("/ordList")
    public String ordList(Model model, Authentication authentication) {
-      model.addAttribute("ordList", dao.getOrdList());
+      model.addAttribute("ordList", bnsService.getOrdList());
       UserDetails user = (UserDetails) authentication.getPrincipal();
       model.addAttribute("userVO", user);
       return "bns/ordList";
    }
    
+   //////////삭제
    //주문서리스트 아작스
 	@ResponseBody
 	@GetMapping("/ordListAjax")
 	public List<BnsOrdVO> ordListAjax(){
-		List<BnsOrdVO> list = dao.getOrdList();
+		List<BnsOrdVO> list = bnsService.getOrdList();
 		return list;
 	}
+	
 	//주문서조건검색 아작스
 	@ResponseBody
 	@GetMapping("/ordListconAjax")
 	public List<BnsOrdVO> ordListconAjax(BnsOrdVO vo){
-		System.out.println("아작스 통해서 들어온 데이터 : "+vo);
-		List<BnsOrdVO> list = dao.getOrdListCon(vo);
-		System.out.println("조회 이후 나온 데이터 : "+list);
+		List<BnsOrdVO> list = bnsService.getOrdListCon(vo);
 		return list;
 	}
+	
 	//주문서 등록
 	@RequestMapping("/insertOrdList")
 	@ResponseBody
-	public BnsOrdDetListVO insertOrdList(@RequestBody BnsOrdDetListVO list) {
-		dao.insertOrdList(list.getList());
+	public List<BnsOrdVO> insertOrdList(@RequestBody List<BnsOrdVO> list) {
+		bnsService.insertOrdList(list);
 		return list;
 	}
 	
-	
+	//////삭제
+	//거래처 리스트
 	@ResponseBody
 	@GetMapping("/accList")
 	public List<BnsAccVO> accList() {
-		List<BnsAccVO> list = dao.getAccList();
+		List<BnsAccVO> list = bnsService.getAccList();
 		return list;
 	}
 	
+	//거래처 키워드
 	@RequestMapping("/accKeyList")
 	@ResponseBody
-	public List<BnsAccVO> accKeyList(@RequestParam String result){
-		List<BnsAccVO> list = dao.getAccKeyList(result);
+	public List<BnsAccVO> accKeyList(@RequestParam(required = false) String result){
+		List<BnsAccVO> list = bnsService.getAccKeyList(result);
 		return list;
 	}
 	
-	
+	//제품명 리스트
 	@ResponseBody
 	@GetMapping("/prodList")
 	public List<BnsProdVO> prodList() {
-		List<BnsProdVO> list = dao.getProdList();
+		List<BnsProdVO> list = bnsService.getProdList();
 		
 		return list;
 	}
@@ -93,7 +100,7 @@ public class BnsController {
 	@RequestMapping("/prodKeyList")
 	@ResponseBody
 	public List<BnsProdVO> prodKeyList(@RequestParam String result){
-		List<BnsProdVO> list = dao.getProdKeyList(result);
+		List<BnsProdVO> list = bnsService.getProdKeyList(result);
 		return list;
 	}
 	
@@ -103,7 +110,7 @@ public class BnsController {
 	public List<BnsOrdVO> prodListModAjax(String result){
 		
 		System.out.println(result);
-		List<BnsOrdVO> list = dao.getProdModList(result);
+		List<BnsOrdVO> list = bnsService.getProdModList(result);
 		return list;
 	}
 	
@@ -112,7 +119,7 @@ public class BnsController {
 	@ResponseBody
 	public BnsOrdDetListVO modOrdList(@RequestBody BnsOrdDetListVO list) {
 		
-		dao.modOrdList(list.getList());
+		bnsService.modOrdList(list.getList());
 		return null;
 	}
 	
@@ -120,7 +127,7 @@ public class BnsController {
 	@RequestMapping("/delOrdDetList")
 	@ResponseBody
 	public BnsOrdDetListVO delOrdDetList(@RequestBody BnsOrdDetListVO list) {
-		dao.delOrdDetList(list.getList());
+		bnsService.delOrdDetList(list.getList());
 		return null;
 	}
 	
@@ -128,17 +135,16 @@ public class BnsController {
 	@RequestMapping("/delOrdList")
 	@ResponseBody
 	public BnsOrdDetListVO delOrdList(@RequestBody BnsOrdDetListVO list) {
-		dao.delOrdList(list.getList());
+		bnsService.delOrdList(list.getList());
 		return null;
 	}
 	
 	//주문코드 자동생성
 	@ResponseBody
 	@GetMapping("/ordCode")
-	List<BnsOrdVO> ordCode() {
-		List<BnsOrdVO> list = dao.getOrdCode();
-		System.out.println("주문코드 최대값 : "+list);
-		return list;
+	public BnsOrdVO ordCode() {
+		BnsOrdVO vo = bnsService.getOrdCode();
+		return vo;
 	}
 	
 	
@@ -155,7 +161,7 @@ public class BnsController {
 		@ResponseBody
 		@GetMapping("/contListAjax")
 		public List<BnsContVO> contListAjax(){
-			List<BnsContVO> list = dao.getContList();
+			List<BnsContVO> list = bnsService.getContList();
 			return list;
 		}
 		//계약서조건검색 아작스
@@ -163,7 +169,7 @@ public class BnsController {
 		@GetMapping("/contListconAjax")
 		public List<BnsContVO> contListconAjax(BnsContVO vo){
 			System.out.println("아작스 통해서 들어온 데이터 : "+vo);
-			List<BnsContVO> list = dao.getContListCon(vo);
+			List<BnsContVO> list = bnsService.getContListCon(vo);
 			System.out.println("조회 이후 나온 데이터 : "+list);
 			return list;
 		}
@@ -172,16 +178,17 @@ public class BnsController {
 		@ResponseBody
 		public BnsContDetListVO insertContList(@RequestBody BnsContDetListVO list) {
 			
-			dao.insertContList(list.getList());
+			bnsService.insertContList(list.getList());
 			return list;
 		}   
+		
 		//계약서 수정 모달창 안의 제품리스트
 		@ResponseBody
 		@GetMapping("/contprodListModAjax")
 		public List<BnsContVO> ContprodListModAjax(String result){
 			
 			System.out.println(result);
-			List<BnsContVO> list = dao.getContProdModList(result);
+			List<BnsContVO> list = bnsService.getContProdModList(result);
 			return list;
 		}
 		
@@ -189,7 +196,7 @@ public class BnsController {
 		@RequestMapping("/modContList")
 		@ResponseBody
 		public BnsContDetListVO modContList(@RequestBody BnsContDetListVO list) {
-			dao.modContList(list.getList());
+			bnsService.modContList(list.getList());
 			return list;
 		}
 		
@@ -197,7 +204,7 @@ public class BnsController {
 		@RequestMapping("/delContDetList")
 		@ResponseBody
 		public BnsContDetListVO delContDetList(@RequestBody BnsContDetListVO list) {
-			dao.delContDetList(list.getList());
+			bnsService.delContDetList(list.getList());
 			return list;
 		}
 		
@@ -205,7 +212,7 @@ public class BnsController {
 		@RequestMapping("/delContList")
 		@ResponseBody
 		public BnsContDetListVO delContList(@RequestBody BnsContDetListVO list) {
-			dao.delContList(list.getList());
+			bnsService.delContList(list.getList());
 			return null;
 		}
 		
@@ -213,7 +220,7 @@ public class BnsController {
 		@ResponseBody
 		@GetMapping("/contCode")
 		List<BnsContVO> contCode() {
-			List<BnsContVO> list = dao.getContCode();
+			List<BnsContVO> list = bnsService.getContCode();
 			System.out.println("계약코드 최대값 : "+list);
 			return list;
 		}
@@ -226,12 +233,15 @@ public class BnsController {
 	      UserDetails user = (UserDetails) authentication.getPrincipal();
 	      model.addAttribute("userVO", user);
 	      return "bns/storeList";
-	   }  
+	   }
+	   
+	   
+	   
 	   //입고전 그리드 리스트
 		@ResponseBody
 		@GetMapping("/beforeStoreListAjax")
 		public List<BnsStoreVO> beforestoreListAjax(){
-			List<BnsStoreVO> list = dao.getbeforeStoreList();
+			List<BnsStoreVO> list = bnsService.getbeforeStoreList();
 			
 			System.out.println(list);
 			return list;
@@ -240,26 +250,26 @@ public class BnsController {
 		@ResponseBody
 		@GetMapping("/afterStoreListAjax")
 		public List<BnsStoreVO> afterstoreListAjax(){
-			List<BnsStoreVO> list = dao.getafterStoreList();
+			List<BnsStoreVO> list = bnsService.getafterStoreList();
 			return list;
 		}
 		//입고등록 아작스
 		@RequestMapping("/insertStoreList")
 		@ResponseBody
-		public BnsStoreVO insertStoreList(@RequestBody BnsStoreListVO list) {
+		public boolean insertStoreList(@RequestBody BnsStoreListVO list) {
 			bnsService.insertStoreList(list);
 			
 			System.out.println(list);
-			return null;
+			return true;
 		}
 		
 		
 		//입고취소
 				@RequestMapping("/delStoreList")
 				@ResponseBody
-				public BnsStoreVO delStoreList(@RequestBody BnsStoreListVO list) {
+				public boolean delStoreList(@RequestBody BnsStoreListVO list) {
 					bnsService.delStoreList(list);
-					return null;
+					return true;
 				}
 	   
 ///출고관리페이지
@@ -271,5 +281,20 @@ public class BnsController {
 	      return "bns/releaseList";
 	   }  
 	
+		//출고전 계약서 그리드 아작스
+		@ResponseBody
+		@GetMapping("/beforeReleaseContListAjax")
+		public List<BnsReleaseVO> beforeReleaseContListAjax(){
+			List<BnsReleaseVO> list = bnsService.getbeforeReleaseContList();
+			return list;
+		}
+		
+		//출고전 주문서 그리드 아작스
+		@ResponseBody
+		@GetMapping("/beforeReleaseOrdListAjax")
+		public List<BnsReleaseVO> beforeReleaseOrdListAjax(){
+			List<BnsReleaseVO> list = bnsService.getbeforeReleaseOrdList();
+			return list;
+		}
 	
 }
