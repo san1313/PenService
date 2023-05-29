@@ -14,18 +14,288 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<style>
+.container-fluid .col-form-label{
+font-size:10pt;
+height:28px;
+width:140px;
+}
+.container-fluid .form-control{
+height:28px;
+font-size:10pt;
+}
+.container-fluid .form-group{
+margin-bottom:22px;
+height:28px;
+}
+</style>
 </head>
 <body>
-<h2 layout:fragment="title">생산 지시(직접지시) 관리</h2>
+<h2 layout:fragment="title">생산 지시 관리(직접지시건)</h2>
 <div layout:fragment="content">
 <!-- 생산지시 페이지 -->
+<div  style="text-align:left;">
+<div class="card card-outline" style="display:inline-block;">
+<div class="card-body" id="frm0" style="float:left; width:800px;">
+<div class="form-group row">
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">지시명</label>
+<input class="form-control col-7" id="indNmi">
+</div>
+
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">지시일자</label>
+<input class="form-control col-7" id="indDatei" readonly>
+
+</div>
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-primary" id="subBtn">등록</button>
+</div>
+</div>
+
+<div class="form-group row">
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">제품명</label>
+<input class="form-control col-5" id="planNmi" readonly>
+<ion-icon class="col-1" name="search" id="getPlanNm" data-toggle="modal" data-target=".bd-example-modal-lg">
+</div>
+
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">지시량</label>
+<input class="form-control col-7" type="number" id="ordrQnti">
+</div>
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-primary" disabled id="modBtn">수정</button>
+</div>
+</div>
+
+
+<div class="form-group row">
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">지시시작일자</label>
+<input type="date" class="form-control col-7" id="sDatei">
+</div>
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">지시종료일자</label>
+<input type="date" class="form-control col-7" id="clsDatei">
+</div>
+<div class="form-group row col-2">
+<button style="margin-left:20px;" class="btn btn-danger" disabled id="delBtn">삭제</button>
+</div>
+</div>
+</div>
+<div class="card-body" style="float:left; width:700px;">
+<div id="grid"></div>
+</div>
+</div>
+</div>
+<div style="text-align:left;">
+<div class="card card-outline" style="display:inline-block;">
+<div class="card-body" style="float:left; width:500px;">
+<div id="proc_grid"></div>
+</div>
+<div class="card-body" style="float:left; width:500px;">
+<div id="bom_grid"></div>
+</div>
+<div class="card-body" style="float:left; width:500px;">
+<div id="mat_grid"></div>
+</div>
+</div>
+</div>
+<form id="hiddenFrm">
+
+</form>
+<!-- 모달 시작 -->
+   <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h5 class="modal-title">계획상세목록</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+        <div class="form-group row" id="modal-search">
+        <div class="col-12">
+        <label class="col-3">계획종료기간</label>
+        <input type="date" class="col-3" id="sOrdCon"> - 
+		<input type="date" class="col-3" id="clsOrdCon">
+		<button class="col-2 btn btn-primary" id="modal-selBtn" onclick='getModalCon()'>조회</button>
+		</div>
+        </div>
+      	<div id="modal-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+<!-- 모달 끝 -->
+<!-- 화면 그리드 -->
 
 
 
-
-
-
-
+<script>
+//전역변수 선언부
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+var grid = null;
+var modal_grid = null;
+var grid2 = null;
+var grid3 = null;
+var grid4 = null;
+$(function () {
+    //그리드 데이터소스
+    const dataSource = {
+            contentType: "application/json",
+            api: {
+              readData: {
+                url: "/ind/indList",
+                method: "GET",
+              },
+            },
+          };
+	//그리드 구성
+	//기본 그리드(지시서 등록 내용)
+	grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        scrollX: false,
+        bodyHeight: 100,
+        rowHeaders: ['rowNum'],
+        columns: [{
+          header: '지시명',
+          name: 'indicaNm'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        },
+        {
+          header: '지시수량',
+          name: 'indicaQnt'
+        },
+        {
+      	  header: '지시시작일자',
+      	  name : 'sDate'
+        },
+        {
+      	  header:'지시종료일자',
+      	  name: 'clsDate'
+        },
+        {
+        	  header:'지시상태',
+        	  name: 'indicaState'
+          }
+      ]
+      });
+	//
+	grid2 = new tui.Grid({
+        el: document.getElementById('proc_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '공정순서',
+          name: 'indicaNm'
+        },
+        {
+       	  header: '공정분류',
+       	  name : 'sDate'
+          },
+        {
+          header: '공정명',
+          name: 'prodName'
+        }
+      ]
+      });
+	//
+	grid3 = new tui.Grid({
+        el: document.getElementById('bom_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [
+        {
+          header: '자재명',
+          name: 'prodName'
+        },
+        {
+          header: '필요자재량',
+          name: 'indicaQnt'
+        },
+        {
+      	  header: '투입공정',
+      	  name : 'sDate'
+        }
+      ]
+      });
+	
+	grid4 = new tui.Grid({
+        el: document.getElementById('mat_grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '자재명',
+          name: 'indicaNm'
+        },
+        {
+          header: '재고량',
+          name: 'prodName'
+        }
+      ]
+      });
+	 //모달 내부 상세계획 구성 
+    modal_grid = new tui.Grid({
+        el: document.getElementById('modal-grid'),
+        scrollX: false,
+        bodyHeight: 200,
+        columns: [{
+          header: '계약상세명',
+          name: 'planNm'
+        },
+        {
+          header: '제품명',
+          name: 'prodName'
+        },
+        {
+          header: '계획수량',
+          name: 'planQnt'
+        },
+        {
+      	  header: '계획시작일자',
+      	  name : 'planSdate'
+        },
+        {
+      	  header:'계획종료일자',
+      	  name: 'planClsdate'
+        }
+      ]
+      });
+    //모달 그리드 설정
+    modal_grid.on("dblclick",function(e){
+    	console.log(e);
+    	console.log(modal_grid.getData(e.rowKey)[0]);
+  	  $('#matmodalbtn').modal('hide'); 
+      $('#matmodalbtn').hide();
+      $('.bd-example-modal-lg').hide();
+    })
+    grid.setWidth(660);
+	$('#matmodalbtn').on('shown.bs.modal', function(){
+        modal_grid.refreshLayout();
+        $.ajax({
+            url : "/ind/planning",
+            method : "GET",
+            dataType : "JSON",
+            success : function(result){
+          	  modal_grid.textContent="";
+              modal_grid.resetData(result);
+          	
+            }
+          });     
+       });			
+     }); 
+//모달 내부 계획 상세 조회 기능
+function getModalCon(){
+	
+}
+</script>
 
 </div>
 </body>

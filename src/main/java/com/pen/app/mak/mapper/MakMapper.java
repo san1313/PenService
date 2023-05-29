@@ -25,8 +25,6 @@ public interface MakMapper {
 	int modPlan(PlanVO vo);
 	List<PlanVO> getPlanningList(PlanVO vo);
 	//계약 상세 상태 바꿔주기
-	int updateCont(String contDetCode);
-	int updateContr(String contDetCode);
 	
 	
 	List<PlanVO> getOrdList();
