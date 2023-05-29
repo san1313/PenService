@@ -14,12 +14,15 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.bns.mapper.BnsMapper;
+import com.pen.app.bns.service.BnsService;
 import com.pen.app.bns.vo.BnsAccVO;
 import com.pen.app.bns.vo.BnsContDetListVO;
 import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsStoreListVO;
+import com.pen.app.bns.vo.BnsStoreVO;
 
    
 @Controller
@@ -27,6 +30,8 @@ import com.pen.app.bns.vo.BnsProdVO;
 public class BnsController {
    
 @Autowired BnsMapper dao;
+
+@Autowired BnsService bnsService;
    
 	//주문서관리 페이지
    @GetMapping("/ordList")
@@ -222,7 +227,40 @@ public class BnsController {
 	      model.addAttribute("userVO", user);
 	      return "bns/storeList";
 	   }  
-	   
+	   //입고전 그리드 리스트
+		@ResponseBody
+		@GetMapping("/beforeStoreListAjax")
+		public List<BnsStoreVO> beforestoreListAjax(){
+			List<BnsStoreVO> list = dao.getbeforeStoreList();
+			
+			System.out.println(list);
+			return list;
+		}
+		//입고후 그리드 리스트
+		@ResponseBody
+		@GetMapping("/afterStoreListAjax")
+		public List<BnsStoreVO> afterstoreListAjax(){
+			List<BnsStoreVO> list = dao.getafterStoreList();
+			return list;
+		}
+		//입고등록 아작스
+		@RequestMapping("/insertStoreList")
+		@ResponseBody
+		public BnsStoreVO insertStoreList(@RequestBody BnsStoreListVO list) {
+			bnsService.insertStoreList(list);
+			
+			System.out.println(list);
+			return null;
+		}
+		
+		
+		//입고취소
+				@RequestMapping("/delStoreList")
+				@ResponseBody
+				public BnsStoreVO delStoreList(@RequestBody BnsStoreListVO list) {
+					bnsService.delStoreList(list);
+					return null;
+				}
 	   
 ///출고관리페이지
 	   @GetMapping("/releaseList")

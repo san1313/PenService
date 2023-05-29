@@ -3,7 +3,8 @@
 	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
 	layout:decorate="~{layout/template}">
 <head>
-
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <meta charset="UTF-8">
 <title>Insert title here</title>
 <script src="https://kit.fontawesome.com/56e7c5522c.js"
@@ -25,9 +26,6 @@
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="/plugins/jquery/jquery.min.js"></script>
 
-<meta name="_csrf" th:content="${_csrf.token}" />
-<meta name="_csrf_header" th:content="${_csrf.headerName}" />
-
 <style>
 .container-fluid {
 	text-align: left !important;
@@ -38,19 +36,41 @@
 <div layout:fragment="title">
 		<h1>입고 관리</h1>
 	</div>
-
+	
+	
 	<div layout:fragment="content">
-	<h2>제품현황</h2>
-	<button style="float:right;">입고 등록</button>
+
+	<h2>제품현황</h2> <button type="button" style="float:right;" id="storeRegBtn">전량입고</button>
 	<div id="beforeStoreGrid"></div>
+	<br>
 	<h2>입고내역</h2>
+	<button type="button" style="float:right;" id="storeCancleBtn">입고취소</button>
 	<div id="afterStoreGrid"></div>
+	
 
 	<script>
+	
+	const token = $('meta[name="_csrf"]').attr("content");
+	const header = $('meta[name="_csrf_header"]').attr("content");
+	
+	$(document).ready(function(){
+		
+	
+	 $.ajax({
+			url : "/bns/beforeStoreListAjax",
+			method : "GET",
+			success : function(result){
+				beforeStoreGrid.resetData(result);
+			},
+			error: function(reject){
+				console.log(reject);
+			}
+		});
+	
 	 var beforeStoreGrid = new tui.Grid({
 	     el: document.getElementById('beforeStoreGrid'),
 	     scrollX: false,
-	     scrollY: false,
+	     
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 	     columns: [
 	       {
@@ -72,13 +92,27 @@
 	       {
 	         header: '일자',
 	         name: 'prdtDate'
+	       },
+	       {
+	         header: '입고상태',
+	         name: 'prdtState'
 	       }
-	      
-	   
 	     ]
 	   });
 	
+	 
 	
+	  //입고후
+	 $.ajax({
+			url : "/bns/afterStoreListAjax",
+			method : "GET",
+			dataType : "JSON",
+			success : function(result){
+				afterStoreGrid.resetData(result);
+			}
+		});
+	 
+	 
 	   var afterStoreGrid = new tui.Grid({
 		     el: document.getElementById('afterStoreGrid'),
 		     scrollX: false,
@@ -104,14 +138,99 @@
 		       {
 		         header: '담당자명',
 		         name: 'empName'
-		       },
-		       {
-		         header: '비고',
-		         name: 'bnsStoreNote'
 		       }
-		   
+	   
 		     ]
-		   });
+		   }); 
+	   
+	   
+	   $('#storeRegBtn').on('click' ,function(){
+			let checked = beforeStoreGrid.getCheckedRows();
+			console.log(checked);
+		   
+			 $.ajax({
+				url : "/bns/insertStoreList",
+				method : "POST",
+				contentType : "application/json",
+				data : JSON.stringify({ list : checked}),
+				dataType : "JSON",
+				beforeSend: function (xhr) {
+		            xhr.setRequestHeader(header, token);
+		          },
+				success : function(result){
+					 alert(`제품 : ${checked.prdtNm}
+						   입고수량 : ${checked.cnt}
+						          입고완료`) 
+					//입고전 테이블 초기화
+					$.ajax({
+						url : "/bns/beforeStoreListAjax",
+						method : "GET",
+						success : function(result){
+							beforeStoreGrid.resetData(result);
+						},
+						error: function(reject){
+							console.log(reject);
+						}
+					});
+					
+					//입고후 테이블 초기화
+					$.ajax({
+						url : "/bns/afterStoreListAjax",
+						method : "GET",
+						dataType : "JSON",
+						success : function(result){
+							afterStoreGrid.resetData(result);
+						}
+					});
+					
+					},
+		         error : function(reject){
+		        	 console.log(reject);
+		        	 
+		         }
+				}) 
+		   
+	   })
+	   
+	     $('#storeCancleBtn').on('click' ,function(){
+			let checked = afterStoreGrid.getCheckedRows();
+			console.log(checked);
+		   
+			 $.ajax({
+				url : "/bns/delStoreList",
+				method : "POST",
+				contentType : "application/json",
+				data : JSON.stringify({ list : checked}),
+				dataType : "JSON",
+				beforeSend: function (xhr) {
+		            xhr.setRequestHeader(header, token);
+		          },
+				success : function(result){
+					 
+					//입고전 테이블 초기화
+					$.ajax({
+						url : "/bns/beforeStoreListAjax",
+						method : "GET",
+						success : function(result){
+							beforeStoreGrid.resetData(result);
+						}
+					});
+					
+					//입고후 테이블 초기화
+					$.ajax({
+						url : "/bns/afterStoreListAjax",
+						method : "GET",
+						success : function(result){
+							afterStoreGrid.resetData(result);
+						}
+					});
+					
+				}
+		        
+				}) 
+		   
+	   })
+	});
 	</script>
 	</div>
 </body>
