@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
+import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -124,6 +125,23 @@ public class MatServiceimpl implements MatService{
 		// 자재재고조회 lot
 		return matmapper.getinventorysearchlot(matCode);
 	}
+
+	@Override
+	public List<DlivyVO> getmatdlivylist() {
+		// 자재출고리스트
+		return matmapper.getmatdlivylist();
+	}
+
+	@Override
+	public List<DlivyVO> getmatdlivysearchlist(DlivyVO vo) {
+		// 자재출고리스트 다중검색
+		return matmapper.getmatdlivysearchlist(vo);
+	}
+
+	/*
+	 * @Override public String getmatordercode() { // 발주번호 return
+	 * matmapper.getmatordercode; }
+	 */
 
 	/*
 	 * @Override public List<WarehousingVO> getsemiwarehousinglist() { // 반제품

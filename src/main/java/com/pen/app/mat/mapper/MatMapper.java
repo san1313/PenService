@@ -3,6 +3,7 @@ package com.pen.app.mat.mapper;
 
 import java.util.List;
 
+import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -30,5 +31,10 @@ public interface MatMapper {
 	
 	List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드 검색
 	List<InventoryVO> getinventorysearchlot(String matCode);//자재재고조회 lot
+	
+	List<DlivyVO> getmatdlivylist(); //자재출고리스트
+	List<DlivyVO> getmatdlivysearchlist(DlivyVO vo); //자재출고리스트 다중검색
+	
+	
 }
 	

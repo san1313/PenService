@@ -416,7 +416,6 @@
      accmodal_grid.on('click', ev=> {
        console.log(ev.rowKey)
        console.log(ev.columns)
-
        const focusCell = accmodal_grid.getFocusedCell()
        console.log(focusCell)
 
@@ -508,13 +507,14 @@
           },
   		dataType : "JSON",
   		contentType: "application/json",
-  		success : function(result3){			
+  		success : function(result3){
+  			let app = result3;
+	  		ckgrid.appendRows(app);
   			console.log(result3);
   			
   		}
          
   	});
-	  ckgrid.appendRows(checked);
 	  grid.removeCheckedRows(false);
 
 	  $.ajax({
@@ -606,6 +606,8 @@
     }
    }
     });
+
+		  
 
    
 
