@@ -20,6 +20,7 @@ import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdDetListVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
+import com.pen.app.bns.vo.BnsReleaseListVO;
 import com.pen.app.bns.vo.BnsReleaseVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
@@ -120,7 +121,7 @@ public class BnsController {
 	public BnsOrdDetListVO modOrdList(@RequestBody BnsOrdDetListVO list) {
 		
 		bnsService.modOrdList(list.getList());
-		return null;
+		return list;
 	}
 	
 	//주문수정 제품삭제
@@ -128,7 +129,7 @@ public class BnsController {
 	@ResponseBody
 	public BnsOrdDetListVO delOrdDetList(@RequestBody BnsOrdDetListVO list) {
 		bnsService.delOrdDetList(list.getList());
-		return null;
+		return list;
 	}
 	
 	//주문서 취소
@@ -136,7 +137,7 @@ public class BnsController {
 	@ResponseBody
 	public BnsOrdDetListVO delOrdList(@RequestBody BnsOrdDetListVO list) {
 		bnsService.delOrdList(list.getList());
-		return null;
+		return list;
 	}
 	
 	//주문코드 자동생성
@@ -304,6 +305,14 @@ public class BnsController {
 					return list;
 				}
 		
+		//출고등록 아작스
+		@RequestMapping("/insertReleaseList")
+		@ResponseBody
+		public boolean insertReleaseList(@RequestBody BnsReleaseListVO list) {
+			bnsService.insertReleaseList(list);
+			System.out.println(list);
+			return true;
+		}
 				
 	
 }

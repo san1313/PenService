@@ -46,7 +46,7 @@ public interface BnsMapper {
 	List<BnsReleaseVO> getbeforeReleaseContList(); //출고전 계약서 그리드
 	List<BnsReleaseVO> getbeforeReleaseOrdList(); //출고전 주문서 그리드
 	List<BnsReleaseVO> getLotReleaseList(String keyword); //출고전 LOT리스트 그리드
-	
+	void insertRelease(BnsReleaseVO list);// 출고 등록
 	
 	
 }

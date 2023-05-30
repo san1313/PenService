@@ -47,7 +47,7 @@
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
 	<h2>출고등록</h2>
-	<button style="float:right;">출고 등록</button>
+	<button id="releaseRegBtn" style="float:right;">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
 	<script>
 	
@@ -214,7 +214,7 @@
           })
           
           //계약상황 첫번째 열 더블클릭 시 밑의 그리드로 정보 이동
-           beforeReleaseContGrid.on('dblclick', ev=> {
+           beforeReleaseContGrid.on('click', ev=> {
          	  if(ev.columnName == 'contDetCode'){
         			let row = beforeReleaseContGrid.getRow(ev.rowKey);
         			console.log(row.prodCode);
@@ -231,7 +231,7 @@
           }) 
           
           //주문상황 첫번째 열 더블클릭 시 밑의 그리드로 정보 이동
-           beforeReleaseOrdGrid.on('dblclick', ev=> {
+           beforeReleaseOrdGrid.on('click', ev=> {
          	  if(ev.columnName == 'ordDetCode'){
         			let row = beforeReleaseOrdGrid.getRow(ev.rowKey);
         			console.log(row.prodCode);
@@ -246,6 +246,28 @@
         				});
           } 
           }) 
+          
+          //출고등록 버튼 클릭 시
+         /*  $('#releaseRegBtn').on('click' ,function(){
+			let checked = afterReleaseGrid.getCheckedRows();
+			console.log(checked);
+			
+			 $.ajax({
+					url : "/bns/insertReleaseList",
+					method : "POST",
+					contentType : "application/json",
+					data : JSON.stringify({ list : checked}),
+					dataType : "JSON",
+					beforeSend: function (xhr) {
+			            xhr.setRequestHeader(header, token);
+			          },
+					success : function(result){
+						
+					}
+					}
+					}) */
+						
+		   
            
            
 	</script>

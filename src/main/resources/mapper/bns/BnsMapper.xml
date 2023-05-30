@@ -6,7 +6,6 @@
 
 <mapper namespace="com.pen.app.bns.mapper.BnsMapper">
 
-
 	<!-- 주문서 전체 조회 -->
 	<select id="getOrdList" resultType="BnsOrdVO">
 		select distinct 
@@ -222,7 +221,7 @@
 	<!-- 계약서 등록 -->
 	<insert id="insertContList">
 		insert all into bns_contract
-		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},#{list[0].contDate},#{list[0].contDueDate},'접수완료','비고',#{list[0].empNum},
+		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},#{list[0].contDate},#{list[0].contDueDate},'접수완료',null,#{list[0].empNum},
 		#{list[0].contStartDate})
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
@@ -263,14 +262,9 @@
 			THEN
 			insert(cont_det_code,cont_code,prod_code,prod_name,cont_det_price,cont_det_quan,cont_det_release,cont_det_progress,cont_det_tot_price)
 			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),#{vo.contCode},#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},#{vo.contDetRelease},'납기불필요',#{vo.contDetTotPrice})
-			<!-- UPDATE bns_order_detail SET ord_det_code = #{vo.ordDetCode}, ord_code 
-				= ${vo.ordCode}, prod_code = #{vo.prodCode}, prod_name = #{vo.prodName}, 
-				ord_det_price = #{vo.ordDetPrice}, ord_det_quan = #{vo.ordDetQuan}, ord_det_tot_price 
-				= #{vo.ordDetTotPrice} where ord_code = #{vo.ordCode} -->
+			
 		</foreach>
 	</update>
-
-
 
 	<!-- 계약 상세 취소 -->
 	<delete id="delContDetList">
@@ -430,7 +424,7 @@ select * from(
 
 <!-- 출고 등록 -->
 
-<insert id="releaseStore" statementType="CALLABLE">
+<insert id="insertRelease" statementType="CALLABLE">
 		
 		{call prdt_release_register (
 			#{v_bns_release_quan, mode=IN, jdbcType=VARCHAR},
@@ -441,5 +435,6 @@ select * from(
 			#{v_prdt_nm, mode=IN, jdbcType=VARCHAR},
 			#{v_emp_num, mode=IN, jdbcType=VARCHAR}
 		)}
+		
 	</insert>
 </mapper>

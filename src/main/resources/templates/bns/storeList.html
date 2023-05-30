@@ -68,9 +68,9 @@
 		});
 	
 	 var beforeStoreGrid = new tui.Grid({
+		 bodyHeight : 200,
 	     el: document.getElementById('beforeStoreGrid'),
 	     scrollX: false,
-	     
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 	     columns: [
 	       {
@@ -114,9 +114,9 @@
 	 
 	 
 	   var afterStoreGrid = new tui.Grid({
+		   bodyHeight : 200,
 		     el: document.getElementById('afterStoreGrid'),
 		     scrollX: false,
-		     scrollY: false,
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 		     columns: [
 		       {
@@ -183,10 +183,7 @@
 					});
 					
 					},
-		         error : function(reject){
-		        	 console.log(reject);
-		        	 
-		         }
+		       
 				}) 
 		   
 	   })
