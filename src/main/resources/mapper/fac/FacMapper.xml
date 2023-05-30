@@ -65,6 +65,13 @@
     </foreach>
   </insert>
 
+<!-- 점검등록 -->
+	<insert id="insertConfirmList" parameterType="FacConfirmVO">
+	insert into fac_confirm(confirm_code,confirm_date,confirm_category,action_history,decision,confirm_issue,emp_num,fac_code)
+			 values ('CONFIRM'||CONFIRM_seq.nextval,current_date,#{confirmCategory},#{actionHistory},#{decision},#{confirmIssue},#{empNum},#{facCode}			 )
+	
+	</insert>
+
 <!-- 설비별 공정수정 -->	
  <insert id="insertProcList" parameterType="String">
   insert all 
@@ -119,6 +126,31 @@
 	      from COM_CODE_PROC 
 		 where proc_name  like '%'|| #{keyword} || '%'
 	</select>
+
+
+<!-- 점검전체조회 -->
+<select id="getConfirmList" resultType="FacConfirmVO">
+select a.confirm_code,
+	   b.fac_name,
+	   a.action_history,
+	   a.confirm_category,
+	   a.confirm_issue,
+	   a.decision,
+	   to_char(confirm_date,'yyyy-MM-dd HH24:Mi:ss') confirmDate,
+	   a.emp_num
+  from FAC_CONFIRM a 
+  join FAC_INFO b 
+ using (fac_code)
+</select>
+
+	<!-- 설비코드검색조회 -->
+	<select id="getfacminilist" resultType="FacInfoVO">
+		select fac_code, 
+		       fac_name 
+	      from fac_info
+		 where fac_name  like '%'|| #{keyword} || '%'
+	</select>
+
 
 
 </mapper>

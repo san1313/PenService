@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
+import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -25,85 +26,111 @@ import com.pen.app.fac.vo.FacInfoVO;
 @Controller
 @RequestMapping("/fac")
 public class FacController {
-   
-   @Autowired FacMapper dao;
-   @Autowired FacService service;
-   
-   
-   	@GetMapping("/infoManage")
-   	public void test() {
-   		
-   	}
-   
-   
-    @GetMapping("/management") //설비관리 페이지
-       public void management() {
-      
-       }
-    @GetMapping("/register") //설비정보관리 페이지 
-       public void register() {
-          
-       }
-   
-    
-    @GetMapping("/confirm") //점검관리 페이지
-    public void confirm() {
-    	
-    }
-   
-    
-      //설비전체리스트 
-      @ResponseBody
-      @GetMapping("/infoListAjax") 
-      public List<FacInfoVO> infoListAjax(FacInfoVO vo){
-	      List<FacInfoVO> list = dao.getList(vo);
-	      return list;
-      }
-      
-      //설비별 공정리스트
-      @ResponseBody
-      @GetMapping("/getFacConnProcList")
-      public List<FacConnProcVO> getFacConnProcList(String facCode){
-    	  List<FacConnProcVO> list = dao.getFacConnProcList(facCode);
-    	  return list;
-      }
-       
-      //공정전체리스트
-       @ResponseBody
-       @GetMapping("/proclistAjax")
-       public List<FacConnProcVO> proclist(){
-          List<FacConnProcVO> list = dao.getproclist();
-          return list;
-       }
-       
-       //공정명 단건검색 리스트
-       @ResponseBody
-       @RequestMapping("/procminilist") 
-      public List<FacConnProcVO> proclistAjax(@RequestParam String result){
-    	   List<FacConnProcVO> list = dao.getprocminilist(result);
-    	   return list;
-      }
-             
-     //설비등록
-     @ResponseBody
-     @RequestMapping("/facRegister")
-   	 public int facRegister(@RequestBody FacInfoListVO list) {
-    	 //등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를 돌려보내줌<<
-    	 return service.insertFacList(list);
-     }
-   	 
-     //설비수정
-     @ResponseBody 
-     @RequestMapping("/facUpdate")
-     public int facUpdate(@RequestBody FacInfoListVO list) {
-    	 return service.facUpdate(list);
-     }
-     
-     //설비삭제
-     @ResponseBody 
-     @RequestMapping("/facDelete")
-     public int facDelete(FacInfoVO vo) {
-    	 return service.facDelete(vo);
-     }
-       
+
+	@Autowired
+	FacMapper dao;
+	@Autowired
+	FacService service;
+
+	@GetMapping("/infoManage")
+	public void test() {
+
+	}
+
+	@GetMapping("/management") // 설비관리 페이지
+	public void management() {
+
+	}
+
+	@GetMapping("/register") // 설비정보관리 페이지
+	public void register() {
+
+	}
+
+	@GetMapping("/confirm") // 점검관리 페이지
+	public void confirm() {
+
+	}
+
+	// 점검전체리스트
+	@ResponseBody
+	@GetMapping("/confirmListAjax")
+	public List<FacConfirmVO> confirmListAjax(FacConfirmVO vo) {
+		List<FacConfirmVO> list = dao.getConfirmList(vo);
+		return list;
+	}
+
+	// 설비전체리스트
+	@ResponseBody
+	@GetMapping("/infoListAjax")
+	public List<FacInfoVO> infoListAjax(FacInfoVO vo) {
+		List<FacInfoVO> list = dao.getList(vo);
+		return list;
+	}
+
+	// 설비별 공정리스트
+	@ResponseBody
+	@GetMapping("/getFacConnProcList")
+	public List<FacConnProcVO> getFacConnProcList(String facCode) {
+		List<FacConnProcVO> list = dao.getFacConnProcList(facCode);
+		return list;
+	}
+
+	// 공정전체리스트
+	@ResponseBody
+	@GetMapping("/proclistAjax")
+	public List<FacConnProcVO> proclist() {
+		List<FacConnProcVO> list = dao.getproclist();
+		return list;
+	}
+
+	// 공정명 단건검색 리스트
+	@ResponseBody
+	@RequestMapping("/procminilist")
+	public List<FacConnProcVO> proclistAjax(@RequestParam String result) {
+		List<FacConnProcVO> list = dao.getprocminilist(result);
+		return list;
+	}
+
+	// 설비등록
+	@ResponseBody
+	@RequestMapping("/facRegister")
+	public int facRegister(@RequestBody FacInfoListVO list) {
+		// 등록 업데이트 삭제; mybatis에서 update insert delete로 감싸는 얘네는 결과값으로 몇행에 해당하는 숫자를
+		// 돌려보내줌<<
+		return service.insertFacList(list);
+	}
+	
+	//점검등록
+	@RequestMapping("/confirmRegister")
+	@ResponseBody
+	public int confirmRegister(@RequestBody FacConfirmVO list) {
+		return service.insertConfirmList(list);
+	}
+	
+
+	// 설비수정
+	@ResponseBody
+	@RequestMapping("/facUpdate")
+	public int facUpdate(@RequestBody FacInfoListVO list) {
+		return service.facUpdate(list);
+	}
+
+	// 설비삭제
+	@ResponseBody
+	@RequestMapping("/facDelete")
+	public int facDelete(FacInfoVO vo) {
+		return service.facDelete(vo);
+	}
+	
+	//설비명 단건 검색리스트
+	@ResponseBody
+	@RequestMapping("/facminilist")
+	public List<FacInfoVO> facminilistAjax(@RequestParam String result) {
+		List<FacInfoVO> list = dao.getfacminilist(result);
+		return list;
+	}
+	
+	
+	
 }

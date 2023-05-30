@@ -7,6 +7,7 @@ import org.springframework.stereotype.Service;
 
 import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
+import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -24,10 +25,16 @@ public class FacServiceImpl implements FacService {
 
 	@Override
 	public List<FacConnProcVO> getprocminilist(String keyword) {
-		// TODO Auto-generated method stub
-		return null;
+		//공정명으로 공정코드조회 
+		return mapper.getprocminilist(keyword);
 	}
 
+	@Override
+	public List<FacInfoVO> getfacminilist(String keyword) {
+		// 설비명으로 설비코드조회
+		return mapper.getfacminilist(keyword);
+	}
+	
 	@Override
 	public FacInfoVO getFac(String facCode) {
 		// 단건조회
@@ -69,5 +76,13 @@ public class FacServiceImpl implements FacService {
 		// 설비별 공정조회
 		return mapper.getFacConnProcList(facCode);
 	}
+
+	@Override
+	public int insertConfirmList(FacConfirmVO list) {
+		// 점검등록
+		return mapper.insertConfirmList(list);
+	}
+
+	
 
 }

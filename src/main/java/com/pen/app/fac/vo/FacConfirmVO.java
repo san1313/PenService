@@ -13,7 +13,9 @@ public class FacConfirmVO {
 	String confirmDate; //점검일시
 	String decision; //판정 
 	
-	String emp_num; //담당자
+	String empNum; //담당자
 	String facCode; //설비코드
 	String facName; //설비명
+	
+	
 }	
