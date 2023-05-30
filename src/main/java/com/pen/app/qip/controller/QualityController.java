@@ -16,7 +16,8 @@ import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.qip.service.impl.TestCodeServiceImpl;
 import com.pen.app.qip.service.impl.TestPerItemServiceImpl;
 import com.pen.app.qip.service.impl.TestServiceImpl;
-import com.pen.app.qip.vo.MatResultVO;
+import com.pen.app.qip.vo.ItemTestDTO;
+import com.pen.app.qip.vo.TestResultVO;
 import com.pen.app.qip.vo.TestCodeVO;
 import com.pen.app.qip.vo.TestPerItemVO;
 
@@ -111,17 +112,32 @@ public class QualityController {
 		return "/qip/itemTest";
 	}
 	
-	// 발주 리스트 조회
+	// 발주 검사 리스트 조회
 	@GetMapping("/matTestList")
 	@ResponseBody
 	ToastUiResponseDTO matTestList() {
 		return new ToastUiResponseDTO(testService.matTestList());
 	}
 	
-	@PostMapping("/matTestInsert")
+	// 제품 검사 리스트 조회
+	@GetMapping("/itemTestList")
 	@ResponseBody
-	boolean matTestInsert(MatResultVO vo) {
-		System.err.println(vo);
-		return true;
+	ToastUiResponseDTO itemTestList() {
+		return null;
+	}
+	
+	// 보관기간 초과 자재 검사 리스트 조회
+	@GetMapping("/expTestList")
+	@ResponseBody
+	ToastUiResponseDTO expTestList() {
+		return new ToastUiResponseDTO(testService.expTestList());
+	}
+	
+	@PostMapping("/testInsertAjax")
+	@ResponseBody
+	boolean testInsertAjax(@RequestBody ItemTestDTO obj) {
+		System.err.println(obj);
+		return false;
+//		return testService.insertTest(obj);
 	}
 }
