@@ -64,7 +64,7 @@
 														OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))) A 
 															LEFT OUTER JOIN COM_BOM B ON (A.BOM_PROD_CODE = B.BOM_MAT_CODE))
 																START WITH PARENT_CODE IS NULL
-																CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)) using(proc_code) order by proc_order
+																CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)) using(proc_code) order by lev desc
 </select>
 
 <select id="getOperateCheck" parameterType="MakVO" resultType="MakVO" >
@@ -147,7 +147,7 @@ insert into mak_bom(mak_bom_code,
                     mak_flow_code) values(
                                         mak_bom_seq.nextval,
                                         #{makStep},
-                                        #{prodCode},
+                                        #{bomProdCode},
                                         #{amount},
                                         'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),
                                         #{makFlowCode}
