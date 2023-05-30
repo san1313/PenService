@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/template}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>자재조정조회</title>
+
+  <style>
+    .ordersearch {
+      border: 1px solid black;
+      padding: 20px;
+    }
+    .text1 {
+      margin: 15px;
+      padding: 0 5px 0 ;
+    }
+    
+    #dlivy{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+	#subtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+    #lotadjustgride{
+      margin: 20px 0 0px;
+    }
+    #matadjustgrid{
+     display:none;
+     margin:20px 0 0;
+    }
+
+  </style>
+  <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+  <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+</head>
+
+
+<body>
+  <div layout:fragment="title">
+    <h3>자재조정조회</h3>
+  </div>
+  
+  <div layout:fragment="content">
+    <form id="searchform">
+    <div class="ordersearch">
+      <label>LOT번호</label>
+      <input class="text1" type="text" id="lotnum" name="matLot">  
+     <label>조정일자</label>
+     <input class="text1" type="date" name="matMdatdate" id="matMdatdate"> ~ 
+     <input class="text1" type="date" id="matMdatdate1" name="matMdatdate1">
+	<div class="form-check form-check-inline">
+	  <input class="form-check-input" type="radio" name="matMdev" id="alladj" value="">
+	  <label class="form-check-label" for="alladj">전체</label>
+	</div>
+	<div class="form-check form-check-inline">	
+	  <input class="form-check-input" type="radio" name="matMdev" id="dli" value="출고">
+	  <label class="form-check-label" for="dli">출고</label>
+	</div>
+	<div class="form-check form-check-inline">
+	  <input class="form-check-input" type="radio" name="matMdev" id="inv" value="입고">
+	  <label class="form-check-label" for="inv">입고</label>
+	</div>
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+    </div>
+	</form>
+	<div id="lotadjustgride"></div>
+	
+	
+    <script>
+    const token = $('meta[name="_csrf"]').attr("content");
+    const header = $('meta[name="_csrf_header"]').attr("content");
+
+    //lot리스트
+    var lotadjustgride = new tui.Grid({
+        el: document.getElementById('lotadjustgride'),
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['rowNum'],
+        columns: [{
+        header: 'LOT번호',
+        name: 'matLot'
+        },
+        {
+        header: '자재명',
+        name: 'matName'
+        },
+        {
+        header: '자재코드',
+        name: 'matCode'
+        },
+        {
+        header: '처리 전 재고량',
+        name: 'bmatQnt'
+        },
+        {
+        header: '재고량',
+        name: 'matQnt'
+        },
+        {
+        header: '자재조정수량',
+        name: 'matMdatqnt'
+        },
+        {
+        header: '조정일자',
+        name: 'matMdatdate'
+        },
+        {
+        header: '조정구분',
+        name: 'matMdev'
+        },
+        {
+        header: '조정사유',
+        name: 'matMdatresn'
+        }
+        ]
+        });
+    
+    
+    $.ajax({
+        url : "/mat/allmatadjustlist",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	console.log(result);
+        	lotadjustgride.resetData(result);
+        	lotadjustgride.refreshLayout();
+        }
+      });
+	
+    
+  
+
+    
+   //조회버튼
+   $("#submitbtn").on('click',function(){
+			   
+	   $.ajax({
+		 url: "/mat/matadjustsearchlist",
+		 method: "GET",
+		 data :$('#searchform').serialize(),
+		 success : function(result){
+			 console.log(result)
+			 lotadjustgride.resetData(result);
+			 lotadjustgride.refreshLayout();
+		 },
+		 error : function(reject){
+			 console.log(reject)
+		 }
+	   });
+   })
+   
+ 
+    </script>
+
+    </div>
+    
+    </body>
+    
+    </html>

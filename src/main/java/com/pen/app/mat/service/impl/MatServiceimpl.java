@@ -84,9 +84,9 @@ public class MatServiceimpl implements MatService {
 	}
 
 	@Override
-	public List<WarehousingVO> getwarehousinglist() {
+	public List<WarehousingVO> getestwarehousinglist() {
 		// 자재입고 검사내역리스트
-		return matmapper.getwarehousinglist();
+		return matmapper.getestwarehousinglist();
 	}
 
 	@Override
@@ -154,6 +154,11 @@ public class MatServiceimpl implements MatService {
 		// 자재조정lot 리스트
 		return matmapper.getmatadjustlotlist();
 	}
+	@Override
+	public List<AdjustVO> getmatadjustsearch(String keyword) {
+		// 자재조정 자재코드 검색
+		return matmapper.getmatadjustsearch(keyword);
+	}
 
 	@Override
 	public List<AdjustVO> getmatadjustlot(String matLot) {
@@ -178,6 +183,19 @@ public class MatServiceimpl implements MatService {
 		}
 		
 	}
+
+	@Override
+	public List<AdjustVO> getallmatadjustlist() {
+		// 자재조정조회리스트
+		return matmapper.getallmatadjustlist();
+	}
+
+	@Override
+	public List<AdjustVO> getmatadjustsearchlist(AdjustVO vo) {
+		// 자재조정리스트 다중검색
+		return matmapper.getmatadjustsearchlist(vo);
+	}
+
 
 	/*
 	 * @Override public List<WarehousingVO> getsemiwarehousinglist() { // 반제품

@@ -21,7 +21,7 @@ public interface MatMapper {
 	
 	List<OrderVO> getorderlistajax(); //발주등록조회페이지리스트
 	List<OrderVO> getorderlistsearchajax(OrderVO vo); //발주조회다중검색
-	List<WarehousingVO> getwarehousinglist(); //자재입고페이지 검사내역리스트
+	List<WarehousingVO> getestwarehousinglist(); //자재입고페이지 검사내역리스트
 	
 	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
 	List<WarehousingVO> gettodaywarehousinglist(); //당일건자재입고리스트
@@ -34,9 +34,12 @@ public interface MatMapper {
 	List<InventoryVO> getinventorysearchlot(String matCode);//자재재고조회 lot
 	
 	List<AdjustVO> getmatadjustlotlist(); //자재조정 lot리스트
+	List<AdjustVO> getmatadjustsearch(String keyword); //자재조정 자재코드 검색
 	List<AdjustVO> getmatadjustlot(String matLot); //자재조정 lot 상세
 	public void getmatadjustregister(AdjustVO vo); //조정등록(입고)
 	public void getmatadjustdliregister(AdjustVO vo); //조정등록(출고)
+	List<AdjustVO> getallmatadjustlist(); //자재조정리스트
+	List<AdjustVO> getmatadjustsearchlist(AdjustVO vo); //자재조정리스트 다중검색
 	
 	List<DlivyVO> getmatdlivylist(); //자재출고리스트
 	List<DlivyVO> getmatdlivysearchlist(DlivyVO vo); //자재출고리스트 다중검색

@@ -139,7 +139,7 @@
 	
 	
 	<!-- 자재검사내역리스트 -->
-	<select id = "getwarehousinglist" resultType="WarehousingVO">
+	<select id = "getestwarehousinglist" resultType="WarehousingVO">
 		select distinct m.mat_code, 
 						m.mat_name, 
 						h.mat_ordernum, 
@@ -218,14 +218,19 @@
 			from mat_wrhousng a join mat_invntry b on (a.mat_lot=b.mat_lot) 
 			                                          join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat)
                                                       join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
+			<where>
+			 <if test="matLot != null and matLot != ''"> 
 			where b.mat_code=#{matCode}
+			</if>
+			<if test="accName != null and accName != ''"> 
 			and a.mat_bcncname = #{accName}
+			</if>
 			<if test="matWrhdate != null and matWrhdate != ''">
 	<![CDATA[
 			and mat_wrhdate >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
 	]]>
 			</if>
-	
+			</where>
 			)
 			<if test="matWrhdate1 != null and matWrhdate1 != ''">
 	<![CDATA[		
@@ -291,6 +296,19 @@
 			join mat_wrhousng b on(a.mat_lot = b.mat_lot)
 	</select>
 	
+	<select id="getmatadjustsearch" resultType="AdjustVO">
+		select distinct a.mat_code, 
+						a.mat_name, 
+						a.mat_lot, 
+						b.mat_bcncname,			
+						a.mat_qnt 
+		from mat_invntry a 
+			join mat_wrhousng b on(a.mat_lot = b.mat_lot)
+		where a.mat_name = #{keyword} order by 1
+	</select>
+	
+	
+	
 	<!-- 자재조정 lot 단건조회 -->
 	<select id="getmatadjustlot" resultType="AdjustVO">
 		select distinct a.mat_code, 
@@ -307,10 +325,12 @@
 	<select id="getmatadjustregister" statementType="CALLABLE">
 	{call v_inv_proc(
 	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matMdev, mode=IN, jdbcType=VARCHAR},
 	#{matMdatresn, mode=IN, jdbcType=VARCHAR},
 	#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
 	#{matWrhqy, mode=IN, jdbcType=VARCHAR},
-	#{matQnt, mode=IN, jdbcType=VARCHAR}	
+	#{matQnt, mode=IN, jdbcType=VARCHAR},
+	#{matBcncname, mode=IN, jdbcType=VARCHAR}
 	)}
 	</select>
 	
@@ -318,10 +338,64 @@
 	<select id="getmatadjustdliregister" statementType="CALLABLE">
 	{call v_dli_proc(
 	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matMdev, mode=IN, jdbcType=VARCHAR},
 	#{matMdatresn, mode=IN, jdbcType=VARCHAR},
 	#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
 	#{matDlivyqnt, mode=IN, jdbcType=VARCHAR},
 	#{matQnt, mode=IN, jdbcType=VARCHAR}
 	)}
+	</select>
+	
+	<!-- 조정조회리스트 -->
+	<select id="getallmatadjustlist" resultType="AdjustVO">
+		select distinct b.mat_lot, 
+					   b.mat_name, 
+					   b.mat_code,
+					   (b.mat_qnt + a.mat_mdatqnt) as bmatQnt,
+					   b.mat_qnt,
+					   a.mat_mdatqnt, 
+					   a.mat_mdev,
+					   a.mat_mdatdate, 
+					   a.mat_mdatresn 
+				from mat_mdat a 
+		 join mat_invntry b on(a.mat_lot = b.mat_lot) 
+		 join mat_wrhousng c on(b.mat_lot = c.mat_lot) order by 1
+	</select>
+	
+	<!-- 자재조정리스트 다중검색 -->
+	<select id="getmatadjustsearchlist" resultType="AdjustVO">
+		select * 
+    	  from (select  distinct b.mat_lot, 
+					   b.mat_name, 
+					   b.mat_code,
+					   (b.mat_qnt + a.mat_mdatqnt) as bmatQnt,
+					   b.mat_qnt,
+					   a.mat_mdatqnt, 
+					   a.mat_mdev,
+					   a.mat_mdatdate, 
+					   a.mat_mdatresn 
+				from mat_mdat a 
+				 join mat_invntry b on(a.mat_lot = b.mat_lot) 
+				 join mat_wrhousng c on(b.mat_lot = c.mat_lot)
+				 <where>
+				 <if test="matLot != null and matLot != ''"> 	
+				  and b.mat_lot like '%'|| #{matLot} || '%'
+				  </if>
+				<if test="matMdev != null and matMdev != ''"> 	
+		         and a.mat_mdev = #{matMdev}
+		         </if>
+		         	<if test="matMdatdate != null and matMdatdate != ''">
+		         <![CDATA[
+		         and mat_mdatdate >= TO_DATE(#{matMdatdate}, 'YYYY-MM-DD') 
+		         ]]>
+		         </if>
+				 </where>
+		         	
+		         )
+         	<if test="matMdatdate1 != null and matMdatdate1 != ''">
+          <![CDATA[
+        where mat_mdatdate <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
+          ]]>
+          	</if>	
 	</select>
 </mapper>

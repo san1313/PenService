@@ -13,49 +13,29 @@
       border: 1px solid black;
       padding: 20px;
     }
-
-    .addmatbtn {
-      width: 5px 10px;
-      background-color: #282cff;
-      border: none;
-      color: white;
-      text-align: center;
-      display: inline-block;
-      font-size: 16px;
-      float: right;
-      margin: 0 10px;
-    }
-
-    #orderlistgrid {
-      margin: 20px 0 10px;
-    }
-	#deletematbtn{
-	display:none;
-	float:right;
-	margin-right:10px;
-	}
-	
     .text1 {
       margin: 15px;
-      padding: 0 5px 0 0;
+      padding: 0 5px 0 ;
     }
     
     #dlivy{
 	margin : 10px;
 	float:right;
 	margin-right:10px;
+
 	}
 	#subtn{
 	margin : 10px;
 	float:right;
 	margin-right:10px;
+
 	}
-    
-    #ckgrid{
-     margin-top: 30px;
+    #lotadjustgride{
+      margin: 20px 0 0px;
     }
     #matadjustgrid{
      display:none;
+     margin:20px 0 0;
     }
 
   </style>
@@ -256,7 +236,25 @@
     })	
 
     
-   
+   //조회버튼
+   $("#submitbtn").on('click',function(){
+	   let data1 = document.getElementById('matmodalmatname').value;
+	   
+	   $("#matmodalmatname").val("");
+	   $.ajax({
+		 url: "/mat/matadjustsearch",
+		 method: "GET",
+		 data : {'result' : data1},
+		 success : function(result){
+			 console.log(result)
+			 lotadjustgride.resetData(result);
+			 lotadjustgride.refreshLayout();
+		 },
+		 error : function(reject){
+			 console.log(reject)
+		 }
+	   });
+   })
    
     
      
@@ -314,7 +312,6 @@
 	   	    	 console.log(reject)
 	     }
 	   }); 
-    	
     	
     })
     
