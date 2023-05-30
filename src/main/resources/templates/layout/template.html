@@ -252,6 +252,12 @@
                       <p>자재 조정 관리</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/mat/matadjustlist" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>자재 조정 조회</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <!-- 자재 메뉴 끝 -->
@@ -483,6 +489,9 @@
             break;
           case "matadjust":
             $("#matNav").find("a[href='/mat/matadjust']").addClass("active");
+            break;
+          case "matadjustlist":
+            $("#matNav").find("a[href='/mat/matadjustlist']").addClass("active");
             break;
         }
       } else if (path.startsWith("/mak") || path.startsWith("/ind")) {

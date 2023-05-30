@@ -172,7 +172,10 @@ public class BnsServiceImpl implements BnsService {
 			public List<BnsReleaseVO> getbeforeReleaseOrdList() {
 				return mapper.getbeforeReleaseOrdList();
 			}
-		
+		@Override
+			public List<BnsReleaseVO> getLotReleaseList(String keyword) {
+				return mapper.getLotReleaseList(keyword);
+			}
 
 		
 }

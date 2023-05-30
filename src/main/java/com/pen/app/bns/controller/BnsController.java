@@ -258,7 +258,6 @@ public class BnsController {
 		@ResponseBody
 		public boolean insertStoreList(@RequestBody BnsStoreListVO list) {
 			bnsService.insertStoreList(list);
-			
 			System.out.println(list);
 			return true;
 		}
@@ -296,5 +295,15 @@ public class BnsController {
 			List<BnsReleaseVO> list = bnsService.getbeforeReleaseOrdList();
 			return list;
 		}
+		
+		//출고전 LOT리스트 그리드 아작스
+				@ResponseBody
+				@GetMapping("/LotReleaseListAjax")
+				public List<BnsReleaseVO> LotReleaseListAjax(String result){
+					List<BnsReleaseVO> list = bnsService.getLotReleaseList(result);
+					return list;
+				}
+		
+				
 	
 }

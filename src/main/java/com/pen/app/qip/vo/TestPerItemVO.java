@@ -10,4 +10,5 @@ public class TestPerItemVO {
 	String testCode;
 	String testName;
 	String testDetail;
+	int testNumDef;
 }

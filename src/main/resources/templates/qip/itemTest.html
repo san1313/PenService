@@ -28,6 +28,12 @@
       #matOrderNum {
         background-color: white;
       }
+      #itemLot {
+        background-color: white;
+      }
+      #expLot {
+        background-color: white;
+      }
       #matModalGrid .tui-grid-cell-current-row > td {
         background-color: #00a9ff33;
       }
@@ -38,8 +44,32 @@
         display: none;
       }
 
+      #itemModalGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #itemModalGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #itemModalGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+
+      #expModalGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #expModalGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #expModalGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+
       div .tui-grid-cell-required {
         background-color: #fff;
+      }
+
+      #grid .over {
+        background-color: #ffe5e5;
       }
     </style>
   </head>
@@ -162,7 +192,7 @@
               <label class="col-form-label" for="itemLot">제품LOT</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="itemLot" name="itemLot" />
+              <input type="text" class="form-control" id="itemLot" name="itemLot" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="itemEmpName">담당자</label>
@@ -198,18 +228,18 @@
               <input type="text" class="form-control" id="itemNum" name="itemNum" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
-              <label class="col-form-label" for="itemDate">생산일자</label>
+              <label class="col-form-label" for="itemUnit">단위</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="itemDate" name="itemDate" readonly />
+              <input type="text" class="form-control" id="itemUnit" name="itemUnit" readonly />
             </div>
           </div>
           <div class="row" style="margin-top: 10px">
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
-              <label class="col-form-label" for="itemProcOrder">공정순서</label>
+              <label class="col-form-label" for="itemDate">생산일자</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="itemProcOrder" name="itemProcOrder" readonly />
+              <input type="text" class="form-control" id="itemDate" name="itemDate" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="prevProc">직전공정명</label>
@@ -217,6 +247,8 @@
             <div class="col-2">
               <input type="text" class="form-control" id="prevProc" name="prevProc" readonly />
             </div>
+            <input type="hidden" class="form-control" id="itemIndica" name="itemIndica" readonly />
+            <input type="hidden" class="form-control" id="itemProcOrder" name="itemProcOrder" readonly />
           </div>
         </div>
 
@@ -235,7 +267,7 @@
               <label class="col-form-label" for="expLot">자재LOT</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="expLot" name="expLot" />
+              <input type="text" class="form-control" id="expLot" name="expLot" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="expEmpName">담당자</label>
@@ -301,7 +333,7 @@
         <div class="modal-dialog modal-xl">
           <div class="modal-content">
             <div class="modal-header">
-              <h5 class="modal-title">검사코드</h5>
+              <h5 class="modal-title">발주번호</h5>
               <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                 <span aria-hidden="true">&times;</span>
               </button>
@@ -317,6 +349,48 @@
       </div>
 
       <!-- 자재입고검사 발주번호 모달 끝 -->
+
+      <!-- 제품검사 LOT 모달 시작 -->
+      <div class="modal fade itemModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">제품LOT</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="itemModalGrid"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 제품검사 LOT 모달 끝 -->
+
+      <!-- 보관기간초과검사 LOT 모달 시작 -->
+      <div class="modal fade expModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-xl">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">자재LOT</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div id="expModalGrid"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!-- 보관기간초과검사 LOT 모달 끝 -->
 
       <div id="grid"></div>
       <script src="/plugins/jquery/jquery.min.js"></script>
@@ -336,11 +410,6 @@
                 readData: {
                   url: "/qip/getTPIList",
                   method: "GET",
-                },
-                updateData: {
-                  url: "/qip/testUpdateAjax",
-                  method: "POST",
-                  withCredentials: true,
                 },
               },
               initialRequest: false,
@@ -461,6 +530,121 @@
               },
             ],
           });
+
+          const itemModalGrid = new tui.Grid({
+            el: document.getElementById("itemModalGrid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/itemTestList",
+                  method: "GET",
+                },
+              },
+              initialRequest: false,
+            },
+            bodyHeight: 490,
+            scrollX: false,
+            columns: [
+              {
+                header: "생산지시코드",
+                name: "itemIndica",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "제품LOT",
+                name: "itemLot",
+                align: "center",
+              },
+              {
+                header: "생산일자",
+                name: "itemDate",
+                align: "center",
+              },
+              {
+                header: "제품코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
+                header: "제품명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "수량",
+                name: "itemCnt",
+                align: "center",
+              },
+              {
+                header: "단위",
+                name: "itemUnit",
+                align: "center",
+              },
+              {
+                header: "공정순서",
+                name: "itemProcOrder",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "직전공정명",
+                name: "prevProc",
+                align: "center",
+                hidden: true,
+              },
+            ],
+          });
+
+          const expModalGrid = new tui.Grid({
+            el: document.getElementById("expModalGrid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/expTestList",
+                  method: "GET",
+                },
+              },
+            },
+            bodyHeight: 490,
+            scrollX: false,
+            columns: [
+              {
+                header: "자재LOT",
+                name: "expLot",
+                align: "center",
+              },
+              {
+                header: "자재코드",
+                name: "expCode",
+                align: "center",
+              },
+              {
+                header: "자재명",
+                name: "expName",
+                align: "center",
+              },
+              {
+                header: "수량",
+                name: "expCnt",
+                align: "center",
+              },
+              {
+                header: "단위",
+                name: "expUnit",
+                align: "center",
+              },
+              {
+                header: "보관기한",
+                name: "expDate",
+                align: "center",
+              },
+            ],
+          });
           //그리드 폼 끝
 
           //그리드 세팅 시작
@@ -479,6 +663,16 @@
               alert("데이터 저장중 에러가 발생했습니다.");
             }
           });
+
+          // 총불량량 초과시 색칠
+          grid.on("afterChange", (e) => {
+            if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
+              grid.addColumnClassName("testNumDef", "over");
+            } else {
+              grid.removeColumnClassName("testNumDef", "over");
+            }
+          });
+
           //tui grid의 언어세팅
           tui.Grid.setLanguage("ko");
 
@@ -494,6 +688,9 @@
           $("#itemTestDate").val(today);
           $("#expTestDate").val(today);
           //검사일자에 Default 오늘날짜 끝
+
+          // 사원정보 저장
+          let empName = "[[${#authentication.principal.empName}]]";
 
           //라디오버튼 동작 시작
           let radioVal = "mat";
@@ -523,23 +720,17 @@
                 radioVal = $("input[name=type]:checked").val();
                 grid.restore();
                 if (radioVal == "mat") {
-                  grid = matGrid;
                   item.hide();
                   exp.hide();
                   mat.show();
-                  grid.refreshLayout();
                 } else if (radioVal == "item") {
-                  grid = itemGrid;
                   mat.hide();
                   exp.hide();
                   item.show();
-                  grid.refreshLayout();
                 } else {
-                  grid = expiredGrid;
                   mat.hide();
                   item.hide();
                   exp.show();
-                  grid.refreshLayout();
                 }
               } else {
                 $(this).prop("checked", false);
@@ -551,52 +742,114 @@
 
           //검사완료 기능 시작
           $("#save").click(() => {
-            //덜 닫힌 input창을 저장시키고
-            grid.finishEditing();
-            //유효성 검사 시작
-            if (grid.validate().length) {
-              alert("불량량이 숫자가 아니거나 비어있습니다.");
-              return;
-            }
-            if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
-              alert("총 불량량이 수량보다 큽니다.");
-              return;
-            }
-            //유효성 검사 끝
+            if (confirm("검사내역을 저장하시겠습니까?")) {
+              let targetCode;
+              let testDate;
+              let testNum;
+              switch (radioVal) {
+                case "mat":
+                  targetCode = $("#matDtaordcode").val();
+                  testDate = $("#matTestDate").val();
+                  testNum = $("#matOrderQy").val();
+                  break;
+                case "item":
+                  break;
+                case "expired":
+                  targetCode = $("#expLot").val();
+                  testDate = $("#expTestDate").val();
+                  testNum = $("#expNum").val();
+                  break;
+              }
+              if (!targetCode && radioVal == "mat") {
+                alert("발주번호를 먼저 선택해주십시오.");
+                return;
+              }
+              if (!targetCode) {
+                alert("LOT를 먼저 선택해주십시오.");
+                return;
+              }
 
-            //검사 결과를 서버로 전송
-            $.ajax({
-              url: "matTestInsert",
-              method: "POST",
-              body: {
-                matDtaordcode: $("#matDtaordcode").val(),
-                testDate: $("#matTestDate").val(),
-                empNum: "[[${#authentication.principal.empNum}]]",
-                testNumMat: $("#matOrderQy").val(),
-                testTnumDef: grid.getSummaryValues("testNumDef").sum,
-                testTnumPass: $("#matOrderQy").val() - grid.getSummaryValues("testNumDef").sum,
-              },
-              beforeSend: function (xhr) {
-                xhr.setRequestHeader(header, token);
-              },
-            })
-              .done((r) => {
-                console.log(r);
+              //덜 닫힌 input창을 저장시키고
+              grid.finishEditing();
+              //유효성 검사 시작
+              if (grid.validate().length) {
+                alert("불량량이 숫자가 아니거나 비어있습니다.");
+                return;
+              }
+              if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
+                alert("총 불량량이 수량보다 큽니다.");
+                return;
+              }
+              //유효성 검사 끝
+
+              //검사 결과를 서버로 전송
+              $.ajax({
+                url: "testInsertAjax",
+                method: "POST",
+                data: JSON.stringify({
+                  result: {
+                    targetCode: targetCode,
+                    testDate: testDate,
+                    empNum: "[[${#authentication.principal.empNum}]]",
+                    testNum: testNum,
+                    testTnumDef: grid.getSummaryValues("testNumDef").sum,
+                    testTnumPass: testNum - grid.getSummaryValues("testNumDef").sum,
+                  },
+                  details: grid.getData(),
+                  type: radioVal,
+                }),
+                contentType: "application/json",
+                beforeSend: function (xhr) {
+                  xhr.setRequestHeader(header, token);
+                },
               })
-              .fail((e) => {
-                alert("데이터를 저장하는중 에러가 발생했습니다.");
-              });
+                .done((r) => {
+                  alert("검사 내역이 저장되었습니다.");
+                  matModalGrid.readData();
+                  grid.clear();
+                  switch (radioVal) {
+                    case "mat":
+                      $("#matInputs input").val("");
+                      $("#matTestDate").val(today);
+                      $("#matEmpName").val(empName);
+                      break;
+                    case "item":
+                      break;
+                    case "expired":
+                      $("#expInputs input").val("");
+                      $("#expEmpName").val(empName);
+                      break;
+                  }
+                })
+                .fail((e) => {
+                  alert("데이터를 저장하는중 에러가 발생했습니다.");
+                });
+            }
           });
           //검사완료 기능 끝
 
-          //발주번호 클릭시 발주번호 모달 시작
+          //발주번호/LOT 클릭시 모달 시작
           $("#matOrderNum").click((e) => {
             $(".matModal").modal("show");
           });
           $(".matModal").on("shown.bs.modal", (e) => {
             matModalGrid.refreshLayout();
           });
-          //발주번호 클릭시 발주번호 모달 끝
+
+          $("#itemLot").click((e) => {
+            $(".itemModal").modal("show");
+          });
+          $(".itemModal").on("shown.bs.modal", (e) => {
+            itemModalGrid.refreshLayout();
+          });
+
+          $("#expLot").click((e) => {
+            $(".expModal").modal("show");
+          });
+          $(".expModal").on("shown.bs.modal", (e) => {
+            expModalGrid.refreshLayout();
+          });
+          //발주번호/LOT 클릭시 모달 끝
 
           //발주번호 모달 그리드 클릭시 데이터 채워넣기 시작
           matModalGrid.on("click", (e) => {
@@ -622,6 +875,41 @@
             $(".matModal").modal("hide");
           });
           //발주번호 모달 그리드 클릭시 데이터 채워넣기 끝
+
+          //제품LOT 모달 그리드 클릭시 데이터 채워넣기 시작
+          itemModalGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+
+            let row = itemModalGrid.getRow(e.rowKey);
+            console.log($("#itemInputs input"));
+            grid.setRequestParams({ itemCode: row.itemCode });
+            grid.readData();
+          });
+          //제품LOT 모달 그리드 클릭시 데이터 채워넣기 끝
+
+          //자재LOT 모달 그리드 클릭시 데이터 채워넣기 시작
+          expModalGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+
+            let row = expModalGrid.getRow(e.rowKey);
+            let inputs = $("#expInputs input");
+            console.log(inputs);
+            inputs.eq(1).val(row.expLot);
+            inputs.eq(3).val(row.expCode);
+            inputs.eq(4).val(row.expName);
+            inputs.eq(5).val(row.expCnt);
+            inputs.eq(6).val(row.expUnit);
+            inputs.eq(7).val(row.expDate);
+            grid.setRequestParams({ itemCode: row.expCode });
+            grid.readData();
+
+            $(".expModal").modal("hide");
+          });
+          //자재LOT 모달 그리드 클릭시 데이터 채워넣기 끝
         });
       </script>
     </div>

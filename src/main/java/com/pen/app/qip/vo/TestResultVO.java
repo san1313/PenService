@@ -3,12 +3,11 @@ package com.pen.app.qip.vo;
 import lombok.Data;
 
 @Data
-public class MatResultVO {
-	String qipCodeListMat;
-	String matDtaordcode;
+public class TestResultVO {
+	String targetCode;
 	String testDate;
 	String empNum;
-	int testNumMat;
+	int testNum;
 	int testTnumDef;
 	int testTnumPass;
 }

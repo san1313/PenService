@@ -316,7 +316,8 @@
 		{call prdt_store_register (
 			#{prdtLot, mode=IN, jdbcType=VARCHAR},
 			#{prdtNm, mode=IN, jdbcType=VARCHAR},
-			#{cnt, mode=IN, jdbcType=VARCHAR}
+			#{cnt, mode=IN, jdbcType=VARCHAR},
+			#{prodCode, mode=IN, jdbcType=VARCHAR}
 		)}
 	</insert>
 	
@@ -410,5 +411,21 @@ select * from(
            )  where gbn='o' order by ord_det_code
 	</select>
 
+<select id="getLotReleaseList" resultType="BnsReleaseVO">
+		select s.prdt_lot,
+		s.prdt_nm,
+		s.prod_code,
+		s.bns_store_quan,
+		(select to_char(sysdate,'yyyy-mm-dd') sys from dual) as sys,
+		to_char(s.bns_store_date,'yyyy-mm-dd') bns_store_date,
+		e.emp_name 
+		from
+		mak_prdt m join bns_store s
+		on(m.prdt_lot = s.prdt_lot)
+		join com_info_emp e
+		on (s.emp_num = e.emp_num)
+		where e.emp_num = s.emp_num and s.prod_code = #{prodCode}
+		order by s.prdt_lot
+</select>
 
 </mapper>

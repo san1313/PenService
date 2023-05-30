@@ -6,7 +6,6 @@ import java.util.Map;
 import com.pen.app.com.dto.ToastUiResponseDTO;
 import com.pen.app.com.vo.BomVO;
 import com.pen.app.com.vo.ItemVO;
-import com.pen.app.com.vo.ProcFlowVO;
 
 public interface BomService {
 	// 제품의 BOM 조회
