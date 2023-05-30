@@ -313,4 +313,15 @@
 	#{matQnt, mode=IN, jdbcType=VARCHAR}	
 	)}
 	</select>
+	
+	<!-- 조정출고등록 -->
+	<select id="getmatadjustdliregister" statementType="CALLABLE">
+	{call v_dli_proc(
+	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matMdatresn, mode=IN, jdbcType=VARCHAR},
+	#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
+	#{matDlivyqnt, mode=IN, jdbcType=VARCHAR},
+	#{matQnt, mode=IN, jdbcType=VARCHAR}
+	)}
+	</select>
 </mapper>

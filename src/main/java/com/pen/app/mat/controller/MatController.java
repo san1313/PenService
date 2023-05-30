@@ -230,13 +230,21 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 //자재조정
+	 //자재조정(입고)
 	 @RequestMapping("/matadjustregister")
 	 @ResponseBody
 	 public AdjustVO matadjustregister(@RequestBody List<AdjustVO> list) {
-		 System.err.println(list);
-		 
+		 System.err.println(list);		 
 		 matservice.getmatadjustregister(list);
+		 return null;
+	 }
+	 
+	 //자재조정(출고)
+	 @RequestMapping("/matadjustdliregister")
+	 @ResponseBody
+	 public AdjustVO matadjustdliregister(@RequestBody List<AdjustVO> list) {
+		 System.err.println(list);
+		 matservice.getmatadjustdliregister(list);
 		 return null;
 	 }
 	 

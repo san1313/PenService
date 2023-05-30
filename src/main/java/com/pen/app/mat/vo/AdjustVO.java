@@ -19,5 +19,6 @@ public class AdjustVO { //조정
 	int matQnt;//재고량
 	String matBcncname; //거래처명
 	int matWrhqy;
+	int matDlivyqnt;
 	
 }

@@ -35,7 +35,8 @@ public interface MatMapper {
 	
 	List<AdjustVO> getmatadjustlotlist(); //자재조정 lot리스트
 	List<AdjustVO> getmatadjustlot(String matLot); //자재조정 lot 상세
-	public void getmatadjustregister(AdjustVO vo); //조정등록
+	public void getmatadjustregister(AdjustVO vo); //조정등록(입고)
+	public void getmatadjustdliregister(AdjustVO vo); //조정등록(출고)
 	
 	List<DlivyVO> getmatdlivylist(); //자재출고리스트
 	List<DlivyVO> getmatdlivysearchlist(DlivyVO vo); //자재출고리스트 다중검색

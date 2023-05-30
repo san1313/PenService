@@ -37,7 +37,8 @@ public interface MatService {
 	
 	public List<AdjustVO> getmatadjustlotlist(); //조정내역 lot리스트
 	public List<AdjustVO> getmatadjustlot(String matLot);//조정 단건조회
-	public void getmatadjustregister(List<AdjustVO> list); //조정등록
+	public void getmatadjustregister(List<AdjustVO> list); //조정등록(입고)
+	public void getmatadjustdliregister(List<AdjustVO> list); //조정등록(출고)
 	
 	
 	public List<DlivyVO> getmatdlivylist(); //자재출고리스트

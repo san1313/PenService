@@ -40,7 +40,7 @@
       padding: 0 5px 0 0;
     }
     
-    #deletebtn{
+    #dlivy{
 	margin : 10px;
 	float:right;
 	margin-right:10px;
@@ -111,7 +111,7 @@
 	
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
      <button type="button" class="btn btn-primary" id="subtn">입고</button>
-     <button type="button" class="btn btn-primary" id="deletebtn">출고</button>
+     <button type="button" class="btn btn-primary" id="dlivy">출고</button>
 	</div>
 	
     <script>
@@ -321,9 +321,6 @@
     //입고버튼
     document.getElementById('subtn').addEventListener('click', function(){
     	let checked = matadjustgrid.getCheckedRows();
-    	// checked.forEach(functioin(ele,i){
-    	// 	checked[i].matMdatdate = new Date().toISOString().slice(0,10);
-    	// )}
     	
     	console.log(checked);
     	 $.ajax({
@@ -342,10 +339,35 @@
     	  			console.log(reject)
     	  		}
     	         
-    	  	});
-    	 	
+    	  	});    	 	
     	
     })
+    
+    //출고버튼
+    document.getElementById('dlivy').addEventListener('click', function(){
+    	let checked2 = matadjustgrid.getCheckedRows();
+    	console.log(checked2);
+    	
+    	$.ajax({
+	  		url : "/mat/matadjustdliregister",
+	  		method : "POST",
+	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+	  		beforeSend: function (xhr) {
+	            xhr.setRequestHeader(header, token);
+	          },
+	  		dataType : "JSON",
+	  		contentType: "application/json",
+	  		success : function(result3){
+	  			console.log(result3);
+	  		},
+	  		error: function(reject){
+	  			console.log(reject)
+	  		}
+	         
+	  	});    	 	
+    	
+    })
+    
   
    
     </script>

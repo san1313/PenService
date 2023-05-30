@@ -163,9 +163,18 @@ public class MatServiceimpl implements MatService {
 
 	@Override
 	public void getmatadjustregister(List<AdjustVO> list) {
-		// 조정등록
+		// 조정등록(입고)
 		for (AdjustVO vo : list) {
 			matmapper.getmatadjustregister(vo);
+		}
+		
+	}
+
+	@Override
+	public void getmatadjustdliregister(List<AdjustVO> list) {
+		// 조정등록(출고)
+		for (AdjustVO vo : list) {
+			matmapper.getmatadjustdliregister(vo);
 		}
 		
 	}
