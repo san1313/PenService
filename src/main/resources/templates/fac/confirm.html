@@ -4,8 +4,8 @@
    layout:decorate="~{layout/template}">
 <head>
 <meta charset="UTF-8" />
-<meta name="_csrf" th:content="${_csrf.token}" />
-<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 <title>PenServiceMES</title>
 <style>
 
@@ -40,7 +40,13 @@
 
             <label for="confirm_date">점검일시</label>&nbsp;&nbsp;
             <input type="date" id="confirmDatei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-             
+            
+            <!-- 
+           <label for="fac_code">설비코드&nbsp;&nbsp;&nbsp;&nbsp;</label>
+            <input type="text"id="fac_code" readonly placeholder="조회 후 등록하시오">
+            <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
+             -->    
+        
                        
             <label for="confirm_category" id="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;</label>
             <input type="radio" name="confirm_category" value="정기점검" checked> 정기점검&nbsp;&nbsp;&nbsp;
@@ -60,12 +66,14 @@
            
             <label for ="decision" id="decision">판정&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
             <input type="radio" name="decision" value="적합" checked>&nbsp;&nbsp;적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="decision" value="부적합">&nbsp;&nbsp;부적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" name="decision" value="부적합">&nbsp;&nbsp;부적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                    
             <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;
-            <input type="text" id="emp_num" >
+            <input type="text" id="emp_num">
             </label>
- 	
+            
+        
+           	
             <br><br>
             
             <div class="col-12">
@@ -113,7 +121,6 @@
       
  
     <script>
-    
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
     
@@ -226,7 +233,7 @@
               name: 'facName'
             }
           ]
-       })
+         })
       
          //설비코드버튼
         /*  $('#chfacmodalbtn').click(function(){//x
@@ -386,10 +393,8 @@
                        "confirmIssue" :$("select[name=confirm_issue]").val(),
                        "decision" : $("input[name=decision]:checked").val(),
                        "empNum" : $("#emp_num").val(),  
-                        };			
-     })
-   			
-   			
+                        };
+           
            $.ajax({
              url: "/fac/confirmRegister", //컨트롤러에 연결된 주소
              method : "post", //조회는 항상 get, 나머진 post
@@ -418,7 +423,8 @@
              console.log(reject)
           }
           
-          });
+          })
+       });
        
        //점검수정,삭제하기전 그리드 이벤트 작업
        //서버에 연결전 토큰값 담는 method
