@@ -519,7 +519,7 @@
 			url : "/bns/insertOrdList",
 			method : "POST",
 			contentType : "application/json",
-			data : JSON.stringify({ list : checked}),
+			data : JSON.stringify(checked),
 			dataType : "JSON",
 			beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);

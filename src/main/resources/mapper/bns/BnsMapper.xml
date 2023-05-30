@@ -428,4 +428,18 @@ select * from(
 		order by s.prdt_lot
 </select>
 
+<!-- 출고 등록 -->
+
+<insert id="releaseStore" statementType="CALLABLE">
+		
+		{call prdt_release_register (
+			#{v_bns_release_quan, mode=IN, jdbcType=VARCHAR},
+			#{v_bns_release_date, mode=IN, jdbcType=VARCHAR},
+			#{v_bns_release_note, mode=IN, jdbcType=VARCHAR},
+			#{v_prdt_code, mode=IN, jdbcType=VARCHAR},
+			#{v_acc_name, mode=IN, jdbcType=VARCHAR},
+			#{v_prdt_nm, mode=IN, jdbcType=VARCHAR},
+			#{v_emp_num, mode=IN, jdbcType=VARCHAR}
+		)}
+	</insert>
 </mapper>
