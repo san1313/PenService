@@ -1,6 +1,8 @@
 package com.pen.app.mak.service.impl;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -9,7 +11,6 @@ import org.springframework.transaction.annotation.Transactional;
 import com.pen.app.mak.mapper.MakIndMapper;
 import com.pen.app.mak.service.MakIndService;
 import com.pen.app.mak.vo.IndicaListVO;
-import com.pen.app.mak.vo.IndicaVO;
 import com.pen.app.mak.vo.MakVO;
 import com.pen.app.mak.vo.PlanVO;
 
@@ -55,13 +56,32 @@ public class MakIndServiceImpl implements MakIndService{
 	}
 
 	@Override
-	public String insertIndica(MakVO vo) {
+	@Transactional
+	public String insertIndica(IndicaListVO list) {
 		String result="";
-			if(mapper.insertIndica(vo)>0) {
-				result="등록성공";
-			}else{
-				result="등록실패";
-			};
+		int j = 999;
+		for(int i=0;i<list.getList().size();i++) {
+			if(list.getList().get(i).getAmount()>0) {
+				if(j>i) {
+				j=i;
+				}
+			}
+		}
+		mapper.insertIndica(list.getList().get(j));
+		int k=0;
+		Map<Object,Integer> step = new HashMap<>();
+		for (MakVO vo : list.getList()) {
+			if(vo.getAmount()>0) {
+				vo.setMakFlowCode(step.get(vo.getProcCode()));
+				vo.setMakStep(step.get(vo.getMakFlowCode()));
+				k+=mapper.insertBOM(vo);
+			}else if(vo.getAmount()==0) {
+				k+=mapper.insertFlow(vo);
+				int seq = mapper.getFlowSeq();
+				step.put(vo.getProcCode(),seq);
+				step.put(seq, vo.getMakFlowStep());
+			}
+		}
 		return result;
 	}
 

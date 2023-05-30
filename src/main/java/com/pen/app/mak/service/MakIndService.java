@@ -13,5 +13,5 @@ public interface MakIndService {
 	List<MakVO> planFlow(String prodCode);
 	List<MakVO> getOperateCheck(IndicaListVO list);
 	List<MakVO> getFlowList(IndicaListVO list);
-	String insertIndica(MakVO vo);
+	String insertIndica(IndicaListVO list);
 }
