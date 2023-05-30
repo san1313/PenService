@@ -15,4 +15,7 @@ public interface MakIndMapper {
 	List<MakVO> getFlowList(List<MakVO> list);
 	List<MakVO> getOperateCheck(List<MakVO> list);
 	int insertIndica(MakVO vo);
+	int insertBOM(MakVO vo);
+	int insertFlow(MakVO vo);
+	int getFlowSeq();
 }

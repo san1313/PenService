@@ -73,9 +73,13 @@ public class MakIndController {
 	
 	@RequestMapping("/insertIndica")
 	@ResponseBody
-	String insertIndica(@RequestBody MakVO vo) {
-		String result = service.insertIndica(vo);
+	String insertIndica(@RequestBody IndicaListVO list) {
+		System.out.println("등록 받아온 값 : "+list);
+		String result = service.insertIndica(list);
 			
 		return result;
 	}
+	
+	
+	
 }

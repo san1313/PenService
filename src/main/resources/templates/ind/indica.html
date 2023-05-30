@@ -427,6 +427,7 @@ $(function () {
        });	
     //등록버튼 클릭시 이벤트
 	$('#subBtn').click(function(){
+		console.log(pdCode);
 		
 		if($('#indNmi').val()==''){
     		alert('지시명을 지정해주세요.');
@@ -438,33 +439,55 @@ $(function () {
     			return false;
     		};
     	};
+    	if($('#planNmi').val()==''){
+    		alert('계획을 선택해주세요');
+    		return false;
+    	}
     	let makFlow = grid2.getData();
     	let makMat = grid3.getData();
+    	let innerData = [];
     	console.log($('#stDatei').val());
+    	
+    	
+     	//그리드2 반복
+    	makFlow.forEach(function(ele,i){
+    		console.log(ele);
+    		console.log("그리드2 : "+makFlow);
+    		let insertData = {
+    				"makFlowStep" : makFlow[i].procOrder,
+    				"procCode" : makFlow[i].procCode
+    		}
+    		innerData.push(insertData);
+    	});
+    	
+    	//그리드3 반복;; 홀드테이블도 같이
+    	makMat.forEach(function(ele,i){
+    		console.log(ele);
+    		if(ele.procCode!=null){
+    			if()
     	let insertData = {
     			"indicaNm" : $('#indNmi').val(),
     			"indicaDate" : $('#indDatei').val(),
-    			"prodCode" : prodCode,
-    			"ordrQnt" : $('#ordrQnti').val(),
+    			"ordrQnt" : Math.abs($('#ordrQnti').val()),
     			"stDate" : $('#stDatei').val(),
     			"clsDate" : $('#clsDatei').val(),
-    			"pdCode" : pdCode
+    			"pdCode" : pdCode,
+    			"procCode":ele.procCode,
+    			"prodCode":ele.bomProdCode,
+    			"makStep":ele.procOrder,
+    			"amount":ele.makUsage
     	};
-    	console.log($('#stDatei').val());
-    	console.log(insertData);
-    	let outerFlow ={};
-    	let innerFlow = [];
-    	//공정정보 가공
-    	makFlow.forEach(function(ele,i){
-    		console.log("grid2 : "+makFlow[i].procName);	
+    	console.log("그리드3 : "+ makMat[i]);
+    	innerData.push(insertData);
+    		}
     	});
+   
     	
-    	//필요자재정보 가공
-    	let innerMat = [];
-    	let outerMat = {};
-    	makMat.forEach(function(ele,i){
-    	console.log("gird3 : "+makMat[i].bomProdName);
-    	});
+    
+    	
+    	console.log($('#stDatei').val());
+    	let insertData = {"list" : innerData}
+    	
     	//등록 아작스 시작
     	$.ajax({
     		url:"/ind/insertIndica",
@@ -494,6 +517,7 @@ $(function () {
     
     grid.on('dblclick',function(e){
     	let modData = grid.getRow(e.rowKey);
+    	pdCode=modData.pdCode;
     	//수정버튼 활성화
     	if(modData.indicaState=="미작업"||modData.indicaState=="작업중"){
     		$('#modBtn').attr('disabled',false);
@@ -503,10 +527,18 @@ $(function () {
     		$('#delBtn').attr('disabled',false);
     	}
     	$('#indNmi').val(modData.indicaNm);
+    	$('#indNmi').attr('readonly',true);
     	$('#ordrQnti').val(modData.ordrQnt);
     	$('#clsDatei').val(modData.clsDate);
     	$('#stDatei').val(modData.stDate);
-    	
+    	$('#planNmi').val(modData.planNm);
+    	$('#prodNmi').val(modData.prodName);
+    	$('#indicaDatei').val(modData.indicaDate);
+    	if(modData.indicaState=='작업중'){
+    	$('stDatei').attr('readonly',true);
+    	}
+    	document.getElementById('clsDatei').max = modData.planClsdate;
+    	console.log(modData);
     	
     	//검색버튼 숨기기
     	$('ion-icon[name="search"]').css('display','none');
@@ -588,7 +620,8 @@ $(function () {
     	//버튼 비활성화
     	$('#modBtn').attr('disabled',true);
     	$('#delBtn').attr('disabled',true);
-    	
+    	$('#indNmi').attr('readonly',false);
+    	$('#stDatei').attr('readonly',false);
     	//그리드 내용 삭제
     	 let grid2Rows = grid2.getData();
     	grid2Rows.forEach(function(ele,i){

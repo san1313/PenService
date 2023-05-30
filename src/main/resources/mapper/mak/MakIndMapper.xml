@@ -14,55 +14,57 @@
 </select>
 
 <select id="indList" resultType="MakVO">
-	select plan_nm,pd_code, prod_code,indica_code,indica_nm,emp_num,ordr_qnt,indica_date,st_date,cls_date,indica_state,prod_name,plan_qnt,plan_clsdate,plan_sdate from mak_indica join com_code_prod using(prod_code) join mak_plan_detail using(pd_code) join mak_plan using(plan_code) where pd_code != 'null' and cls_date>sysdate
+	select plan_nm,pd_code, prod_code,indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date,to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date,indica_state,prod_name,plan_qnt,to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate ,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate from mak_indica join com_code_prod using(prod_code) join mak_plan_detail using(pd_code) join mak_plan using(plan_code) where pd_code != 'null' and cls_date>sysdate and indica_state in ('미작업','작업중') 
 </select>
 
 <select id="planFlow" parameterType="string" resultType="MakVO">
 	select * 
-		from(SELECT 
-	    	LEVEL LEV,
-	    	PARENT_CODE,
-	    	BOM_MAT_TYPE,
-	    	BOM_PROD_CODE,
-	    	BOM_PROD_NAME,
-	    	BOM_MAT_UNIT,
-	    	BOM_MAT_USAGE,
-	    	PROC_CODE
-			FROM (SELECT  
-				B.BOM_PROD_CODE AS PARENT_CODE,
-				BOM_MAT_TYPE,
-				A.BOM_PROD_CODE,
-				A.BOM_PROD_NAME,
-				BOM_MAT_UNIT,
-				BOM_MAT_USAGE,
-				PROC_CODE
-				FROM (SELECT
-					BOM_PROD_CODE,
-					BOM_PROD_NAME
-					FROM (SELECT
-						BOM_PROD_CODE,
-						BOM_PROD_NAME,
-						BOM_MAT_CODE,
-						BOM_MAT_NAME 
-						FROM COM_BOM
-						WHERE 
-							BOM_PROD_CODE = #{prodCode}
-							OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))
-								UNION
-									SELECT BOM_MAT_CODE, 
-									BOM_MAT_NAME
-									FROM (SELECT 
-										BOM_PROD_CODE, 
-										BOM_PROD_NAME, 
-										BOM_MAT_CODE, 
-										BOM_MAT_NAME 
-										FROM COM_BOM
-										WHERE BOM_PROD_CODE = #{prodCode} 
-											OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))) A 
-												LEFT OUTER JOIN COM_BOM B ON (A.BOM_PROD_CODE = B.BOM_MAT_CODE))
-													START WITH PARENT_CODE IS NULL
-													CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)
-														left outer join com_code_proc using(proc_code) order by lev desc
+		from com_proc_flow a join com_code_proc b using(proc_code)
+			right outer join (
+				select * 
+					from(SELECT 
+				    	LEVEL LEV,
+				    	PARENT_CODE,
+				    	BOM_MAT_TYPE,
+				    	BOM_PROD_CODE,
+				    	BOM_PROD_NAME,
+				    	BOM_MAT_UNIT,
+				    	BOM_MAT_USAGE,
+				    	PROC_CODE
+						FROM (SELECT  
+							B.BOM_PROD_CODE AS PARENT_CODE,
+							BOM_MAT_TYPE,
+							A.BOM_PROD_CODE,
+							A.BOM_PROD_NAME,
+							BOM_MAT_UNIT,
+							BOM_MAT_USAGE,
+							PROC_CODE
+							FROM (SELECT
+								BOM_PROD_CODE,
+								BOM_PROD_NAME
+								FROM (SELECT
+									BOM_PROD_CODE,
+									BOM_PROD_NAME,
+									BOM_MAT_CODE,
+									BOM_MAT_NAME 
+									FROM COM_BOM
+									WHERE 
+										BOM_PROD_CODE = #{prodCode}
+										OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))
+											UNION
+												SELECT BOM_MAT_CODE, 
+												BOM_MAT_NAME
+												FROM (SELECT 
+													BOM_PROD_CODE, 
+													BOM_PROD_NAME, 
+													BOM_MAT_CODE, 
+													BOM_MAT_NAME 
+													FROM COM_BOM
+													WHERE BOM_PROD_CODE = #{prodCode} 
+														OR BOM_PROD_CODE IN (SELECT BOM_MAT_CODE FROM COM_BOM WHERE BOM_PROD_CODE = #{prodCode}))) A 
+															LEFT OUTER JOIN COM_BOM B ON (A.BOM_PROD_CODE = B.BOM_MAT_CODE))
+																START WITH PARENT_CODE IS NULL
+																CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)) using(proc_code) order by proc_order
 </select>
 
 <select id="getOperateCheck" parameterType="MakVO" resultType="MakVO" >
@@ -73,13 +75,47 @@
 	order by fac_code
 </select>
 
+
 <select id="getFlowList" parameterType="MakVO" resultType="MakVO">
+	select proc_order + (select max(proc_order) from com_proc_flow where flow_prod_code like('SE%') and flow_prod_code in (
+	<foreach collection="list" item="pc" separator="," close=")">
+		#{pc.parentCode}
+	</foreach>
+	) proc_order,
+	proc_flow_code,
+	proc_code,
+	flow_prod_code,
+	proc_type,
+	proc_name 
+	    from com_proc_flow join com_code_proc using(proc_code) 
+	            where flow_prod_code like ('PR%')
+						and flow_prod_code in (
+							<foreach collection="list" item="pc" separator="," close=")">
+								#{pc.parentCode}
+							</foreach>
+								union
+									select proc_order,
+									       proc_flow_code,
+									       proc_code,
+									       flow_prod_code,
+									       proc_type,
+									       proc_name
+									          from com_proc_flow join com_code_proc using(proc_code)
+									                   where flow_prod_code like('SE%') and flow_prod_code in (
+															<foreach collection="list" item="pc" separator="," close=")">
+																#{pc.parentCode}
+															</foreach>
+															order by proc_order
+														</select>
+<!-- 
+<select id="getFlowList" parameterType="MakVO" resultType="MakVO">
+	
 	select * from com_proc_flow a join com_code_proc b using(proc_code) where flow_prod_code in (
 	<foreach collection="list" item="pc" separator="," close=")">
 		#{pc.parentCode}
 	</foreach>
 	order by proc_order
-</select>
+</select> -->
 
 <update id="insertIndica" parameterType="MakVO">
 	insert into mak_indica(indica_code,
@@ -102,6 +138,36 @@
 						             #{pdCode})
 </update>
 
+<update id="insertBOM">
+insert into mak_bom(mak_bom_code,
+                    mak_step,
+                    prod_code,
+                    amount,
+                    plan_indica,
+                    mak_flow_code) values(
+                                        mak_bom_seq.nextval,
+                                        #{makStep},
+                                        #{prodCode},
+                                        #{amount},
+                                        'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),
+                                        #{makFlowCode}
+                                        )
+</update>
+
+<update id="insertFlow">
+insert into mak_flow(mak_flow_code,
+                     mak_flow_step,
+                     proc_code
+                     ) values(
+                                          mak_flow_seq.nextval,
+                                          #{makFlowStep},
+                                          #{procCode}
+                                          )
+</update>
+
+<select id="getFlowSeq" resultType="integer">
+select mak_flow_seq.currval from dual
+</select>
  <!-- 사원 리스트 출력 -->
   <!-- <select id="getUserList" resultType="UserVO">
   	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) ORDER BY EMP_NUM

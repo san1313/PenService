@@ -48,5 +48,13 @@ public class MakVO{
 	 //생산공정
 	 int makFlowStep;
 	 
+	String planNm;
+	String planCode;
+	String planSdate;
+	String planClsdate;
 	
+	//홀드
+	String rscCode;
+	String matLot;
+	String semiLot;
 }
