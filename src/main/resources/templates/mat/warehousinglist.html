@@ -67,17 +67,20 @@
   
   <div layout:fragment="content">
     <div class="ordersearch">
+    <form id="searchform">
       <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly	>
-      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      <input class="text1" type="text" id="matmodalmatname" name = "matName" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" name = "matCode" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>거래처명</label>
-      <input class="text1" type="text" id="accmodalname" readonly	>
-      <input class="text1" type="hidden" id="accmodalcode" readonly	>
+      <input class="text1" type="text" id="accmodalname" name = "accName" readonly	>
+      <input class="text1" type="hidden" id="accmodalcode"  name = "accCode" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
       <label>입고일자</label>
-      <input class="text1" type="date" id="matReqdate"> ~ <input class="text1" type="date" id="matReqdate1">
+      <input class="text1" type="date" id="matReqdate" name = "matWrhdate"> ~
+      <input class="text1" type="date" id="matReqdate1" name = "matWrhdate1">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+    </form>
     </div>
 
     <!-- 자재명모달 -->
@@ -370,19 +373,11 @@
      
      //조회버튼
     document.getElementById('submitbtn').addEventListener('click',function(){
-	   var matName = document.getElementById('matmodalmatname').value;
-	   var accCode = document.getElementById('accmodalcode').value;
-	   var startDate = document.getElementById('matReqdate').value;
-	   var endDate = document.getElementById('matReqdate1').value;
-    	
     	
 		 $.ajax({
    		 url : "/mat/warehousingsearchajax",
    	     method : "GET",
-   	     data : {matName: matName,
-   	    		accCode: accCode,
-   	    		matWrhdate : startDate,
-   	    		matWrhdate1 : endDate}, 
+   	     data : $('#searchform').serialize(),
    	     dataType : "JSON",
    	     success : function(result){
    	    	 console.log(result)

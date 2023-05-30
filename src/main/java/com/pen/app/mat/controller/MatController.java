@@ -125,10 +125,10 @@ public class MatController {
 	 }
 	 
 	 //자재 검사내역리스트
-	 @RequestMapping("/warehousinglist")
+	 @RequestMapping("/testwarehousinglist")
 	 @ResponseBody
-	 public List<WarehousingVO> warehousinglist(){
-		 List<WarehousingVO> list = matservice.getwarehousinglist();
+	 public List<WarehousingVO> testwarehousinglist(){
+		 List<WarehousingVO> list = matservice.getestwarehousinglist();
 		 return list;
 	 }
 	 
@@ -222,6 +222,15 @@ public class MatController {
 		 return list;
 	 }
 	 
+	 //자재조정 자재코드 검색
+	 @RequestMapping("/matadjustsearch")
+	 @ResponseBody
+	 public List<AdjustVO> matadjustsearch(@RequestParam String result){
+		 System.out.println(result);
+		 List<AdjustVO> list = matservice.getmatadjustsearch(result);
+		 return list;
+	 }
+	 
 	 //자재조정 lot 상세
 	 @RequestMapping("/matadjustlot")
 	 @ResponseBody
@@ -230,17 +239,48 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 //자재조정
+	 //자재조정(입고)
 	 @RequestMapping("/matadjustregister")
 	 @ResponseBody
 	 public AdjustVO matadjustregister(@RequestBody List<AdjustVO> list) {
-		 System.err.println(list);
-		 
+		 System.err.println(list);		 
 		 matservice.getmatadjustregister(list);
 		 return null;
 	 }
 	 
+	 //자재조정(출고)
+	 @RequestMapping("/matadjustdliregister")
+	 @ResponseBody
+	 public AdjustVO matadjustdliregister(@RequestBody List<AdjustVO> list) {
+		 System.err.println(list);
+		 matservice.getmatadjustdliregister(list);
+		 return null;
+	 }
 	 
+	 //자재조정조회
+	 @GetMapping("/matadjustlist")
+	 public void matadjustlist() {
+		 
+	 }
+	 
+	 //자재조정조회
+	 @GetMapping("/allmatadjustlist")
+	 @ResponseBody
+	 public List<AdjustVO> allmatadjustlist(){
+		 List<AdjustVO> list = matservice.getallmatadjustlist();
+		 return list;
+	 }
+	 
+	 //자재조정조회 다중검색
+	 @GetMapping ("/matadjustsearchlist")
+	 @ResponseBody
+	 public List<AdjustVO> matadjustsearchlist(AdjustVO adjustVO){
+		 System.err.println(adjustVO);
+		 
+		 return matservice.getmatadjustsearchlist(adjustVO);
+	 }
+	 
+	
 	 //자재출고조회
 	 @GetMapping("/matdlivy")
 	 public void matdlivy() {

@@ -78,7 +78,7 @@
 	
 	
     $.ajax({
-    	url:"/mat/warehousinglist",
+    	url:"/mat/testwarehousinglist",
     	method:"GET",
     	dataType: "JSON",
     	success:function(result){
@@ -187,7 +187,7 @@
 	   $.ajax({
 		   url:"/mat/warehousingregister",
 		   method: "POST",
-		   data: JSON.stringify({list:warehousinggrid.getCheckedRows()}),
+		   data: JSON.stringify(warehousinggrid.getCheckedRows()),
 		   beforeSend: function (xhr){
 			   xhr.setRequestHeader(header, token);
 		   },
