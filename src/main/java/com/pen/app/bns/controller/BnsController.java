@@ -153,7 +153,7 @@ public class BnsController {
 	//계약서 관리 페이지
 	   @GetMapping("/contList")
 	   public String contList(Model model, Authentication authentication) {
-			/* model.addAttribute("conList", dao.getConList()); */
+			 
 	      UserDetails user = (UserDetails) authentication.getPrincipal();
 	      model.addAttribute("userVO", user);
 	      return "bns/contList";
@@ -313,6 +313,15 @@ public class BnsController {
 			System.out.println(list);
 			return true;
 		}
-				
+
+//반품관리페이지
+		@GetMapping("/returnList")
+		   public String returnList(Model model, Authentication authentication) {
+		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		      model.addAttribute("userVO", user);
+		      return "bns/returnList";
+		   }  
+		
+		
 	
 }

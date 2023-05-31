@@ -311,7 +311,9 @@
 			#{prdtLot, mode=IN, jdbcType=VARCHAR},
 			#{prdtNm, mode=IN, jdbcType=VARCHAR},
 			#{cnt, mode=IN, jdbcType=VARCHAR},
-			#{prodCode, mode=IN, jdbcType=VARCHAR}
+			#{prodCode, mode=IN, jdbcType=VARCHAR},
+			#{empNum, mode=IN, jdbcType=VARCHAR}
+			
 		)}
 	</insert>
 	
@@ -325,10 +327,7 @@
 <!-- 출고 전 그리드 조회 -->
 
 <select id="getbeforeReleaseContList" resultType="BnsReleaseVO">
-
-select * from(
 	select distinct 
-          'c' gbn,
           cont_det_code,
           c.cont_code, 
           acc_code,
@@ -340,36 +339,12 @@ select * from(
 		from
 		bns_contract_detail d join bns_contract c
 		on(d.cont_code =c.cont_code)
-		join com_info_emp e
-		on(c.emp_num = e.emp_num) 
-		
-        union all
-   
-   		select distinct 
-               'o',
-               ord_det_code,
-		       o.ord_code, 
-		       acc_code,
-		       acc_name,
-		       prod_code,
-               prod_name,
-               ord_det_quan,
-		       to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date
-		 from  bns_order_detail d 
-		 join  bns_order o
-		   on  (d.ord_code =o.ord_code)
-		 join  com_info_emp e
-		   on  (o.emp_num = e.emp_num) 
-           order by cont_det_release
-           )  where gbn='c' order by cont_det_code
+		where d.cont_det_progress = '납기필요'
 	</select>
 	
 	<!-- 출고전 주문서 그리드 조회 -->
 	<select id="getbeforeReleaseOrdList" resultType="BnsReleaseVO">
-
-select * from(
-   		select 
-               'o' gbn,
+		select distinct 
                ord_det_code,
 		       o.ord_code, 
 		       acc_code,
@@ -381,35 +356,14 @@ select * from(
 		 from  bns_order_detail d 
 		 join  bns_order o
 		   on  (d.ord_code =o.ord_code)
-		 join  com_info_emp e
-		   on  (o.emp_num = e.emp_num) 
-           
-           
-           union 
-           
-           	select  
-          'c' ,
-          cont_det_code,
-          c.cont_code, 
-          acc_code,
-		  acc_name,
-		  prod_code,
-          prod_name,
-          cont_det_quan,
-          to_char(cont_det_release,'YYYY-MM-DD') as	cont_det_release
-		from
-		bns_contract_detail d join bns_contract c
-		on(d.cont_code =c.cont_code)
-		join com_info_emp e
-		on(c.emp_num = e.emp_num) 
-           )  where gbn='o' order by ord_det_code
+		
 	</select>
 
 <select id="getLotReleaseList" resultType="BnsReleaseVO">
 		select s.prdt_lot,
 		s.prdt_nm,
 		s.prod_code,
-		s.bns_store_quan,
+		m.cnt,
 		(select to_char(sysdate,'yyyy-mm-dd') sys from dual) as sys,
 		to_char(s.bns_store_date,'yyyy-mm-dd') bns_store_date,
 		e.emp_name 
@@ -427,13 +381,16 @@ select * from(
 <insert id="insertRelease" statementType="CALLABLE">
 		
 		{call prdt_release_register (
-			#{v_bns_release_quan, mode=IN, jdbcType=VARCHAR},
-			#{v_bns_release_date, mode=IN, jdbcType=VARCHAR},
-			#{v_bns_release_note, mode=IN, jdbcType=VARCHAR},
-			#{v_prdt_code, mode=IN, jdbcType=VARCHAR},
-			#{v_acc_name, mode=IN, jdbcType=VARCHAR},
-			#{v_prdt_nm, mode=IN, jdbcType=VARCHAR},
-			#{v_emp_num, mode=IN, jdbcType=VARCHAR}
+			#{contDetCode, mode=IN, jdbcType=VARCHAR},
+			#{ordDetCode, mode=IN, jdbcType=VARCHAR},
+			#{bnsReleaseQuan, mode=IN, jdbcType=VARCHAR},
+			#{bnsReleaseDate, mode=IN, jdbcType=VARCHAR},
+			#{prdtCode, mode=IN, jdbcType=VARCHAR},
+			#{accName, mode=IN, jdbcType=VARCHAR},
+			#{prdtNm, mode=IN, jdbcType=VARCHAR},
+			#{prdtLot, mode=IN, jdbcType=VARCHAR},
+			#{bnsReleaseNote, mode=IN, jdbcType=VARCHAR},
+			#{empNum, mode=IN, jdbcType=VARCHAR}
 		)}
 		
 	</insert>

@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://kit.fontawesome.com/56e7c5522c.js"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script
+	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-1.11.3.js"></script> -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="/plugins/jquery/jquery.min.js"></script>
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<style>
+.container-fluid {
+	text-align: left !important;
+}
+</style>
+</head>
+<body>
+<div layout:fragment="title">
+		<h1>반품 관리</h1>
+	</div>
+	
+	<div layout:fragment="content">
+	
+	</div>
+<script>
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+</script>
+</body>
+</html>
