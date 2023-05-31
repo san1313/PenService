@@ -1,6 +1,6 @@
 package com.pen.app.bns.vo;
 
-import java.util.Date;
+
 
 import lombok.Data;
 
@@ -13,6 +13,7 @@ public class BnsReleaseVO {
 	String accCode;
 	String accName;
 	String prodCode;
+	String prdtCode;
 	String prodName;
 	String prdtNm;
 	int ordDetQuan; //주문서 주문량
@@ -21,7 +22,6 @@ public class BnsReleaseVO {
 	String prdtLot;
 	int contDetQuan; //주문량
 	int bnsReleaseQuan; //출고량
-	int bnsStoreQuan; //재고량
 	String bnsStoreDate; //입고일자
 	String contDetCode;
 	String contCode;
@@ -31,4 +31,6 @@ public class BnsReleaseVO {
 	String empName; //담당자명
 	String bnsReleaseNote; //출고 비고
 	String sys;
+	int cnt; //재고량
+	int needContDetQuan;
 }

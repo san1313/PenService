@@ -94,11 +94,13 @@
 			<button id="productList" class="fa-solid fa-magnifying-glass"
 				data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</p> -->
-			<p>
-			계약작성일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2">
-			</p>
-				계약만료일자 <input type="date" id="contduedate-text1"> - <input type="date" id="contduedate-text2">
-			<button id="searchcont">조회</button>
+		<p>
+			계약작성일자 <input type="date" id="contdate-text1"> - <input
+				type="date" id="contdate-text2">
+		</p>
+		계약만료일자 <input type="date" id="contduedate-text1"> - <input
+			type="date" id="contduedate-text2">
+		<button id="searchcont">조회</button>
 		<div class="contbtn">
 			<button type="button" class="btn btn-outline-secondary"
 				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
@@ -107,7 +109,7 @@
 				취소</button>
 		</div>
 
-		
+
 
 		<!------------------------------ 본문 모달 ------------------------------------->
 		<!-- 거래처리스트 모달 -->
@@ -320,8 +322,9 @@
 										th:value="${#authentication.principal.username}" readonly>
 								</div>
 
-								<input type="hidden" th:value="${userVO.empNum}" id="contModempnum"
-									class="form-control" name="ModempCode" readonly>
+								<input type="hidden" th:value="${userVO.empNum}"
+									id="contModempnum" class="form-control" name="ModempCode"
+									readonly>
 
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">거래처명
@@ -345,8 +348,8 @@
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">계약시행일자
-									</label> <input id="modalModcontStartDate" type="date" class="form-control"
-										name="contStartDateMod" >
+									</label> <input id="modalModcontStartDate" type="date"
+										class="form-control" name="contStartDateMod">
 								</div>
 								<div style="float: left; margin-right: 10px">
 									<label for="recipient-name" class="col-form-label">계약만료일자
@@ -1226,9 +1229,7 @@ $.ajax({
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						alert('계약서 삭제 완료')
-						grid.resetData(result);
-				        grid.refreshLayout();
+						
 					}
 					});
 			}

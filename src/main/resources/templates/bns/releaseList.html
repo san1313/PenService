@@ -47,9 +47,12 @@
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
 	<h2>출고등록</h2>
-	<button style="float:right;">출고 등록</button>
+	<button id="releaseRegBtn" style="float:right;">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
 	<script>
+	
+	const token = $('meta[name="_csrf"]').attr("content");
+	const header = $('meta[name="_csrf_header"]').attr("content");
 	
 		//출고전 계약서 그리드
 		 $.ajax({
@@ -87,7 +90,7 @@
 	         name: 'prodName'
 		    },
 	       {
-	         header: '주문량',
+	         header: '총주문량',
 	         name: 'contDetQuan'
 	       },
 	       {
@@ -160,7 +163,7 @@
 		       },
 			    {
 		         header: '재고량',
-		         name: 'bnsStoreQuan'
+		         name: 'cnt'
 			    },
 			    {
 		         header: '출고량',
@@ -184,7 +187,12 @@
 		         name: 'bnsReleaseNote',
 		         editor: 'text'
 		       }
-		     ]
+		     ], summary: {
+		      	   height: 40,
+		      	    position: 'bottom',
+		    
+		     }
+	   
 		   });
 	   //라디오 버튼 클릭시 그리드 변경
 	      let grid = beforeReleaseContGrid;
@@ -213,10 +221,47 @@
 					//afterReleaseGrid 초기화
           })
           
-          //계약상황 첫번째 열 더블클릭 시 밑의 그리드로 정보 이동
-           beforeReleaseContGrid.on('dblclick', ev=> {
+          let targetRow;
+          //계약상황 첫번째 열 클릭 시 밑의 그리드로 정보 이동
+           beforeReleaseContGrid.on('click', ev=> {
          	  if(ev.columnName == 'contDetCode'){
         			let row = beforeReleaseContGrid.getRow(ev.rowKey);
+        			
+        			targetRow = row;
+        			
+        			afterReleaseGrid.setSummaryColumnContent('bnsReleaseQuan', {
+        				  template(summary) {
+        				    return '총 주문량 : ' + targetRow.contDetQuan + '<br>필요 주문량 : ' + (targetRow.contDetQuan - summary.sum);
+        				    
+        				  }
+        				});
+        			
+        			console.log(row);
+        			 $.ajax({
+        					url : "/bns/LotReleaseListAjax",
+        					method : "GET",
+        					data : {result : row.prodCode},
+        					dataType : "JSON",
+        					success : function(result){
+        						afterReleaseGrid.resetData(result);
+        					}
+        				});
+          } 
+          }) 
+          
+          //주문상황 첫번째 열 클릭 시 밑의 그리드로 정보 이동
+           beforeReleaseOrdGrid.on('click', ev=> {
+         	  if(ev.columnName == 'ordDetCode'){
+        			let row = beforeReleaseOrdGrid.getRow(ev.rowKey);
+					
+        			targetRow = row;
+        			
+        			afterReleaseGrid.setSummaryColumnContent('bnsReleaseQuan', {
+        				  template(summary) {
+        				    return '총 주문량 : ' + targetRow.ordDetQuan + '<br>필요 주문량 : ' + (targetRow.ordDetQuan - summary.sum);
+        				    
+        				  }
+        				});
         			console.log(row.prodCode);
         			 $.ajax({
         					url : "/bns/LotReleaseListAjax",
@@ -230,22 +275,48 @@
           } 
           }) 
           
-          //주문상황 첫번째 열 더블클릭 시 밑의 그리드로 정보 이동
-           beforeReleaseOrdGrid.on('dblclick', ev=> {
-         	  if(ev.columnName == 'ordDetCode'){
-        			let row = beforeReleaseOrdGrid.getRow(ev.rowKey);
-        			console.log(row.prodCode);
-        			 $.ajax({
-        					url : "/bns/LotReleaseListAjax",
-        					method : "GET",
-        					data : {result : row.prodCode},
-        					dataType : "JSON",
-        					success : function(result){
-        						afterReleaseGrid.resetData(result);
-        					}
-        				});
-          } 
-          }) 
+          //출고등록 버튼 클릭 시
+           $('#releaseRegBtn').on('click' ,function(){
+        	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contDetQuan){
+   				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
+   				return;
+   			}
+        	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
+      				alert("출고량을 입력하세요 ");
+      				return;
+      			}
+        	 
+        	   
+			let checked = afterReleaseGrid.getCheckedRows();
+			console.log(checked);
+			console.log(targetRow);
+			
+			checked.forEach(ele=>{
+				ele.contDetCode = targetRow.contDetCode;
+				ele.ordDetCode = targetRow.ordDetCode;
+				ele.prdtCode = targetRow.prodCode;
+				ele.accName = targetRow.accName;
+				ele.bnsReleaseDate = ele.sys;
+				ele.empNum = '[[${#authentication.principal.empNum}]]';
+			})
+			console.log(checked)
+			
+			 $.ajax({
+					url : "/bns/insertReleaseList",
+					method : "POST",
+					contentType : "application/json",
+					data : JSON.stringify({ list : checked}),
+					dataType : "JSON",
+					beforeSend: function (xhr) {
+			            xhr.setRequestHeader(header, token);
+			          },
+					success : function(result){
+						
+					}
+					})
+					}) 
+						
+		   
            
            
 	</script>

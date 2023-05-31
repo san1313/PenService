@@ -44,6 +44,7 @@
 	<div id="beforeStoreGrid"></div>
 	<br>
 	<h2>입고내역</h2>
+	<input type="hidden" th:value="${#authentication.principal.empNum}" id="empNum">
 	<button type="button" style="float:right;" id="storeCancleBtn">입고취소</button>
 	<div id="afterStoreGrid"></div>
 	
@@ -68,9 +69,9 @@
 		});
 	
 	 var beforeStoreGrid = new tui.Grid({
+		 bodyHeight : 200,
 	     el: document.getElementById('beforeStoreGrid'),
 	     scrollX: false,
-	     
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 	     columns: [
 	       {
@@ -90,7 +91,7 @@
 	         name: 'cnt'
 	       },
 	       {
-	         header: '일자',
+	         header: '생산완료일자',
 	         name: 'prdtDate'
 	       },
 	       {
@@ -114,9 +115,9 @@
 	 
 	 
 	   var afterStoreGrid = new tui.Grid({
+		   bodyHeight : 200,
 		     el: document.getElementById('afterStoreGrid'),
 		     scrollX: false,
-		     scrollY: false,
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 		     columns: [
 		       {
@@ -144,10 +145,14 @@
 		   }); 
 	   
 	   
+
+	   
 	   $('#storeRegBtn').on('click' ,function(){
 			let checked = beforeStoreGrid.getCheckedRows();
+			checked.forEach(ele=>{
+				   ele.empNum = '[[${#authentication.principal.empNum}]]';			   
+				   })
 			console.log(checked);
-		   
 			 $.ajax({
 				url : "/bns/insertStoreList",
 				method : "POST",
@@ -183,10 +188,7 @@
 					});
 					
 					},
-		         error : function(reject){
-		        	 console.log(reject);
-		        	 
-		         }
+		       
 				}) 
 		   
 	   })

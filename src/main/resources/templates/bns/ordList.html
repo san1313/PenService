@@ -519,7 +519,7 @@
 			url : "/bns/insertOrdList",
 			method : "POST",
 			contentType : "application/json",
-			data : JSON.stringify({ list : checked}),
+			data : JSON.stringify(checked),
 			dataType : "JSON",
 			beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);
@@ -1163,14 +1163,13 @@ $.ajax({
 					url : "/bns/delOrdDetList",
 					method : "POST",
 					contentType : "application/json",
-					data : JSON.stringify({ list : deleted}),
+					data : JSON.stringify({list : deleted}),
 					dataType : "JSON",
 					beforeSend: function (xhr) {
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						modProdgrid.resetData(result);
-				        modProdgrid.refreshLayout();
+						
 					}
 					});
 			}
@@ -1178,7 +1177,7 @@ $.ajax({
         	 
          })
          
-         //주문수정 모달창의 삭제 버튼 눌렀을 때
+         //주문서 취소버튼 눌렀을 때
          $('#BtnOrdCancle').on('click',function(){
 			grid.removeCheckedRows(true)
 			let deleted = grid.getModifiedRows().deletedRows;
@@ -1258,16 +1257,6 @@ $.ajax({
 		   		modProdgrid.refreshLayout();
 		   	})
 		   })
-		  
-		
-		
-		/* console.log(ev)
-	      const focusCell = grid.getFocusedCell()
-	      console.log(focusCell)
-
-	      let dataRow = grid.getRow(ev.rowKey);
-	      console.log(dataRow); */
-	
 	
     </script>
 
