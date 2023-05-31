@@ -30,49 +30,42 @@
    			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
-            </label> 	
+            </label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            
+            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">
+            </label>	
      	 	<br>
      	 	
             <label for="confirm_code">점검코드&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text"id="confirm_code" placeholder="CONFIRM" readonly>&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="confirm_code" placeholder="CONFIRM" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
 
-            <label for="confirm_date">점검일시</label>&nbsp;&nbsp;
-            <input type="date" id="confirmDatei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            
-            <!-- 
-           <label for="fac_code">설비코드&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="text"id="fac_code" readonly placeholder="조회 후 등록하시오">
-            <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
-             -->    
-        
-                       
-            <label for="confirm_category" id="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="radio" name="confirm_category" value="정기점검" checked> 정기점검&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="confirm_category" value="수시점검"> 수시점검&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="confirm_category" value="긴급점검"> 긴급점검&nbsp;&nbsp;&nbsp;
+            <label for="confirm_date">점검일자</label>&nbsp;&nbsp;&nbsp;
+            <input type="date" id="confirmDatei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                    
+            <label for="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="regural"name="confirm_category" value="정기점검" checked> 정기점검&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="often" name="confirm_category" value="수시점검"> 수시점검&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="emergency" name="confirm_category" value="긴급점검"> 긴급점검&nbsp;&nbsp;&nbsp;</label>
             
             <br>
             <label for="action_history">조치내역</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               
-            <label for="confirm_issue" id="confirm_issue">점검사항</label>&nbsp;&nbsp;
-            <select name="confirm_issue" style="width:190px; height:30px;" >
-               <option value="선택" selected="selected">----------사항선택----------</option>
+            <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;
+            <select name="confirm_issue" id="confirm_issue" style="width:120px; height:30px;" >
+               <option value="선택" selected="selected">---선택---</option>
                <option value="점검">점검</option>
                <option value="고장">고장</option>
-            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+               <option value="수리">수리</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
            
-            <label for ="decision" id="decision">판정&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;</label>
-            <input type="radio" name="decision" value="적합" checked>&nbsp;&nbsp;적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="radio" name="decision" value="부적합">&nbsp;&nbsp;부적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                   
-            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;
-            <input type="text" id="emp_num">
+            <label for ="decision">판정&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio"  id="fit"  name="decision" value="적합" checked>&nbsp;&nbsp;적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="radio" id="unfit" name="decision" value="부적합">&nbsp;&nbsp;부적합&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
-            
-        
            	
             <br><br>
             
@@ -106,7 +99,7 @@
         <!-- 설비조회 그리드 -->
          <div id="grid2"></div>
          
-        <button class="submitfacmodalbtn" type="button" data-dismiss="modal" onclick="getfac()">선택</button>
+        <button class="submitfacmodalbtn" type="button" data-dismiss="modal">선택</button>
       </div>
     </div>
   </div>
@@ -115,7 +108,15 @@
 </div>
 
 <hr>
-
+<!-- 기간별 검색시작 -->
+<div class="col-lg-12" style="text-align:left">
+<form id="searchform">
+<label>점검기간</label>
+  <input class="text1" type="date" id="confirmday1" name = "confirmday1"> ~
+  <input class="text1" type="date" id="confirmday2" name = "confirmday2">
+  <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    		
+</form>
+</div>
  <!-- 점검내역그리드화면 -->
  <div id="grid"></div>
       
@@ -133,8 +134,8 @@
     $(function(){
     	
     	//점검일자 자동생성
-    	$('#confirmDatei').attr('readonly',true);
-    	$('#confirmDatei').val(new Date().toISOString().slice(0,10));
+    	//$('#confirmDatei').attr('readonly',true);
+    	//$('#confirmDatei').val(new Date().toISOString().slice(0,10));
 		
     	//설비명버튼 이벤트
 		$('#facSelectmodalbtn').click(function(){
@@ -185,7 +186,7 @@
               name: 'confirmCode'
             },
             {
-              header: '점검일시',
+              header: '점검일자',
               name: 'confirmDate'
             },
             {
@@ -234,30 +235,7 @@
             }
           ]
          })
-      
-         //설비코드버튼
-        /*  $('#chfacmodalbtn').click(function(){//x
-              
-              $.ajax({
-                     url : "/fac/infolistAjax",
-                     method : "GET",
-                     dataType : "JSON",
-                     success : function(result){
-                        console.log(result)
-                        grid2.resetData(result);
-   
-                         $('#chfacmodalbtn').modal('show');
-                         $('#chfacmodalbtn').on('shown.bs.modal', function (e) {
-                            console.log('open');
-                            setTimeout(()=> grid2.refreshLayout(), 100);   
-                        })
-                     },error : function(reject){
-                        console.log(reject)
-                     }
-                  }); 
-         }) */
-      
-
+ 
          //설비코드모달검색조회
           $('#ckfac').on('click', function(){
              console.log($("#ckfac-text").val())
@@ -292,26 +270,80 @@
          hidden.appendChild(hidInput);
          
       })      
-       })
-             
-       
+      
+       //점검기간 조회버튼
+         document.getElementById('submitbtn').addEventListener('click',function(){
+          	
+      		$.ajax({
+         		 url : "/fac/confirmdaysSearchAjax",
+         	     method : "GET",
+         	    data: $('#searchform').serialize(),       
+         	     dataType : "JSON",
+         	     success : function(result){
+         	    	 console.log(result)
+         	    	grid.resetData(result);
+         	    	grid.refreshLayout();	
+         	     },
+         	     error: function(reject){
+         	    	 console.log(reject)
+           }
+         }); 
+         })        
+      
+         
       //초기화버튼 이벤트
       $("#reset").on('click',function(){
-         $('div input').not("input[name=confirm_category]").val('');
-         $('div input').not("input[name=decision]").val('');
+         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         //$('div input').not("").val('');
+         //$('div input').not($('#confirmDatei')).val('');
       });
-  
-  
-      //점검삭제버튼 이벤트
-     
-      /*
+      
+ 
+        //점검수정,삭제하기전 그리드 이벤트 작업
+        //서버에 연결전 토큰값 담는 method
+          grid.on("beforeRequest", function (obj) {
+              obj.xhr.setRequestHeader(header, token);
+            });
+       
+           grid.on("dblclick",function (e){
+              console.log(grid.getRow(e.rowKey));
+              dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
+
+              console.log(dblclickRows);
+            
+              //값을 input창에 다시 담아줌
+              $('#confirm_code').val(dblclickRows.confirmCode); //점검코드
+              $('#fac_name').val(dblclickRows.facName); //설비명
+              $('#action_history').val(dblclickRows.actionHistory); //조치내역
+              $('#emp_num').val(dblclickRows.empNum); //담당자
+              $('#confirm_issue').val(dblclickRows.confirmIssue); //점검사항-셀렉트박스
+              $("input:radio[name='confirm_category']:radio[value=\'"+dblclickRows.confirmCategory+"\']").prop('checked', true);//점검구분()
+              $("input:radio[name='decision']:radio[value=\'"+dblclickRows.decision+"\']").prop('checked',true);//판정(라디오)              
+              $('#confirmDatei').val(dblclickRows.confirmDate);  //점검일시 
+              //$('#confirm_category').val(dblclickRows.confirmCategory); //점검구분 -라디오버튼
+              //$('input[name="confirm_category"]:checked').val(dblclickRows.confirmCategory);
+              //$('#decision').val(dblclickRows.decision); //판정 -라디오버튼
+             
+           }); 
+      
+   })
+        
+ /* 셀렉트박스 선택하는 방법 $('select[name="confirm_issue"] option:eq(2)').prop("selected",true) 
+ 라디오버튼 체크하는 방법 :  $("input:radio[name='confirm_category']:radio[value='사과']").prop('checked', true); 
+ $('input[name="confirm_category"]:checked')
+ */
+    
+   
+   
+   
+      //점검삭제버튼 이벤트    
       $("#delete").on('click', function(){
          $.ajax({
             url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진 post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-            facCode : $('#confirm_code').val()
+            confirmCode : $('#confirm_code').val()
          },
           beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
@@ -335,24 +367,24 @@
          })
 
       });
-      
+     
     
     //점검수정버튼 이벤트
    $("#update").on('click',function(){
-
+	
       $.ajax({
          url: "/fac/confirmUpdate", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
          //json형태인 키:값 형태로 데이터넘김
          data: {
                confirmCode : $('#confirm_code').val(),
-               facName : $('#fac_name').val(),
-               confirmDate :$('confirmDatei').val(),
-               confirmCategory : $('#input[name=confirm_category]:checked').val(),
+               //facName : $('#fac_name').val(),
+               confirmDate :$('#confirmDatei').val(),
+               confirmCategory : $('input[name=confirm_category]:checked').val(),
                actionHistory : $("#action_history").val(),
                confirmIssue : $('#confirm_issue').val(),
-               decision : $('#decision').val(), 
-               empNum : $('#emp_num').val()
+               decision : $('input[name=decision]:checked').val(), 
+               //empNum : $('#emp_num').val()
                },
             beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
@@ -368,7 +400,10 @@
                grid.refreshLayout();
                }
                })
-               $('div input').not("input[name=confirm_issue]").val('');
+               $('div input').val('');
+         	   $('div select').val('선택');
+               //$('div input').not("input[name=confirm_issue]").val('');
+         
             },
             error:function(reject){
             console.log(reject)
@@ -376,9 +411,7 @@
       
       })
    });
-   
-     */   
-    
+
     //점검등록버튼 이벤트
      $("#register").on('click',function(){              	 
     	  let confirmInsertData={};
@@ -426,28 +459,8 @@
           })
        });
        
-       //점검수정,삭제하기전 그리드 이벤트 작업
-       //서버에 연결전 토큰값 담는 method
-       grid.on("beforeRequest", function (obj) {
-          obj.xhr.setRequestHeader(header, token);
-        });
-   
-       grid.on("dblclick",function (e){
-          console.log(grid.getRow(e.rowKey));
-          dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
-
-          console.log(dblclickRows);
-        
-          //값을 input창에 다시 담아줌
-          $('#confirm_code').val(dblclickRows.confirmCode);
-          $('#fac_name').val(dblclickRows.facName);
-          $('#confirmDatei').val(dblclickRows.confirmDatei);
-          $('#confirm_category').val(dblclickRows.confirmCategory);
-          $('#action_history').val(dblclickRows.actionHistory);
-          $('#emp_num').val(dblclickRows.empNum);
-          $('#confirm_issue').val(dblclickRows.confirmIssue);
-          
-       });
+       
+ 
       
             
      /* function getProc(){

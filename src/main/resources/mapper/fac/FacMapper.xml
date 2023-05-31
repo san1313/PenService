@@ -4,153 +4,182 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.fac.mapper.FacMapper">
-	<!--설비단건조회 -->
-	<select id="getFac" resultType="FacInfoVO">
-		select *
-		from fac_info
-		where fac_code = #{facCode}
-	</select>
-	
-	<!-- 설비 검색조회 -->
-	<select id ="getList" resultType="FacInfoVO">
- 	select fac_code,
- 	       fac_name,
- 	       operate_check,
- 	       check_cycle,
- 	       to_char(install_date,'yyyy-MM-dd') 
-	       installDate,
-	       maker_name,
-	       temp_min,
-	       temp_max,
-	       emp_num 
-	  from fac_info
+	<!--설비단건조회 <select id="getFac" resultType="FacInfoVO"> select * from fac_info 
+		where fac_code = #{facCode} </select> -->
+
+	<!-- 설비 특정검색조회 -->
+	<select id="getList" resultType="FacInfoVO">
+ SELECT fac_code,
+		fac_name,
+		operate_check,
+		check_cycle,
+		to_char(install_date,'yyyy-MM-dd')
+		installDate,
+		maker_name,
+		temp_min,
+		temp_max,
+		emp_num
+   FROM fac_info
 	<where>
-	 <if test ="searchDiv != null and searchDiv != ''" > 
-	  	${searchDiv} = #{searchName} 
-	  </if> 
+		<if test="searchDiv != null and searchDiv != ''">
+			${searchDiv} = #{searchName}
+		</if>
 	</where>
 	</select>
-	
-	<!-- 설비정보목록조회
-	<select id="getList" resultType="FacInfoVO">
-		
-		select fac_code ,fac_name,proc_name
-		,proc_code,operate_check,check_cycle
-		,to_char(install_date,'yyyy-MM-dd') installDate,maker_name
-		,temp_min,temp_max ,emp_num from FAC_INFO join FAC_CONN_PROC
-		using(fac_code) join COM_CODE_PROC using(proc_code)
-	</select> -->
 
-	<!-- 설비등록-->
+	<!-- 설비정보목록조회 <select id="getList" resultType="FacInfoVO"> select fac_code 
+		,fac_name,proc_name ,proc_code,operate_check,check_cycle ,to_char(install_date,'yyyy-MM-dd') 
+		installDate,maker_name ,temp_min,temp_max ,emp_num from FAC_INFO join FAC_CONN_PROC 
+		using(fac_code) join COM_CODE_PROC using(proc_code) </select> -->
+
+	<!-- 설비등록 -->
 	<insert id="facRegister" parameterType="FacInfoVO">
-		insert into fac_info 
-		values('EQMAN'||fac_seq.nextval,#{facName},#{installDate},#{tempMin},#{tempMax},#{makerName},#{checkCycle},#{operateCheck},#{empNum})
-	</insert> 
-	
-	
-<!-- 공정+설비등록 -->
-  <insert id="insertFacList" parameterType="FacInfoListVO">
-  insert all into fac_info 
-      values('EQMAN'||fac_seq.nextval,
-      		  #{list[0].facName},
-              #{list[0].installDate},
-              #{list[0].tempMin},
-              #{list[0].tempMax},
-              #{list[0].makerName},
-              #{list[0].checkCycle},
-              #{list[0].operateCheck},
-              #{list[0].empNum}) 
-    <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
-        into FAC_CONN_PROC values(fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
-    </foreach>
-  </insert>
-
-<!-- 점검등록 -->
-	<insert id="insertConfirmList" parameterType="FacConfirmVO">
-	insert into fac_confirm(confirm_code,confirm_date,confirm_category,action_history,decision,confirm_issue,emp_num,fac_code)
-			 values ('CONFIRM'||CONFIRM_seq.nextval,current_date,#{confirmCategory},#{actionHistory},#{decision},#{confirmIssue},#{empNum},#{facCode}			 )
-	
+	INSERT INTO fac_info
+		VALUES ('EQMAN'||fac_seq.nextval,#{facName},#{installDate},#{tempMin},#{tempMax},#{makerName},#{checkCycle},#{operateCheck},#{empNum})
 	</insert>
 
-<!-- 설비별 공정수정 -->	
- <insert id="insertProcList" parameterType="String">
-  insert all 
-    <foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
-        into FAC_CONN_PROC values(fac_conn_proc_seq.nextval,#{vo.facCode},#{vo.procCode})
-    </foreach>
-  </insert>
-	
+
+	<!-- 공정+설비등록 -->
+	<insert id="insertFacList" parameterType="FacInfoListVO">
+	INSERT ALL into fac_info
+		values('EQMAN'||fac_seq.nextval,
+		#{list[0].facName},
+		#{list[0].installDate},
+		#{list[0].tempMin},
+		#{list[0].tempMax},
+		#{list[0].makerName},
+		#{list[0].checkCycle},
+		#{list[0].operateCheck},
+		#{list[0].empNum})
+		<foreach collection="list" item="vo"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO FAC_CONN_PROC
+		  VALUES (fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
+		</foreach>
+	</insert>
+
+	<!-- 점검등록 -->
+	<insert id="insertConfirmList" parameterType="FacConfirmVO">
+   INSERT INTO fac_confirm(confirm_code,confirm_date,confirm_category,action_history,decision,confirm_issue,emp_num,fac_code)
+		VALUES ('CONFIRM'||CONFIRM_seq.nextval,current_date,#{confirmCategory},#{actionHistory},#{decision},#{confirmIssue},#{empNum},#{facCode})
+	</insert>
+
+	<!-- 설비별 공정수정 -->
+	<insert id="insertProcList" parameterType="String">
+	INSERT ALL
+		<foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
+		    INTO FAC_CONN_PROC
+		  VALUES (fac_conn_proc_seq.nextval,#{vo.facCode},#{vo.procCode})
+		</foreach>
+	</insert>
+
 	<!-- 설비 별 공정조회 -->
 	<select id="getFacConnProcList" parameterType="String" resultType="FacConnProcVO">
-	select a.proc_code,
-	       b.proc_name 
-	  from FAC_CONN_PROC a
-	  JOIN com_code_proc b
-	    ON a.proc_code = b.proc_code
-	 where fac_code=#{facCode}
+		SELECT a.proc_code,
+		       b.proc_name
+		  FROM FAC_CONN_PROC a
+		  JOIN com_code_proc b
+		    ON a.proc_code = b.proc_code
+		 WHERE fac_code=#{facCode}
 	</select>
-	
+
 	<!-- 해당설비 공정삭제 -->
 	<delete id="facConnProcDelete" parameterType="String">
-	delete from FAC_CONN_PROC where fac_code=#{facCode}
+   DELETE FROM FAC_CONN_PROC 
+		 WHERE fac_code=#{facCode}
 	</delete>
-	
+
 	<!-- 설비수정 -->
 	<update id="facUpdate" parameterType="FacInfoVO">
-	update fac_info
-	set fac_name = #{facName},
-    temp_min = #{tempMin},
-    temp_max = #{tempMax},
-    maker_name = #{makerName},
-    check_cycle = #{checkCycle},
-    operate_check =#{operateCheck},
-    emp_num = #{empNum}
-	where fac_code = #{facCode}
+		UPDATE fac_info
+		   SET fac_name = #{facName},
+		       temp_min = #{tempMin},
+		       temp_max = #{tempMax},
+		       maker_name = #{makerName},
+		       check_cycle = #{checkCycle},
+		       operate_check =#{operateCheck},
+		       emp_num = #{empNum}
+		 WHERE fac_code = #{facCode}
 	</update>
-	
-	
-	<!-- 설비삭제 -->	
+
+	<!-- 점검수정 -->
+	<update id="confirmUpdate" parameterType="FacConfirmVO">
+		UPDATE fac_confirm
+		   SET action_history = #{actionHistory},
+		   	   confirm_category = #{confirmCategory},
+		   	   confirm_issue = #{confirmIssue},
+		   	   decision = #{decision}
+		 WHERE confirm_code = #{confirmCode}	   	   
+	</update>
+
+
+
+	<!-- 설비삭제 -->
 	<delete id="facDelete" parameterType="FacInfoVO">
-	delete from fac_info where fac_code=#{facCode}
+   DELETE FROM fac_info 
+		 WHERE fac_code=#{facCode}
 	</delete>
-		
+	
+	<!-- 점검삭제 -->
+	<delete id="confirmDelete" parameterType="FacConfirmVO">
+   DELETE FROM FAC_CONFIRM 
+		 WHERE confirm_code=#{confirmCode}
+	</delete>
+
 	<!-- 공정코드목록 -->
 	<select id="getproclist" resultType="FacConnProcVO">
-		select proc_code, proc_name from COM_CODE_PROC
+		SELECT proc_code, proc_name
+		  FROM COM_CODE_PROC
 	</select>
-	
+
 	<!-- 공정코드검색조회 -->
 	<select id="getprocminilist" resultType="FacConnProcVO">
-		select proc_code, 
-		       proc_name 
-	      from COM_CODE_PROC 
-		 where proc_name  like '%'|| #{keyword} || '%'
+		SELECT proc_code,
+		       proc_name
+		  FROM COM_CODE_PROC
+		 WHERE proc_name LIKE '%'|| #{keyword} || '%'
 	</select>
 
 
-<!-- 점검전체조회 -->
-<select id="getConfirmList" resultType="FacConfirmVO">
-select a.confirm_code,
-	   b.fac_name,
-	   a.action_history,
-	   a.confirm_category,
-	   a.confirm_issue,
-	   a.decision,
-	   to_char(confirm_date,'yyyy-MM-dd HH24:Mi:ss') confirmDate,
-	   a.emp_num
-  from FAC_CONFIRM a 
-  join FAC_INFO b 
- using (fac_code)
-</select>
+	<!-- 점검전체조회 -->
+	<select id="getConfirmList" resultType="FacConfirmVO">
+		SELECT a.confirm_code,
+			   b.fac_name,
+		       a.action_history,
+		       a.confirm_category,
+		       a.confirm_issue,
+		       a.decision,
+		       to_char(confirm_date,'yyyy-MM-dd') confirmDate,
+		       a.emp_num
+		  FROM FAC_CONFIRM a
+		  JOIN FAC_INFO b
+		 USING (fac_code)
+	</select>
 
 	<!-- 설비코드검색조회 -->
 	<select id="getfacminilist" resultType="FacInfoVO">
-		select fac_code, 
-		       fac_name 
-	      from fac_info
-		 where fac_name  like '%'|| #{keyword} || '%'
+		SELECT fac_code,
+		       fac_name
+		       from fac_info
+		 WHERE fac_name LIKE '%'|| #{keyword} || '%'
 	</select>
-
+	
+	<!-- 점검기간 조회 -->
+	<select id="confirmdaysSearchAjax" resultType="FacConfirmVO">
+		SELECT  a.confirm_code,
+				to_char(confirm_date,'yyyy-MM-dd') confirm_Date,
+				b.fac_name,
+				a.action_history,
+				a.confirm_category,
+				a.confirm_issue,
+				a.decision,
+				a.emp_num		
+		   FROM FAC_CONFIRM a
+		   JOIN FAC_INFO b on a.fac_code=b.fac_code
+		  WHERE confirm_date 
+		BETWEEN to_date(#{confirmday1},'YYYY-MM-DD')
+		    AND to_date(#{confirmday2},'YYYY-MM-DD')		        
+	</select>
 
 
 </mapper>

@@ -83,6 +83,24 @@ public class FacServiceImpl implements FacService {
 		return mapper.insertConfirmList(list);
 	}
 
+	@Override
+	public int confirmUpdate(FacConfirmVO list) {
+		// 점검수정
+		return mapper.confirmUpdate(list);
+	}
+
+	@Override
+	public int confirmDelete(FacConfirmVO vo) {
+		// 점검삭제
+		return mapper.confirmDelete(vo);
+	}
+
+	@Override
+	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo) {
+		//점검기간별 조회
+		return mapper.confirmdaysSearchAjax(vo);
+	}
+
 	
 
 }

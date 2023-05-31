@@ -17,5 +17,7 @@ public class FacConfirmVO {
 	String facCode; //설비코드
 	String facName; //설비명
 	
+	String confirmday1; //점검일자1
+	String confirmday2; //점검일자2
 	
 }	

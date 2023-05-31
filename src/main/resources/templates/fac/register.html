@@ -58,7 +58,7 @@
 				<input type="date" id="install_date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 
 				<label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="text" id="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -131,7 +131,7 @@
   	<button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
   	<button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>
   
- <!-- 그리드화면 -->
+ <!-- 설비목록그리드화면 -->
  <div id="grid"></div>
 	    
  
@@ -493,11 +493,12 @@
     		$('#fac_code').val(dblclickRows.facCode);
     		$('#fac_name').val(dblclickRows.facName);
     		$('#check_cycle').val(dblclickRows.checkCycle);
-    		$('#install_date').val(dblclickRows.installDate);
+    		$('#install_date').val(dblclickRows.installDate);    		
     		$('#emp_num').val(dblclickRows.empNum);
     		$('#maker_name').val(dblclickRows.makerName);
     		$('#temp_min').val(dblclickRows.tempMin);
-    		$('#temp_max').val(dblclickRows.tempMax);
+    		$('#temp_max').val(dblclickRows.tempMax);   		
+    		$("input:radio[name=operate_check]:radio[value=\'"+dblclickRows.operateCheck+"\']").prop('checked',true);
     		
     		$.ajax({
     			url:"/fac/getFacConnProcList",
@@ -516,7 +517,8 @@
     	});
     			
     });
-
+	
+    //그리드에 공정추가하는화면
     function getProc(){
 	getProcRows=grid2.getCheckedRows();
 	console.log(getProcRows);

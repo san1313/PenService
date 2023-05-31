@@ -112,8 +112,15 @@ public class FacController {
 	// 설비수정
 	@ResponseBody
 	@RequestMapping("/facUpdate")
-	public int facUpdate(@RequestBody FacInfoListVO list) {
+	public int facUpdate(@RequestBody FacInfoListVO list) { //data: JSON.stringify~있으면 requestBody
 		return service.facUpdate(list);
+	}
+	
+	//점검수정
+	@ResponseBody
+	@RequestMapping("/confirmUpdate")
+	public int confirmUpdate(FacConfirmVO list) {
+		return service.confirmUpdate(list);
 	}
 
 	// 설비삭제
@@ -121,6 +128,13 @@ public class FacController {
 	@RequestMapping("/facDelete")
 	public int facDelete(FacInfoVO vo) {
 		return service.facDelete(vo);
+	}
+	
+	//점검삭제
+	@ResponseBody
+	@RequestMapping("/confirmDelete")
+	public int confirmDelete(FacConfirmVO vo) {
+		return service.confirmDelete(vo);
 	}
 	
 	//설비명 단건 검색리스트
@@ -131,6 +145,16 @@ public class FacController {
 		return list;
 	}
 	
+	//점검기간별 검색
+	@ResponseBody
+	@RequestMapping("/confirmdaysSearchAjax")
+	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO list){
+		System.err.println(list);
+		
+		return service.confirmdaysSearchAjax(list);
+		
+		
+	}
 	
 	
 }

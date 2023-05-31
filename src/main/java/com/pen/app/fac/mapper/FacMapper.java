@@ -27,5 +27,7 @@ public interface FacMapper {
    public List<FacConfirmVO> getConfirmList(FacConfirmVO vo); //점검전체조회
    public List<FacInfoVO> getfacminilist(String keyword);//설비코드조회
    public int insertConfirmList(FacConfirmVO list); //점검등록
-   
+   public int confirmUpdate(FacConfirmVO list); //점검수정
+   public int confirmDelete(FacConfirmVO vo);//점검삭제
+   public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo); //점검기간 검색
    }
