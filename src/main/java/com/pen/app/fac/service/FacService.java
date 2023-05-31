@@ -21,10 +21,13 @@ public interface FacService {
 	public int insertFacList(FacInfoListVO list); //설비+공정등록
 	public int insertConfirmList(FacConfirmVO list); //점검등록
 	public int facUpdate(FacInfoListVO list); //설비수정
+	public int confirmUpdate(FacConfirmVO list);//점검수정
+	
 	public int facDelete(FacInfoVO vo); //설비삭제
-	   
+	public int confirmDelete(FacConfirmVO vo); //점검삭제   
 	  
 	public FacInfoVO getFac(String facCode); //단건조회
 	public List<FacInfoVO> getfacminilist(String keyword);//설비명으로 설비코드조회
+	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo); //점검기간별 조회
 	
 }
