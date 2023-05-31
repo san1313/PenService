@@ -14,39 +14,40 @@
 	
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
-		select a.acc_code, 
-		       a.acc_name, 
-		       c.mat_code, 
-		       c.mat_name 
-		  from COM_CODE_ACCOUNT a 
-		  join COM_ACCOUNT_ITEM b 
-		    on (a.acc_code = b.acc_code) 
-		  join COM_CODE_MAT c 
-		    on (b.acc_item = c.mat_code)
+		select * from com_code_mat order by 1
 	</select>
 	
 	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
-		select a.acc_code, 
-		       a.acc_name, 
-		       c.mat_code, 
-		       c.mat_name 
-		  from COM_CODE_ACCOUNT a 
-		  join COM_ACCOUNT_ITEM b on (a.acc_code = b.acc_code) 
-		  join COM_CODE_MAT c on (b.acc_item = c.mat_code) 
-		 where c.mat_name like #{keyword}
+		select * from com_code_mat 
+		 where mat_name like #{keyword}
 	</select>
 	
 	<!-- 모달거래처목록 -->
 	<select id="getacclist" resultType="OrderVO">
-		SELECT * FROM COM_CODE_ACCOUNT 
+		select a.acc_code, 
+		       a.acc_name
+		  from COM_CODE_ACCOUNT a 
+		 left join COM_ACCOUNT_ITEM b 
+		    on (a.acc_code = b.acc_code) 
+		left join COM_CODE_MAT c 
+		    on (b.acc_item = c.mat_code)
+		    <if test = "matName != null and matName != ''">
+		 where a.acc_name = #{matName}
+		 	</if> 
+		    order by 1
 	</select>
 	
 	<!-- 모달거래처검색조회 -->
 	<select id="getaccminilist" resultType="OrderVO">
-		SELECT * 
-		  FROM COM_CODE_ACCOUNT 
-		 where ACC_CODE like #{keyword}
+		select a.acc_code, 
+		       a.acc_name
+		  from COM_CODE_ACCOUNT a 
+		 left join COM_ACCOUNT_ITEM b 
+		    on (a.acc_code = b.acc_code) 
+		left join COM_CODE_MAT c 
+		    on (b.acc_item = c.mat_code)
+		 where a.acc_name = #{matName} and a.acc_code like #{keyword}
 	</select>
 	
 	<!-- 발주번호 -->
@@ -397,5 +398,51 @@
         where mat_mdatdate <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
           ]]>
           	</if>	
+	</select>
+	
+	<select id="getdisposeresultlist" resultType="DisposeResultVO">
+	select b. mat_dsnum,
+		   a.mat_lot, 
+		   a.mat_code, 
+		   a.mat_name, 
+		   b.MAT_TEST_QNT, 
+		   b.MAT_STA_QNT, 
+		   b.MAT_PASS_QNT, 
+		   b.MAT_CHKEEPDATE, 
+		   a.mat_state 
+	from mat_invntry a 
+	join mat_dsuse b on(a.mat_lot = b.mat_lot)
+	order by 1
+	</select>
+	
+	<select id="getdisposeresultsearchlist" resultType="DisposeResultVO">
+	select * 
+	from(select b. mat_dsnum,
+				a.mat_lot, 
+		  		a.mat_code, 
+			    a.mat_name, 
+			    b.MAT_TEST_QNT, 
+			    b.MAT_STA_QNT, 
+			    b.MAT_PASS_QNT, 
+			    b.MAT_CHKEEPDATE, 
+			    a.mat_state 
+		from mat_invntry a 
+			join mat_dsuse b on(a.mat_lot = b.mat_lot)
+			<where>
+			<if test="matLot != null and matLot != ''"> 
+			and a.mat_lot like '%'|| #{matLot} || '%'
+			 </if>
+			 <if test="matChkeepdate != null and matChkeepdate != ''">
+			 <![CDATA[ 
+    		and MAT_CHKEEPDATE >= TO_DATE(#{matChkeepdate}, 'YYYY-MM-DD')
+    		]]>
+    		</if> 	
+    		</where>	       
+		         )
+		   <if test="matChkeepdate1 != null and matChkeepdate1 != ''">
+		   <![CDATA[ 
+        where MAT_CHKEEPDATE <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
+        	]]>
+        	  </if>
 	</select>
 </mapper>
