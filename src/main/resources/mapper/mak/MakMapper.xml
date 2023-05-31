@@ -93,7 +93,7 @@
 
 	<!-- 계획 등록 -->
 	<update id="insertPlan" parameterType="PlanVO">
-		insert into MAK_PLAN
+		insert into MAK_PLAN (PLAN_CODE, PLAN_NM,plan_type,plan_date,MAK_EMP_NUM )
 		values (get_plan_seq(), #{planNm}, 'plan', sysdate, '1111')
 	</update>
 
@@ -246,7 +246,11 @@
 	</select>
 	<!-- 주문서 기반 계획서 등록 -->
 	<update id="insertOrd" parameterType="PlanVO">
-		insert into MAK_PLAN
+		insert into MAK_PLAN(PLAN_CODE, 
+PLAN_NM, 
+PLAN_TYPE,  
+PLAN_DATE,         
+MAK_EMP_NUM )
 		values
 		(get_plan_seq,#{planNm},'order',sysdate,'1111')
 	</update>
