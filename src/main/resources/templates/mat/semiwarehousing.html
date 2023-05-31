@@ -48,7 +48,7 @@
   
   <div layout:fragment="content">
 	<h5>검사내역리스트</h5>
-     <div id="testsemigrid"></div>  
+     <div id="testmetgrid"></div>  
      <div class="d-grid gap-2 d-md-flex justify-content-md-end">
      <button type="button" class="btn btn-primary" id="movebtn">이동</button>    
      </div>
@@ -56,7 +56,7 @@
      <button type="button" class="btn btn-danger" id="deletebtn">제거</button>
      <button type="button" class="btn btn-primary" id="subtn">저장</button>
 	</div>
-	<div id="semiwarehousinggrid"></div> 
+	<div id="warehousinggrid"></div> 
 
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
@@ -69,8 +69,8 @@
 	  		dataType : "JSON",
 	  		success : function(result){
 	  			console.log(result);
-	  			semiwarehousinggrid.resetData(result);
-	  			semiwarehousinggrid.refreshLayout();
+	  			warehousinggrid.resetData(result);
+	  			warehousinggrid.refreshLayout();
 	  		}
 	  	});
 	
@@ -78,58 +78,63 @@
 	
 	
     $.ajax({
-    	url:"/mat/warehoussinglist",
+    	url:"/mat/testwarehousinglist",
     	method:"GET",
     	dataType: "JSON",
     	success:function(result){
-    		testsemigrid.resetData(result);
+    		testmetgrid.resetData(result);
     	
     	}
     });     
      
-    var testsemigrid = new tui.Grid({
-    el: document.getElementById('testsemigrid'),
+    var testmetgrid = new tui.Grid({
+    el: document.getElementById('testmetgrid'),
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
     columns: [{
-    header: '반제품코드',
+    header: '자재코드',
     name: 'matCode'
     },
     {
-    header: '반제품명',
+    header: '자재명',
     name: 'matName'
     },   
     {
-    header: 'LOT번호',
+    header: '발주번호',
     name: 'matOrdernum'
     },
     {
-    header: '합격량',
-    name: 'qipCodeListMat'
+    header: '자재내역번호',
+    name: 'qipCodeListMat',
+    hidden: true
+    },
+    {
+    header: '총합격량',
+    name: 'testTnumPass'
     }
     ]
     });
 
     //이동버튼
    document.getElementById('movebtn').addEventListener('click',function(){
-    	let checked = testsemigrid.getCheckedRows();
+    	let checked = testmetgrid.getCheckedRows();
     	checked.forEach((row)=>{
     		row.matWrhqy = row.testTnumPass;
     	})
     	console.log(checked)
-    	semiwarehousinggrid.appendRows(checked);
-    	testsemigrid.removeCheckedRows(false);
+    	warehousinggrid.appendRows(checked);
+    	testmetgrid.removeCheckedRows(false);
 	   
    })
     
    
     
-    var semiwarehousinggrid = new tui.Grid({
-        el: document.getElementById('semiwarehousinggrid'),
+    var warehousinggrid = new tui.Grid({
+        el: document.getElementById('warehousinggrid'),
         scrollX: false,
-        scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 200,
         columns: [{
          header: 'LOT번호',
          name: 'matLot'
@@ -169,10 +174,10 @@
     
  //제거버튼
    document.getElementById('deletebtn').addEventListener('click', function(){
-	   let checked1 = semiwarehousinggrid.getCheckedRows();
+	   let checked1 = warehousinggrid.getCheckedRows();
 	   console.log(checked1)
-	   testsemigrid.appendRows(checked1);
-	   semiwarehousinggrid.removeCheckedRows(true);
+	   testmetgrid.appendRows(checked1);
+	   warehousinggrid.removeCheckedRows(true);
    })
   
    //입고저장버튼
@@ -182,7 +187,7 @@
 	   $.ajax({
 		   url:"/mat/warehousingregister",
 		   method: "POST",
-		   data: JSON.stringify({list:semiwarehousinggrid.getCheckedRows()}),
+		   data: JSON.stringify(warehousinggrid.getCheckedRows()),
 		   beforeSend: function (xhr){
 			   xhr.setRequestHeader(header, token);
 		   },
@@ -201,8 +206,8 @@
 	  		dataType : "JSON",
 	  		success : function(result){
 	  			console.log(result);
-	  			semiwarehousinggrid.resetData(result);
-	  			semiwarehousinggrid.refreshLayout();
+	  			warehousinggrid.resetData(result);
+	  			warehousinggrid.refreshLayout();
 	  		}
 	  	});
 

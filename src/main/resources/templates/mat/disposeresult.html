@@ -1,0 +1,168 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/template}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>폐기자재조회</title>
+
+  <style>
+    .ordersearch {
+      border: 1px solid black;
+      padding: 20px;
+    }
+    .text1 {
+      margin: 15px;
+      padding: 0 5px 0 ;
+    }
+    
+    #dlivy{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+	#subtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+    #grid{
+      margin: 20px 0 0px;
+    }
+    #resul{
+    float:right;
+    margin: 10px 0;
+    }
+
+  </style>
+  <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+  <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+</head>
+
+
+<body>
+  <div layout:fragment="title">
+    <h3>폐기자재조회</h3>
+  </div>
+  
+  <div layout:fragment="content">
+    <form id="searchform">
+    <div class="ordersearch">
+      <label>LOT번호</label>
+      <input class="text1" type="text" id="lotnum" name="matLot">  
+     <label>검사일자</label>
+     <input class="text1" type="date" name="matChkeepdate" id="matChkeepdate"> ~ 
+     <input class="text1" type="date" id="matChkeepdate1" name="matChkeepdate1">
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+    </div>
+	</form>
+	<div id="grid"></div>
+		<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul">결과반영</button>
+	
+	
+    <script>
+    const token = $('meta[name="_csrf"]').attr("content");
+    const header = $('meta[name="_csrf_header"]').attr("content");
+
+    //lot리스트
+    var grid = new tui.Grid({
+        el: document.getElementById('grid'),
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['checkbox'],
+        columns: [{
+        header: 'LOT번호',
+        name: 'matLot'
+        },
+        {
+        header: '폐기처리번호',
+        name: 'matDsnum',
+        hidden: true
+        },
+        {
+        header: '자재코드',
+        name: 'matCode'
+        },
+        {
+        header: '자재명',
+        name: 'matName'
+        },
+        {
+        header: '검사량',
+        name: 'matTestQnt'
+        },
+        {
+        header: '합격량',
+        name: 'matPassQnt'
+        },
+        {
+        header: '폐기량',
+        name: 'matStaQnt'
+        },
+        {
+        header: '변경보관기한',
+        name: 'matChkeepdate'
+        }
+        ]
+        });
+    
+    
+    $.ajax({
+        url : "/mat/disposeresultlist",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	console.log(result);
+        	grid.resetData(result);
+        	grid.refreshLayout();
+        }
+      });
+	
+    
+  
+
+    
+   //조회버튼
+   $("#submitbtn").on('click',function(){
+			   
+	   $.ajax({
+		 url: "/mat/disposeresultsearchlist",
+		 method: "GET",
+		 data :$('#searchform').serialize(),
+		 success : function(result){
+			 console.log(result)
+			 grid.resetData(result);
+			 grid.refreshLayout();
+		 },
+		 error : function(reject){
+			 console.log(reject)
+		 }
+	   });
+   })
+   
+   //결과반영버튼
+   $("#resul").on('click', function(){
+	   let checked = grid.getCheckedRows();
+	   console.log(checked)
+	   window.open('/mat/matadjust')
+   })
+   
+ 
+    </script>
+
+    </div>
+    
+    </body>
+    
+    </html>

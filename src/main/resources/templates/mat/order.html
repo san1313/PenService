@@ -285,9 +285,29 @@
       
     
     $(function(){  
-    $('#matmodal').on('shown.bs.modal', function(e){
-    	modal_grid.refreshLayout();
-    });
+	    $('#matmodal').on('shown.bs.modal', function(e){
+	    	modal_grid.refreshLayout();
+	    });
+	    
+	    
+    	$('#accmodal').on('shown.bs.modal', function(e){
+       		//거래처모달
+	
+	        $.ajax({
+	     		url : "/mat/acclist",
+	     		method : "GET",
+	     		data : {matName : $('#matmodalmatname').val() },
+	     		dataType : "JSON",
+	     		success : function(result){
+	     			console.log(result);
+	     			accmodal_grid.resetData(result);
+	     			accmodal_grid.refreshLayout();
+	     		}
+	     	});
+    		
+    	})
+    
+    
     })
     
     
@@ -348,19 +368,6 @@
         });
     })	
 
-    
-    //거래처모달
-    $.ajax({
- 		url : "/mat/acclist",
- 		method : "GET",
- 		dataType : "JSON",
- 		success : function(result){
- 			console.log(result);
- 			accmodal_grid.resetData(result);
- 			accmodal_grid.refreshLayout();
- 		}
- 	});
-    
     
 
     

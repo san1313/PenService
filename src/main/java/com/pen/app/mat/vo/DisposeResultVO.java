@@ -1,7 +1,5 @@
 package com.pen.app.mat.vo;
 
-import java.util.Date;
-
 import lombok.Data;
 
 @Data
@@ -13,13 +11,15 @@ public class DisposeResultVO {//폐기처리결과
 	int matPassQnt; //합격량
 	int matStaQnt; //폐기량
 	int qipNumListExp;//보관초과검사내역번호
-	String testOrderCode2; //검사순서코드
+
 	
-	
+	int matDsnum;//폐기처리번호
 	String matName;
 	int matQnt; //재고량
-	Date matCstdy; //보관기한
+	String matChkeepdate; //변경보관기한
+	String matChkeepdate1; //변경보관기한
 	String matCode;
 	String matOrdernum;
 	String matState; //상태
+	String matKeepdate; //보관기한
 }

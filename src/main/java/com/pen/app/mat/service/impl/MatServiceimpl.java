@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
 import com.pen.app.mat.vo.AdjustVO;
+import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
@@ -42,9 +43,9 @@ public class MatServiceimpl implements MatService {
 	}
 
 	@Override
-	public List<OrderVO> getacclist() {
+	public List<OrderVO> getacclist(String matName) {
 		// 모달거래처목록
-		return matmapper.getacclist();
+		return matmapper.getacclist(matName);
 	}
 
 	@Override
@@ -112,6 +113,19 @@ public class MatServiceimpl implements MatService {
 		// 자재입고리스트 당일건
 		return matmapper.gettodaywarehousinglist();
 	}
+	
+	@Override
+	public List<WarehousingVO> getsemiwarehousingtestlist() {
+		// 반제품입고 검사내역리스트
+		return matmapper.getsemiwarehousingtestlist();
+	}
+	
+	@Override
+	public void getsemiwarehousingregister(List<WarehousingVO> list) {
+		//반제품 입고등록
+		matmapper.getsemiwarehousingregister(list);
+	}
+
 
 	@Override
 	public List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo) {
@@ -124,6 +138,13 @@ public class MatServiceimpl implements MatService {
 		// 자재입고조회
 		return matmapper.getwarehousingmatlistajax();
 	}
+	
+	@Override
+	public List<WarehousingVO> getsemiwarehousinglistajax() {
+		// 반제품입고리스트
+		return matmapper.getsemiwarehousinglistajax();
+	}
+
 
 	@Override
 	public List<InventoryVO> getinventorysearch(String keyword) {
@@ -196,10 +217,17 @@ public class MatServiceimpl implements MatService {
 		return matmapper.getmatadjustsearchlist(vo);
 	}
 
+	@Override
+	public List<DisposeResultVO> getdisposeresultlist() {
+		// 폐기자재조회리스트
+		return matmapper.getdisposeresultlist();
+	}
 
-	/*
-	 * @Override public List<WarehousingVO> getsemiwarehousinglist() { // 반제품
-	 * 검사내역리스트 return matmapper.getsemiwarehousinglist(); }
-	 */
+	@Override
+	public List<DisposeResultVO> getdisposeresultsearchlist(DisposeResultVO vo) {
+		// 폐기자재조회다중검색
+		return matmapper.getdisposeresultsearchlist(vo);
+	}
+
 
 }

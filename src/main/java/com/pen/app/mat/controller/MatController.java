@@ -12,6 +12,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 
 import com.pen.app.mat.service.MatService;
 import com.pen.app.mat.vo.AdjustVO;
+import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
@@ -51,10 +52,10 @@ public class MatController {
 	}
 	
 	//거래처모달창리스트
+	@RequestMapping("/acclist")
 	@ResponseBody
-	@GetMapping("/acclist")
-	public List<OrderVO> acclist(){
-		List<OrderVO> list = matservice.getacclist();
+	public List<OrderVO> acclist(@RequestParam(required = false) String matName){
+		List<OrderVO> list = matservice.getacclist(matName);
 		return list;
 	}
 	
@@ -159,22 +160,36 @@ public class MatController {
 		return  matservice.getwarehousingsearchajax(WarehousingVO);
 	 }
 	 
+	 //반제품입고관리
+	 @GetMapping("/semiwarehousing")
+	 public void semiwarehousing() {
+		 
+	 }	 
 	 
 	 //반제품 검사내역리스트
-	 /*@RequestMapping("/semiwarehousinglist")
+	 @RequestMapping("/semiwarehousingtestlist")
 	 @ResponseBody
-	 public List<WarehousingVO> semiwarehousinglist(){
-		List<WarehousingVO> list = matmapper.getsemiwarehousinglist();
+	 public List<WarehousingVO> semiwarehousingtestlist(){
+		List<WarehousingVO> list = matservice.getsemiwarehousingtestlist();
 		return list;
-	 }*/
+	 }
+	 
+	 //반제품 입고등록
+	 @RequestMapping("/semiwarehousingregister")
+	 @ResponseBody
+	 public WarehousingVO semiwarehousingregister(@RequestBody List<WarehousingVO> list) {
+		 System.err.println(list);
+		 
+		 matservice.getsemiwarehousingregister(list);
+		 return null;
+	 }
 	 
 
 	 //자재 입고조회
 	 @GetMapping("/warehousinglist")
 	 public void warehousingmatlist() {
 		 
-	 }
-	 
+	 } 
 	 
 	 //자재입고조회리스트
 	 @GetMapping("/warehousingmatlistajax")
@@ -207,7 +222,20 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 	 
+	 //반제품 입고 조회
+	 @GetMapping("/semiwarehousinglist")
+	 public void semiwarehousinglist() {
+		 
+	 }
+	 
+	 //반제품입고조회리스트
+	 @GetMapping("/semiwarehousinglistajax")
+	 @ResponseBody
+	 public List<WarehousingVO> semiwarehousinglistajax(){
+		 List<WarehousingVO> list = matservice.getsemiwarehousinglistajax();
+		 return list;
+	 }
+	 
 	 //재고조정관리
 	 @GetMapping("/matadjust")
 	 public void matadjust(){
@@ -302,6 +330,29 @@ public class MatController {
 		 System.err.println(dlivyVO);
 		 
 		 return matservice.getmatdlivysearchlist(dlivyVO);
+	 }
+	 
+	 //폐기자재조회
+	 @GetMapping("/disposeresult")
+	 public void disposeresult() {
+		 
+	 }
+	 
+	 //폐기자재조회리스트
+	 @GetMapping("/disposeresultlist")
+	 @ResponseBody
+	 public List<DisposeResultVO> disposeresultlist(){
+		 List<DisposeResultVO> list = matservice.getdisposeresultlist();
+		 return list;
+	 }
+	 
+	 //폐기자재조회 다중검색
+	 @GetMapping("/disposeresultsearchlist")
+	 @ResponseBody
+	 public List<DisposeResultVO> disposeresultsearchlist(DisposeResultVO disposeResultVO){
+		 System.err.println(disposeResultVO);
+		 
+		 return matservice.getdisposeresultsearchlist(disposeResultVO);		 
 	 }
 	 
 }
