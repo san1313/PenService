@@ -40,11 +40,10 @@
 			separator=";" open="DECLARE BEGIN" close="; END;">
 			UPDATE COM_CODE_ACCOUNT
 			SET
-			ACC_NAME = #{vo.accName},
-			ACC_TYPE = #{vo.accType},
-			ACC_ADDRESS =
-			#{vo.accAddress},
-			ACC_TEL = #{vo.accTel}
+				ACC_NAME = #{vo.accName},
+				ACC_TYPE = #{vo.accType},
+				ACC_ADDRESS = #{vo.accAddress},
+				ACC_TEL = #{vo.accTel}
 			WHERE ACC_CODE = #{vo.accCode}
 		</foreach>
 	</update>
@@ -54,11 +53,11 @@
 		<foreach collection="list" item="vo" open="INSERT ALL"
 			close="SELECT * FROM DUAL" separator=" ">
 			INTO COM_CODE_ACCOUNT VALUES (
-			GET_ACC_SEQ,
-			#{vo.accName},
-			#{vo.accType},
-			#{vo.accAddress},
-			#{vo.accTel}
+				GET_ACC_SEQ,
+				#{vo.accName},
+				#{vo.accType},
+				#{vo.accAddress},
+				#{vo.accTel}
 			)
 		</foreach>
 	</insert>
@@ -74,31 +73,111 @@
 	<!-- 거래처별 항목 리스트 조회 -->
 	<select id="getItemListWithAccCode" resultType="ItemVO">
 		SELECT *
-		FROM (SELECT ACC_CODE, A.PROD_CODE AS ITEM_CODE,A.PROD_NAME AS
-		ITEM_NAME,PROD_STD AS ITEM_STD,PROD_UNIT AS ITEM_UNIT FROM (SELECT *
-		FROM BNS_CONTRACT JOIN BNS_CONTRACT_DETAIL USING(CONT_CODE)) A JOIN
-		COM_CODE_PROD B ON (A.PROD_CODE = B.PROD_CODE)
-		UNION
-		SELECT ACC_CODE, A.PROD_CODE AS ITEM_CODE,A.PROD_NAME AS ITEM_NAME,PROD_STD
-		AS ITEM_STD,PROD_UNIT AS ITEM_UNIT FROM (SELECT * FROM BNS_ORDER JOIN
-		BNS_ORDER_DETAIL USING(ORD_CODE)) A JOIN COM_CODE_PROD B ON
-		(A.PROD_CODE = B.PROD_CODE)
-		UNION
-		SELECT ACC_CODE, A.MAT_CODE AS ITEM_CODE,A.MAT_NAME AS ITEM_NAME, MAT_STD AS
-		ITEM_STD,MAT_UNIT AS ITEM_UNIT FROM (SELECT * FROM MAT_ORDER JOIN
-		MAT_ORDER_HEADER USING(MAT_ORDERNUM)) A JOIN COM_CODE_MAT B ON
-		(A.MAT_CODE = B.MAT_CODE))
-		WHERE ACC_CODE = #{accCode} ORDER BY ITEM_CODE
+		FROM ( SELECT acc_code,
+		              acc_item,
+		              mat_code AS item_code,
+		              mat_name AS item_name,
+		              mat_std  AS item_std,
+		              mat_unit AS item_unit,
+		              mat_use AS item_use,
+		              com_acc_item_num
+		       FROM com_account_item a
+		       JOIN com_code_mat b ON ( a.acc_item = b.mat_code )
+		       UNION
+		       SELECT acc_code,
+		              acc_item,
+		              prod_code,
+		              prod_name,
+		              prod_std,
+		              prod_unit,
+		              prod_use,
+		              com_acc_item_num
+		       FROM com_account_item a
+		       JOIN com_code_prod b ON ( a.acc_item = b.prod_code )
+		)
+		WHERE acc_code = #{accCode}
+		ORDER BY 3
 	</select>
 
 	<!-- 거래처별, 거래처구분별 리스트 조회 -->
 	<select id="searchAccList" resultType="AccountVO">
 		<if test="accType == '전체'">
-			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%' ORDER BY ACC_CODE
+			SELECT *
+			FROM com_code_account
+			WHERE acc_name LIKE '%'|| #{accName}|| '%'
+			ORDER BY acc_code
 		</if>
 		<if test="accType != '전체'">
-			SELECT * FROM COM_CODE_ACCOUNT WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
+			SELECT *
+			FROM COM_CODE_ACCOUNT
+			WHERE ACC_NAME LIKE '%'|| #{accName} ||'%'
 			AND ACC_TYPE = #{accType} ORDER BY ACC_CODE
 		</if>
 	</select>
+	
+	<!-- 거래처 리스트 가져오기(동적쿼리로) -->
+	<select id="getAccList" resultType="AccountVO">
+		SELECT acc_code,
+		       acc_name,
+		       acc_type
+		FROM com_code_account
+		<if test='accName != null and accName != ""'>
+		WHERE ACC_NAME LIKE '%'||#{accName}||'%'
+		</if>
+		ORDER BY 1
+	</select>
+	
+	<!-- 모든 자재, 완제품 리스트 조회 -->
+	<select id="getAllAccItemList" resultType="ItemVO">
+		SELECT * FROM(
+			<choose>
+			<when test='accType == "자재 구매"'>
+			SELECT MAT_CODE AS ITEM_CODE, MAT_NAME AS ITEM_NAME, MAT_STD AS ITEM_STD, MAT_UNIT AS ITEM_UNIT, MAT_USE AS ITEM_USE
+			FROM COM_CODE_MAT
+			</when>
+			<otherwise>
+			SELECT PROD_CODE AS ITEM_CODE, PROD_NAME AS ITEM_NAME, PROD_STD AS ITEM_STD, PROD_UNIT AS ITEM_UNIT, PROD_USE AS ITEM_USE
+			FROM COM_CODE_PROD
+			</otherwise>		
+			</choose>
+			)
+			<if test='itemName != null and itemName != ""'>
+			WHERE item_name LIKE '%'||#{itemName}||'%'
+			</if>
+			ORDER BY 1
+	</select>
+	
+		<!-- 거래 품목 정보수정 -->
+	<update id="modifyAccItemList">
+		<foreach collection="list" item="vo" index="index"
+			separator=";" open="DECLARE BEGIN" close="; END;">
+			UPDATE COM_ACCOUNT_ITEM
+			SET
+			ACC_CODE = #{vo.accCode},
+			ACC_ITEM = #{vo.itemCode}
+			WHERE
+			COM_ACC_ITEM_NUM = #{vo.comAccItemNum}
+		</foreach>
+	</update>
+
+	<!-- 거래 품목 추가 -->
+	<insert id="insertAccItemList">
+		<foreach collection="list" item="vo" open="INSERT ALL"
+			close="SELECT * FROM DUAL" separator=" ">
+			INTO COM_ACCOUNT_ITEM VALUES (
+			GET_ACC_ITEM_SEQ(),
+			#{vo.accCode},
+			#{vo.itemCode}
+			)
+		</foreach>
+	</insert>
+
+	<!-- 거래 품목 삭제 -->
+	<delete id="deleteAccItemList">
+		DELETE FROM COM_ACCOUNT_ITEM WHERE
+		<foreach collection="list" item="vo" separator="OR">
+			COM_ACC_ITEM_NUM =
+			#{vo.comAccItemNum}
+		</foreach>
+	</delete>
 </mapper>

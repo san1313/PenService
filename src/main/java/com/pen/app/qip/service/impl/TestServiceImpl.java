@@ -39,7 +39,7 @@ public class TestServiceImpl implements TestService{
 			break;
 		case "item":
 			break;
-		case "exp":
+		case "expired":
 			mapper.insertExpTest(dto.getResult(), dto.getDetails());
 			break;
 		}

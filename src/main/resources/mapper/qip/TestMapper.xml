@@ -60,7 +60,50 @@
 			#{vo.testCode},
 			#{vo.testNumDef}
 			)
-			SELECT * FROM DUAL
 		</foreach>
+		SELECT * FROM DUAL
+	</insert>
+	
+	<insert id="insertExpTest">
+	DECLARE BEGIN
+		INSERT ALL
+		INTO QIP_LIST_EXPIRED VALUES(
+		'TEST-EXP-'||LPAD(TEST_EXP_SEQ.NEXTVAL,6,'0'),
+		#{rVO.targetCode},
+		#{rVO.testDate},
+		#{rVO.empNum},
+		#{rVO.testNum},
+		#{rVO.testTnumDef},
+		#{rVO.testTnumPass}
+		)
+		
+		INTO MAT_DSUSE VALUES(
+		MAT_DSUSE_SEQ.NEXTVAL,
+		'TEST-EXP-'||LPAD(TEST_EXP_SEQ.NEXTVAL,6,'0'),
+		#{rVO.targetCode},
+		#{rVO.testNum},
+		#{rVO.testTnumDef},
+		#{rVO.testTnumPass},
+		#{rVO.testExpDate}
+		)
+		<foreach collection="list" item="vo" separator=" ">
+			INTO
+			QIP_LIST_DETAIL VALUES (
+			GET_TEST_DETAIL_SEQ(),
+			'TEST-EXP-'||LPAD(TEST_MAT_SEQ.NEXTVAL,6,'0'),
+			#{vo.testCode},
+			#{vo.testNumDef}
+			)
+		</foreach>
+		SELECT * FROM DUAL
+		;
+		
+		UPDATE MAT_INVNTRY
+		SET
+		MAT_STATE = '검사완료',
+		MAT_KEEPDATE = #{rVO.testExpDate},
+		WHERE MAT_LOT = #{rVO.targetCode};
+		
+	END; 
 	</insert>
 </mapper>

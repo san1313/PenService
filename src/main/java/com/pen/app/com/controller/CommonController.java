@@ -440,7 +440,40 @@ public class CommonController {
 	public List<AccountVO> searchAccAjax(String accName, String accType) {
 		return accService.searchAccList(accName, accType);
 	}
-
+	
+	// 거래 품목 관리 페이지 -------------------------------------------------------
+	@GetMapping("/admin/accountItemManage")
+	public String accountItemManage() {
+		return "/com/accountItemManage";
+	}
+	
+	// 거래처 목록가져오기
+	@GetMapping("/admin/getAccList")
+	@ResponseBody
+	public ToastUiResponseDTO getAccList(String accName) {
+		return new ToastUiResponseDTO(accService.getAccList(accName));
+	}
+	
+	// 거래처별 거래품목 가져오기
+	@GetMapping("/admin/getAccItemList")
+	@ResponseBody
+	public ToastUiResponseDTO getAccItemList(String accCode) {
+		return new ToastUiResponseDTO(accService.getItemListWithAccCode(accCode));
+	}
+	
+	// 자재,완제품 리스트 가져오기
+	@GetMapping("/admin/getAllAccItemList")
+	@ResponseBody
+	public ToastUiResponseDTO getAllAccItemList(String itemName, String accType) {
+		return new ToastUiResponseDTO(accService.getAllAccItemList(itemName, accType));
+	}
+	
+	// 거래처별 거래품목 저장
+	@PostMapping("/admin/accItemModify")
+	@ResponseBody
+	public ToastUiResponseDTO accItemModify(@RequestBody Map<String, List<ItemVO>> map) {
+		return accService.modifyAccItemList(map);
+	}
 	// 공정 관리 페이지---------------------------------------------------
 	@GetMapping("/admin/processManage")
 	public String processManage() {

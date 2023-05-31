@@ -10,4 +10,6 @@ public class ItemVO {
 	String itemStd;
 	String itemUnit;
 	String itemType;
+	String itemUse;
+	int comAccItemNum;
 }

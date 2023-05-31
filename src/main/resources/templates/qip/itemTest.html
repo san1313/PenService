@@ -666,7 +666,15 @@
 
           // 총불량량 초과시 색칠
           grid.on("afterChange", (e) => {
-            if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
+            let target;
+            if (radioVal == "mat") {
+              target = $("#matOrderQy").val();
+            } else if (radioVal == "item") {
+              target = $("#itemNum").val();
+            } else {
+              target = $("#expNum").val();
+            }
+            if (grid.getSummaryValues("testNumDef").sum > target) {
               grid.addColumnClassName("testNumDef", "over");
             } else {
               grid.removeColumnClassName("testNumDef", "over");
@@ -776,7 +784,7 @@
                 alert("불량량이 숫자가 아니거나 비어있습니다.");
                 return;
               }
-              if (grid.getSummaryValues("testNumDef").sum > $("#matOrderQy").val()) {
+              if (grid.getSummaryValues("testNumDef").sum > testNum) {
                 alert("총 불량량이 수량보다 큽니다.");
                 return;
               }
@@ -794,6 +802,7 @@
                     testNum: testNum,
                     testTnumDef: grid.getSummaryValues("testNumDef").sum,
                     testTnumPass: testNum - grid.getSummaryValues("testNumDef").sum,
+                    testExpDate: $("#expDate").val(),
                   },
                   details: grid.getData(),
                   type: radioVal,

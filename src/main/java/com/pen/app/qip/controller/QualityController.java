@@ -137,7 +137,6 @@ public class QualityController {
 	@ResponseBody
 	boolean testInsertAjax(@RequestBody ItemTestDTO obj) {
 		System.err.println(obj);
-		return false;
-//		return testService.insertTest(obj);
+		return testService.insertTest(obj);
 	}
 }

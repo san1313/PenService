@@ -10,4 +10,5 @@ public class TestResultVO {
 	int testNum;
 	int testTnumDef;
 	int testTnumPass;
+	String testExpDate;
 }

@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html
+  xmlns:th="http://www.thymeleaf.org"
+  xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+  layout:decorate="~{layout/template}"
+>
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    <title>Pen Service</title>
+    <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+    <!-- 그리드 -->
+    <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+    <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+    <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+    <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <style>
+      #accGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #accGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #accGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+      #innerGrid .tui-grid-cell-current-row > td {
+        background-color: #00a9ff33;
+      }
+      #innerGrid .tui-grid-body-container {
+        cursor: pointer;
+      }
+      #innerGrid .tui-grid-layer-focus-border {
+        display: none;
+      }
+      tr .modified {
+        background-color: rgba(255, 255, 0, 0.3);
+      }
+      #itemGrid td[data-column-name="itemCode"] {
+        background-color: transparent;
+      }
+    </style>
+  </head>
+  <body>
+    <div layout:fragment="title">거래 품목 관리</div>
+    <!-- 메인컨텐츠 -->
+    <div layout:fragment="content">
+      <div class="row justify-content-center" style="margin-bottom: 10px">
+        <div class="row col-4">
+          <div class="col-3">
+            <label class="col-form-label" for="accName">거래처명</label>
+          </div>
+          <div class="col-7">
+            <input type="text" class="form-control" id="accName" name="accName" placeholder="빈 칸이면 전체 조회" />
+          </div>
+          <div class="col-2">
+            <button
+              class="fa-solid fa-magnifying-glass btn btn-primary"
+              id="accSearchBtn"
+              style="height: 38px; float: left"
+            ></button>
+          </div>
+        </div>
+        <div class="row col-8 justify-content-end">
+          <div class="col-auto">
+            <button class="btn btn-primary" id="add" style="height: 38px">추가</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-danger" id="delete" style="height: 38px">삭제</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="reset" style="height: 38px">초기화</button>
+          </div>
+          <div class="col-auto">
+            <button class="btn btn-primary" id="save" style="height: 38px">저장</button>
+          </div>
+        </div>
+      </div>
+      <div class="row justify-content-center">
+        <div class="row col-4">
+          <div class="col" id="accGrid"></div>
+        </div>
+        <div class="row col-8">
+          <div class="col-1"></div>
+          <div class="col-11" id="itemGrid"></div>
+        </div>
+      </div>
+      <div class="modal fade itemModal" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">품목코드</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row col-6">
+                <div class="col-3">
+                  <label class="col-form-label" for="itemName">품목명 :</label>
+                </div>
+                <div class="col-7">
+                  <input
+                    type="text"
+                    class="form-control"
+                    id="itemName"
+                    name="itemName"
+                    placeholder="빈 칸이면 전체 조회"
+                  />
+                </div>
+                <div class="col-2">
+                  <button
+                    class="fa-solid fa-magnifying-glass btn btn-primary"
+                    id="itemSearchBtn"
+                    style="height: 38px; float: left"
+                  ></button>
+                </div>
+              </div>
+              <hr />
+              <div id="innerGrid"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+      <script src="/plugins/jquery/jquery.min.js"></script>
+      <script>
+        $(function () {
+          const token = $('meta[name="_csrf"]').attr("content");
+          const header = $('meta[name="_csrf_header"]').attr("content");
+
+          // 메인그리드시작;
+
+          //그리드폼 시작
+          const accGrid = new tui.Grid({
+            el: document.getElementById("accGrid"),
+            contextMenu: null,
+            data: {
+              api: {
+                readData: {
+                  url: "/admin/getAccList",
+                  method: "GET",
+                },
+              },
+            },
+            bodyHeight: 700,
+            scrollX: false,
+            columns: [
+              {
+                header: "거래처코드",
+                name: "accCode",
+                align: "center",
+              },
+              {
+                header: "거래처명",
+                name: "accName",
+                align: "center",
+              },
+              {
+                header: "거래처 구분",
+                name: "accType",
+                align: "center",
+              },
+            ],
+          });
+          const itemGrid = new tui.Grid({
+            el: document.getElementById("itemGrid"),
+            contextMenu: null,
+            bodyHeight: 700,
+            scrollX: false,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/admin/getAccItemList",
+                  method: "GET",
+                },
+                modifyData: {
+                  url: "/admin/accItemModify",
+                  method: "POST",
+                  withCredentials: true,
+                },
+              },
+              initialRequest: false,
+            },
+            rowHeaders: [{ type: "checkbox" }],
+            columns: [
+              {
+                header: "품목코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
+                header: "품목명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "규격",
+                name: "itemStd",
+                align: "center",
+                width: 450,
+              },
+              {
+                header: "단위",
+                name: "itemUnit",
+              },
+              {
+                header: "사용여부",
+                name: "itemUse",
+              },
+            ],
+          });
+          const innerGrid = new tui.Grid({
+            el: document.getElementById("innerGrid"),
+            contextMenu: null,
+            bodyHeight: 450,
+            scrollX: false,
+            data: {
+              api: {
+                readData: {
+                  url: "/admin/getAllAccItemList",
+                  method: "GET",
+                },
+              },
+              initialRequest: false,
+            },
+            columns: [
+              {
+                header: "번호",
+                name: "comAccItemNum",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "품목코드",
+                name: "itemCode",
+                align: "center",
+              },
+              {
+                header: "품목명",
+                name: "itemName",
+                align: "center",
+              },
+              {
+                header: "규격",
+                name: "itemStd",
+                align: "center",
+                width: 350,
+              },
+              {
+                header: "단위",
+                name: "itemUnit",
+              },
+              {
+                header: "사용여부",
+                name: "itemUse",
+              },
+            ],
+          });
+          //그리드 폼 끝
+          //그리드 세팅 시작
+          //서버에 연결전 토큰값 담는 method
+          itemGrid.on("beforeRequest", function (obj) {
+            obj.xhr.setRequestHeader(header, token);
+          });
+
+          //데이터 저장 여부 alert
+          itemGrid.on("response", (e) => {
+            let result = JSON.parse(e.xhr.response).data.contents;
+            if (result == "Success") {
+              itemGrid.setRequestParams({ accCode: accCode });
+              itemGrid.readData();
+              alert("데이터가 저장되었습니다.");
+            } else if (result == "Fail") {
+              alert("데이터 저장중 에러가 발생했습니다.");
+            }
+          });
+          tui.Grid.applyTheme("default", {
+            cell: {
+              selectedHeader: { background: "none" }, // 드래그했을때 헤더도 드래그 x
+              disabled: { background: "#f4f4f4", text: "#333" }, // 비활성컬럼 색깔 수정
+            },
+          });
+          tui.Grid.setLanguage("ko", {
+            display: {
+              noData: "데이터가 존재하지 않습니다.",
+            },
+            net: {
+              confirmModify: "데이터를 저장하시겠습니까?",
+            },
+          });
+          //수정된 행 색칠 시작
+          itemGrid.on("afterChange", (e) => {
+            let c = e.changes[0];
+            itemGrid.addCellClassName(c.rowKey, c.columnName, "modified");
+          });
+          //수정된 행 색칠 끝
+
+          //그리드 더블 클릭시 모달
+          let targetRowKey;
+          let targetNum;
+          itemGrid.on("dblclick", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+            targetRowKey = e.rowKey;
+            targetNum = itemGrid.getRow(e.rowKey).comAccItemNum;
+            if (e.columnName == "itemCode") {
+              innerGrid.setRequestParams({ accType: accType });
+              innerGrid.readData();
+              $(".itemModal").modal("show");
+            }
+          });
+
+          //그리드 세팅 끝
+
+          //이름으로 조회 기능 시작
+          $("#accSearchBtn").click(() => {
+            let accName = $("#accName");
+            if (accName.val() != "") {
+              accGrid.setRequestParams({ accName: accName.val() });
+              accGrid.readData();
+              accGrid.setRequestParams();
+              // 코드명 input이 비어있으면 모두 조회
+            } else {
+              accGrid.readData();
+            }
+            accName.val("");
+          });
+          // 이름으로 조회기능 끝
+
+          //거래처 그리드 클릭시 거래처별 검사 조회
+          let accCode;
+          let accType;
+          accGrid.on("click", (e) => {
+            if (e.rowKey === undefined) {
+              return;
+            }
+            let tmp = itemGrid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+            accCode = accGrid.getRow(e.rowKey).accCode;
+            accType = accGrid.getRow(e.rowKey).accType;
+            if (noChange) {
+              itemGrid.setRequestParams({ accCode: accCode });
+              itemGrid.readData();
+            } else {
+              if (confirm("저장되지않은 데이터가 소실됩니다. 조회하시겠습니까?")) {
+                itemGrid.setRequestParams({ accCode: accCode });
+                itemGrid.readData();
+              }
+            }
+          });
+
+          //저장기능 시작
+          $("#save").click(() => {
+            if (!accCode) {
+              // 제품을 선택 안했을시
+              alert("거래처를 먼저 선택해주십시오.");
+            } else {
+              let mod = itemGrid.getModifiedRows();
+              let cre = mod.createdRows;
+              let check = false;
+              cre.forEach((ele) => {
+                if (!ele.itemCode) {
+                  // 빈칸 체크
+                  alert("품목코드를 입력해주십시오.");
+                  check = true;
+                }
+              });
+              if (check) {
+                // 빈칸이 있으면 저장x
+                return;
+              }
+              itemGrid.finishEditing();
+              itemGrid.setRequestParams();
+              itemGrid.request("modifyData");
+              itemGrid.setRequestParams(accCode);
+            }
+          });
+
+          //저장기능 끝
+
+          //추가 버튼 시작
+          $("#add").click((e) => {
+            if (!accCode) {
+              alert("거래처를 먼저 선택해주십시오.");
+            } else {
+              itemGrid.appendRow({}, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+              let rowKey = itemGrid.getFocusedCell().rowKey;
+              itemGrid.addRowClassName(rowKey, "modified");
+            }
+          });
+          //추가 버튼 끝
+
+          //삭제 버튼 시작
+          $("#delete").click((e) => {
+            if (!accCode) {
+              alert("거래처를 먼저 선택해주십시오.");
+            } else {
+              if (itemGrid.getCheckedRowKeys().length == 0) {
+                alert("삭제할 행을 체크해주십시오.");
+              } else {
+                itemGrid.removeCheckedRows(true);
+              }
+            }
+          });
+          //삭제 버튼 끝
+
+          //초기화 버튼 시작
+          $("#reset").click((e) => {
+            if (!accCode) {
+              alert("거래처를 먼저 선택해주십시오.");
+            } else {
+              if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
+                itemGrid.restore();
+              }
+            }
+          });
+          //초기화 버튼 끝
+
+          //모달 그리드 새로고침 시작
+          $(".itemModal").on("shown.bs.modal", (e) => {
+            innerGrid.refreshLayout();
+          });
+          //모달 그리드 새로고침 끝
+
+          //공정 조회 기능 grid.readData
+          $("#itemSearchBtn").click(() => {
+            let itemName = $("#itemName");
+            // input이 빈칸이 아니면
+            if (itemName.val() != "") {
+              innerGrid.setRequestParams({ itemName: itemName.val(), accType: accType });
+              innerGrid.readData();
+              // input이 빈칸이면
+            } else {
+              innerGrid.setRequestParams({ accType: accType });
+              innerGrid.readData();
+            }
+            itemName.val("");
+          });
+          //공정 조회기능 끝
+
+          //모달 그리드 클릭이벤트 시작
+          innerGrid.on("click", (e) => {
+            let row = innerGrid.getRow(e.rowKey);
+            delete row.rowKey;
+            row.accCode = accCode;
+            row.comAccItemNum = targetNum;
+            itemGrid.setRow(targetRowKey, row);
+            itemGrid.addRowClassName(targetRowKey, "modified");
+            $(".itemModal").modal("hide");
+          });
+          //모달 그리드 클릭이벤트 끝
+        });
+      </script>
+    </div>
+    <!-- 메인컨텐츠 끝 -->
+  </body>
+</html>

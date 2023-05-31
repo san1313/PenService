@@ -125,15 +125,15 @@
                     </a>
                   </li>
                   <li class="nav-item">
-                    <a href="/admin/itemManage" class="nav-link">
-                      <i class="far fa-circle nav-icon"></i>
-                      <p>품목 정보 관리</p>
-                    </a>
-                  </li>
-                  <li class="nav-item">
                     <a href="/admin/comCodeManage" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>공통 코드 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/admin/itemManage" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>품목 정보 관리</p>
                     </a>
                   </li>
                   <li class="nav-item">
@@ -142,6 +142,13 @@
                       <p>거래처 관리</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/admin/accountItemManage" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>거래 품목 관리</p>
+                    </a>
+                  </li>
+                  
                   <li class="nav-item">
                     <a href="/admin/processManage" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
@@ -446,6 +453,9 @@
             break;
           case "bomManage":
             $("#comNav").find("a[href='/admin/bomManage']").addClass("active");
+            break;
+          case "accountItemManage":
+            $("#comNav").find("a[href='/admin/accountItemManage']").addClass("active");
             break;
         }
       } else if (path.startsWith("/bns")) {
