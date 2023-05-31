@@ -17,6 +17,7 @@ public class MakVO{
 	String indicaState; 
 	String pdCode;
 	
+	int count;
 	int reQnt;
 	
 	//공통bom flow
@@ -57,4 +58,13 @@ public class MakVO{
 	String rscCode;
 	String matLot;
 	String semiLot;
+	int cnt;
+	String holdDate;
+	String holdState;
+	//자재
+	String matCode;
+	String matName;
+	int matQnt;
+	String matState;
+	
 }

@@ -87,11 +87,9 @@ public class MakController {
 							};
 						System.out.println("결과를 담은 곳 : "+result);
 						};
-					
 				}
 			}
 		}
-		
 		if(detCoList.isEmpty()) {
 			
 		}else {
