@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
@@ -30,4 +31,10 @@ public interface FacMapper {
    public int confirmUpdate(FacConfirmVO list); //점검수정
    public int confirmDelete(FacConfirmVO vo);//점검삭제
    public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo); //점검기간 검색
+   
+   //설비비가동관리
+   public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo); //비가동전체조회
+   
+   
+   
    }
