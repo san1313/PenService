@@ -181,10 +181,30 @@ public class MakIndServiceImpl implements MakIndService{
 
 	@Override
 	public String delIndica(IndicaListVO list) {
-		
+		String result="";
 		int a = mapper.delIndica(list.getList().get(0));
-		
-		return null;
+		List<MakVO> bomList = mapper.getIndicatedBom(list.getList().get(0).getIndicaCode());
+		for (MakVO vo : bomList) {
+			a+=mapper.delIndFlow(vo.getMakFlowCode());
+			a+=mapper.delIndBom(vo.getMakBomCode());
+		}
+		List<MakVO> holdList = mapper.getIndMakHold(list.getList().get(0).getIndicaCode());
+		for (MakVO vo : holdList) {
+			a+=mapper.updateIndMakMat(vo);
+		}
+		a+= mapper.delIndHold(list.getList().get(0).getIndicaCode());
+		if(a>0) {
+			result="삭제성공";
+		}else {
+			result="실패";
+		}
+		return result;
+	}
+
+	@Override
+	public List<MakVO> dirIndList() {
+		// TODO Auto-generated method stub
+		return mapper.dirIndList();
 	}
 
 

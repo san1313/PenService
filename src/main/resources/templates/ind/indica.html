@@ -591,11 +591,7 @@ $(function () {
             method : "GET",
             success : function(result){
           	  modal_grid.textContent="";
-          	  result.forEach(function(ele,i){
-          		  if(result[i].reQnt==0){
-          			  result.remove(result[i])
-          		  }
-          	  })
+          	  console.log(result);
               modal_grid.resetData(result);
             }
           });     

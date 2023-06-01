@@ -105,4 +105,12 @@ public class MakIndController {
 		return result;
 	}
 	
+	@GetMapping("/dirIndList")
+	@ResponseBody
+	List<MakVO> dirIndList(){
+		List<MakVO> list = service.dirIndList();
+		return list;
+	}
+	
+	
 }
