@@ -6,6 +6,7 @@ import org.mybatis.spring.annotation.MapperScan;
 
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 @MapperScan
@@ -29,5 +30,7 @@ public interface FacService {
 	public FacInfoVO getFac(String facCode); //단건조회
 	public List<FacInfoVO> getfacminilist(String keyword);//설비명으로 설비코드조회
 	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo); //점검기간별 조회
+	
+	public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo);//설비비가동조회
 	
 }

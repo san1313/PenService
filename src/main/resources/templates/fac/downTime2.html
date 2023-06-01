@@ -1,0 +1,493 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+   xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+   layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>PenServiceMES</title>
+<style>
+
+</style>
+
+<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+</head>
+
+<body>
+<div layout:fragment="title">설비비가동관리</div>
+
+<!-- 메인콘텐츠 -->
+   <div layout:fragment="content">
+   
+<div class= "row col-12" style="text-align:left">
+   <div class = "col-6 fac_downTime">
+   				
+   			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
+            <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
+            </label> &nbsp;&nbsp;&nbsp;
+            
+            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">
+            </label>
+            
+           
+         	<br>
+          	
+            <label for="downTime_code" >비가동코드&nbsp;
+            <input type="text" id="downTime_code" placeholder="REST" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+          
+          	<label for="downtime_reason">비가동사유</label>&nbsp;
+            <select name="downtime_reason" id="downtime_reason" style="width:120px; height:30px;" >
+              		 <option value="선택" selected="selected">---선택---</option>
+               		 <option value="점검">점검</option>
+                	 <option value="고장">고장</option>
+               		 <option value="수리">수리</option>
+               		 <option value="점검">대기</option>
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+          	
+          	<label for="reason_explain">사유설명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="reason_explain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            </label>
+            
+           <br>
+            <label for="downTime_start_day">시작일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  	<input type="date" id="downTime_start_day">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+            
+            <label for="start_time">시작시간</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+			<input type="time" id="start_time">
+
+            <br><br>
+            
+            <div class="col-12">
+               <div class="col-8" style="margin:0 auto">
+                  <button class="w-30 btn btn-primary btn-lg" id="register" type="submit">등록</button>
+                  <button class="w-30 btn btn-warning btn-lg" id="update" type="button">수정</button>
+                  <button class="w-20 btn btn-danger btn-lg" id="delete" type="button">삭제</button>
+                  <button class="w-30 btn btn-success btn-lg" id="reset" type="reset">초기화</button>
+               </div>
+            </div>
+      </div>      
+  <!-- 비가동종료 실행 -->
+		<div class = "col-6 fac_downTime"> 
+			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">비가동종료</button>
+			<br><br>
+			<label for="downTime_end_day">종료일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+		  	<input type="date" id="downTime_end_day">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         
+            <label for="end_time">종료시간</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+			<input type="time" id="end_time">
+		</div> 			                       
+</div>
+
+<!--설비조회 모달-->
+<div class="modal fade bd-example-modal-lg" id="chfacmodalbtn" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+            <h5 class="modal-title" >설비코드조회</h5>
+         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>   
+      </div>
+      
+      <div class="modal-body">
+         <label>설비명</label>
+         <input type=text class="modaltext" id="ckfac-text">
+        <button class="ckfacmodalbtn" type="button" id="ckfac">검색</button>
+        
+        <!-- 설비조회 그리드 -->
+         <div id="grid2"></div>
+         
+        <button class="submitfacmodalbtn" type="button" data-dismiss="modal">선택</button>
+      </div>
+    </div>
+  </div>
+</div> 
+<div id = "hiddenDiv">
+</div>
+
+<hr>
+<!-- 가동여부확인-->
+<div class="col-lg-12" style="text-align:left">
+<form id="searchform">
+<label for="operation_check">가동여부</label>&nbsp;&nbsp;&nbsp;
+ <input type="radio" id="A"name="operation_check" value="전체" checked> 전체 &nbsp;&nbsp;&nbsp;
+ <input type="radio" id="Y"name="operation_check" value="가동" checked> 가동 &nbsp;&nbsp;&nbsp;
+ <input type="radio" id="N" name="operation_check" value="비가동"> 비가동 &nbsp;&nbsp;&nbsp;
+ <!--  <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>-->    		
+</form>
+</div>
+
+
+ <!-- 비가동내역그리드화면 -->
+ <div id="grid"></div>      
+ 
+    <script>
+    const token = $('meta[name="_csrf"]').attr("content");
+    const header = $('meta[name="_csrf_header"]').attr("content");
+    
+    var dblclickRows=null;
+    //var getProcRows=null;
+    var grid2 = null;
+    //var Progaddgrid = null;
+   	var grid = null; 
+   
+    $(function(){
+    	
+    	//점검일자 자동생성
+    	//$('#confirmDatei').attr('readonly',true);
+    	//$('#confirmDatei').val(new Date().toISOString().slice(0,10));
+		
+    	//설비명버튼 이벤트
+		$('#facSelectmodalbtn').click(function(){
+				
+			$.ajax({
+				url : "/fac/infoListAjax",
+				method : "GET",
+				dataType : "JSON",
+				success : function(result){
+					console.log(result)
+					grid2.resetData(result);
+					
+					$('#chfacmodalbtn').modal('show');
+					 $('#chfacmodalbtn').on('shown.bs.modal', function (e){
+						 console.log('open');
+						 setTimeout(()=> grid2.refreshLayout(), 100);
+					 })	
+				},error : function(reject){
+					console.log(reject)
+				}
+			});
+		})
+    	
+  
+          //비가동목록리스트그리드
+ 		 function facdownTimeListSearch(data){
+          $.ajax({
+               url : "/fac/downTimeListAjax",
+               method : "GET",
+              dataType : "JSON", //키:값 형식으로 가져온다.
+               success : function(result){
+                grid.resetData(result);
+                grid.refreshLayout();
+               }
+               });
+            }
+    	
+		facdownTimeListSearch(null);
+    		
+          grid = new tui.Grid({
+          el: document.getElementById('grid'),
+          scrollX: false,
+          scrollY: false,
+          rowHeaders: ['rowNum'],
+          columns: [
+            {
+              header: '비가동코드',
+              name: 'downTimeCode'
+            },         
+            {
+              header: '설비명',
+              name: 'facName'
+            },
+            {
+              header: '비가동사유',
+              name: 'downTimeReason'
+            },
+            {
+              header: '사유설명',
+              name: 'reasonExplain'
+            },
+            {
+              header: '비가동시작일',
+              name: 'downTimeStartDay'
+            },
+            {
+              header: '시작시간',
+              name: 'startTime'
+            },
+            {
+              header: '비가동종료일',
+              name: 'downTimeEndDay'
+            },
+            {
+              header: '종료시간',
+              name: 'endTime'
+            },
+            {
+              header: '담당자',
+              name: 'empNum'
+            }   
+          ]
+         
+        });
+          
+              
+      //설비코드모달   
+          grid2 = new tui.Grid({
+          el: document.getElementById('grid2'),
+          scrollX: false,
+          scrollY: false,
+          rowHeaders: ['rowNum','checkbox'],
+          columns: [
+            {
+              header: '설비코드',
+              name: 'facCode'
+            },
+            {
+              header: '설비명',
+              name: 'facName'
+            }
+          ]
+         })
+ 
+         //설비코드모달검색조회
+          $('#ckfac').on('click', function(){
+             console.log($("#ckfac-text").val())
+             const prsed = $("#ckfac-text").val()
+            $("#ckfac-text").val('');
+             
+             $.ajax({
+                 url : "/fac/facminilist",   //설비코드목록조회 페이지 
+                  method : "GET",
+                  data : {'result' : prsed},
+                  success : function(result){
+                     grid2.resetData(result);
+                  },
+                  error: function(reject){
+                     console.log(reject)
+                  }     
+          });
+          
+       })
+       
+       //외부 설비코드랑 설비명 input에 값을 뿌려주는 코드 
+       grid2.on('click', function(e){
+    	 let hidden =  document.getElementById('hiddenDiv');
+    	 hidden.textContent="";
+         let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
+         //$('#fac_code').val(content.facCode); //fac_code라는 id의 인풋 창에 값 rowKey안의 facCode를 넣음
+         $('#fac_name').val(content.facName);//fac_name라는 id의 인풋 창에 값 rowKey안의 facName을 넣음
+         let hidInput = document.createElement('input');
+         hidInput.setAttribute('type','hidden');
+         hidInput.setAttribute('id','facCodei');
+         hidInput.value=content.facCode;
+         hidden.appendChild(hidInput);
+         
+      })
+      
+      
+       /*//점검기간 조회버튼
+         document.getElementById('submitbtn').addEventListener('click',function(){
+          	
+      		$.ajax({
+         		 url : "/fac/confirmdaysSearchAjax",
+         	     method : "GET",
+         	    data: $('#searchform').serialize(),       
+         	     dataType : "JSON",
+         	     success : function(result){
+         	    	 console.log(result)
+         	    	grid.resetData(result);
+         	    	grid.refreshLayout();	
+         	     },
+         	     error: function(reject){
+         	    	 console.log(reject)
+           }
+         }); 
+         })        
+      */
+         
+     /* //초기화버튼 이벤트
+      $("#reset").on('click',function(){
+         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         //$('div input').not("").val('');
+         //$('div input').not($('#confirmDatei')).val('');
+      });
+      */
+ 
+       /* //점검수정,삭제하기전 그리드 이벤트 작업
+        //서버에 연결전 토큰값 담는 method
+          grid.on("beforeRequest", function (obj) {
+              obj.xhr.setRequestHeader(header, token);
+            });
+       
+           grid.on("dblclick",function (e){
+              console.log(grid.getRow(e.rowKey));
+              dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
+
+              console.log(dblclickRows);
+            
+              //값을 input창에 다시 담아줌
+              $('#confirm_code').val(dblclickRows.confirmCode); //점검코드
+              $('#fac_name').val(dblclickRows.facName); //설비명
+              $('#action_history').val(dblclickRows.actionHistory); //조치내역
+              $('#emp_num').val(dblclickRows.empNum); //담당자
+              $('#confirm_issue').val(dblclickRows.confirmIssue); //점검사항-셀렉트박스
+              $("input:radio[name='confirm_category']:radio[value=\'"+dblclickRows.confirmCategory+"\']").prop('checked', true);//점검구분()
+              $("input:radio[name='decision']:radio[value=\'"+dblclickRows.decision+"\']").prop('checked',true);//판정(라디오)              
+              $('#confirmDatei').val(dblclickRows.confirmDate);  //점검일시 
+              //$('#confirm_category').val(dblclickRows.confirmCategory); //점검구분 -라디오버튼
+              //$('input[name="confirm_category"]:checked').val(dblclickRows.confirmCategory);
+              //$('#decision').val(dblclickRows.decision); //판정 -라디오버튼
+             
+           }); 
+      
+   })
+ */      
+ 
+ /* 셀렉트박스 선택하는 방법 $('select[name="confirm_issue"] option:eq(2)').prop("selected",true) 
+ 라디오버튼 체크하는 방법 :  $("input:radio[name='confirm_category']:radio[value='사과']").prop('checked', true); 
+ $('input[name="confirm_category"]:checked')
+ */
+    
+   
+      //점검삭제버튼 이벤트    
+      /*$("#delete").on('click', function(){
+         $.ajax({
+            url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
+         method : "post", //조회는 항상 get, 나머진 post
+         //json형태인 키:값 형태로 데이터넘김
+         data: {
+            confirmCode : $('#confirm_code').val()
+         },
+          beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+           },
+           success: function (result){
+            alert('삭제성공');
+            $.ajax({
+                  url : "/fac/confirmListAjax",
+                  method : "GET",
+                  dataType : "JSON",
+                  success : function(result){
+                  grid.resetData(result);
+                  grid.refreshLayout();
+                  }
+                  })
+                  $('div input').not("input[name=confirm_issue]").val('');
+         },
+         error:function(reject){
+            console.log(reject)
+         }
+         })
+
+      });
+    */ 
+    
+    //점검수정버튼 이벤트
+  /* $("#update").on('click',function(){
+	
+      $.ajax({
+         url: "/fac/confirmUpdate", //컨트롤러에 연결된 주소
+         method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
+         //json형태인 키:값 형태로 데이터넘김
+         data: {
+               confirmCode : $('#confirm_code').val(),
+               //facName : $('#fac_name').val(),
+               confirmDate :$('#confirmDatei').val(),
+               confirmCategory : $('input[name=confirm_category]:checked').val(),
+               actionHistory : $("#action_history").val(),
+               confirmIssue : $('#confirm_issue').val(),
+               decision : $('input[name=decision]:checked').val(), 
+               //empNum : $('#emp_num').val()
+               },
+            beforeSend: function (xhr) {
+              xhr.setRequestHeader(header, token);
+           },
+      success: function (result){
+         alert('수정성공');
+         $.ajax({
+               url : "/fac/confirmListAjax",
+               method : "GET",
+               dataType : "JSON",
+               success : function(result){
+               grid.resetData(result);
+               grid.refreshLayout();
+               }
+               })
+               $('div input').val('');
+         	   $('div select').val('선택');
+               //$('div input').not("input[name=confirm_issue]").val('');
+         
+            },
+            error:function(reject){
+            console.log(reject)
+         }
+      
+      })
+   });
+*/
+    //점검등록버튼 이벤트
+     /*$("#register").on('click',function(){              	 
+    	  let confirmInsertData={};
+          let innerData=[];
+          
+   		confirmInsertData = {
+                       "confirmCode" : $("#confirm_code").val(),
+                       "facCode" : $("#facCodei").val(),
+                       "confirmDate" : $('#confirmDatei').val(),
+                       "confirmCategory" : $("input[name=confirm_category]:checked").val(),
+                       "actionHistory" : $("#action_history").val(),
+                       "confirmIssue" :$("select[name=confirm_issue]").val(),
+                       "decision" : $("input[name=decision]:checked").val(),
+                       "empNum" : $("#emp_num").val(),  
+                        };
+           
+           $.ajax({
+             url: "/fac/confirmRegister", //컨트롤러에 연결된 주소
+             method : "post", //조회는 항상 get, 나머진 post
+             contentType : "application/json",
+             //json형태인 키:값 형태로 데이터넘김
+             data: JSON.stringify(confirmInsertData),
+               beforeSend: function (xhr) {
+                         xhr.setRequestHeader(header, token);
+                        },
+          success: function (result){
+        	  
+        	  $.ajax({
+                  url : "/fac/confirmListAjax",
+                  method : "GET",
+                 dataType : "JSON", //키:값 형식으로 가져온다.
+                  success : function(result){
+                   grid.resetData(result);
+                   grid.refreshLayout();
+                  }
+                  });
+   
+                   $('div input').not("input[name=confirm_category]").val('');
+        	  $('#confirmDatei').val(new Date().toISOString().slice(0,10));     	  
+          },
+          error:function(reject){
+             console.log(reject)
+          }
+          
+          })
+       });
+       
+   */    
+ 
+      
+            
+     /* function getProc(){
+   getProcRows=grid2.getCheckedRows();
+   console.log(getProcRows);
+   Progaddgrid.appendRows(getProcRows);
+  getProcRows.forEach(function(ele,i){
+   Progaddgrid.appendRows(getProcRows[i])
+   }); 
+     $('#procmodalbtn').modal('hide'); 
+      $('#procmodalbtn').hide();
+      $('.bd-example-modal-lg').hide();
+}*/
+       
+       
+       
+ </script>
+   </div>
+</body>
+</html>

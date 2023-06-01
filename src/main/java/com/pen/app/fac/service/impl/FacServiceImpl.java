@@ -9,6 +9,7 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
@@ -99,6 +100,12 @@ public class FacServiceImpl implements FacService {
 	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo) {
 		//점검기간별 조회
 		return mapper.confirmdaysSearchAjax(vo);
+	}
+
+	@Override
+	public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo) {
+		// 설비비가동조회
+		return mapper.getDownTimeList(vo);
 	}
 
 	

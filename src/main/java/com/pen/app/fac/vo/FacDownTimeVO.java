@@ -5,24 +5,15 @@ import lombok.Data;
 @Data
 public class FacDownTimeVO {
 	
-	/*
-	DOWNTIME_CODE VARCHAR2(15) NOT NULL,
-	FAC_CODE VARCHAR2(15) NOT NULL,
-	DOWNTIME_REASON	VARCHAR2(50) NOT NULL,
-	START_TIME DATE	NOT NULL,
-	END_TIME DATE NOT NULL,
-	DOWNTIME_START_DAY DATE	NOT NULL,
-	DOWNTIME_END_DAY DATE NOT NULL,
-	EMP_NUM	VARCHAR2(15) NOT NULL,
-	REASON_EXPLAIN VARCHAR2(400) NOT NULL
-	 * */
-	String downTime_code;
-	String fac_code;
-	String downTime_reason;
-	String downTime_start_day;
-	String start_time;
-	String downTime_end_day;
-	String end_time;
-	String reason_explain;
-	String emp_num;
+	String downTimeCode; //비가동코드
+	String facCode; //설비코드
+	String downTimeReason; //비가동사유
+	String downTimeStartDay; //비가동시작일
+	String startTime; //시작시간	
+	String reasonExplain; //사유설명
+	String empNum; //담당자
+	
+	String downTimeEndDay; //비가동종료일	
+	String endTime; //비가동 종료시간
+	String facName;// 설비명
 }
