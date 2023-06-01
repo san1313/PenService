@@ -130,6 +130,10 @@ select pd_code, plan_qnt-sum(ordr_qnt) re_qnt  from mak_plan_detail join mak_ind
 																CONNECT BY PARENT_CODE = PRIOR BOM_PROD_CODE)) using(proc_code) order by lev desc
 </select>
 
+<select id="getIndicatedBom" resultType="MakVO" parameterType="string">
+select a.mak_bom_code,a.mak_flow_code,a.mak_step,a.prod_code,a.amount,a.plan_indica,b.proc_code,c.bom_code,c.bom_prod_code parent_code,c.bom_prod_name prod_name,c.bom_mat_type,c.bom_mat_name bom_prod_name,c.bom_mat_code bom_prod_code,c.bom_mat_usage,d.proc_type,d.proc_name from mak_bom a join mak_flow b on a.mak_flow_code = b.mak_flow_code join com_bom  c on b.proc_code=c.proc_code and a.prod_code = c.bom_mat_code join com_code_proc d on b.proc_code =d.proc_code  where plan_indica = #{indicaCode} order by mak_step
+</select>
+
 <select id="getOperateCheck" parameterType="MakVO" resultType="MakVO" >
 	select fac_name,fac_code,operate_check,proc_code,proc_name from fac_info join fac_conn_proc using(fac_code) join com_code_proc using(proc_code) where proc_code in (
 	<foreach collection="list" item="pc" separator="," close=")">
@@ -243,10 +247,29 @@ select mat_lot,mat_code,mat_name,mat_qnt,mat_state from mat_invntry where mat_co
 <update id="insertHold" parameterType="MakVO">
 insert into mak_hold(rsc_code,indica_code,mat_code,mat_lot,cnt,hold_date) values(get_hold_seq(),'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),#{matCode},#{matLot},#{cnt},sysdate)
 </update>
-<update id="updateMat">
+<update id="updateMat" parameterType="MakVO">
 update mat_invntry set mat_qnt=mat_qnt-#{cnt} where mat_lot = #{matLot} 
 </update>
 
+<update id="updateIndica" parameterType="MakVO">
+update mak_indica set ORDR_QNT = #{ordrQnt}, st_date=#{stDate}, cls_date=#{clsDate} where indica_code = #{indicaCode}
+</update>
+
+<update id="updateMakBom" parameterType="MakVO">
+update mak_bom set amount = #{amount} where mak_bom_code = #{makBomCode}
+</update>
+
+<select id="getIndMakHold" parameterType="string" resultType="MakVO">
+select rsc_code,mat_code,mat_lot from mak_hold where indica_code=#{indicaCode}
+</select>
+
+<update id="updateIndMakHold" parameterType="MakVO">
+update mak_hold set cnt = cnt - #{cnt} where rsc_code = #{rscCode}
+</update>
+
+<update id="updateIndMakMat" parameterType="MakVO">
+update mat_invntry set mat_qnt=mat_qnt + #{cnt} where mat_lot=#{matLot}
+</update>
  <!-- 사원 리스트 출력 -->
   <!-- <select id="getUserList" resultType="UserVO">
   	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) ORDER BY EMP_NUM
