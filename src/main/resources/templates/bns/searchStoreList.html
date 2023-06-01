@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://kit.fontawesome.com/56e7c5522c.js"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script
+	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<!-- <script src="https://code.jquery.com/jquery-1.11.3.js"></script> -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="/plugins/jquery/jquery.min.js"></script>
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+
+<style>
+.container-fluid {
+	text-align: left !important;
+}
+</style>
+</head>
+<body>
+<div layout:fragment="title">
+		<h1>입고내역 조회</h1>
+	</div>
+	
+	<div layout:fragment="content">
+	<p>
+	제품명 <input id="searchprod-text" type="text">
+		 <button type="submit" id="searchprod" class="fa-solid fa-magnifying-glass"></button>
+	</p>
+	<p>
+	완제품LOT번호 <input id="searchprodLot-text" type="text">
+			   <button type="submit" id="searchprod" class="fa-solid fa-magnifying-glass"></button>
+	</p>						
+	<p>
+	입고일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2"> <button id="searchcont">조회</button>
+	</p>
+	
+	<!-- 본문 입고내역 그리드 -->
+	<div id="StoreGrid"></div>
+	
+	
+<script>
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+
+$(document).ready(function(){
+	
+	//입고내역 그리드 아작스
+$.ajax({
+	url : "/bns/afterStoreListAjax",
+	method : "GET",
+	dataType : "JSON",
+	success : function(result){
+		StoreGrid.resetData(result);
+	}
+});
+	
+	//입고내역 그리드 생성
+var StoreGrid = new tui.Grid({	
+   bodyHeight : 500,
+     el: document.getElementById('StoreGrid'),
+     scrollX: false,
+     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
+     columns: [
+       {
+         header: '완제품LOT번호',
+         name: 'prdtLot'
+       },
+       {
+         header: '완제품명',
+         name: 'prdtNm'
+       },
+       {
+         header: '입고량',
+         name: 'bnsStoreQuan'
+	    },
+       {
+         header: '입고일자',
+         name: 'bnsStoreDate'
+       },
+       {
+         header: '담당자명',
+         name: 'empName'
+       }
+     ]
+   }); 
+	
+})
+
+
+</script>
+</div>
+</body>
+</html>

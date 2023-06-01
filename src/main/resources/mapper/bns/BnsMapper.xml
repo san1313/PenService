@@ -51,9 +51,7 @@
 	</select>
 
 	<!-- 주문서 등록 -->
-
 	<insert id="insertOrdList">
-
 		insert all into bns_order values('bns_ord_'||LPAD(ord_seq.nextval, 3,'0'),
 		#{list[0].accCode},
 		#{list[0].accName},
@@ -62,7 +60,6 @@
 		'접수완료',
 		#{list[0].empNum},
 		null)
-
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
 			into bns_order_detail
@@ -70,7 +67,6 @@
 			3,
 			'0'),#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice},'접수완료')
 		</foreach>
-
 	</insert>
 
 	<!-- 주문서 수정 -->
@@ -111,8 +107,6 @@
 
 	</update>
 
-	
-
 	<!-- 주문상세 취소 -->
 	<delete id="delOrdDetList">
 		delete from bns_order_detail 
@@ -143,8 +137,6 @@
 		from com_code_account
 	</select>
 
-
-
 	<!-- 거래처코드, 거래처명 검색 조회 -->
 	<select id="getAccKeyList" resultType="BnsAccVO">
 		select acc_code, acc_name
@@ -153,7 +145,6 @@
 		where acc_name =#{keyword}
 		</if>
 	</select>
-
 
 	<!-- 제품코드, 제품명 조회 -->
 	<select id="getProdList" resultType="BnsProdVO">
@@ -174,7 +165,6 @@
 		select	'bns_ord_'||max(lpad(subStr(ord_code,-3)+1,3,'0')) ord_code,
 		        to_char(sysdate,'YYYY-MM-DD') as ord_date 
 		from bns_order
-		
 	</select>
 
 
@@ -301,7 +291,11 @@
 
 <!-- 입고후 그리드 조회 -->
 	<select id="getafterStoreList" resultType="BnsStoreVO">
-	select prdt_lot, prdt_nm, bns_store_quan, to_char(bns_store_date,'yyyy-mm-dd') bns_store_date, e.emp_name emp_name, bns_store_note from bns_store b join com_info_emp e on(b.emp_num = e.emp_num)order by prdt_lot desc
+	select p.prdt_lot, b.prdt_nm, b.bns_store_quan, to_char(bns_store_date,'yyyy-mm-dd') bns_store_date, e.emp_name emp_name, b.bns_store_note, p.prdt_state 
+    from com_info_emp e join bns_store b on(b.emp_num = e.emp_num)
+    join mak_prdt p on (b.prdt_lot = p.prdt_lot)
+    where p.prdt_state = '입고완료'
+    order by p.prdt_lot desc
 	</select>
 	
 	<!-- 입고 등록 -->
@@ -325,40 +319,53 @@
 	</delete>
 
 <!-- 출고 전 그리드 조회 -->
-
 <select id="getbeforeReleaseContList" resultType="BnsReleaseVO">
-	select distinct 
-          cont_det_code,
-          c.cont_code, 
-          acc_code,
-		  acc_name,
-		  prod_code,
-          prod_name,
-          cont_det_quan,
-          to_char(cont_det_release,'YYYY-MM-DD') as	cont_det_release
-		from
-		bns_contract_detail d join bns_contract c
-		on(d.cont_code =c.cont_code)
-		where d.cont_det_progress = '납기필요'
+SELECT cont_det_code,
+       cont_code,
+       bns_contract.acc_name,
+       prod_code,
+       prod_name,
+       cont_det_quan,
+       cont_det_quan - nvl(SUM(bns_release_quan), 0) AS cont_req_quan,
+       to_char(cont_det_release,'yyyy-mm-dd') cont_det_release
+FROM bns_contract
+JOIN bns_contract_detail USING ( cont_code )
+LEFT OUTER JOIN bns_release USING ( cont_det_code )
+WHERE cont_det_progress = '납기필요'
+GROUP BY cont_det_code,
+         cont_code,
+         bns_contract.acc_name,
+         prod_code,
+         prod_name,
+         cont_det_quan,
+         cont_det_release
+       
 	</select>
 	
 	<!-- 출고전 주문서 그리드 조회 -->
 	<select id="getbeforeReleaseOrdList" resultType="BnsReleaseVO">
-		select distinct 
-               ord_det_code,
-		       o.ord_code, 
-		       acc_code,
-		       acc_name,
-		       prod_code,
-               prod_name,
-               ord_det_quan,
-		       to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date
-		 from  bns_order_detail d 
-		 join  bns_order o
-		   on  (d.ord_code =o.ord_code)
+		SELECT ord_det_code,
+       ord_code,
+       bns_order.acc_name,
+       prod_code,
+       prod_name,
+       ord_det_quan,
+       ord_det_quan - nvl(SUM(bns_release_quan), 0) AS ord_req_quan,
+       to_char(ord_due_date,'yyyy-mm-dd') ord_due_date
+FROM bns_order
+JOIN bns_order_detail USING ( ord_code )
+LEFT OUTER JOIN bns_release USING ( ord_det_code )
+WHERE ord_det_progress = '접수완료'
+GROUP BY ord_det_code,
+         ord_code,
+         bns_order.acc_name,
+         prod_code,
+         prod_name,
+         ord_det_quan,
+         ord_due_date
 		
 	</select>
-
+<!-- 출고 LOT내역 그리드 -->
 <select id="getLotReleaseList" resultType="BnsReleaseVO">
 		select s.prdt_lot,
 		s.prdt_nm,
@@ -377,10 +384,9 @@
 </select>
 
 <!-- 출고 등록 -->
-
 <insert id="insertRelease" statementType="CALLABLE">
-		
 		{call prdt_release_register (
+			#{prdtLot, mode=IN, jdbcType=VARCHAR},
 			#{contDetCode, mode=IN, jdbcType=VARCHAR},
 			#{ordDetCode, mode=IN, jdbcType=VARCHAR},
 			#{bnsReleaseQuan, mode=IN, jdbcType=VARCHAR},
@@ -392,6 +398,13 @@
 			#{bnsReleaseNote, mode=IN, jdbcType=VARCHAR},
 			#{empNum, mode=IN, jdbcType=VARCHAR}
 		)}
-		
 	</insert>
+	
+<!-- 출고내역 그리드 -->
+	<select id="getSearchReleaseList" resultType="BnsReleaseVO">
+	select bns_release_code,prdt_lot,acc_name,prdt_nm,bns_release_quan,to_char(bns_release_date,'yyyy-mm-dd') bns_release_date,bns_release_note,e.emp_name
+         from bns_release r join com_info_emp e on(r.emp_num = e.emp_num)
+         order by bns_release_code
+	</select>
+	
 </mapper>

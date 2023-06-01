@@ -40,10 +40,10 @@
 	
 	<div layout:fragment="content">
 
-	<h2>제품현황</h2> <button type="button" style="float:right;" id="storeRegBtn">전량입고</button>
+	<h2>입고대기현황</h2> <button type="button" style="float:right;" id="storeRegBtn">전량입고</button>
 	<div id="beforeStoreGrid"></div>
 	<br>
-	<h2>입고내역</h2>
+	<h2>입고완료현황</h2>
 	<input type="hidden" th:value="${#authentication.principal.empNum}" id="empNum">
 	<button type="button" style="float:right;" id="storeCancleBtn">입고취소</button>
 	<div id="afterStoreGrid"></div>
@@ -56,7 +56,6 @@
 	
 	$(document).ready(function(){
 		
-	
 	 $.ajax({
 			url : "/bns/beforeStoreListAjax",
 			method : "GET",
@@ -92,7 +91,8 @@
 	       },
 	       {
 	         header: '생산완료일자',
-	         name: 'prdtDate'
+	         name: 'prdtDate',
+	         sortable: true
 	       },
 	       {
 	         header: '입고상태',
@@ -134,11 +134,16 @@
 			    },
 		       {
 		         header: '입고일자',
-		         name: 'bnsStoreDate'
+		         name: 'bnsStoreDate',
+		         sortable: true
 		       },
 		       {
 		         header: '담당자명',
 		         name: 'empName'
+		       },
+		       {
+		         header: '입고상태',
+		         name: 'prdtState'
 		       }
 	   
 		     ]

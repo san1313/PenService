@@ -236,8 +236,6 @@ public class BnsController {
 	      return "bns/storeList";
 	   }
 	   
-	   
-	   
 	   //입고전 그리드 리스트
 		@ResponseBody
 		@GetMapping("/beforeStoreListAjax")
@@ -247,6 +245,7 @@ public class BnsController {
 			System.out.println(list);
 			return list;
 		}
+		
 		//입고후 그리드 리스트
 		@ResponseBody
 		@GetMapping("/afterStoreListAjax")
@@ -254,6 +253,7 @@ public class BnsController {
 			List<BnsStoreVO> list = bnsService.getafterStoreList();
 			return list;
 		}
+		
 		//입고등록 아작스
 		@RequestMapping("/insertStoreList")
 		@ResponseBody
@@ -262,7 +262,6 @@ public class BnsController {
 			System.out.println(list);
 			return true;
 		}
-		
 		
 		//입고취소
 				@RequestMapping("/delStoreList")
@@ -322,6 +321,28 @@ public class BnsController {
 		      return "bns/returnList";
 		   }  
 		
-		
-	
+//입고내역 조회페이지
+@GetMapping("/searchStoreList")
+		   public String searchStoreList(Model model, Authentication authentication) {
+		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		      model.addAttribute("userVO", user);
+		  return "bns/searchStoreList";
+		   }  
+
+//출고내역 조회페이지
+@GetMapping("/searchReleaseList")
+		   public String searchReleaseList(Model model, Authentication authentication) {
+		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		      model.addAttribute("userVO", user);
+		  return "bns/searchReleaseList";
+		   }  
+
+//출고내역 그리드
+@ResponseBody
+@GetMapping("/searchReleaseListAjax")
+public List<BnsReleaseVO> searchReleaseListAjax(){
+	List<BnsReleaseVO> list = bnsService.getSearchReleaseList();
+	return list;
 }
+}
+
