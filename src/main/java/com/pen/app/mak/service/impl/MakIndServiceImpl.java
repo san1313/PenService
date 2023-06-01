@@ -181,7 +181,9 @@ public class MakIndServiceImpl implements MakIndService{
 
 	@Override
 	public String delIndica(IndicaListVO list) {
-
+		
+		int a = mapper.delIndica(list.getList().get(0));
+		
 		return null;
 	}
 
