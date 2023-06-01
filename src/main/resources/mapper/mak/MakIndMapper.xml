@@ -77,7 +77,7 @@ select pd_code, plan_qnt-sum(ordr_qnt) re_qnt  from mak_plan_detail join mak_ind
 
 
 <select id="indList" resultType="MakVO" parameterType="string">
-	select prod_name,pd_code,plan_code,plan_nm,plan_type,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate, to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate,priority,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_plan join mak_plan_detail using(plan_code) join mak_indica using(pd_code) join com_code_prod using(prod_code) where pd_code = #{pdCode} and cls_date>sysdate and indica_state in ('미작업','작업중')
+	select prod_name,pd_code,plan_code,plan_nm,plan_type,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate, to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate,priority,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_plan join mak_plan_detail using(plan_code) join mak_indica using(pd_code) join com_code_prod using(prod_code) where pd_code = #{pdCode} and cls_date>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
 </select>
 
 <select id="planFlow" parameterType="string" resultType="MakVO">
@@ -241,7 +241,7 @@ select prod_code,sum(amount) amount from mak_bom where plan_indica='MAK-IND-'||(
 </select>
 
 <select id="getMatQnt" resultType="MakVO" parameterType="string">
-select mat_lot,mat_code,mat_name,mat_qnt,mat_state from mat_invntry where mat_code=#{prodCode} and mat_qnt>0 and NVL(mat_keepdate,sysdate+1)>sysdate order by mat_lot
+select mat_lot,mat_code,mat_name,mat_qnt,mat_state from mat_invntry where mat_code=#{prodCode} and mat_qnt>0 and NVL(mat_keepdate,sysdate+1)>=to_date(sysdate,'yyyy-mm-dd') order by mat_lot
 </select>
 
 <update id="insertHold" parameterType="MakVO">
@@ -286,8 +286,12 @@ delete mak_flow where mak_flow_code=#{makFlowCode}
 delete mak_hold where indica_code=#{indicaCode}
 </delete>
 
-<select id="dirIndList">
-select prod_name,pd_code,plan_code,plan_nm,plan_type,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate, to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate,priority,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_plan join mak_plan_detail using(plan_code) join mak_indica using(pd_code) join com_code_prod using(prod_code) where pd_code is null and cls_date>sysdate and indica_state in ('미작업','작업중')
+<select id="dirIndList" resultType="MakVO">
+select prod_name,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_indica join com_code_prod using(prod_code) where pd_code is null and cls_date>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
+</select>
+
+<select id="product" resultType="MakVO">
+select * from com_code_prod
 </select>
  <!-- 사원 리스트 출력 -->
   <!-- <select id="getUserList" resultType="UserVO">

@@ -43,4 +43,5 @@ public interface MakIndMapper {
 	int delIndHold(String indicaCode);
 	
 	List<MakVO> dirIndList();
+	List<MakVO> product();
 }

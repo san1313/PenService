@@ -56,7 +56,7 @@ height:28px;
 <div class="form-group row">
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">제품명</label>
-<input class="form-control col-5" id="planNmi" readonly>
+<input class="form-control col-5" id="prodNmi" readonly>
 <ion-icon class="col-1" name="search" id="getPlanNm" data-toggle="modal" data-target=".bd-example-modal-lg">
 </div>
 
@@ -285,19 +285,11 @@ $(function () {
       $('#matmodalbtn').hide();
       $('.bd-example-modal-lg').hide();
       //인풋에 데이터 넣기
-      $('#planNmi').val(planModalData.planNm);
       $('#prodNmi').val(planModalData.prodName);
-      $('#reQnti').val(planModalData.reQnt);
-      $('#ordrQnti').val(planModalData.reQnt);
       //시작일자 지정
-      if(planModalData.planSdate<new Date().toISOString().slice(0, 10)){
       $('#stDatei').val(new Date().toISOString().slice(0, 10));
-      }else{
-    	  $('#stDatei').val(planModalData.planSdate);
-    	  document.getElementById('stDatei').min=planModalData.planSdate;
-      };
       //지시종료일자 지정
-      $('#clsDatei').val(planModalData.planClsdate);
+      $('#clsDatei').val(new Date().toISOString().slice(0, 10));
      
       
       //공정 bom 데이터 넣기
@@ -542,15 +534,11 @@ $(function () {
 	$('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
         $.ajax({
-            url : "/ind/planning",
+            url : "/ind/product",
             method : "GET",
             success : function(result){
           	  modal_grid.textContent="";
-          	  result.forEach(function(ele,i){
-          		  if(result[i].reQnt==0){
-          			  result.remove(result[i])
-          		  }
-          	  })
+          	  
               modal_grid.resetData(result);
             }
           });     
