@@ -93,25 +93,25 @@
     scrollY: false,
     rowHeaders: ['checkbox'],
     columns: [{
-    header: '자재코드',
+    header: '반제품코드',
     name: 'matCode'
     },
     {
-    header: '자재명',
+    header: '반제품명',
     name: 'matName'
     },   
     {
-    header: '발주번호',
+    header: 'LOT번호',
     name: 'matOrdernum'
     },
     {
-    header: '자재내역번호',
-    name: 'qipCodeListMat',
-    hidden: true
+    header: '총합격량',
+    name: 'qipCodeListMat'
     },
     {
-    header: '총합격량',
-    name: 'testTnumPass'
+    header: '제품내역검사코드',
+    name: 'qipCodeListMat',	
+    hidden : true
     }
     ]
     });
@@ -136,29 +136,21 @@
         rowHeaders: ['checkbox'],
         bodyHeight : 200,
         columns: [{
-         header: 'LOT번호',
-         name: 'matLot'
-         },
+        header: 'LOT번호',
+        name: 'matLot'
+        },
         {
-        header: '자재코드',
+        header: '반제품코드',
         name: 'matCode'
         },
         {
-        header: '자재명',
+        header: '반제품명',
         name: 'matName'
-        },   
-        {
-        header: '발주번호',
-        name: 'matOrdernum'
         },
         {
-        header: '자재내역번호',
+        header: '제품내역검사코드',
         name: 'qipCodeListMat',
         hidden: true   
-        },
-        {
-        header: '거래처코드',
-        name: 'accCode'
         },
         {
         header: '입고량',
@@ -172,7 +164,7 @@
         ]
         });
     
- //제거버튼
+ 	//제거버튼
    document.getElementById('deletebtn').addEventListener('click', function(){
 	   let checked1 = warehousinggrid.getCheckedRows();
 	   console.log(checked1)
@@ -180,10 +172,12 @@
 	   warehousinggrid.removeCheckedRows(true);
    })
   
+   
    //입고저장버튼
    document.getElementById('subtn').addEventListener('click', function(){
 	   let checked2 = warehousinggrid.getCheckedRows();
 	   console.log(checked2);
+	   
 	   $.ajax({
 		   url:"/mat/warehousingregister",
 		   method: "POST",
@@ -200,6 +194,8 @@
 			   console.log(reject)
 		   }
 	   });
+	   
+	   
 	   $.ajax({
 	  		url : "/mat/todaywarehousinglist",
 	  		method : "GET",
@@ -212,9 +208,9 @@
 	  	});
 
    })
+   
     </script>
 	</div>
-
     
     </body>
     
