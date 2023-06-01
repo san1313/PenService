@@ -5,6 +5,8 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
+import javax.servlet.http.HttpServletRequest;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
@@ -108,8 +110,12 @@ public class CommonController {
 
 	// 로그인 페이지 -----------------------------------------------
 	@GetMapping("/login")
-	public void login() {
-
+	public String login(Principal principal, HttpServletRequest request) {
+		if(principal != null) {
+			return "redirect:"+request.getContextPath()+"/top";
+		}else {
+			return "/login";
+		}
 	}
 
 	// 사원관리페이지 -----------------------------------------------

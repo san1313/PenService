@@ -199,9 +199,27 @@
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a href="/bns/searchStoreList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>입고 내역 조회</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a href="/bns/releaseList" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>출고 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/bns/searchReleaseList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>출고 내역 조회</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/bns/returnList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>반품 관리</p>
                     </a>
                   </li>
                 </ul>
@@ -346,6 +364,12 @@
                       <p>검사</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/qip/testView" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>검사 내역 조회</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <!-- 품질 메뉴 끝 -->
@@ -474,6 +498,15 @@
           case "releaseList":
             $("#bnsNav").find("a[href='/bns/releaseList']").addClass("active");
             break;
+          case "searchStoreList":
+            $("#bnsNav").find("a[href='/bns/searchStoreList']").addClass("active");
+            break;
+          case "searchReleaseList":
+            $("#bnsNav").find("a[href='/bns/searchReleaseList']").addClass("active");
+            break;
+          case "returnList":
+            $("#bnsNav").find("a[href='/bns/returnList']").addClass("active");
+            break;
         }
       } else if (path.startsWith("/mat")) {
         $("#matNav").addClass("menu-open");
@@ -538,6 +571,9 @@
             break;
           case "test":
             $("#qipNav").find("a[href='/qip/test']").addClass("active");
+            break;
+          case "testView":
+            $("#qipNav").find("a[href='/qip/testView']").addClass("active");
             break;
         }
       }
