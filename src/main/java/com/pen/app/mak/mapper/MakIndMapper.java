@@ -29,7 +29,12 @@ public interface MakIndMapper {
 	List<MakVO> getMatQnt(String prodCode);
 	int insertHold(MakVO vo);
 	int updateMat(MakVO vo);
-
-	/* List<MakVO> getOrdCount(); */
 	
+	List<MakVO> getIndicatedBom(String indicaCode);
+	/* List<MakVO> getOrdCount(); */
+	int updateIndica(MakVO vo);
+	int updateMakBom(MakVO vo);
+	List<MakVO> getIndMakHold(String indicaCode);
+	int updateIndMakHold(MakVO vo);
+	int updateIndMakMat(MakVO vo);
 }

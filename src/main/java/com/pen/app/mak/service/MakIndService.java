@@ -14,4 +14,7 @@ public interface MakIndService {
 	List<MakVO> getOperateCheck(IndicaListVO list);
 	List<MakVO> getFlowList(IndicaListVO list);
 	String insertIndica(IndicaListVO list);
+	List<MakVO> getIndicatedBom(String indicaCode);
+	String updateIndica(IndicaListVO list);
+	String delIndica(IndicaListVO list);
 }

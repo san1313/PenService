@@ -143,6 +143,48 @@ public class MakIndServiceImpl implements MakIndService{
 		return result;
 	}
 
+	@Override
+	public List<MakVO> getIndicatedBom(String indicaCode) {
+		
+		return mapper.getIndicatedBom(indicaCode);
+	}
+
+	@Override
+	@Transactional
+	public String updateIndica(IndicaListVO list) {
+		int a = 0;
+		String result = "";
+		Map<Object,Integer> map = new HashMap<>();
+		
+		a+=mapper.updateIndica(list.getList().get(0));
+		
+		for (MakVO vo : list.getList()) {
+			a+=mapper.updateMakBom(vo);
+			/* 차이나는 값 합산 */
+			if(map.containsKey(vo.getBomProdCode())) {
+			map.put(vo.getBomProdCode(),(map.get(vo.getBomProdCode())) +vo.getReQnt());
+			}else {
+				map.put(vo.getBomProdCode(), vo.getReQnt());
+			}
+		};
+		List<MakVO> remain = mapper.getIndMakHold(list.getList().get(0).getIndicaCode());
+		for(MakVO vo : remain) {
+			vo.setCnt(map.get(vo.getMatCode()));
+			a+=mapper.updateIndMakHold(vo);
+			a+=mapper.updateIndMakMat(vo);
+		}
+		if(a>0) {
+			result="수정성공";
+		}
+		return result;
+	}
+
+	@Override
+	public String delIndica(IndicaListVO list) {
+
+		return null;
+	}
+
 
 
 }
