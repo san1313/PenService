@@ -283,6 +283,24 @@
                       <p>자재 조정 조회</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/mat/disposeresult" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>자재 폐기 내역</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/mat/matoptionhold" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>자재 홀드 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/mat/matoptionholdlist" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>자재 홀드 조회</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <!-- 자재 메뉴 끝 -->
@@ -312,6 +330,18 @@
                     <a href="/ind/dirindica" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>생산 지시 관리(직접)</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/ind/performanceManage" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>공정 실적 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/ind/performance" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>공정 실적 조회</p>
                     </a>
                   </li>
                 </ul>
@@ -346,13 +376,13 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
+                  <li class="nav-item" sec:authorize="hasAnyAuthority('총관리자','품질팀장')">
                     <a href="/qip/testCodeManage" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>검사 코드 관리</p>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li class="nav-item" sec:authorize="hasAnyAuthority('총관리자','품질팀장')">
                     <a href="/qip/testPerItemManage" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>항목별 검사 관리</p>
@@ -536,6 +566,15 @@
           case "matadjustlist":
             $("#matNav").find("a[href='/mat/matadjustlist']").addClass("active");
             break;
+          case "disposeresult":
+            $("#matNav").find("a[href='/mat/disposeresult']").addClass("active");
+            break;
+          case "matoptionhold":
+            $("#matNav").find("a[href='/mat/matoptionhold']").addClass("active");
+            break;
+          case "matoptionholdlist":
+            $("#matNav").find("a[href='/mat/matoptionholdlist']").addClass("active");
+            break;
         }
       } else if (path.startsWith("/mak") || path.startsWith("/ind")) {
         $("#makNav").addClass("menu-open");
@@ -549,6 +588,12 @@
             break;
           case "dirindica":
             $("#makNav").find("a[href='/ind/dirindica']").addClass("active");
+            break;
+          case "performanceManage":
+            $("#makNav").find("a[href='/ind/performanceManage']").addClass("active");
+            break;
+          case "performance":
+            $("#makNav").find("a[href='/ind/performance']").addClass("active");
             break;
         }
       } else if (path.startsWith("/fac")) {

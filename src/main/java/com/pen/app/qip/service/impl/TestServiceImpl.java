@@ -9,6 +9,7 @@ import com.pen.app.qip.mapper.TestMapper;
 import com.pen.app.qip.service.TestService;
 import com.pen.app.qip.vo.ItemTestDTO;
 import com.pen.app.qip.vo.TestExpModalVO;
+import com.pen.app.qip.vo.TestItemModalVO;
 import com.pen.app.qip.vo.TestMatModalVO;
 
 @Service
@@ -20,6 +21,12 @@ public class TestServiceImpl implements TestService{
 	public List<TestMatModalVO> matTestList() {
 		
 		return mapper.matTestList();
+	}
+	
+	@Override
+	public List<TestItemModalVO> itemTestList() {
+		
+		return mapper.itemTestList();
 	}
 	
 	@Override
@@ -38,6 +45,7 @@ public class TestServiceImpl implements TestService{
 			mapper.insertMatTest(dto.getResult(), dto.getDetails());
 			break;
 		case "item":
+			mapper.insertItemTest(dto.getResult(), dto.getDetails());
 			break;
 		case "expired":
 			mapper.insertExpTest(dto.getResult(), dto.getDetails());
@@ -45,4 +53,5 @@ public class TestServiceImpl implements TestService{
 		}
 		return true;
 	}
+
 }

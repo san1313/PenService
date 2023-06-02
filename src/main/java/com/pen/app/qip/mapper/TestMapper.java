@@ -3,6 +3,7 @@ package com.pen.app.qip.mapper;
 import java.util.List;
 
 import com.pen.app.qip.vo.TestExpModalVO;
+import com.pen.app.qip.vo.TestItemModalVO;
 import com.pen.app.qip.vo.TestMatModalVO;
 import com.pen.app.qip.vo.TestPerItemVO;
 import com.pen.app.qip.vo.TestResultVO;
@@ -10,6 +11,9 @@ import com.pen.app.qip.vo.TestResultVO;
 public interface TestMapper {
 	// 자재 입고검사 모달 리스트 조회
 	List<TestMatModalVO> matTestList();
+	
+	// 제품 검사 모달 리스트 조회
+	List<TestItemModalVO> itemTestList();
 	
 	// 보관기간 초과 자재 검사 모달 리스트 조회
 	List<TestExpModalVO> expTestList();
@@ -19,4 +23,8 @@ public interface TestMapper {
 	
 	// 검사 완료 버튼 동작(초과자재)
 	int insertExpTest(TestResultVO rVO, List<TestPerItemVO> list);
+
+	// 검사 완료 버튼 동작(제품)
+	int insertItemTest(TestResultVO rVo, List<TestPerItemVO> list);
+
 }

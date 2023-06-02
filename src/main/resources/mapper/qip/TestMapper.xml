@@ -29,7 +29,51 @@
 									FROM QIP_LIST_MAT)
 		ORDER BY MAT_ORDERDATE
 	</select>
-
+	
+	<!-- 제품 검사 모달 리스트 조회 -->
+	<select id="itemTestList" resultType="TestItemModalVO">
+	SELECT indica_code,
+	       mat_lot                          AS item_lot,
+	       mat_code                         AS item_code,
+	       ( SELECT semi_name
+	         FROM com_code_semi
+	         WHERE semi_code = mat_code
+	       )                                AS item_name,
+	       cnt                              AS item_cnt,
+	       ( SELECT semi_unit
+	         FROM com_code_semi
+	         WHERE semi_code = a.mat_code
+	       )                                AS item_unit,
+	       to_char(hold_date, 'yyyy-mm-dd') AS item_date,
+	       proc_name                        AS prev_proc_name,
+	       'semi'                           AS item_type
+	FROM ( SELECT *
+	       FROM mak_hold
+	       JOIN mak_indica USING ( indica_code )
+	       WHERE mat_code LIKE 'PRD-S%'
+	             AND qip_code_list_prod IS NULL
+	     ) a
+	JOIN mak_proc_prod USING ( indica_code )
+	JOIN com_code_proc USING ( proc_code )
+	UNION
+	SELECT indica_code,
+	       prdt_lot,
+	       prod_code,
+	       prdt_nm,
+	       cnt,
+	       prdt_unit,
+	       to_char(prdt_date, 'yyyy-mm-dd'),
+	       ( SELECT proc_name
+	         FROM com_code_proc
+	         WHERE proc_code = mak_proc_prod.proc_code
+	       ),
+	       'prod'
+	FROM mak_prdt
+	JOIN mak_proc_prod USING ( prcs_code )
+	WHERE qip_code_list_prod IS NULL
+	</select>
+	
+	<!-- 보관기간초과 자재 모달 리스트 조회 -->
 	<select id="expTestList" resultType="TestExpModalVO">
 		SELECT MAT_LOT AS EXP_LOT,
 				MAT_CODE AS EXP_CODE,
@@ -62,6 +106,49 @@
 			)
 		</foreach>
 		SELECT * FROM DUAL
+	</insert>
+	
+	<insert id="insertItemTest">
+	DECLARE
+	v_qip_seq varchar2(30) := 'TEST-ITEM-'||LPAD(TEST_PROD_SEQ.NEXTVAL,6,'0');
+	BEGIN
+	
+	INSERT ALL
+		INTO QIP_LIST_PROD VALUES(
+		v_qip_seq,
+		#{rVo.targetCode},
+		#{rVo.testDate},
+		#{rVo.empNum},
+		#{rVo.testNum},
+		#{rVo.testTnumDef},
+		#{rVo.testTnumPass},
+		#{rVo.prevProcName}
+		)
+		<foreach collection="list" item="vo" separator=" ">
+			INTO
+			QIP_LIST_DETAIL VALUES (
+			GET_TEST_DETAIL_SEQ(),
+			v_qip_seq,
+			#{vo.testCode},
+			#{vo.testNumDef}
+			)
+		</foreach>
+		SELECT * FROM DUAL;
+		
+	UPDATE
+	<choose>
+	<when test='rVo.itemType == "semi"'>
+	MAK_HOLD
+	SET CNT = #{rVo.testTnumPass}, QIP_CODE_LIST_PROD = v_qip_seq
+	WHERE MAT_LOT = #{rVo.itemLot};
+	</when>
+	<otherwise>
+	MAK_PRDT
+	SET CNT = #{rVo.testTnumPass}, QIP_CODE_LIST_PROD = v_qip_seq
+	WHERE PRDT_LOT = #{rVo.itemLot};
+	</otherwise>
+	</choose>
+	END;
 	</insert>
 	
 	<insert id="insertExpTest">

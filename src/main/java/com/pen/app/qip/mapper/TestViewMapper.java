@@ -9,4 +9,6 @@ public interface TestViewMapper {
 	List<TestViewVO> getMatView(Map<String, String> map);
 	
 	List<TestViewVO> getItemView(Map<String, String> map);
+
+	List<TestViewVO> getExpView(Map<String, String> map);
 }

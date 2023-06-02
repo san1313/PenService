@@ -15,6 +15,10 @@ public class TestViewVO {
     String prodName;
     String procName;
     
+    //보관기간초과
+    String qipCodeListExp;
+    String matLot;
+    
     //공통
     String testDate;
     String empName;

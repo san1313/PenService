@@ -20,7 +20,7 @@
 	<if test='itemName != null and itemName != ""'>
 	AND MAT_NAME LIKE '%'||#{itemName}||'%'
 	</if>
-	<if test='startDate != null and startDate != ""'>
+	<if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
 	AND TEST_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD') 
 	</if>
 	</where>
@@ -35,12 +35,7 @@
 	                FROM com_code_prod
 	                WHERE prod_code = b.prod_code
 	              ) AS prod_name,
-	              ( SELECT proc_name
-	                FROM com_proc_flow
-	                JOIN com_code_proc USING ( proc_code )
-	                WHERE flow_prod_code = b.prod_code
-	                      AND proc_order = a.proc_order
-	              ) AS proc_name,
+	              a.proc_name,
 	              to_char(test_date, 'YYYY-MM-DD') AS test_date,
 	              ( SELECT emp_name
 	                FROM com_info_emp
@@ -61,5 +56,28 @@
 	</if>
 	</where>
 	ORDER BY qip_code_list_prod DESC
+	</select>
+	
+	<select id="getExpView" resultType="TestViewVo">
+	SELECT qip_code_list_exp,
+	       mat_lot,
+	       mat_name,
+	       to_char(test_date, 'yyyy-mm-dd') AS test_date,
+	       emp_name,
+	       test_num_exp,
+	       test_tnum_pass,
+	       test_tnum_def
+	FROM qip_list_expired
+	JOIN mat_invntry USING ( mat_lot )
+	JOIN com_info_emp USING ( emp_num )
+	<where>
+	<if test='itemName != null and itemName != ""'>
+	AND MAT_NAME LIKE '%'||#{itemName}||'%'
+	</if>
+	<if test='startDate != null and startDate != "" and endDate != null and endDate != ""'>
+	AND TEST_DATE BETWEEN TO_DATE(#{startDate}, 'YYYY-MM-DD') AND TO_DATE(#{endDate}, 'YYYY-MM-DD')
+	</if>
+	</where>
+	ORDER BY qip_code_list_exp DESC
 	</select>
 </mapper>

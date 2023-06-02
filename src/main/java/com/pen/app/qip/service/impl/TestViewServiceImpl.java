@@ -25,4 +25,10 @@ public class TestViewServiceImpl implements TestViewService{
 		
 		return new ToastUiResponseDTO(mapper.getItemView(map));
 	}
+	
+	@Override
+	public ToastUiResponseDTO getExpView(Map<String, String> map) {
+		
+		return new ToastUiResponseDTO(mapper.getExpView(map));
+	}
 }

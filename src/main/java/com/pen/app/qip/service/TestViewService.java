@@ -8,4 +8,6 @@ public interface TestViewService {
 	ToastUiResponseDTO getMatView(Map<String, String> map);
 	
 	ToastUiResponseDTO getItemView(Map<String, String> map);
+
+	ToastUiResponseDTO getExpView(Map<String, String> map);
 }

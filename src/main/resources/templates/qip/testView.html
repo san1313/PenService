@@ -12,6 +12,7 @@
     <title>Pen Service</title>
     <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
     <!-- 그리드 -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.17.1/xlsx.full.min.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
@@ -64,8 +65,7 @@
       <div class="row justify-content-center" style="margin-bottom: 10px">
         <div class="row col-3">
           <div class="col-4">
-            <label class="col-form-label" id="matNameLabel" for="itemName">자재명</label>
-            <label class="col-form-label" id="itemNameLabel" for="itemName" style="display: none">제품명</label>
+            <label class="col-form-label" id="itemNameLabel" for="itemName">제품명</label>
           </div>
           <div class="col-8">
             <input type="text" class="form-control" id="itemName" name="itemName" />
@@ -77,13 +77,13 @@
           </div>
           <div class="col-auto" style="position: relative">
             <input id="startpicker-input" class="form-control" type="text" aria-label="Date" />
-            <span class="tui-ico-date"></span>
+            <label class="tui-ico-date" for="startpicker-input"></label>
             <div id="startpicker-container" style="margin-left: -1px"></div>
           </div>
           <span class="col-1 col-form-label">~</span>
           <div class="col-auto" style="position: relative">
             <input id="endpicker-input" class="form-control" type="text" aria-label="Date" />
-            <span class="tui-ico-date"></span>
+            <label class="tui-ico-date" for="endpicker-input"></label>
             <div id="endpicker-container" style="margin-left: -1px"></div>
           </div>
         </div>
@@ -192,6 +192,7 @@
                 header: "검사번호",
                 name: "qipCodeListProd",
                 align: "center",
+                hidden: true,
               },
               {
                 header: "생산지시번호",
@@ -235,6 +236,65 @@
               },
             ],
           });
+          const expGrid = new tui.Grid({
+            el: document.getElementById("expGrid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/expView",
+                  method: "GET",
+                },
+              },
+            },
+            bodyHeight: 650,
+            scrollX: false,
+            rowHeaders: ["rowNum"],
+            columns: [
+              {
+                header: "검사번호",
+                name: "qipCodeListExp",
+                align: "center",
+                hidden: true,
+              },
+              {
+                header: "자재LOT",
+                name: "matLot",
+                align: "center",
+              },
+              {
+                header: "자재명",
+                name: "matName",
+                align: "center",
+              },
+              {
+                header: "검사일자",
+                name: "testDate",
+                align: "center",
+              },
+              {
+                header: "검사자",
+                name: "empName",
+                align: "center",
+              },
+              {
+                header: "검사수량",
+                name: "testNumMat",
+                align: "center",
+              },
+              {
+                header: "총합격량",
+                name: "testTnumPass",
+                align: "center",
+              },
+              {
+                header: "총불량량",
+                name: "testTnumDef",
+                align: "center",
+              },
+            ],
+          });
           //그리드 폼 끝
 
           //라디오 버튼 누를시 타겟 grid 변경
@@ -246,18 +306,21 @@
             let exp = $("#expGrid");
             radioVal = $("input[name=type]:checked").val();
             if (radioVal == "mat") {
+              $("#itemNameLabel").text("자재명");
               grid = matGrid;
               item.hide();
               exp.hide();
               mat.show();
               grid.refreshLayout();
             } else if (radioVal == "item") {
+              $("#itemNameLabel").text("제품명");
               grid = itemGrid;
               mat.hide();
               exp.hide();
               item.show();
               grid.refreshLayout();
             } else {
+              $("#itemNameLabel").text("자재명");
               grid = expGrid;
               mat.hide();
               item.hide();
@@ -283,6 +346,31 @@
               endDate: $("#endpicker-input").val(),
             });
             grid.readData();
+          });
+
+          $("#export").click((e) => {
+            let today = new Date();
+            let year = today.getFullYear();
+            let month = ("0" + (today.getMonth() + 1)).slice(-2);
+            let day = ("0" + today.getDate()).slice(-2);
+            today = `${year}-${month}-${day}`;
+            switch (radioVal) {
+              case "mat":
+                matGrid.export("xlsx", {
+                  fileName: "자재검사내역-" + today,
+                });
+                break;
+              case "item":
+                itemGrid.export("xlsx", {
+                  fileName: "제품검사내역-" + today,
+                });
+                break;
+              case "exp":
+                expGrid.export("xlsx", {
+                  fileName: "보관초과자재검사내역-" + today,
+                });
+                break;
+            }
           });
         });
       </script>

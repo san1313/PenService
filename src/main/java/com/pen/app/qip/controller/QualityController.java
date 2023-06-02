@@ -125,7 +125,7 @@ public class QualityController {
 	@GetMapping("/itemTestList")
 	@ResponseBody
 	ToastUiResponseDTO itemTestList() {
-		return null;
+		return new ToastUiResponseDTO(testService.itemTestList());
 	}
 	
 	// 보관기간 초과 자재 검사 리스트 조회
@@ -139,7 +139,6 @@ public class QualityController {
 	@PostMapping("/testInsertAjax")
 	@ResponseBody
 	boolean testInsertAjax(@RequestBody ItemTestDTO obj) {
-		System.err.println(obj);
 		return testService.insertTest(obj);
 	}
 	
@@ -161,5 +160,12 @@ public class QualityController {
 	@ResponseBody
 	ToastUiResponseDTO itemView(@RequestParam Map<String, String> map) {
 		return viewService.getItemView(map);
+	}
+	
+	// 보관기간초과 검사 리스트
+	@GetMapping("/expView")
+	@ResponseBody
+	ToastUiResponseDTO expView(@RequestParam Map<String, String> map) {
+		return viewService.getExpView(map);
 	}
 }

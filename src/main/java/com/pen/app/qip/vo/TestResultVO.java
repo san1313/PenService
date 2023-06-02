@@ -11,4 +11,7 @@ public class TestResultVO {
 	int testTnumDef;
 	int testTnumPass;
 	String testExpDate;
+	String itemLot;
+	String itemType;
+	String prevProcName;
 }

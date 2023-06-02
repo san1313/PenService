@@ -242,13 +242,13 @@
               <input type="text" class="form-control" id="itemDate" name="itemDate" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
-              <label class="col-form-label" for="prevProc">직전공정명</label>
+              <label class="col-form-label" for="prevProcName">직전공정명</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="prevProc" name="prevProc" readonly />
+              <input type="text" class="form-control" id="prevProcName" name="prevProcName" readonly />
             </div>
             <input type="hidden" class="form-control" id="itemIndica" name="itemIndica" readonly />
-            <input type="hidden" class="form-control" id="itemProcOrder" name="itemProcOrder" readonly />
+            <input type="hidden" class="form-control" id="itemType" name="itemType" readonly />
           </div>
         </div>
 
@@ -472,6 +472,7 @@
                   method: "GET",
                 },
               },
+              initialRequest: false,
             },
             bodyHeight: 490,
             scrollX: false,
@@ -549,18 +550,13 @@
             columns: [
               {
                 header: "생산지시코드",
-                name: "itemIndica",
+                name: "indicaCode",
                 align: "center",
                 hidden: true,
               },
               {
                 header: "제품LOT",
                 name: "itemLot",
-                align: "center",
-              },
-              {
-                header: "생산일자",
-                name: "itemDate",
                 align: "center",
               },
               {
@@ -577,21 +573,29 @@
                 header: "수량",
                 name: "itemCnt",
                 align: "center",
+                width: 100,
               },
               {
                 header: "단위",
                 name: "itemUnit",
                 align: "center",
+                width: 100,
               },
               {
-                header: "공정순서",
-                name: "itemProcOrder",
+                header: "생산일자",
+                name: "itemDate",
                 align: "center",
-                hidden: true,
+                width: 150,
               },
               {
                 header: "직전공정명",
-                name: "prevProc",
+                name: "prevProcName",
+                align: "center",
+                width: 150,
+              },
+              {
+                header: "품목구분",
+                name: "itemType",
                 align: "center",
                 hidden: true,
               },
@@ -609,6 +613,7 @@
                   method: "GET",
                 },
               },
+              initialRequest: false,
             },
             bodyHeight: 490,
             scrollX: false,
@@ -761,6 +766,9 @@
                   testNum = $("#matOrderQy").val();
                   break;
                 case "item":
+                  targetCode = $("#itemIndica").val();
+                  testDate = $("#itemTestDate").val();
+                  testNum = $("#itemNum").val();
                   break;
                 case "expired":
                   targetCode = $("#expLot").val();
@@ -803,6 +811,9 @@
                     testTnumDef: grid.getSummaryValues("testNumDef").sum,
                     testTnumPass: testNum - grid.getSummaryValues("testNumDef").sum,
                     testExpDate: $("#expDate").val(),
+                    itemType: $("#itemType").val(),
+                    itemLot: $("#itemLot").val(),
+                    prevProcName: $("#prevProcName").val(),
                   },
                   details: grid.getData(),
                   type: radioVal,
@@ -814,17 +825,22 @@
               })
                 .done((r) => {
                   alert("검사 내역이 저장되었습니다.");
-                  matModalGrid.readData();
                   grid.clear();
                   switch (radioVal) {
                     case "mat":
+                      matModalGrid.readData();
                       $("#matInputs input").val("");
                       $("#matTestDate").val(today);
                       $("#matEmpName").val(empName);
                       break;
                     case "item":
+                      itemModalGrid.readData();
+                      $("#itemInputs input").val("");
+                      $("#itemTestDate").val(today);
+                      $("#itemEmpName").val(empName);
                       break;
                     case "expired":
+                      expModalGrid.readData();
                       $("#expInputs input").val("");
                       $("#expEmpName").val(empName);
                       break;
@@ -839,6 +855,7 @@
 
           //발주번호/LOT 클릭시 모달 시작
           $("#matOrderNum").click((e) => {
+            matModalGrid.readData();
             $(".matModal").modal("show");
           });
           $(".matModal").on("shown.bs.modal", (e) => {
@@ -846,6 +863,7 @@
           });
 
           $("#itemLot").click((e) => {
+            itemModalGrid.readData();
             $(".itemModal").modal("show");
           });
           $(".itemModal").on("shown.bs.modal", (e) => {
@@ -853,6 +871,7 @@
           });
 
           $("#expLot").click((e) => {
+            expModalGrid.readData();
             $(".expModal").modal("show");
           });
           $(".expModal").on("shown.bs.modal", (e) => {
@@ -890,11 +909,23 @@
             if (e.rowKey === undefined) {
               return;
             }
-
             let row = itemModalGrid.getRow(e.rowKey);
-            console.log($("#itemInputs input"));
+            let inputs = $("#itemInputs input");
+            inputs.eq(1).val(row.itemLot);
+            inputs.eq(3).val(row.itemCode);
+            inputs.eq(4).val(row.itemName);
+            inputs.eq(5).val(row.itemCnt);
+            inputs.eq(6).val(row.itemUnit);
+            inputs.eq(7).val(row.itemDate);
+            inputs.eq(8).val(row.prevProcName);
+            inputs.eq(9).val(row.indicaCode);
+            inputs.eq(10).val(row.itemType);
+            console.log(inputs);
+            console.log(row);
             grid.setRequestParams({ itemCode: row.itemCode });
             grid.readData();
+
+            $(".itemModal").modal("hide");
           });
           //제품LOT 모달 그리드 클릭시 데이터 채워넣기 끝
 
