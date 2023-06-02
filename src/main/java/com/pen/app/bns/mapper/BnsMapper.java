@@ -50,5 +50,13 @@ public interface BnsMapper {
 	
 	//출고내역페이지
 	List<BnsReleaseVO> getSearchReleaseList();
+	List<BnsStoreVO> getLOTPrdtList(String keyword); //LOT리스트 조회검색
+	List<BnsStoreVO> getLOTPrdtAfterList(String keyword); //LOT리스트 조회검색
+	List<BnsStoreVO> getStoreListCon(BnsStoreVO vo); //입고관리 조건 조회
+	List<BnsStoreVO> getStoreSearchListCon(BnsStoreVO vo);
+	
+	List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo);//출고 대기(계약)조건조회
+	List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고 대기(주문)조건조회
+	
 	
 }

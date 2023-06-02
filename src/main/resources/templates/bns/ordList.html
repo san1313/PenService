@@ -72,9 +72,6 @@
 	</div>
 
 	<div layout:fragment="content">
-		<p>
-			<button id="pageReset">초기화</button>
-		</p>
 		진행구분 <label class="process">진행 <input type="checkbox"
 			checked="checked"> <span class="checkmark"></span>
 		</label> <label class="process">완료 <input type="checkbox"> <span
@@ -85,7 +82,7 @@
 		<p>
 			거래처명 <input type="text" id="accountlist-text"
 				style="background-color: #e2e1e1" readonly>
-			<button id="accountList" class="fa-solid fa-magnifying-glass"
+			<button id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 		</p>
 		<!-- <p>
@@ -99,14 +96,14 @@
 			주문일자 <input type="date" id="orddate-text"> - <input type="date" id="orddate-text">
 			</p>
 			납기일자 <input type="date" id="ordduedate-text"> - <input type="date" id="ordduedate-text">
-			<button id="searchOrd">조회</button>
+			<button id="searchOrd" class="btn btn-primary">조회</button> <button id="pageReset" class="btn btn-primary">초기화</button>
 
 		
 		<div class="ordbtn">
-			<button type="button" class="btn btn-outline-secondary"
+			<button type="button" class="btn btn-primary "
 				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
 				등록</button>
-			<button id="BtnOrdCancle" class="btn btn-outline-secondary">주문서
+			<button id="BtnOrdCancle" class="btn btn btn-danger">주문서
 				취소</button>
 		</div>
 
@@ -118,19 +115,24 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-
 				<div class="modal-content">
+			<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 					<h1 class="modaltitle">거래처 목록</h1>
 					<p>
 						거래처명 <input type="text" id="searchacc-text">
 						<button id="searchacc" type="submit"
-							class="fa-solid fa-magnifying-glass"></button>
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="accountGrid"></div>
 
-					<div class="modalbtn">
-						<button id="searchacc-btn" data-toggle="modal"
+					<div class="modalbtn ">
+						<button class="btn btn-primary" id="searchacc-btn" data-toggle="modal"
 							data-target=".bd-account-modal-lg">확인</button>
-						<button>취소</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
@@ -142,17 +144,23 @@
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 					<h1 class="modaltitle">제품 목록</h1>
 
 					<p>
 						제품명 <input id="searchprod-text" type="text">
 						<button type="submit" id="searchprod"
-							class="fa-solid fa-magnifying-glass"></button>
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
 					<div class="modalbtn">
-						<button id="modalsubmit" data-toggle="modal"
+						<button class = "btn btn-primary" id="modalsubmit" data-toggle="modal"
 							data-target=".bd-product-modal-lg">확인</button>
-						<button>취소</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
@@ -196,7 +204,7 @@
 
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">거래처명
-									<button type="button" class="fa-solid fa-magnifying-glass"
+									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
 								</label> <input id="ordaccname" type="text" class="form-control"
 									name="accName" readonly>
@@ -227,15 +235,15 @@
 						<hr>
 						<h2>주문상세</h2>
 						<br> <label>제품리스트</label>
-						<button type="button" class="fa-solid fa-magnifying-glass"
+						<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
-						<button style="float: right; margin-right: 5px;"
+						<button class = "btn btn-danger" style="float: right; margin-right: 5px;"
 							id="ordProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
 						<div class="modalbtn">
 							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal">취소</button>
+								data-bs-dismiss="modal" >취소</button>
 						</div>
 					</div>
 
@@ -245,16 +253,22 @@
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">거래처 목록</h2>
 								<p>
 									거래처명 <input id="searchaccreg-text" type="text">
-									<button id="searchaccreg" class="fa-solid fa-magnifying-glass"></button>
+									<button id="searchaccreg" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="accountRegGrid"></div>
 								<div class="modalbtn">
-									<button id="modalregsubmit" data-toggle="modal"
+									<button class = "btn btn-primary" id="modalregsubmit" data-toggle="modal"
 										data-target=".bd-smallaccount-modal-sm">확인</button>
-									<button>취소</button>
+									<button class="btn btn-secondary" data-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</div>
@@ -267,17 +281,23 @@
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
 									제품명 <input id="searchprodreg-text" type="text">
 									<button id="searchprodreg" type="submit"
-										class="fa-solid fa-magnifying-glass"></button>
+										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="productRegGrid"></div>
 								<div class="modalbtn">
-									<button id="modalsubmitbtn" data-toggle="modal"
+									<button class = "btn btn-primary" id="modalsubmitbtn" data-toggle="modal"
 										data-target=".bd-smallproduct-modal-sm" type="button">확인</button>
-									<button>취소</button>
+									<button class="btn btn-secondary" data-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</div>
@@ -353,9 +373,9 @@
 							<hr>
 							<h2>주문상세</h2>
 							<br> <label>제품리스트</label>
-							<button type="button" class="fa-solid fa-magnifying-glass"
+							<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
-							<button style="float: right; margin-right: 5px;"
+							<button class= "btn btn-danger" style="float: right; margin-right: 5px;"
 								id="ordProdDelete2">삭제</button>
 							<div id="modProdgrid"></div>
 							<div class="modalbtn">
@@ -365,23 +385,29 @@
 							</div>
 						</div>
 					</div>
-
+<!-- 주문서 수정 내의 제품리스트 모달 -->
 					<div class="modal fade bd-smallproductMod-modal-sm"
 						id="productModModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
 									제품명 <input id="searchprodmod-text" type="text">
 									<button id="searchprodmod" type="submit"
-										class="fa-solid fa-magnifying-glass"></button>
+										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="productRegGrid2"></div>
 								<div class="modalbtn">
-									<button id="modalsubmitbtn2" data-toggle="modal"
+									<button class = "btn btn-primary" id="modalsubmitbtn2" data-toggle="modal"
 										data-target=".bd-smallproductMod-modal-sm" type="button">확인</button>
-									<button>취소</button>
+									<button class="btn btn-secondary" data-dismiss="modal"> 취소</button>
 								</div>
 							</div>
 						</div>
@@ -705,9 +731,6 @@ $.ajax({
        $("#searchprodreg").on('click', function(){
    	const result = $("#searchprodreg-text").val()
 		$("#searchprodreg-text").val('');
-   	
-   	
-   	
    	$.ajax({
    		 url : "/bns/prodKeyList",
    	     method : "GET",
@@ -876,6 +899,7 @@ $.ajax({
 			product_Grid.refreshLayout();
 		}
 	});
+ //제품명 모달창 생성
    var product_Grid = new tui.Grid({
      el: document.getElementById('productGrid'),
      scrollX: false,
@@ -893,6 +917,7 @@ $.ajax({
    
      ]
    });
+ //제품명 모달창 그리드 먼저 띄어주고 모달창 띄움
    $(function(){
    	$('#productListModal').on('shown.bs.modal', function(){
    		product_Grid.refreshLayout();
@@ -919,6 +944,7 @@ $.ajax({
    });
    })
    
+   //모달창 내 제품그리드 클릭 시 본문의 input창으로 이동
        product_Grid.on('click', ev=> {
      console.log(ev.rowKey)
      console.log(ev.columns)
@@ -965,14 +991,12 @@ $.ajax({
 		}
 	});
 	
-	
 	$("#searchOrd").on('click', function(){
 		let accName = $('#accountlist-text').val();
 		let prodName = $('#productlist-text').val();
 		let ordDate = $('#orddate-text').val();
 	    let ordDueDate = $('#ordduedate-text').val(); 	
 		let data1 = {'accName':accName,'prodName':prodName,'ordDate':ordDate,'ordDueDate':ordDueDate};
-		
 		
 	$.ajax({
 		url : "/bns/ordListconAjax",

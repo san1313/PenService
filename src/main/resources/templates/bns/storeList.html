@@ -40,15 +40,57 @@
 	
 	<div layout:fragment="content">
 
-	<h2>입고대기현황</h2> <button type="button" style="float:right;" id="storeRegBtn">전량입고</button>
+	<h2>입고대기현황</h2> 
+	<form id="searchform">
+	<p>
+		완제품LOT <input type="text" id="lotlist-text"
+			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
+		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
+			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
+	</p>
+	
+	생산일자 <input type="date" id="prdtDate-text" name="prdtDate"> -
+	 <input type="date" id="prdtDate1-text" name="prdtDate1">
+	 <button type="button" id="searchStoreList"class="btn btn-primary">조회</button>
+	
+	</form>
+	<button type="button" style="float:right;" id="storeRegBtn" class="btn btn-primary">전량입고</button>
+	
 	<div id="beforeStoreGrid"></div>
 	<br>
-	<h2>입고완료현황</h2>
+	<h2>입고완료현황 <button type="button" style="float:right;" id="storeCancleBtn" class="btn btn-danger">입고취소</button></h2>
 	<input type="hidden" th:value="${#authentication.principal.empNum}" id="empNum">
-	<button type="button" style="float:right;" id="storeCancleBtn">입고취소</button>
 	<div id="afterStoreGrid"></div>
 	
+<!-- LOT리스트 모달 -->
+		<div class="modal fade bd-lot-modal-lg" id="lotListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
 
+				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle">완제품LOT 목록</h1>
+					<p>
+						완제품LOT <input type="text" id="searchlot-text">
+						<button id="searchlot" type="submit"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="lotGrid"></div>
+
+					<div class="modalbtn">
+						<button class = "btn btn-primary" id="searchlot-btn" data-toggle="modal"
+							data-target=".bd-lot-modal-lg">확인</button>
+						<button class = "btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- LOT리스트 모달 끝 -->
 	<script>
 	
 	const token = $('meta[name="_csrf"]').attr("content");
@@ -198,6 +240,7 @@
 		   
 	   })
 	   
+	   //입고취소 버튼 클릭 시
 	     $('#storeCancleBtn').on('click' ,function(){
 			let checked = afterStoreGrid.getCheckedRows();
 			console.log(checked);
@@ -236,6 +279,90 @@
 				}) 
 		   
 	   })
+	   
+	   
+	   /* 본문의 LOT 모달창 */
+	 //LOT 리스트
+	 $.ajax({
+	 		url : "/bns/LOTPrdtList",
+	 		method : "GET",
+	 		dataType : "JSON",
+	 		success : function(result){
+	 			lotGrid.resetData(result);
+	 			lotGrid.refreshLayout();
+	 		}
+	 	});
+	  //본문 내 LOT리스트 그리드 생성
+	    var lotGrid = new tui.Grid({
+	 	   bodyHeight : 200,
+	      el: document.getElementById('lotGrid'),
+	      scrollX: false,
+	      rowHeaders: ['rowNum'],
+	      columns: [
+	        {
+	          header: 'LOT번호',
+	          name: 'prdtLot'
+	        },
+	        {
+	          header: '제품코드',
+	          name: 'prodCode'
+	        },
+	        {
+	          header: '제품명',
+	          name: 'prdtNm'
+	        }
+	      ]
+	    });
+	  //본문 내 LOT 리스트 그리드 뜨고 모달창뜨게
+	    $(function(){
+	    	$('#lotListModal').on('shown.bs.modal', function(){
+	    		lotGrid.refreshLayout();
+	    	})
+	    })
+	    //본문 내 LOT 리스트 내 버튼클릭 시 
+	    $("#searchlot").on('click', function(){
+	    	const result = $("#searchlot-text").val()
+	 		$("#searchlot-text").val('');
+	   //LOT 리스트 검색 아작스
+	    	$.ajax({
+	    		 url : "/bns/LOTPrdtList",
+	    	     method : "GET",
+	    	     data : {'result' : result},
+	    	     success : function(result){
+	    	     lotGrid.resetData(result);
+	    	     lotGrid.refreshLayout();
+	    	     },
+	    	     error: function(reject){
+	    	    	 console.log(reject)
+	    	     }
+	    });
+	    })
+	    //LOT 리스트 그리드 클릭 시 
+	    lotGrid.on('click', ev=> {
+	        const focusCell = lotGrid.getFocusedCell()  
+	      let dataRow = lotGrid.getRow(ev.rowKey);
+	      $('#lotlist-text').val(dataRow.prdtLot);
+	      $("#searchlot-btn").click(function(){
+	    	 $('#lotListModal').modal('hide');
+	      })
+	    })  
+	    //본문의 조회버튼 클릭 시 
+	    document.getElementById('searchStoreList').addEventListener('click',function(){
+	 	/*    $('#searchStoreList').on('click' ,function(){
+	    		 let prdtLot = $('#lotlist-text').val();
+	    		let prdtDate = $('#prdtDate-text').val();
+	    		let prdtDate1 = $('#prdtDate1-text').val();
+	    		let data1 = {'prdtLot':prdtLot,'prdtDate':prdtDate,'prdtDate1':prdtDate1};  */
+	    	$.ajax({
+	    		url : "/bns/storeListconAjax",
+	    		method : "GET",
+	    		data : $('#searchform').serialize(),
+	    		dataType : "JSON",
+	    		success : function(result){
+	    			beforeStoreGrid.resetData(result);
+	    		}
+	    	});
+	    })
 	});
 	</script>
 	</div>

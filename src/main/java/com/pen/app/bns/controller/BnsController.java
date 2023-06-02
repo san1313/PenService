@@ -97,7 +97,7 @@ public class BnsController {
 		
 		return list;
 	}
-	
+	//제품명 조건 검색
 	@RequestMapping("/prodKeyList")
 	@ResponseBody
 	public List<BnsProdVO> prodKeyList(@RequestParam String result){
@@ -344,5 +344,49 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 	List<BnsReleaseVO> list = bnsService.getSearchReleaseList();
 	return list;
 }
+
+//입고관리 페이지 LOT번호 키워드
+	@RequestMapping("/LOTPrdtList")
+	@ResponseBody
+	public List<BnsStoreVO> LOTPrdtList(@RequestParam(required = false) String result){
+		List<BnsStoreVO> list = bnsService.getLOTPrdtList(result);
+		return list;
+	}
+	
+	//입고관리 페이지 LOT번호 키워드
+		@RequestMapping("/LOTPrdtAfterList")
+		@ResponseBody
+		public List<BnsStoreVO> LOTPrdtAfterList(@RequestParam(required = false) String result){
+			List<BnsStoreVO> list = bnsService.getLOTPrdtAfterList(result);
+			return list;
+		}
+
+	//입고관리 페이지 LOT조건검색 아작스
+	@ResponseBody
+	@RequestMapping("/storeListconAjax")
+	public List<BnsStoreVO> storeListconAjax(BnsStoreVO vo){
+		return bnsService.getStoreListCon(vo);
+	}
+	
+	//입고내역조회 페이지 LOT조건검색 아작스
+		@ResponseBody
+		@RequestMapping("/storeSearchListconAjax")
+		public List<BnsStoreVO> storeSearchListconAjax(BnsStoreVO vo){
+			return bnsService.getStoreSearchListCon(vo);
+		}
+		
+		//출고대기 페이지(계약) 아작스
+				@ResponseBody
+				@RequestMapping("/releaseContListconAjax")
+				public List<BnsReleaseVO> releaseContListconAjax(BnsReleaseVO vo){
+					return bnsService.getreleaseContListCon(vo);
+				}
+				//출고대기 페이지(주문) 아작스
+				@ResponseBody
+				@RequestMapping("/releaseOrdListconAjax")
+				public List<BnsReleaseVO> releaseOrdListconAjax(BnsReleaseVO vo){
+					return bnsService.getreleaseOrdListCon(vo);
+				}
+	
 }
 

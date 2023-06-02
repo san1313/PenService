@@ -174,7 +174,7 @@
 		from bns_order_detail
 		where ord_code = #{keyword}
 	</select>
-
+<!-- 계약서 -->
 	<!-- 계약서 전체 조회 -->
 	<select id="getContList" resultType="BnsContVO">
 		select distinct c.cont_code
@@ -406,5 +406,187 @@ GROUP BY ord_det_code,
          from bns_release r join com_info_emp e on(r.emp_num = e.emp_num)
          order by bns_release_code
 	</select>
+	
+	
+		<!-- 완제품LOT,제품코드, 제품명 검색 조회 -->
+	<select id="getLOTPrdtList" resultType="BnsStoreVO">
+	
+	select prdt_lot, prod_code, prdt_nm
+	from MAK_PRDT 
+	where prdt_state = '입고대기' 
+	order by prdt_lot desc
+	<if test="keyword != null and keyword != ''">
+	where prdt_lot =#{keyword}
+	</if>
+	</select>
+	
+			<!-- 완제품LOT,제품코드, 제품명 검색 조회 -->
+	<select id="getLOTPrdtAfterList" resultType="BnsStoreVO">
+	
+	select prdt_lot, prod_code, prdt_nm
+	from MAK_PRDT 
+	where prdt_state = '입고완료' 
+	order by prdt_lot desc
+	<if test="keyword != null and keyword != ''">
+	where prdt_lot =#{keyword}
+	</if>
+	</select>
+	
+	<!-- 입고관리페이지 조건 조회 -->
+	<select id="getStoreListCon" resultType="BnsStoreVO">
+	select *
+		from(
+		select 
+		prdt_lot,
+		prdt_nm, 
+		prod_code, 
+		cnt, 
+		to_char(prdt_date,'yyyy-mm-dd') prdt_date, 
+		prdt_state
+		from MAK_PRDT
+		<where>
+		 <if test="prdtLot != null and prdtLot != ''"> 
+		 and prdt_lot=#{prdtLot}
+		</if>
+		<if test="prdtDate != null and prdtDate != ''">
+	<![CDATA[
+			and prdt_date >= TO_DATE(#{prdtDate}, 'YYYY-MM-DD') 
+	]]>
+		</if>
+		</where>
+		)
+		<where>
+	<if test="prdtDate1 != null and prdtDate1 != ''">
+	<![CDATA[		
+		and prdt_date <= TO_DATE(#{prdtDate1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		 and prdt_state = '입고대기'
+		</where>
+	</select>
+	
+	<!-- 입고조회페이지 조건 조회 -->
+	<select id="getStoreSearchListCon" resultType="BnsStoreVO">
+	select *
+	from(
+	select p.prdt_lot,
+	 b.prdt_nm, 
+	 b.bns_store_quan,
+	  to_char(bns_store_date,'yyyy-mm-dd') bns_store_date,
+	   e.emp_name emp_name, 
+	   b.bns_store_note,
+	    p.prdt_state 
+    from com_info_emp e join bns_store b on(b.emp_num = e.emp_num)
+    join mak_prdt p on (b.prdt_lot = p.prdt_lot)
+		<where>
+		 <if test="prdtNm != null and prdtNm != ''"> 
+		 and b.prdt_nm=#{prdtNm}
+		</if>
+		<if test="prdtLot != null and prdtLot != ''"> 
+		 and b.prdt_lot=#{prdtLot}
+		</if>
+		<if test="bnsStoreDate != null and bnsStoreDate != ''">
+	<![CDATA[
+			and bns_store_date >= TO_DATE(#{bnsStoreDate}, 'YYYY-MM-DD') 
+	]]>
+		</if>
+		</where>
+		)
+		<where>
+	<if test="bnsStoreDate1 != null and bnsStoreDate1 != ''">
+	<![CDATA[		
+		and bns_store_date <= TO_DATE(#{bnsStoreDate1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		 and prdt_state = '입고완료'
+		</where>
+	</select>
+	
+	
+	<!-- 출고관리페이지(계약) 조건 조회 -->
+	<select id="getreleaseContListCon" resultType="BnsReleaseVO">
+SELECT cont_det_code,
+       cont_code,
+       bns_contract.acc_name,
+       prod_code,
+       prod_name,
+       cont_det_quan,
+       cont_det_quan - nvl(SUM(bns_release_quan), 0) AS cont_req_quan,
+       to_char(cont_det_release,'yyyy-mm-dd') cont_det_release
+FROM bns_contract
+JOIN bns_contract_detail USING ( cont_code )
+LEFT OUTER JOIN bns_release USING ( cont_det_code )
+WHERE cont_det_progress = '납기필요'
+GROUP BY cont_det_code,
+         cont_code,
+         bns_contract.acc_name,
+         prod_code,
+         prod_name,
+         cont_det_quan,
+         cont_det_release
+         
+		<where>
+		 <if test="prdtNm != null and prdtNm != ''"> 
+		 and prdt_nm=#{prdtNm}
+		</if>
+		<if test="contDetRelease != null and contDetRelease != ''">
+	<![CDATA[
+			and cont_det_release >= TO_DATE(#{contDetRelease}, 'YYYY-MM-DD') 
+	]]>
+		</if>
+		</where>
+		)
+		<where>
+	<if test="contDetRelease1 != null and contDetRelease1 != ''">
+	<![CDATA[		
+		and cont_det_release <= TO_DATE(#{contDetRelease1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		</where>
+	</select>
+	
+	<!-- 출고관리페이지(주문) 조건 조회 -->
+	<select id="getreleaseOrdListCon" resultType="BnsReleaseVO">
+			SELECT ord_det_code,
+       ord_code,
+       bns_order.acc_name,
+       prod_code,
+       prod_name,
+       ord_det_quan,
+       ord_det_quan - nvl(SUM(bns_release_quan), 0) AS ord_req_quan,
+       to_char(ord_due_date,'yyyy-mm-dd') ord_due_date
+FROM bns_order
+JOIN bns_order_detail USING ( ord_code )
+LEFT OUTER JOIN bns_release USING ( ord_det_code )
+WHERE ord_det_progress = '접수완료'
+GROUP BY ord_det_code,
+         ord_code,
+         bns_order.acc_name,
+         prod_code,
+         prod_name,
+         ord_det_quan,
+         ord_due_date
+		<where>
+		 <if test="prdtNm != null and prdtNm != ''"> 
+		 and prdt_nm=#{prdtNm}
+		</if>
+		<if test="ordDueDate != null and ordDueDate != ''">
+	<![CDATA[
+			and ord_due_date >= TO_DATE(#{ordDueDate}, 'YYYY-MM-DD') 
+	]]>
+		</if>
+		</where>
+		)
+		<where>
+	<if test="ordDueDate1 != null and ordDueDate1 != ''">
+	<![CDATA[		
+		and ord_due_date <= TO_DATE(#{ordDueDate1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		</where>
+	</select>
+	
+	
+
 	
 </mapper>
