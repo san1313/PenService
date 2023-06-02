@@ -358,9 +358,15 @@
                 </a>
                 <ul class="nav nav-treeview">
                   <li class="nav-item">
-                    <a href="/fac/register" class="nav-link">
+                    <a href="/fac/equipment" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>설비 정보 관리</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
+                    <a href="/fac/confirm" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>설비 점검 관리</p>
                     </a>
                   </li>
                 </ul>
@@ -600,8 +606,11 @@
         $("#facNav").addClass("menu-open");
         $("#facNav").children("a").addClass("active");
         switch (path.substr(5)) {
-          case "register":
-            $("#facNav").find("a[href='/fac/register']").addClass("active");
+          case "equipment":
+            $("#facNav").find("a[href='/fac/equipment']").addClass("active");
+            break;
+          case "confirm":
+            $("#facNav").find("a[href='/fac/confirm']").addClass("active");
             break;
         }
       } else if (path.startsWith("/qip")) {
