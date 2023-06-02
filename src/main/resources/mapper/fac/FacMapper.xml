@@ -183,23 +183,33 @@
 
 	<!--비가동전체조회 -->
 	<select id="getDownTimeList" resultType="FacDownTimeVO">
-	SELECT a.downtime_code,
-		   b.fac_name,
-		   a.downtime_reason,
-		   a.reason_explain,
-		   to_char(downtime_start_day,'yyyy-MM-dd'),
-		   to_char(start_time,'PM HH24:MI'),
-		   a.downtime_end_day,
-		   a.end_time,
-		   a.emp_num
-	  FROM fac_downtime a 
-	  JOIN fac_info b 
-	 USING (fac_code)
+		SELECT a.downtime_code,
+			   b.fac_name ,
+		 	   a.downtime_reason ,
+			   a.reason_explain ,
+			   to_char(DOWNTIME_START_DAY,'yyyy-MM-dd') DOWNTIME_START_DAY ,
+			   to_char(START_TIME,'PM HH24:MI') START_TIME,
+			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'-') AS DOWNTIME_END_DAY,
+			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'-') AS END_TIME,
+			   b.OPERATE_CHECK,
+			   a.emp_num
+		  FROM FAC_DOWNTIME a
+		  JOIN FAC_INFO b
+		 USING (fac_code)
+		 WHERE downtime_start_day is not null 
+		   AND downtime_end_day is null or operate_check = 'N'
 	</select>
 	
+	<!-- 비가동등록 -->
+	<insert id="insertDownTimeList" parameterType="FacDownTimeVO">
+	INSERT INTO FAC_DOWNTIME(DOWNTIME_CODE,FAC_CODE,DOWNTIME_REASON,REASON_EXPLAIN,DOWNTIME_START_DAY,START_TIME,EMP_NUM)
+	VALUES('REST'||rest_seq.nextval,#{facCode},#{downTimeReason},#{reasonExplain},current_date,current_date,#{empNum})	
+	</insert>
 	
 	
-	
-	
-
+	<!--설비등록시 설비비가동으로 자동 등록 
+	<insert id="insertDownFac" parameterType="FacInfoVO">
+	 insert into fac_downtime(downtime_code, fac_code, dowtime_reason,start_time,dowtime_start_day,emp_num,reason_explain) values() 
+	</insert>
+	-->
 </mapper>

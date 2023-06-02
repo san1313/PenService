@@ -28,22 +28,22 @@
    <div class = "col-6 fac_downTime">
    				
    			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
+            <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요">
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;
-            
-            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">
+            <br>
+
+            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
-  
-         	<br>
-          	
-            <label for="downTime_code" hidden>비가동코드&nbsp;
+            
+            <label for="downTime_code" >비가동코드&nbsp;
             <input type="text" id="downTime_code" placeholder="REST" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
-          
-          	<label for="downtime_reason">비가동사유</label>&nbsp;
-            <select name="downtime_reason" id="downtime_reason" style="width:120px; height:30px;" >
+  
+         	<br>   	               
+          	<label for="downTime_reason">비가동사유</label>&nbsp;
+            <select name="downTime_reason" id="downTime_reason" style="width:120px; height:30px;" >
               		 <option value="선택" selected="selected">---선택---</option>
                		 <option value="점검">점검</option>
                 	 <option value="고장">고장</option>
@@ -173,7 +173,8 @@
                method : "GET",
               dataType : "JSON", //키:값 형식으로 가져온다.
                success : function(result){
-                grid.resetData(result);
+                console.log(result);
+            	grid.resetData(result);
                 grid.refreshLayout();
                }
                });
@@ -218,6 +219,10 @@
               {
                 header: '종료시간',
                 name: 'endTime'
+              },
+              {
+                  header: '가동여부',
+                  name: 'operateCheck'
               },
             {
               header: '담당자',
@@ -311,7 +316,7 @@
  
         //점검수정,삭제하기전 그리드 이벤트 작업
         //서버에 연결전 토큰값 담는 method
-         /* grid.on("beforeRequest", function (obj) {
+            grid.on("beforeRequest", function (obj) {
               obj.xhr.setRequestHeader(header, token);
             });
        
@@ -319,23 +324,26 @@
               console.log(grid.getRow(e.rowKey));
               dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
 
-              console.log(dblclickRows);
-            
+              console.log(dblclickRows.startTime);
+          
               //값을 input창에 다시 담아줌
-              $('#confirm_code').val(dblclickRows.confirmCode); //점검코드
+              $('#downTime_code').val(dblclickRows.downTimeCode); //비가동코드
               $('#fac_name').val(dblclickRows.facName); //설비명
-              $('#action_history').val(dblclickRows.actionHistory); //조치내역
-              $('#emp_num').val(dblclickRows.empNum); //담당자
-              $('#confirm_issue').val(dblclickRows.confirmIssue); //점검사항-셀렉트박스
-              $("input:radio[name='confirm_category']:radio[value=\'"+dblclickRows.confirmCategory+"\']").prop('checked', true);//점검구분()
-              $("input:radio[name='decision']:radio[value=\'"+dblclickRows.decision+"\']").prop('checked',true);//판정(라디오)              
-              $('#confirmDatei').val(dblclickRows.confirmDate);  //점검일시 
+              $('#downTime_reason').val(dblclickRows.downTimeReason); //비가동사유             
+              $('#reason_explain').val(dblclickRows.reasonExplain); //사유설명
+              $('#emp_num').val(dblclickRows.empNum);//담당자
+              $('#downTime_start_day').val(dblclickRows.downTimeStartDay); //시작날
+              $('#start_time').val(dblclickRows.startTime.substr(3)); //시작시간
+                            
               //$('#confirm_category').val(dblclickRows.confirmCategory); //점검구분 -라디오버튼
               //$('input[name="confirm_category"]:checked').val(dblclickRows.confirmCategory);
               //$('#decision').val(dblclickRows.decision); //판정 -라디오버튼
+             //$('#confirm_issue').val(dblclickRows.confirmIssue); //점검사항-셀렉트박스
+             //$("input:radio[name='confirm_category']:radio[value=\'"+dblclickRows.confirmCategory+"\']").prop('checked', true);//점검구분()
+            //$("input:radio[name='decision']:radio[value=\'"+dblclickRows.decision+"\']").prop('checked',true);//판정(라디오)              
              
            }); 
-           */
+          
       
    })
         
@@ -347,8 +355,8 @@
    
    
    
-      //점검삭제버튼 이벤트    
-      $("#delete").on('click', function(){
+      //비가동삭제버튼 이벤트    
+      /*$("#delete").on('click', function(){
          $.ajax({
             url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진 post
@@ -378,10 +386,10 @@
          })
 
       });
-     
+    */ 
     
-    //점검수정버튼 이벤트
-   $("#update").on('click',function(){
+    //비가동수정버튼 이벤트
+  /* $("#update").on('click',function(){
 	
       $.ajax({
          url: "/fac/confirmUpdate", //컨트롤러에 연결된 주소
@@ -413,8 +421,7 @@
                })
                $('div input').val('');
          	   $('div select').val('선택');
-               //$('div input').not("input[name=confirm_issue]").val('');
-         
+               //$('div input').not("input[name=confirm_issue]").val('');         
             },
             error:function(reject){
             console.log(reject)
@@ -422,46 +429,43 @@
       
       })
    });
-
-    //점검등록버튼 이벤트
+*/
+    //비가동등록버튼 이벤트
      $("#register").on('click',function(){              	 
-    	  let confirmInsertData={};
-          let innerData=[];
-          
-   		confirmInsertData = {
-                       "confirmCode" : $("#confirm_code").val(),
-                       "facCode" : $("#facCodei").val(),
-                       "confirmDate" : $('#confirmDatei').val(),
-                       "confirmCategory" : $("input[name=confirm_category]:checked").val(),
-                       "actionHistory" : $("#action_history").val(),
-                       "confirmIssue" :$("select[name=confirm_issue]").val(),
-                       "decision" : $("input[name=decision]:checked").val(),
+    	  let downTimeInsertData={}; //키:값 담을때 사용
+          //let innerData=[];          
+          downTimeInsertData = {
+                       "facCode" : $("#facCodei").val(),                       
+                       "downTimeReason" : $("select[name=downTime_reason] option:selected").val(),
+                       "reasonExplain" : $("#reason_explain").val(),                     
+                       "downTimeStartDay" : $("#downTime_start_day").val(), 
+                       "startTime" : $("#start_time").val(), 
                        "empNum" : $("#emp_num").val(),  
                         };
            
            $.ajax({
-             url: "/fac/confirmRegister", //컨트롤러에 연결된 주소
+             url: "/fac/downTimeRegister", //컨트롤러에 연결된 주소
              method : "post", //조회는 항상 get, 나머진 post
+             data: JSON.stringify(downTimeInsertData),
              contentType : "application/json",
              //json형태인 키:값 형태로 데이터넘김
-             data: JSON.stringify(confirmInsertData),
                beforeSend: function (xhr) {
                          xhr.setRequestHeader(header, token);
                         },
           success: function (result){
         	  
         	  $.ajax({
-                  url : "/fac/confirmListAjax",
+                  url : "/fac/downTimeListAjax",
                   method : "GET",
                  dataType : "JSON", //키:값 형식으로 가져온다.
-                  success : function(result){
-                   grid.resetData(result);
+                  success : function(result2){
+                   grid.resetData(result2);
                    grid.refreshLayout();
                   }
                   });
    
-                   $('div input').not("input[name=confirm_category]").val('');
-        	  $('#confirmDatei').val(new Date().toISOString().slice(0,10));     	  
+                   $('div input').val('');
+        	  //$('#confirmDatei').val(new Date().toISOString().slice(0,10));     	  
           },
           error:function(reject){
              console.log(reject)

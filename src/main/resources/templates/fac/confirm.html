@@ -134,8 +134,8 @@
     $(function(){
     	
     	//점검일자 자동생성
-    	//$('#confirmDatei').attr('readonly',true);
-    	//$('#confirmDatei').val(new Date().toISOString().slice(0,10));
+    	$('#confirmDatei').attr('readonly',true);
+    	$('#confirmDatei').val(new Date().toISOString().slice(0,10));
 		
     	//설비명버튼 이벤트
 		$('#facSelectmodalbtn').click(function(){
@@ -377,13 +377,14 @@
          method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-               confirmCode : $('#confirm_code').val(),
-               //facName : $('#fac_name').val(),
+               confirmCode : $('#confirm_code').val(),   
                confirmDate :$('#confirmDatei').val(),
                confirmCategory : $('input[name=confirm_category]:checked').val(),
                actionHistory : $("#action_history").val(),
                confirmIssue : $('#confirm_issue').val(),
                decision : $('input[name=decision]:checked').val(), 
+               
+               //facName : $('#fac_name').val(),
                //empNum : $('#emp_num').val()
                },
             beforeSend: function (xhr) {
@@ -402,7 +403,7 @@
                })
                $('div input').val('');
          	   $('div select').val('선택');
-               //$('div input').not("input[name=confirm_issue]").val('');
+               $('div input').not("input[name=confirm_issue]").val('');
          
             },
             error:function(reject){

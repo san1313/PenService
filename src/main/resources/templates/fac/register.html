@@ -373,6 +373,7 @@
 	 //설비수정버튼 이벤트
 	$("#update").on('click',function(){
 		let insertProcData = Progaddgrid.getData();
+		
 		let facInsertData={};
 		let innerData=[];
 		insertProcData.forEach(function(ele){
@@ -388,7 +389,8 @@
 					   tempMin : $("#temp_min").val(),
 					   tempMax : $("#temp_max").val(),
 					   empNum : $("#emp_num").val(),
-					   procCode : ele.procCode
+					   procCode : ele.procCode,
+					   searchDiv : dblclickRows.operateCheck
 					   };
 	    			innerData.push(facInsertData)
 		})

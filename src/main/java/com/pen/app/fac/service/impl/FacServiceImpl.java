@@ -56,6 +56,13 @@ public class FacServiceImpl implements FacService {
 		//공정수정
 		 mapper.insertProcList(list);
 		// 설비수정
+		 
+		/*설비 비가동으로 수정할 경우 비가동 테이블에 등록 하는 부분
+		 * if(list.getList().get(0).getOperateCheck().equals(list.getList().get(0).
+		 * getSearchDiv())) { }else {
+		 * if(list.getList().get(0).getOperateCheck().equals('N')) {
+		 * mapper.insertDownFac(list.getList().get(0)); } }
+		 */
 		return mapper.facUpdate(list.getList().get(0));
 
 	}
@@ -106,6 +113,13 @@ public class FacServiceImpl implements FacService {
 	public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo) {
 		// 설비비가동조회
 		return mapper.getDownTimeList(vo);
+	}
+
+	@Override
+	public int insertDownTimeList(FacDownTimeVO list) {
+		System.out.println("등록 서비스 : "+list);
+		// 비가동등록
+		return mapper.insertDownTimeList(list);
 	}
 
 	

@@ -63,6 +63,7 @@ public class FacController {
 	@ResponseBody
 	@GetMapping("/downTimeListAjax")
 	public List<FacDownTimeVO> downTimeListAjax(FacDownTimeVO vo){
+		System.out.println("등록 후 : "+vo);
 		List<FacDownTimeVO> list = dao.getDownTimeList(vo);
 		return list;
 	}
@@ -124,6 +125,13 @@ public class FacController {
 		return service.insertConfirmList(list);
 	}
 	
+	//비가동등록
+	@RequestMapping("/downTimeRegister")
+	@ResponseBody
+	public int downTimeRegister(@RequestBody FacDownTimeVO list) {
+		System.out.println("받은 값 : "+list);
+		return service.insertDownTimeList(list);
+	}
 
 	// 설비수정
 	@ResponseBody

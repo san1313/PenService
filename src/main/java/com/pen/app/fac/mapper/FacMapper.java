@@ -34,6 +34,11 @@ public interface FacMapper {
    
    //설비비가동관리
    public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo); //비가동전체조회
+   public int insertDownTimeList(FacDownTimeVO list); //비가동 등록 
+   
+   
+   
+	/* int insertDownFac(FacInfoVO vo); */
    
    
    
