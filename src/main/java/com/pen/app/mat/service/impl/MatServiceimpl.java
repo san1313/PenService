@@ -1,5 +1,6 @@
 package com.pen.app.mat.service.impl;
 
+import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,6 +11,7 @@ import com.pen.app.mat.service.MatService;
 import com.pen.app.mat.vo.AdjustVO;
 import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
+import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -115,19 +117,6 @@ public class MatServiceimpl implements MatService {
 	}
 	
 	@Override
-	public List<WarehousingVO> getsemiwarehousingtestlist() {
-		// 반제품입고 검사내역리스트
-		return matmapper.getsemiwarehousingtestlist();
-	}
-	
-	@Override
-	public void getsemiwarehousingregister(List<WarehousingVO> list) {
-		//반제품 입고등록
-		matmapper.getsemiwarehousingregister(list);
-	}
-
-
-	@Override
 	public List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo) {
 		// 자재입고 다중검색 리스트
 		return matmapper.getwarehousingsearchajax(vo);
@@ -137,12 +126,6 @@ public class MatServiceimpl implements MatService {
 	public List<WarehousingVO> getwarehousingmatlistajax() {
 		// 자재입고조회
 		return matmapper.getwarehousingmatlistajax();
-	}
-	
-	@Override
-	public List<WarehousingVO> getsemiwarehousinglistajax() {
-		// 반제품입고리스트
-		return matmapper.getsemiwarehousinglistajax();
 	}
 
 
@@ -228,6 +211,38 @@ public class MatServiceimpl implements MatService {
 		// 폐기자재조회다중검색
 		return matmapper.getdisposeresultsearchlist(vo);
 	}
+	
+
+	@Override
+	public void getdisposeresultlistresu(List<DisposeResultVO> list) {
+		// 결과반영
+		for (DisposeResultVO vo: list) {
+			matmapper.getdisposeresultlistresu(vo);
+		}
+	}
+
+	@Override
+	public void getmatoptionholdregister(List<HoldVO> list) {
+		// 임의해제 등록
+		for (HoldVO vo : list) {
+			matmapper.getmatoptionholdregister(vo);
+			
+		}
+			
+	}
+
+	@Override
+	public List<HoldVO> getallmatoptionholdlist() {
+		// 임의해제리스트
+		return matmapper.getallmatoptionholdlist();
+	}
+
+	@Override
+	public List<HoldVO> getmatoptionholdsearchlist(HoldVO vo) {
+		//임의해제 다중검색
+		return matmapper.getmatoptionholdsearchlist(vo);
+	}
+
 
 
 }

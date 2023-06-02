@@ -75,7 +75,8 @@
 			   a.mat_ordername, 
 			   a.mat_orderdate, 
 			   a.mat_charger, 
-			   b.mat_dtaordcode, 
+			   b.mat_dtaordcode,
+			   b.mat_name, 
 			   b.mat_order_qy, 
 			   b.mat_untpc, 
 			   b.mat_totamt, 
@@ -141,20 +142,16 @@
 	
 	<!-- 자재검사내역리스트 -->
 	<select id = "getestwarehousinglist" resultType="WarehousingVO">
-		select distinct m.mat_code, 
-						m.mat_name, 
-						h.mat_ordernum, 
-						q.test_tnum_pass,
-						q.qip_code_list_mat,
-						a.acc_code
-		from QIP_LIST_MAT q 
-		    join MAT_ORDER m on(q.MAT_DTAORDCODE=m.MAT_DTAORDCODE) 
-			join MAT_ORDER_HEADER  h on(m.MAT_ORDERNUM=h.MAT_ORDERNUM) 
-			join COM_CODE_ACCOUNT a on(h.ACC_CODE=a.ACC_CODE)
-			join  COM_ACCOUNT_ITEM c on(a.ACC_CODE=c.ACC_CODE)
-			JOIN COM_CODE_MAT s on(c.acc_item = s.mat_code)
-		 where QIP_CODE_LIST_MAT not in (select q.QIP_CODE_LIST_MAT
-		from QIP_LIST_MAT q join MAT_WRHOUSNG w on q.QIP_CODE_LIST_MAT = w.QIP_CODE_LIST_MAT)
+		select b.mat_code, 
+            b.mat_name,
+            a.mat_ordernum, 
+            c.test_tnum_pass, 
+            c.qip_code_list_mat, 
+            a.acc_code 
+         from mat_order_header a 
+      join mat_order b on(a.mat_ordernum = b.mat_ordernum) 
+      join qip_list_mat c on(b.mat_dtaordcode = c.mat_dtaordcode)
+      where not exists(select * from mat_wrhousng where QIP_CODE_LIST_MAT = c.QIP_CODE_LIST_MAT)
 	</select>
 	
 	<!-- 자재입고등록 -->
@@ -174,8 +171,8 @@
     UPDATE 
     SET a.MAT_QNT = v_lot
     WHEN NOT MATCHED THEN
-    INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT)
-    VALUES(v_lot, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt});
+    INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT, MAT_STATE, MAT_KEEPDATE)
+    VALUES(v_lot, #{list[0].matCode}, #{list[0].matName}, #{list[0].matQnt}, '검사완료', sysdate+(interval '1' year));
     <foreach collection="list" item="vo" separator=";" close="; END;">
     insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT, MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST) 
     values (mat_wrh_seq, #{vo.qipCodeListMat}, v_lot, (select acc_name from com_code_account where acc_code=#{vo.accCode}), #{vo.matWrhqy}, sysdate, '입고완료')
@@ -240,10 +237,6 @@
 		</if>
 	</select>
 	
-	<!-- 반제품입고등록 검사내역리스트 -->
-	<!-- <select id="getsemiwarehousinglist" resultType="WarehousingVO">
-	select qip_code_list_prod, prcs_code, test_num_prod, test_num_def  from qip_list_prod
-	</select> -->
 	
 	<!-- 자재재고조회 자재코드 검색 -->
 	<select id="getinventorysearch" resultType="InventoryVO">
@@ -260,7 +253,7 @@
 			    mat_lot,
 			    mat_bcncname, 
 			    nvl(cnt,0)+mat_qnt as matQntt,
-			    nvl(cnt,0),
+			    nvl(cnt,0) as cnt,
 			    mat_qnt 
 			from (select mat_code,mat_name,mat_qnt,mat_lot,mat_bcncname,mat_wrhqy 
 				from (select mat_lot,mat_bcncname, sum(mat_wrhqy) mat_wrhqy 
@@ -445,5 +438,73 @@
         where MAT_CHKEEPDATE <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
         	]]>
         	  </if>
+	</select>
+	
+	<!-- 결과반영 -->
+	<select id="getdisposeresultlistresu" statementType="CALLABLE">
+	{call v_dis_proc(
+	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matMdev, mode=IN, jdbcType=VARCHAR},
+	#{matMdatresn, mode=IN, jdbcType=VARCHAR},
+	#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
+	#{matQnt, mode=IN, jdbcType=VARCHAR}
+	)}
+	</select>
+	
+	<!-- 자재홀드임의해제 -->
+	<select id="getmatoptionholdregister" statementType="CALLABLE">
+	{call mat_hold_proc(
+	#{matLot, mode=IN, jdbcType=VARCHAR},
+	#{matQnt, mode=IN, jdbcType=VARCHAR},
+	#{matRlsdate, mode=IN, jdbcType=VARCHAR},
+	#{matHoldresn, mode=IN, jdbcType=VARCHAR},
+	#{matRlsqnt, mode=IN, jdbcType=VARCHAR}
+	)}
+	</select>
+	
+	<!-- 자재홀드임의해제리스트 -->
+	<select id="getallmatoptionholdlist" resultType="HoldVO">
+		select a.mat_lot, 
+			   a.mat_code, 
+			   a.mat_name,
+			   (a.mat_qnt - b.mat_rlsqnt) as bmatQnt, 
+			   a.mat_qnt, 
+			   b.mat_rlsqnt, 
+			   b.mat_rlsdate, 
+			   b.mat_holdresn
+			from mat_invntry a 
+		join mat_hold b on(a.mat_lot = b.mat_lot)
+	</select>
+	
+	<!-- 임의해제리스트 다중검색 -->
+	<select id="getmatoptionholdsearchlist" resultType="HoldVO">
+		select *
+		from(select a.mat_lot,		
+			   a.mat_code, 
+			   a.mat_name,
+			   (a.mat_qnt - b.mat_rlsqnt) as bmatQnt, 
+			   a.mat_qnt, 
+			   b.mat_rlsqnt, 
+			   b.mat_rlsdate, 
+			   b.mat_holdresn
+			from mat_invntry a 
+		join mat_hold b on(a.mat_lot = b.mat_lot)
+		<where>
+			<if test="matLot != null and matLot != ''"> 
+		and a.mat_lot like '%'|| #{matLot} || '%'
+			</if>
+			<if test="matRlsdate != null and matRlsdate != ''">
+			 <![CDATA[ 
+    		and MAT_RLSDATE >= TO_DATE(#{matRlsdate}, 'YYYY-MM-DD')
+    		]]>
+    		</if> 	
+    		</where>	       
+		         )
+		   <if test="matRlsdate1 != null and matRlsdate1 != ''">
+		   <![CDATA[ 
+        where MAT_RLSDATE <= TO_DATE(#{matRlsdate1}, 'YYYY-MM-DD')
+        	]]>
+        	  </if>
+			
 	</select>
 </mapper>
