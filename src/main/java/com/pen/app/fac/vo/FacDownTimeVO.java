@@ -16,4 +16,6 @@ public class FacDownTimeVO {
 	String downTimeEndDay; //비가동종료일	
 	String endTime; //비가동 종료시간
 	String facName;// 설비명
+	
+	String operateCheck; //가동여부
 }

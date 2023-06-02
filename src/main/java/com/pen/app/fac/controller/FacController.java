@@ -28,41 +28,47 @@ import com.pen.app.fac.vo.FacInfoVO;
 @RequestMapping("/fac")
 public class FacController {
 
-	@Autowired
-	FacMapper dao;
-	@Autowired
-	FacService service;
+	@Autowired FacMapper dao;
+	@Autowired FacService service;
 
-	@GetMapping("/downTime") //비가동관리 페이지
-	public void downTime() {
-
-	}
 	
-	@GetMapping("/downTime2") //비가동관리 테스트 페이지
+	
+	@GetMapping("/downTime2") 
 	public void downTime2() {
-
+		//비가동관리 테스트 페이지
 	}
 	
-
-	@GetMapping("/management") // 설비관리 페이지
-	public void management() {
-
+	@GetMapping("/downTime") 
+	public void downTime() {
+		//비가동관리 페이지
 	}
-
-	@GetMapping("/register") // 설비정보관리 페이지
-	public void register() {
-
-	}
-
-	@GetMapping("/confirm") // 점검관리 페이지
+	@GetMapping("/confirm") 
 	public void confirm() {
-
+		// 설비점검관리 페이지
 	}
+
+	@GetMapping("/equipment")
+	public void equipment() {
+		// 설비정보관리 페이지
+	}
+
+	
+//	@GetMapping("/register") // 설비정보관리 페이지
+//	public void register() {
+//
+//	}
+	
+//	@GetMapping("/management") // 설비관리 페이지
+//	public void management() {
+//
+//	}
+
 	
 	//비가동전체리스트
 	@ResponseBody
 	@GetMapping("/downTimeListAjax")
 	public List<FacDownTimeVO> downTimeListAjax(FacDownTimeVO vo){
+		System.out.println("등록 후 : "+vo);
 		List<FacDownTimeVO> list = dao.getDownTimeList(vo);
 		return list;
 	}
@@ -124,6 +130,13 @@ public class FacController {
 		return service.insertConfirmList(list);
 	}
 	
+	//비가동등록
+	@RequestMapping("/downTimeRegister")
+	@ResponseBody
+	public int downTimeRegister(@RequestBody FacDownTimeVO list) {
+		System.out.println("받은 값 : "+list);
+		return service.insertDownTimeList(list);
+	}
 
 	// 설비수정
 	@ResponseBody

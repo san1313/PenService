@@ -26,6 +26,6 @@ public class FacInfoVO {
 	String procType; //공정타입
 	String procDetail; //공정설명
 	
-	String searchDiv;
-	String searchName;
+	String searchDiv; //조건검색구분
+	String searchName; //조건검색명
 }

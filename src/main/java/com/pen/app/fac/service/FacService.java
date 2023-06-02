@@ -21,6 +21,7 @@ public interface FacService {
 	public int facRegister(FacInfoVO vo); //설비등록
 	public int insertFacList(FacInfoListVO list); //설비+공정등록
 	public int insertConfirmList(FacConfirmVO list); //점검등록
+	
 	public int facUpdate(FacInfoListVO list); //설비수정
 	public int confirmUpdate(FacConfirmVO list);//점검수정
 	
@@ -32,5 +33,5 @@ public interface FacService {
 	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO vo); //점검기간별 조회
 	
 	public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo);//설비비가동조회
-	
+	public int insertDownTimeList(FacDownTimeVO list); //비가동 등록 
 }
