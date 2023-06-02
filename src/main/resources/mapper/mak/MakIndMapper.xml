@@ -293,8 +293,16 @@ select prod_name,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica
 <select id="product" resultType="MakVO">
 select * from com_code_prod
 </select>
+
+<select id="modalProd" parameterType="string" resultType="MakVO">
+select * from com_code_prod where prod_name like ('%'||#{prodName}||'%')
+</select>
+
+<select id="perfIndList" resultType="MakVO">
+select * from mak_indica join com_code_prod using(prod_code)
+</select>
  <!-- 사원 리스트 출력 -->
   <!-- <select id="getUserList" resultType="UserVO">
-  	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) ORDER BY EMP_NUM
+	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) where auth_name like '%사원%' ORDER BY EMP_NUM
   </select> -->
 </mapper>

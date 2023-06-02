@@ -44,4 +44,7 @@ public interface MakIndMapper {
 	
 	List<MakVO> dirIndList();
 	List<MakVO> product();
+	
+	List<MakVO> modalProd(String prodName);
+	List<MakVO> perfIndList();
 }

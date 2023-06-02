@@ -18,7 +18,7 @@ import com.pen.app.mak.vo.MakVO;
 import com.pen.app.mak.vo.PlanVO;
 
 /*
- * 최준호 - 생산지시서 컨트롤러 
+ * 최준호 - 생산지시서 컨트롤러 + 공정실적 컨트롤러
  */
 
 @Controller
@@ -122,4 +122,26 @@ public class MakIndController {
 		return list;
 	}
 	
+	@GetMapping("/modalProd")
+	@ResponseBody
+	List<MakVO> modalProd(@RequestParam String prodName){
+		return mapper.modalProd(prodName);
+	}
+
+	//공정실적조회 페이지로 이동
+	@GetMapping("/performance")
+	void performance() {
+		
+	}
+	//공정실적관리 페이지로 이동
+	@GetMapping("/performanceManage")
+	void performanceManage() {
+		
+	}
+	
+	@GetMapping("/perfIndList")
+	@ResponseBody
+	List<MakVO> perfIndList(){
+		return mapper.perfIndList();
+	}
 }

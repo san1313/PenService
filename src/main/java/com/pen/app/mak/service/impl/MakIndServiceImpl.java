@@ -102,15 +102,18 @@ public class MakIndServiceImpl implements MakIndService{
 		int k=0;
 		Map<Object,Integer> step = new HashMap<>();
 		for (MakVO vo : list.getList()) {
-			if(vo.getAmount()>0) {
-				vo.setMakFlowCode(step.get(vo.getProcCode()));
-				vo.setMakStep(step.get(vo.getMakFlowCode()));
-				k+=mapper.insertBOM(vo);
-			}else if(vo.getMakFlowStep()>0) {
+		if(vo.getMakFlowStep()>0) {
 				k+=mapper.insertFlow(vo);
 				int seq = mapper.getFlowSeq();
 				step.put(vo.getProcCode(),seq);
 				step.put(seq, vo.getMakFlowStep());
+			}else if(vo.getAmount()>0) {
+				System.err.println(step);
+				System.err.println(vo);
+				System.err.println(vo.getProcCode());
+				vo.setMakFlowCode(step.get(vo.getProcCode()));
+				vo.setMakStep(step.get(vo.getMakFlowCode()));
+				k+=mapper.insertBOM(vo);
 			};
 		};
 		List<MakVO> bomList = mapper.getCurrBom();
@@ -155,14 +158,12 @@ public class MakIndServiceImpl implements MakIndService{
 		int a = 0;
 		String result = "";
 		Map<Object,Integer> map = new HashMap<>();
-		
 		a+=mapper.updateIndica(list.getList().get(0));
-		
 		for (MakVO vo : list.getList()) {
 			a+=mapper.updateMakBom(vo);
 			/* 차이나는 값 합산 */
 			if(map.containsKey(vo.getBomProdCode())) {
-			map.put(vo.getBomProdCode(),(map.get(vo.getBomProdCode())) +vo.getReQnt());
+				map.put(vo.getBomProdCode(),(map.get(vo.getBomProdCode())) +vo.getReQnt());
 			}else {
 				map.put(vo.getBomProdCode(), vo.getReQnt());
 			}
