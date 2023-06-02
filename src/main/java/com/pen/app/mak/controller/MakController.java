@@ -16,6 +16,8 @@ import com.pen.app.mak.service.MakService;
 import com.pen.app.mak.vo.PlanListVO;
 import com.pen.app.mak.vo.PlanVO;
 
+/*최준호 - 생산계획서 컨트롤러*/
+
 @Controller
 @RequestMapping("/mak")
 public class MakController {
@@ -294,7 +296,6 @@ public class MakController {
 		for(int i = 0; i<list.size();i++) {
 			String detC = list.get(i).getOrdDetCode();
 			List<PlanVO> CDC = mapper.getConnection(detC);
-			
 			if(CDC.isEmpty()) {
 				System.out.println("조건값 없음");
 			}else {
@@ -321,7 +322,6 @@ public class MakController {
 								detCoList.add(detCo.get(k));
 							};
 						};
-					
 				}
 			}
 		}
@@ -329,11 +329,9 @@ public class MakController {
 			
 		}else {
 		List<PlanVO> result1 = mapper.getModalOrder(detCoList,vo);
-		
 		result.addAll(result1);
 		};
 			if(ordCount>0&&result.isEmpty()) {
-				
 			}else if(ordCount==0&&result.isEmpty()) {
 				result=list;
 			}

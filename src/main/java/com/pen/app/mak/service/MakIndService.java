@@ -17,4 +17,5 @@ public interface MakIndService {
 	List<MakVO> getIndicatedBom(String indicaCode);
 	String updateIndica(IndicaListVO list);
 	String delIndica(IndicaListVO list);
+	List<MakVO> dirIndList();
 }

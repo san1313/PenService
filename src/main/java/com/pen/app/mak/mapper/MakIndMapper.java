@@ -37,4 +37,14 @@ public interface MakIndMapper {
 	List<MakVO> getIndMakHold(String indicaCode);
 	int updateIndMakHold(MakVO vo);
 	int updateIndMakMat(MakVO vo);
+	int delIndica(MakVO vo);
+	int delIndBom(int makBomCode);
+	int delIndFlow(int makFlowCode);
+	int delIndHold(String indicaCode);
+	
+	List<MakVO> dirIndList();
+	List<MakVO> product();
+	
+	List<MakVO> modalProd(String prodName);
+	List<MakVO> perfIndList();
 }

@@ -221,9 +221,8 @@
 
 	<!-- 현재 존재하는 주문서들 불러오기 비교구문용 -->
 	<select id="getOrd" resultType="PlanVO">
-		select
-		acc_code||acc_name||'-'||prod_name
-		contNm,ord_DET_CODE,PROD_CODE,PROD_NAME,ord_DET_PRICE,ord_DET_QUAN,to_char(ord_Due_date,'yyyy-MM-dd')
+		select acc_code||acc_name||'-'||prod_name contNm,
+		ord_DET_CODE,PROD_CODE,PROD_NAME,ord_DET_PRICE,ord_DET_QUAN,to_char(ord_Due_date,'yyyy-MM-dd')
 		ordDueDate,ACC_CODE,ACC_NAME,to_char(ord_DATE,'yyyy-MM-dd')
 		ordDate,to_char(ord_DUE_DATE,'yyyy-MM-dd')
 		ordDueDate,ord_PROGRESS,ord_NOTE,EMP_NUM,ord_code from ord_base_bns order by ord_due_date desc

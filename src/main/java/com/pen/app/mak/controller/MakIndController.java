@@ -11,18 +11,21 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pen.app.mak.mapper.MakIndMapper;
 import com.pen.app.mak.service.MakIndService;
 import com.pen.app.mak.vo.IndicaListVO;
 import com.pen.app.mak.vo.MakVO;
 import com.pen.app.mak.vo.PlanVO;
 
 /*
- * 최준호 - 생산지시서 컨트롤러 
+ * 최준호 - 생산지시서 컨트롤러 + 공정실적 컨트롤러
  */
 
 @Controller
 @RequestMapping("/ind")
 public class MakIndController {
+	@Autowired
+	MakIndMapper mapper;
 	
 	@Autowired
 	MakIndService service;
@@ -105,4 +108,40 @@ public class MakIndController {
 		return result;
 	}
 	
+	@GetMapping("/dirIndList")
+	@ResponseBody
+	List<MakVO> dirIndList(){
+		List<MakVO> list = service.dirIndList();
+		return list;
+	}
+	
+	@GetMapping("/product")
+	@ResponseBody
+	List<MakVO> product(){
+		List<MakVO> list = mapper.product();
+		return list;
+	}
+	
+	@GetMapping("/modalProd")
+	@ResponseBody
+	List<MakVO> modalProd(@RequestParam String prodName){
+		return mapper.modalProd(prodName);
+	}
+
+	//공정실적조회 페이지로 이동
+	@GetMapping("/performance")
+	void performance() {
+		
+	}
+	//공정실적관리 페이지로 이동
+	@GetMapping("/performanceManage")
+	void performanceManage() {
+		
+	}
+	
+	@GetMapping("/perfIndList")
+	@ResponseBody
+	List<MakVO> perfIndList(){
+		return mapper.perfIndList();
+	}
 }

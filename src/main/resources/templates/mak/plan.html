@@ -720,7 +720,10 @@ $('#sCon').change(function(){
             header: '우선순위',
             name: 'priority'
         }
-        ]
+        ],
+        columnOptions: {
+            resizable: true
+          }
         });
       //그리드 세팅 시작
         //서버에 연결전 토큰값 담는 method
@@ -1721,7 +1724,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
             header: '우선순위',
             name: 'priority'
         }
-        ]
+        ],
+        columnOptions: {
+            resizable: true
+          }
         });
       //그리드 세팅 시작
         //서버에 연결전 토큰값 담는 method
@@ -1845,8 +1851,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
         $('#sOrdCon').val('');
         $('#clsOrdCon').val('');
      });         
-           
-
      })
 
 };          

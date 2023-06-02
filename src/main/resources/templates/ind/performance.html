@@ -31,82 +31,23 @@ height:28px;
 </style>
 </head>
 <body>
-<h2 layout:fragment="title">생산 지시 관리(직접지시건)</h2>
+<h2 layout:fragment="title">공정실적 조회</h2>
 <div layout:fragment="content">
 <!-- 생산지시 페이지 -->
 <div  style="text-align:left;">
 <div class="card card-outline" style="display:inline-block;">
-<div class="card-body" id="frm0" style="float:left; width:800px;">
-<div class="form-group row">
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">지시명</label>
-<input class="form-control col-7" id="indNmi">
-</div>
-
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">지시일자</label>
-<input class="form-control col-7" id="indDatei" readonly>
-
-</div>
-<div class="form-group row col-2">
-<button style="margin-left:20px;" class="btn btn-primary" id="subBtn">등록</button>
-</div>
-</div>
-
-<div class="form-group row">
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">제품명</label>
-<input class="form-control col-5" id="prodNmi" readonly>
-<ion-icon class="col-1" name="search" id="getPlanNm" data-toggle="modal" data-target=".bd-example-modal-lg">
-</div>
-
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">지시량</label>
-<input class="form-control col-7" type="number" id="ordrQnti">
-</div>
-<div class="form-group row col-2">
-<button style="margin-left:20px;" class="btn btn-primary" disabled id="modBtn">수정</button>
-</div>
-</div>
-
-
-<div class="form-group row">
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">지시시작일자</label>
-<input type="date" class="form-control col-7" id="stDatei">
-</div>
-<div class="form-group row col-5">
-<label class="col-5 col-form-label">지시종료일자</label>
-<input type="date" class="form-control col-7" id="clsDatei">
-</div>
-<div class="form-group row col-2">
-<button style="margin-left:20px;" class="btn btn-danger" disabled id="delBtn">삭제</button>
-</div>
-</div>
-<div class="form-group row">
-<div class="form-group row col-10">
-</div>
-<div class="form-group row col-2">
-<button style="margin-left:5px;" class="btn btn-primary" id="resetBtn">초기화</button>
-</div>
-</div>
-
-</div>
-<div class="card-body" style="float:left; width:700px;">
+<div class="card-body" style="float:left; width:1500px;">
 <div id="grid"></div>
 </div>
 </div>
 </div>
 <div style="text-align:left;">
 <div class="card card-outline" style="display:inline-block;">
-<div class="card-body" style="float:left; width:500px;">
+<div class="card-body" style="float:left; width:400px;">
 <div id="proc_grid"></div>
 </div>
-<div class="card-body" style="float:left; width:500px;">
+<div class="card-body" style="float:left; width:1100px;">
 <div id="bom_grid"></div>
-</div>
-<div class="card-body" style="float:left; width:500px;">
-<div id="mat_grid"></div>
 </div>
 </div>
 </div>
@@ -114,7 +55,7 @@ height:28px;
 
 </form>
 <!-- 모달 시작 -->
-   <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+ <!--   <div class="modal fade bd-example-modal-lg" id="matmodalbtn" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
   <div class="modal-dialog modal-lg">
     <div class="modal-content">
       <div class="modal-header">
@@ -135,7 +76,7 @@ height:28px;
       </div>
     </div>
   </div>
-</div>
+</div> -->
 <!-- 모달 끝 -->
 <!-- 화면 그리드 -->
 
@@ -145,10 +86,8 @@ height:28px;
 const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
 var grid = null;
-var modal_grid = null;
 var grid2 = null;
 var grid3 = null;
-var grid4 = null;
 var planData=[];
 var procData=[];
 var prodCode="";
@@ -161,8 +100,6 @@ $(function () {
     $('#indDatei').val(new Date().toISOString().slice(0, 10));
     $('#stDatei').val(new Date().toISOString().slice(0, 10));
     $('#clsDatei').val(new Date().toISOString().slice(0, 10));
-    document.getElementById('stDatei').min=new Date().toISOString().slice(0, 10);
-    document.getElementById('clsDatei').min=new Date().toISOString().slice(0, 10);
 	//그리드 구성
 	//기본 그리드(지시서 등록 내용)
 	grid = new tui.Grid({
@@ -184,20 +121,34 @@ $(function () {
         },
         {
       	  header: '지시시작일자',
-      	  name : 'stDate'
+      	  name : 'stDate',
+      	 sortable: true,
+         rowSpan: true,
+         filter: {
+             type: 'date',
+             options: {
+               format: 'yyyy.MM.dd'
+             }
+           }
         },
         {
       	  header:'지시종료일자',
-      	  name: 'clsDate'
+      	  name: 'clsDate',
+      	 sortable: true,
+         rowSpan: true,
+         filter: {
+             type: 'date',
+             options: {
+               format: 'yyyy.MM.dd'
+             }
+           }
         },
         {
         	  header:'지시상태',
-        	  name: 'indicaState'
+        	  name: 'indicaState',
+        	   filter: 'select'
           }
-      ],
-      columnOptions: {
-          resizable: true
-        }
+      ]
       });
 	//공정(검수제외?)
 	grid2 = new tui.Grid({
@@ -205,17 +156,13 @@ $(function () {
         scrollX: false,
         bodyHeight: 200,
         columns: [{
-          header: '공정순서',
+          header: '공정명',
           name: 'procOrder'
         },
         {
-       	  header: '공정분류',
+       	  header: '지시량',
        	  name : 'procType'
-          },
-        {
-          header: '공정명',
-          name: 'procName'
-        }
+          }
       ]
       });
 	//투입 자재
@@ -225,21 +172,29 @@ $(function () {
         bodyHeight: 200,
         columns: [
         {
-          header: '자재명',
+          header: '작업자',
           name: 'bomProdName'
         },
         {
-          header: '필요자재량(1ea)',
+          header: '시작일시',
           name: 'bomMatUsage'
         },
         {
-            header: '투입예정량',
+            header: '종료일시',
             name: 'makUsage'
           },
         {
-      	  header: '투입공정',
+      	  header: '작업량',
       	  name : 'procName'
-        }
+        },
+          {
+        	  header: '불량량',
+        	  name : 'procName'
+          },
+        {
+        	  header: '사용설비',
+        	  name : 'procName'
+          }
       ]
       });
 	//현재 자재명별 자재재고
@@ -539,7 +494,7 @@ $(function () {
     	}); 
     	//수정 아작스 끝
     })
-    grid.setWidth(660);
+    /* grid.setWidth(660); */
     //모달창 열릴떄 작동
 	$('#matmodalbtn').on('shown.bs.modal', function(){
         modal_grid.refreshLayout();
@@ -789,21 +744,7 @@ $(function () {
     })
 
      }); 
-//모달 내부 계획 상세 조회 기능
-function getModalCon(){
-	 $.ajax({
- 		  url:"/ind/modalProd",
- 		  method:"GET",
- 		  data:{"prodName" : $('#modalProd').val()},
- 		 beforeSend: function (xhr) {
-            xhr.setRequestHeader(header, token);
-          },
-          success : function(result){
-          	modal_grid.resetData(result);
-          }
- 	  });
-	
-}
+
 </script>
 
 </div>
