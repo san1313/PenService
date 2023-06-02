@@ -43,27 +43,85 @@
 	
 		<div layout:fragment="content">
 	<p>
-	제품명 <input id="searchprod-text" type="text" readonly>
-						<button type="submit" id="searchprod"
-							class="fa-solid fa-magnifying-glass"></button>
+	제품명 <input type="text" id="productlist-text"
+				style="background-color: #e2e1e1">
+		 <button type="submit" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</p>
 	<p>
-	거래처명 <input id="searchprod-text" type="text" readonly>
-						<button type="submit" id="searchprod"
-							class="fa-solid fa-magnifying-glass"></button>
+		거래처명 <input type="text" id="accountlist-text"
+			style="background-color: #e2e1e1" readonly>
+		<button id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+			data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 	</p>
 	<p>
 	완제품LOT <input id="searchprod-text" type="text">
 						<button type="submit" id="searchprod"
-							class="fa-solid fa-magnifying-glass"></button>
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 	</p>						
 	<p>
-	출고일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2"> <button id="searchcont">조회</button>
+	출고일자 <input type="date" id="contdate-text1"> - <input type="date" id="contdate-text2"> <button id="searchcont" class = "btn btn-primary">조회</button>
 	</p>
 
 	<!-- 본문 출고 그리드 -->
 	<div id="ReleaseGrid"></div>
+	<!-- 본문 출고 그리드 끝 -->
 	
+		<!-- 제품명 모달 -->
+	<div class="modal fade bd-product-modal-lg" id="productListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle">제품 목록</h1>
+					<p>
+						제품명 <input id="searchprod-text" type="text">
+						<button type="button" id="searchprod"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="productGrid"></div>
+					<div class="modalbtn">
+						<button  class="btn btn-primary" id="modalsubmit" data-toggle="modal"
+							data-target=".bd-product-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 제품명 모달 끝 -->
+	<!-- 거래처리스트 모달 -->
+		<div class="modal fade bd-account-modal-lg" id="accountListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+
+				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle">거래처 목록</h1>
+					<p>
+						거래처명 <input type="text" id="searchacc-text">
+						<button id="searchacc" type="submit"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="accountGrid"></div>
+
+					<div class="modalbtn">
+						<button class="btn btn-primary" id="searchacc-btn" data-toggle="modal"
+							data-target=".bd-account-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 거래처리스트 모달 끝 -->
 <script>
 
 
@@ -80,7 +138,7 @@ $.ajax({
 	}
 });
 	
-	//입고내역 그리드 생성
+	//출고내역 그리드 생성
 var ReleaseGrid = new tui.Grid({	
    bodyHeight : 500,
      el: document.getElementById('ReleaseGrid'),
@@ -122,9 +180,176 @@ var ReleaseGrid = new tui.Grid({
      ]
    }); 
 	
+//////////////////////////////본문의 제품명 모달 관련
+//모달내 제품리스트 그리드 생성
+var product_Grid = new tui.Grid({
+bodyHeight : 200,
+el: document.getElementById('productGrid'),
+scrollX: false,
+rowHeaders: ['rowNum'],
+columns: [
+{
+ header: '제품코드',
+ name: 'prodCode'
+},
+{
+ header: '제품명',
+ name: 'prodName'
+}
+
+]
+});
+//본문의 제품명 돋보기 클릭 했을 때
+	$("#productList").on('click', function(){
+//모달내 제품리스트 아작스
+	$.ajax({
+		url : "/bns/prodList",
+		method : "GET",
+		dataType : "JSON",
+		success : function(result){
+			product_Grid.resetData(result);
+			product_Grid.refreshLayout();
+		}
+	});
+});
+   //모달창 내  제품명 돋보기 클릭 했을 때
+   $("#searchprod").on('click', function(){
+	const result = $("#searchprod-text").val()
+	$("#searchprod-text").val('');
+	//모달창 내 제품검색 아작스
+   	$.ajax({
+   		 url : "/bns/prodKeyList",
+   	     method : "GET",
+   	     data : {'result' : result},
+   	     success : function(result){
+   	     product_Grid.resetData(result);
+   	     product_Grid.refreshLayout();
+   	     },
+   	     error: function(reject){
+   	    	 console.log(reject)
+   	     }
+		});
+   })
+//모달 내 제품리스트 그리드 뜨고 모달창 뜨게
+$(function(){
+$('#productListModal').on('shown.bs.modal', function(){
+	product_Grid.refreshLayout();
 })
+})
+   //제품리스트 모달 내 그리드 선택 시 본문의 input창으로 자동입력
+product_Grid.on('click', ev=> {
+console.log(ev.rowKey)
+console.log(ev.columns)
+const focusCell = product_Grid.getFocusedCell()
+console.log(focusCell)
+let dataRow = product_Grid.getRow(ev.rowKey);
+console.log(dataRow);
+//본문의 input창 제품명 입력
+$('#productlist-text').val(dataRow.prodName);
+$('#modalsubmit').click(function(){
+	  $('#productListModal').modal('hide');
+	  $.ajax({
+		 url : "/bns/prodList",
+	     method : "GET",
+	     dataType : "JSON",
+	     success : function(result){
+	     product_Grid.resetData(result);
+	     product_Grid.refreshLayout();
+	     }
+});
+})
+}) 
+
+/* 본문의 거래처 모달창 */
+//거래처 리스트
+$.ajax({
+		url : "/bns/accList",
+		method : "GET",
+		dataType : "JSON",
+		success : function(result){
+			account_Grid.resetData(result);
+			account_Grid.refreshLayout();
+		}
+	});
+   
+ //본문 내 거래처리스트 그리드 생성
+   var account_Grid = new tui.Grid({
+	   bodyHeight : 200,
+     el: document.getElementById('accountGrid'),
+     scrollX: false,
+     rowHeaders: ['rowNum'],
+     columns: [
+       {
+         header: '거래처코드',
+         name: 'accCode'
+       },
+       {
+         header: '거래처명',
+         name: 'accName'
+       }
+   
+     ]
+   });
+   
+ //본문 내 거래처 리스트 그리드 뜨고 모달창뜨게
+   $(function(){
+   	$('#accountListModal').on('shown.bs.modal', function(){
+   		account_Grid.refreshLayout();
+   	})
+   })
+   
+   //본문 내 거래처 리스트 내 버튼클릭 시 
+   $("#searchacc").on('click', function(){
+   	const result = $("#searchacc-text").val()
+		$("#searchacc-text").val('');
+   	
+   	
+  //거래처 리스트 검색 아작스
+   	$.ajax({
+   		 url : "/bns/accKeyList",
+   	     method : "GET",
+   	     data : {'result' : result},
+   	     success : function(result){
+   	     account_Grid.resetData(result);
+   	     account_Grid.refreshLayout();
+   	     },
+   	     error: function(reject){
+   	    	 console.log(reject)
+   	     }
+ 
+   });
+   })
+   
+   //거래처 리스트 그리드 클릭 시 
+   account_Grid.on('click', ev=> {
+    
+
+     const focusCell = account_Grid.getFocusedCell()
+
+     let dataRow = account_Grid.getRow(ev.rowKey);
+
+     $('#accountlist-text').val(dataRow.accName);
+     
+     $("#searchacc-btn").click(function(){
+   	  
+   	  $.ajax({
+   	 		url : "/bns/accList",
+   	 		method : "GET",
+   	 		dataType : "JSON",
+   	 		success : function(result){
+   	 			account_Grid.resetData(result);
+   	 			account_Grid.refreshLayout();
+   	 		}
+   	 	});
+   	 $('#accountListModal').modal('hide');
+
+   	  
+     })
+   })   
 
 
+
+})
 </script>
 
 </div>

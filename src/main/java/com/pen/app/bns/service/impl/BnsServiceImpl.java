@@ -185,6 +185,35 @@ public class BnsServiceImpl implements BnsService {
 			public List<BnsReleaseVO> getSearchReleaseList() {
 				return mapper.getSearchReleaseList();
 			}
-
 		
+		//LOT번호 조회검색
+		@Override
+			public List<BnsStoreVO> getLOTPrdtList(String keyword) {
+				return mapper.getLOTPrdtList(keyword);
+			}
+		
+		@Override
+			public List<BnsStoreVO> getLOTPrdtAfterList(String keyword) {
+				return mapper.getLOTPrdtAfterList(keyword);
+			}
+		//입고관리페이지 조건검색
+		@Override
+			public List<BnsStoreVO> getStoreListCon(BnsStoreVO vo) {
+				return mapper.getStoreListCon(vo);
+			}
+		//입고조회페이지 조건검색
+		@Override
+			public List<BnsStoreVO> getStoreSearchListCon(BnsStoreVO vo) {
+				return mapper.getStoreSearchListCon(vo);
+			}
+		//출고관리(계약) 조건검색
+		@Override
+			public List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo) {
+				return mapper.getreleaseContListCon(vo);
+			}
+		//출고관리(주문) 조건검색
+		@Override
+			public List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo) {
+				return mapper.getreleaseOrdListCon(vo);
+			}
 }

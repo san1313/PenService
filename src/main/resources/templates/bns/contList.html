@@ -72,9 +72,7 @@
 	</div>
 
 	<div layout:fragment="content">
-		<p>
-			<button id="pageReset">초기화</button>
-		</p>
+		
 		진행구분 <label class="process">진행 <input type="checkbox"
 			checked="checked"> <span class="checkmark"></span>
 		</label> <label class="process">완료 <input type="checkbox"> <span
@@ -85,7 +83,7 @@
 		<p>
 			거래처명 <input type="text" id="accountlist-text"
 				style="background-color: #e2e1e1" readonly>
-			<button id="accountList" class="fa-solid fa-magnifying-glass"
+			<button id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 		</p>
 		<!-- <p>
@@ -100,12 +98,12 @@
 		</p>
 		계약만료일자 <input type="date" id="contduedate-text1"> - <input
 			type="date" id="contduedate-text2">
-		<button id="searchcont">조회</button>
+		<button id="searchcont" class="btn btn-primary">조회</button> <button class="btn btn-primary" id="pageReset">초기화</button>
 		<div class="contbtn">
-			<button type="button" class="btn btn-outline-secondary"
+			<button type="button" class="btn btn btn-primary"
 				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
 				등록</button>
-			<button id="BtnContCancle" class="btn btn-outline-secondary">계약서
+			<button id="BtnContCancle" class="btn btn btn-danger" >계약서
 				취소</button>
 		</div>
 
@@ -119,17 +117,23 @@
 			<div class="modal-dialog modal-lg">
 
 				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 					<h1 class="modaltitle">거래처 목록</h1>
 					<p>
 						거래처명 <input type="text" id="searchacc-text">
 						<button id="searchacc" type="submit"
-							class="fa-solid fa-magnifying-glass"></button>
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="accountGrid"></div>
 
 					<div class="modalbtn">
-						<button id="searchacc-btn" data-toggle="modal"
+						<button class="btn btn-primary" id="searchacc-btn" data-toggle="modal"
 							data-target=".bd-account-modal-lg">확인</button>
-						<button>취소</button>
+						<button class="btn btn-primary" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
@@ -141,6 +145,12 @@
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 					<h1 class="modaltitle">제품 목록</h1>
 
 					<p>
@@ -149,9 +159,9 @@
 							class="fa-solid fa-magnifying-glass"></button>
 					<div id="productGrid"></div>
 					<div class="modalbtn">
-						<button id="modalsubmit" data-toggle="modal"
+						<button class="btn btn-primary" id="modalsubmit" data-toggle="modal"
 							data-target=".bd-product-modal-lg">확인</button>
-						<button>취소</button>
+						<button class="btn btn-primary" data-dismiss="modal">취소</button>
 					</div>
 				</div>
 			</div>
@@ -169,7 +179,7 @@
 				<div class="modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title">계약서 등록</h1>
-						<button type="button" class="close" data-dismiss="modal"
+						<button type="button" class="close btn btn-primary" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
@@ -195,7 +205,7 @@
 
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">거래처명
-									<button type="button" class="fa-solid fa-magnifying-glass"
+									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
 								</label> <input id="contaccname" type="text" class="form-control"
 									name="accName" readonly>
@@ -231,14 +241,14 @@
 						<hr>
 						<h2>계약상세</h2>
 						<br> <label>제품리스트</label>
-						<button type="button" class="fa-solid fa-magnifying-glass"
+						<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
-						<button style="float: right; margin-right: 5px;"
+						<button class="btn btn-danger" style="float: right; margin-right: 5px;"
 							id="contProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
 						<div class="modalbtn">
 							<button id="contregsubmit" type="submit" class="btn btn-primary">등록</button>
-							<button type="button" class="btn btn-secondary"
+							<button type="button" class="btn btn btn-primary"
 								data-bs-dismiss="modal">취소</button>
 						</div>
 					</div>
@@ -249,16 +259,22 @@
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">거래처 목록</h2>
 								<p>
 									거래처명 <input id="searchaccreg-text" type="text">
-									<button id="searchaccreg" class="fa-solid fa-magnifying-glass"></button>
+									<button id="searchaccreg" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="accountRegGrid"></div>
 								<div class="modalbtn">
 									<button id="modalregsubmit" data-toggle="modal"
-										data-target=".bd-smallaccount-modal-sm">확인</button>
-									<button>취소</button>
+										data-target=".bd-smallaccount-modal-sm" class="btn btn-primary">확인</button>
+									<button class="btn btn-primary" data-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</div>
@@ -271,17 +287,23 @@
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
 									제품명 <input id="searchprodreg-text" type="text">
 									<button id="searchprodreg" type="submit"
-										class="fa-solid fa-magnifying-glass"></button>
+										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="productRegGrid"></div>
 								<div class="modalbtn">
 									<button id="modalsubmitbtn" data-toggle="modal"
-										data-target=".bd-smallproduct-modal-sm" type="button">확인</button>
-									<button>취소</button>
+										data-target=".bd-smallproduct-modal-sm" type="button" class="btn btn-primary">확인</button>
+									<button class="btn btn-secondary" data-dismiss="modal">취소</button>
 								</div>
 							</div>
 						</div>
@@ -365,7 +387,7 @@
 							<br> <label>제품리스트</label>
 							<button type="button" class="fa-solid fa-magnifying-glass"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
-							<button style="float: right; margin-right: 5px;"
+							<button class = "btn btn-danger"style="float: right; margin-right: 5px;"
 								id="contProdDelete2">삭제</button>
 							<div id="modProdgrid"></div>
 							<div class="modalbtn">
@@ -381,6 +403,12 @@
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
 							<div class="modal-content">
+							<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
 									제품명 <input id="searchprodmod-text" type="text">
@@ -391,7 +419,7 @@
 								<div class="modalbtn">
 									<button id="modalsubmitbtn2" data-toggle="modal"
 										data-target=".bd-smallproductMod-modal-sm" type="button">확인</button>
-									<button>취소</button>
+									<button class="btn btn-primary" data-bs-dismiss="modal" >취소</button>
 								</div>
 							</div>
 						</div>

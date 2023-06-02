@@ -51,5 +51,13 @@ public interface BnsService {
 	public void insertReleaseList(BnsReleaseListVO list); //출고 등록
 	public List<BnsReleaseVO> getSearchReleaseList(); //입고후 그리드 조회
 	
+	public List<BnsStoreVO> getLOTPrdtList(String keyword);//거래처리스트 조회검색
+	public List<BnsStoreVO> getLOTPrdtAfterList(String keyword);
+	public  List<BnsStoreVO> getStoreListCon(BnsStoreVO vo);//입고 조건 조회
+	public  List<BnsStoreVO> getStoreSearchListCon(BnsStoreVO vo);//입고 조건 조회
+	
+	public  List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo);//출고관리(계약) 조건 조회
+	public  List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고관리(주문) 조건 조회
+	
 	
 }

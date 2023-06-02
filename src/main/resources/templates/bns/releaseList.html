@@ -43,12 +43,51 @@
 	<h2 id="nowOrd" style="display: none">주문건 출고대기현황</h2>
 	<input type="radio" name="type" id="contractBtn" value="contract" checked> 계약서
 	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> 주문서
+	<form id="searchform">
+	<p>
+	제품명 <input type="text" id="productlist-text"
+				style="background-color: #e2e1e1" readonly>
+		 <button type="submit" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+		 <button style="margin-left : 10px" type="button" id="releaseList"class="btn btn-primary">조회</button>
+	</p>
+	</form>
 	<div id="beforeReleaseContGrid"></div>
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
 	<h2>출고등록</h2>
-	<button id="releaseRegBtn" style="float:right;">출고 등록</button>
+	<button id="releaseRegBtn" style="float:right;" class="btn btn-primary">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
+	
+	<!-- 제품명 모달 -->
+	<div class="modal fade bd-product-modal-lg" id="productListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle">제품 목록</h1>
+					<p>
+						제품명 <input id="searchprod-text" type="text">
+						<button type="button" id="searchprod"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="productGrid"></div>
+					<div class="modalbtn">
+						<button class="btn btn-primary" id="modalsubmit" data-toggle="modal"
+							data-target=".bd-product-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 제품명 모달 끝 -->
+	
+	
+	
 	<script>
 	
 	const token = $('meta[name="_csrf"]').attr("content");
@@ -323,10 +362,113 @@
 						
 					}
 					})
-					}) 
-						
-		   
-           
+           })
+				//////////////////////////////본문의 제품명 모달 관련
+	//모달내 제품리스트 그리드 생성
+var product_Grid = new tui.Grid({
+bodyHeight : 200,
+ el: document.getElementById('productGrid'),
+ scrollX: false,
+ rowHeaders: ['rowNum'],
+ columns: [
+   {
+     header: '제품코드',
+     name: 'prodCode'
+   },
+   {
+     header: '제품명',
+     name: 'prodName'
+   }
+
+ ]
+});
+
+  //본문의 제품명 돋보기 클릭 했을 때
+   	$("#productList").on('click', function(){
+  //모달내 제품리스트 아작스
+   	$.ajax({
+   		url : "/bns/prodList",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			product_Grid.resetData(result);
+   			product_Grid.refreshLayout();
+   		}
+   	});
+   });
+	   //모달창 내  제품명 돋보기 클릭 했을 때
+	   $("#searchprod").on('click', function(){
+   	const result = $("#searchprod-text").val()
+		$("#searchprod-text").val('');
+   	//모달창 내 제품검색 아작스
+	   	$.ajax({
+	   		 url : "/bns/prodKeyList",
+	   	     method : "GET",
+	   	     data : {'result' : result},
+	   	     success : function(result){
+	   	     product_Grid.resetData(result);
+	   	     product_Grid.refreshLayout();
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	   	     }
+   		});
+	   })
+	//모달 내 제품리스트 그리드 뜨고 모달창 뜨게
+$(function(){
+	$('#productListModal').on('shown.bs.modal', function(){
+		product_Grid.refreshLayout();
+	})
+})
+	   //제품리스트 모달 내 그리드 선택 시 본문의 input창으로 자동입력
+	product_Grid.on('click', ev=> {
+    console.log(ev.rowKey)
+    console.log(ev.columns)
+    const focusCell = product_Grid.getFocusedCell()
+    console.log(focusCell)
+    let dataRow = product_Grid.getRow(ev.rowKey);
+    console.log(dataRow);
+	//본문의 input창 제품명 입력
+    $('#productlist-text').val(dataRow.prodName);
+    $('#modalsubmit').click(function(){
+  	  $('#productListModal').modal('hide');
+  	  $.ajax({
+   		 url : "/bns/prodList",
+   	     method : "GET",
+   	     dataType : "JSON",
+   	     success : function(result){
+   	     product_Grid.resetData(result);
+   	     product_Grid.refreshLayout();
+   	     }
+   });
+    })
+  })  
+    //계약의 조회버튼 클릭 시 
+	    document.getElementById('releaseList').addEventListener('click',function(){
+  		if($('input[name=type]:checked').val()== 'contract'){
+	    	$.ajax({
+	    		url : "/bns/getreleaseContListCon",
+	    		method : "GET",
+	    		data : $('#searchform').serialize(),
+	    		dataType : "JSON",
+	    		success : function(result){
+	    			beforeReleaseContGrid.resetData(result);
+	    		}
+	    	});
+  		}
+  		else{
+	     //주문의 조회버튼 클릭 시 
+	    	$.ajax({
+	    		url : "/bns/getreleaseOrdListCon",
+	    		method : "GET",
+	    		data : $('#searchform').serialize(),
+	    		dataType : "JSON",
+	    		success : function(result){
+	    			beforeReleaseOrdGrid.resetData(result);
+	    		}
+	    	});
+  		}
+	    })
            
 	</script>
 	</div>
