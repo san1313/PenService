@@ -1,0 +1,539 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8" />
+    <meta name="_csrf" th:content="${_csrf.token}" />
+    <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<title>PenServiceMES</title>
+<style>
+@media screen and (max-width: 600px) {
+	 .search-container {
+		float: none;
+	}
+
+	.fac_register{
+		float : left;
+        border: 1px solid black;   
+        padding: 10px;
+      }
+     .proc_search{
+     	float : right;
+     	}
+  
+}
+</style>
+
+ <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ 
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
+</head>
+
+<body>
+<!----------설비등록시작--------->
+<div layout:fragment="title">설비정보관리</div>
+
+<!--메인 콘텐츠 -->
+	<div layout:fragment="content">
+	
+<div class = "row col-12" style="text-align:left">
+	<div class = "col-8 fac_register">
+				<label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
+				
+				<label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+
+				<label for="operate_check" id="operate_checked">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="radio" name="operate_check" value="Y" checked> 가동
+				<input type="radio" name="operate_check" value="N"> 비가동
+				<br>
+				<label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="date" id="install_date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+
+				<label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+				<br>
+				<label for="temp_min">최저온도(℃)</label>
+				<input type="text" id="temp_min"size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="temp_max">최고온도(℃)</label>
+				<input type="text" id="temp_max" size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				
+				<label for="check_cycle">점검주기(일)</label>
+				<input type="text" id="check_cycle">
+				
+				<br>
+				<br>
+				
+				<div class="col-12">
+					<div class="col-8" style="margin:0 auto">
+						<button class="w-30 btn btn-primary btn-lg" id="register" type="submit">등록</button>
+						<button class="w-30 btn btn-warning btn-lg" id="update" type="button">수정</button>
+						<button class="w-20 btn btn-danger btn-lg" id="delete" type="button">삭제</button>
+						<button class="w-30 btn btn-success btn-lg" id="reset" type="reset">초기화</button>
+					</div>
+				</div>
+	</div>
+		<!-- 공정추가창 -->
+		<div class = "col-4 proc_search"> 
+			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">공정추가</button>
+			<button style="float:right; margin-right: 5px;" id="selecProgDelete">삭제</button>
+			
+			<!-- 선택된공정모달그리드창 -->
+			<div id="Progaddgrid"></div>
+		</div> 			
+</div>
+<hr>
+
+<!--공정조회 모달-->
+<div class="modal fade bd-example-modal-lg" id="procmodalbtn" tabindex="-1" role="dialog" aria-labelledby="mySmallModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      		<h5 class="modal-title" >공정코드조회</h5>
+			<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span></button>   
+      </div>
+      
+      <div class="modal-body">
+      	<label>공정명</label>
+      	<input type=text class="modaltext" id="ckproc-text">
+        <button class="ckprocmodalbtn" type="button" id="ckproc">검색</button>
+        
+        <!-- 공정조회 그리드 -->
+      	<div id="grid2"></div>
+      	
+        <button class="submitprocmodalbtn" type="button" data-dismiss="modal" onclick="getProc()">선택</button>
+      </div>
+    </div>
+  </div>
+</div>	
+
+<!----설비검색시작---->
+  	<div class="col-lg-12" style="text-align:left">
+  	 <select name = "searchDiv">
+  	 	<option value="" selected="selected">---선택---</option>
+  	 	<option value="fac_name">설비명</option>
+ 	 	<option value="fac_code">설비코드</option>
+  		<option value="emp_num">담당자</option>
+  	 </select>
+  	<input type="text" id="searchName">
+  	<button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  	<button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>
+  
+ <!-- 설비목록그리드화면 -->
+ <div id="grid"></div>
+	    
+ 
+    <script>
+    const token = $('meta[name="_csrf"]').attr("content");
+    const header = $('meta[name="_csrf_header"]').attr("content");
+    
+    var dblclickRows=null;
+    var getProcRows=null;
+    var grid2 = null;
+    var Progaddgrid = null;
+	
+    $(function(){  
+    		
+    		//조건검색기능초기화 버튼이벤트
+    		$('#facInitBtn').on("click", function(e){
+    			$('[name="searchDiv"]').val("");
+    			$('#searchName').val("");
+    		})
+    		
+    		//조건검색돋보기 버튼이벤트 
+    		$('#facBtn').on("click",function(e){
+    			let searchDiv = $('[name="searchDiv"]').val();
+    			let searchName = $('#searchName').val();
+    			let search
+    			//if (searchDiv != '' && searchName )
+    			let data = { searchDiv, searchName }
+    			facListSearch(data);
+    		})
+		
+		    //설비목록리스트그리드
+		    function facListSearch(data){
+			    $.ajax({
+			   		url : "/fac/infoListAjax",
+			   		method : "GET",
+			   		dataType : "JSON", //키:값 형식으로 가져온다.
+			   		data:data,
+			   		success : function(result){
+			   		 grid.resetData(result);
+			   		 grid.refreshLayout();
+			   		}
+			   	});
+		    }
+		    
+		    facListSearch(null);
+		    
+		      
+		   var grid = new tui.Grid({
+		    el: document.getElementById('grid'),
+		    scrollX: false,
+		    scrollY: false,
+		    rowHeaders: ['rowNum'],
+		    columns: [
+		      {
+		        header: '설비코드',
+		        name: 'facCode'
+		      },
+		      {
+		        header: '설비명',
+		        name: 'facName'
+		      },
+		      {
+		        header: '가동여부',
+		        name: 'operateCheck'
+		      },
+		      {
+		        header: '점검주기(일)',
+		        name: 'checkCycle'
+		      },
+		      {
+		        header: '입고일자',
+		        name: 'installDate'
+		      },
+		      {
+		        header: '제조업체',
+		        name: 'makerName'
+		      },
+		      {
+		        header: '최저온도(℃)',
+		        name: 'tempMin'
+		      },
+		      {
+		        header: '최고온도(℃)',
+		        name: 'tempMax'
+		      },
+		      {
+		        header: '담당자',
+		        name: 'empNum'
+		      }   
+		    ]
+		   
+		  });
+		   
+		 //선택된 공정추가 그리드 생성
+		     Progaddgrid = new tui.Grid({
+			 el: document.getElementById('Progaddgrid'),
+			 scrollX: false,
+			 scrollY: false,
+			 rowHeaders: [
+                 {
+                   type: 'rowNum'
+                 },
+                 {
+                   type: 'checkbox' 
+                 }	
+               ],
+               columns: [
+     		      {
+     		        header: '공정코드',
+     		        name: 'procCode'
+     		      },
+     		      {
+     		        header: '공정명',
+     		        name: 'procName'
+     		      }
+     		    ]
+		 })
+		   
+		//공정코드모달   
+		    grid2 = new tui.Grid({
+		    el: document.getElementById('grid2'),
+		    scrollX: false,
+		    scrollY: false,
+		    rowHeaders: ['rowNum','checkbox'],
+		    columns: [
+		      {
+		        header: '공정코드',
+		        name: 'procCode'
+		      },
+		      {
+		        header: '공정명',
+		        name: 'procName'
+		      }
+		    ]
+		   })
+		
+		   //공정코드버튼
+			$('#procCodemodalbtn').click(function(){
+				  
+				  $.ajax({
+				   		url : "/fac/proclistAjax",
+				   		method : "GET",
+				   		dataType : "JSON",
+				   		success : function(result){
+				   			console.log(result)
+				   			grid2.resetData(result);
+	
+				  		  	$('#procmodalbtn').modal('show');
+				  		 	 $('#procmodalbtn').on('shown.bs.modal', function (e) {
+				  			     console.log('open');
+				  			     setTimeout(()=> grid2.refreshLayout(), 100);   
+				   			})
+				   		},error : function(reject){
+				   			console.log(reject)
+				   		}
+				   	}); 
+			})
+		
+
+			//공정코드모달검색조회
+		    $('#ckproc').on('click', function(){
+		    	console.log($("#ckproc-text").val())
+		    	const prsed = $("#ckproc-text").val()
+				$("#ckproc-text").val('');
+		    	
+		    	$.ajax({
+		    		 url : "/fac/procminilist",   //공정코드목록조회 페이지 
+		    	     method : "GET",
+		    	     data : {'result' : prsed},
+		    	     success : function(result){
+			    	     grid2.resetData(result);
+		    	     },
+		    	     error: function(reject){
+		    	    	 console.log(reject)
+		    	     }
+		  
+		    });
+	    	
+	    })
+	    
+	    /*
+	    외부 공정코드랑 공정명 input에 값을 뿌려주는 코드 
+	    grid2.on('click', function(e){
+	      let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
+	      $('#proc_code').val(content.procCode); //proc_code라는 id의 인풋 창에 값 rowKey안의 procCode를 넣음
+	      $('#proc_name').val(content.procName);//proc_name라는 id의 인풋 창에 값 rowKey안의 procName을 넣음
+	   })      
+	    })
+	    
+	    */
+	    
+	    
+   	//초기화버튼 이벤트
+   	$("#reset").on('click',function(){
+   		$('div input').not("input[name=operate_check]").val('');
+   	});
+  
+  
+   	//설비삭제버튼 이벤트
+   	$("#delete").on('click', function(){
+   		$.ajax({
+   			url: "/fac/facDelete", //컨트롤러에 연결된 주소
+			method : "post", //조회는 항상 get, 나머진 post
+			//json형태인 키:값 형태로 데이터넘김
+			data: {
+				facCode : $('#fac_code').val()
+			},
+		 	beforeSend: function (xhr) {
+	        	xhr.setRequestHeader(header, token);
+	        },
+	        success: function (result){
+				alert('삭제성공');
+			   $.ajax({
+			   		url : "/fac/infoListAjax",
+			   		method : "GET",
+			   		dataType : "JSON",
+			   		success : function(result){
+			   		grid.resetData(result);
+			   		grid.refreshLayout();
+			   		}
+			   		})
+			   		$('div input').not("input[name=operate_check]").val('');
+			},
+			error:function(reject){
+				console.log(reject)
+			}
+   		})
+
+   	});
+   	//공정삭제버튼 이벤트
+   	$('#selecProgDelete').click(function(){
+   		getProcRows=Progaddgrid.getCheckedRows();
+   		getProcRows.forEach(function(ele,i){
+   			Progaddgrid.removeRow(getProcRows[i].rowKey);
+   		})
+   	})
+   
+   
+	 //설비수정버튼 이벤트
+	$("#update").on('click',function(){
+		let insertProcData = Progaddgrid.getData();
+		
+		let facInsertData={};
+		let innerData=[];
+		insertProcData.forEach(function(ele){
+			console.log(ele);
+			console.log(ele.procCode);
+			 facInsertData = {
+	    			   facCode : $("#fac_code").val(), 
+	 				   facName : $("#fac_name").val(),
+					   operateCheck : $("input[name=operate_check]:checked").val(),
+					   checkCycle : $("#check_cycle").val(),
+					   installDate : $("#install_date").val(),
+					   makerName : $("#maker_name").val(),
+					   tempMin : $("#temp_min").val(),
+					   tempMax : $("#temp_max").val(),
+					   empNum : $("#emp_num").val(),
+					   procCode : ele.procCode,
+					   searchDiv : dblclickRows.operateCheck
+					   };
+	    			innerData.push(facInsertData)
+		})
+		      
+		facInsertData={"list":innerData};
+		$.ajax({
+			url: "/fac/facUpdate", //컨트롤러에 연결된 주소
+			method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
+			//json형태인 키:값 형태로 데이터넘김
+			contentType : "application/json",
+    			//json형태인 키:값 형태로 데이터넘김
+    		data: JSON.stringify(facInsertData),
+		   	beforeSend: function (xhr) {
+	        	xhr.setRequestHeader(header, token);
+	        },
+		success: function (result){
+			alert('수정성공');
+		   $.ajax({
+		   		url : "/fac/infoListAjax",
+		   		method : "GET",
+		   		dataType : "JSON",
+		   		success : function(result){
+		   		grid.resetData(result);
+		   		grid.refreshLayout();
+		   		}
+		   		})
+		   		$('div input').not("input[name=operate_check]").val('');
+				},
+				error:function(reject){
+				console.log(reject)
+			}
+			
+		})
+	});
+   		//설비등록버튼 이벤트
+    	$("#register").on('click',function(){
+    		let insertProcData = Progaddgrid.getData();
+    		let facInsertData={};
+    		let innerData=[];
+    		insertProcData.forEach(function(ele){
+    			console.log(ele);
+    			console.log(ele.procCode);
+    			 facInsertData = {
+    	    			   facCode : $("#fac_code").val(), 
+    	 				   facName : $("#fac_name").val(),
+    					   operateCheck : $("input[name=operate_check]:checked").val(),
+    					   checkCycle : $("#check_cycle").val(),
+    					   installDate : $("#install_date").val(),
+    					   makerName : $("#maker_name").val(),
+    					   tempMin : $("#temp_min").val(),
+    					   tempMax : $("#temp_max").val(),
+    					   empNum : $("#emp_num").val(),
+    					   procCode : ele.procCode
+    					   };
+    	    			innerData.push(facInsertData)
+    		})
+    		      
+    		facInsertData={"list":innerData};
+    		 $.ajax({
+    			url: "/fac/facRegister", //컨트롤러에 연결된 주소
+    			method : "post", //조회는 항상 get, 나머진 post
+    			contentType : "application/json",
+    			//json형태인 키:값 형태로 데이터넘김
+    			data: JSON.stringify(facInsertData),
+				   beforeSend: function (xhr) {
+  	                    xhr.setRequestHeader(header, token);
+   	                  },
+    		success: function (result){
+    		    $.ajax({
+    		   		url : "/fac/infoListAjax",
+    		   		method : "GET",
+    		   		dataType : "JSON",
+    		   		success : function(result){
+    		   		grid.resetData(result);
+    		   		grid.refreshLayout();
+    		   		}
+    		   		})
+    		   		insertProcData.forEach(function(ele,i){
+    		   			Progaddgrid.removeRow(ele.rowKey);
+    		   		});
+    		   		
+    		   		$('div input').not("input[name=operate_check]").val('');
+    		},
+    		error:function(reject){
+    			console.log(reject)
+    		}
+    		
+    		})
+    	});
+    	
+    	//설비수정,삭제하기전 그리드 이벤트 작업
+    	//서버에 연결전 토큰값 담는 method
+        grid.on("beforeRequest", function (obj) {
+          obj.xhr.setRequestHeader(header, token);
+        });
+   
+    	grid.on("dblclick",function (e){
+    		console.log(grid.getRow(e.rowKey));
+    		dblclickRows=grid.getRow(e.rowKey); //클릭한 이벤트 row의 값을 담아줌
+    		   		
+    		//값을 input창에 다시 담아줌
+    		$('#fac_code').val(dblclickRows.facCode);
+    		$('#fac_name').val(dblclickRows.facName);
+    		$('#check_cycle').val(dblclickRows.checkCycle);
+    		$('#install_date').val(dblclickRows.installDate);    		
+    		$('#emp_num').val(dblclickRows.empNum);
+    		$('#maker_name').val(dblclickRows.makerName);
+    		$('#temp_min').val(dblclickRows.tempMin);
+    		$('#temp_max').val(dblclickRows.tempMax);   		
+    		$("input:radio[name=operate_check]:radio[value=\'"+dblclickRows.operateCheck+"\']").prop('checked',true);
+    		
+    		$.ajax({
+    			url:"/fac/getFacConnProcList",
+    			method: "GET",
+    			dataType: "JSON",
+    			data: {facCode : dblclickRows.facCode},
+    			success: function(result){
+    				Progaddgrid.resetData(result);
+    			},
+    			error : function(reject){
+    				console.log(reject);
+    			}
+    				
+    		})
+    		
+    	});
+    			
+    });
+	
+    //그리드에 공정추가하는화면
+    function getProc(){
+	getProcRows=grid2.getCheckedRows();
+	console.log(getProcRows);
+	Progaddgrid.appendRows(getProcRows);
+	/* getProcRows.forEach(function(ele,i){
+	Progaddgrid.appendRows(getProcRows[i])
+	}); */
+	  $('#procmodalbtn').modal('hide'); 
+      $('#procmodalbtn').hide();
+      $('.bd-example-modal-lg').hide();
+}
+ </script>
+	</div>
+	</div>
+</body>
+</html>
