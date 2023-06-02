@@ -159,7 +159,8 @@
 	<!-- 설비코드검색조회 -->
 	<select id="getfacminilist" resultType="FacInfoVO">
 		SELECT fac_code,
-		       fac_name
+		       fac_name,
+		       operate_check
 		       from fac_info
 		 WHERE fac_name LIKE '%'|| #{keyword} || '%'
 	</select>
