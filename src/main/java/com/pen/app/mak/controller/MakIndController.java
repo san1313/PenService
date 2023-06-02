@@ -11,6 +11,7 @@ import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 
+import com.pen.app.mak.mapper.MakIndMapper;
 import com.pen.app.mak.service.MakIndService;
 import com.pen.app.mak.vo.IndicaListVO;
 import com.pen.app.mak.vo.MakVO;
@@ -23,6 +24,8 @@ import com.pen.app.mak.vo.PlanVO;
 @Controller
 @RequestMapping("/ind")
 public class MakIndController {
+	@Autowired
+	MakIndMapper mapper;
 	
 	@Autowired
 	MakIndService service;
@@ -103,6 +106,20 @@ public class MakIndController {
 		String result = service.delIndica(list);
 			
 		return result;
+	}
+	
+	@GetMapping("/dirIndList")
+	@ResponseBody
+	List<MakVO> dirIndList(){
+		List<MakVO> list = service.dirIndList();
+		return list;
+	}
+	
+	@GetMapping("/product")
+	@ResponseBody
+	List<MakVO> product(){
+		List<MakVO> list = mapper.product();
+		return list;
 	}
 	
 }
