@@ -101,7 +101,7 @@
 		UPDATE MAT_INVNTRY
 		SET
 		MAT_STATE = '검사완료',
-		MAT_KEEPDATE = #{rVO.testExpDate},
+		MAT_KEEPDATE = #{rVO.testExpDate}
 		WHERE MAT_LOT = #{rVO.targetCode};
 		
 	END; 

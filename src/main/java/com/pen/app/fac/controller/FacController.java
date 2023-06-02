@@ -14,6 +14,7 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
 
@@ -32,10 +33,16 @@ public class FacController {
 	@Autowired
 	FacService service;
 
-	@GetMapping("/infoManage")
-	public void test() {
+	@GetMapping("/downTime") //비가동관리 페이지
+	public void downTime() {
 
 	}
+	
+	@GetMapping("/downTime2") //비가동관리 테스트 페이지
+	public void downTime2() {
+
+	}
+	
 
 	@GetMapping("/management") // 설비관리 페이지
 	public void management() {
@@ -51,7 +58,16 @@ public class FacController {
 	public void confirm() {
 
 	}
-
+	
+	//비가동전체리스트
+	@ResponseBody
+	@GetMapping("/downTimeListAjax")
+	public List<FacDownTimeVO> downTimeListAjax(FacDownTimeVO vo){
+		List<FacDownTimeVO> list = dao.getDownTimeList(vo);
+		return list;
+	}
+	
+	
 	// 점검전체리스트
 	@ResponseBody
 	@GetMapping("/confirmListAjax")
@@ -149,11 +165,8 @@ public class FacController {
 	@ResponseBody
 	@RequestMapping("/confirmdaysSearchAjax")
 	public List<FacConfirmVO> confirmdaysSearchAjax(FacConfirmVO list){
-		System.err.println(list);
-		
-		return service.confirmdaysSearchAjax(list);
-		
-		
+		System.err.println(list);	
+		return service.confirmdaysSearchAjax(list);		
 	}
 	
 	

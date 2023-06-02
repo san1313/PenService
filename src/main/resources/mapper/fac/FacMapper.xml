@@ -181,5 +181,25 @@
 		    AND to_date(#{confirmday2},'YYYY-MM-DD')		        
 	</select>
 
+	<!--비가동전체조회 -->
+	<select id="getDownTimeList" resultType="FacDownTimeVO">
+	SELECT a.downtime_code,
+		   b.fac_name,
+		   a.downtime_reason,
+		   a.reason_explain,
+		   to_char(downtime_start_day,'yyyy-MM-dd'),
+		   to_char(start_time,'PM HH24:MI'),
+		   a.downtime_end_day,
+		   a.end_time,
+		   a.emp_num
+	  FROM fac_downtime a 
+	  JOIN fac_info b 
+	 USING (fac_code)
+	</select>
+	
+	
+	
+	
+	
 
 </mapper>

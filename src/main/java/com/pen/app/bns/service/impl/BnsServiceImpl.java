@@ -179,6 +179,12 @@ public class BnsServiceImpl implements BnsService {
 				mapper.insertRelease(list.getList().get(i));
 			}
 			}
+		
+		//출고내역 페이지
+		@Override
+			public List<BnsReleaseVO> getSearchReleaseList() {
+				return mapper.getSearchReleaseList();
+			}
 
 		
 }
