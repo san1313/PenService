@@ -7,6 +7,7 @@ import org.mybatis.spring.annotation.MapperScan;
 import com.pen.app.mat.vo.AdjustVO;
 import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
+import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -40,13 +41,6 @@ public interface MatService {
 	public List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo);//자재입고리스트 다중검색
 	public List<WarehousingVO> getwarehousingmatlistajax(); //자재입고조회
 	
-	//반제품입고관리
-	public List<WarehousingVO> getsemiwarehousingtestlist(); //반제품 검사내역리스트
-	public void getsemiwarehousingregister(List<WarehousingVO> list); //반제품 입고등록
-	
-	//반제품입고조회
-	public List<WarehousingVO> getsemiwarehousinglistajax(); //반제품입고리스트
-	
 	//자재재고조회
 	public List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드검색
 	public List<InventoryVO> getinventorysearchlot(String matCode); //자재재고조회 lot
@@ -68,5 +62,16 @@ public interface MatService {
 	
 	//폐기자재조회
 	public List<DisposeResultVO> getdisposeresultlist(); //폐기자재조회리스트
-	public List<DisposeResultVO> getdisposeresultsearchlist(DisposeResultVO vo); //폐기자재조회 다중검색
+	public List<DisposeResultVO> getdisposeresultsearchlist(DisposeResultVO vo);//폐기자재조회 다중검색
+	public void getdisposeresultlistresu(List<DisposeResultVO> list); //결과반영
+
+	//임의해제
+	public void getmatoptionholdregister(List<HoldVO> list); //임의해제등록
+	
+	//임의해제 내역
+	public List<HoldVO> getallmatoptionholdlist();
+	public List<HoldVO> getmatoptionholdsearchlist(HoldVO vo); //다중검색
+
+
+
 }

@@ -6,7 +6,7 @@
   <meta charset="UTF-8" />
   <meta name="_csrf" th:content="${_csrf.token}" />
   <meta name="_csrf_header" th:content="${_csrf.headerName}" />
-  <title>폐기자재조회</title>
+  <title>자재홀드조회</title>
 
   <style>
     .ordersearch {
@@ -30,13 +30,10 @@
 	margin-right:10px;
 
 	}
-    #grid{
+    #holdgrid{
       margin: 20px 0 0px;
     }
-    #resul{
-    float:right;
-    margin: 10px 0;
-    }
+
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -53,7 +50,7 @@
 
 <body>
   <div layout:fragment="title">
-    <h3>폐기자재조회</h3>
+    <h3>자재홀드조회</h3>
   </div>
   
   <div layout:fragment="content">
@@ -61,14 +58,13 @@
     <div class="ordersearch">
       <label>LOT번호</label>
       <input class="text1" type="text" id="lotnum" name="matLot">  
-     <label>검사일자</label>
-     <input class="text1" type="date" name="matChkeepdate" id="matChkeepdate"> ~ 
-     <input class="text1" type="date" id="matChkeepdate1" name="matChkeepdate1">
+     <label>해제일자</label>
+     <input class="text1" type="date" name="matRlsdate" id="matRlsdate"> ~ 
+     <input class="text1" type="date" id="matRlsdate1" name="matRlsdate1">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 	</form>
-	<div id="grid"></div>
-		<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul">결과반영</button>
+	<div id="holdgrid"></div>
 	
 	
     <script>
@@ -76,103 +72,78 @@
     const header = $('meta[name="_csrf_header"]').attr("content");
 
     //lot리스트
-    var grid = new tui.Grid({
-        el: document.getElementById('grid'),
+    var holdgrid = new tui.Grid({
+        el: document.getElementById('holdgrid'),
         scrollX: false,
         scrollY: false,
-        rowHeaders: ['checkbox'],
+        rowHeaders: ['rowNum'],
         columns: [{
         header: 'LOT번호',
         name: 'matLot'
-        },
-        {
-        header: '폐기처리번호',
-        name: 'matDsnum',
-        hidden: true
-        },
-        {
-        header: '자재코드',
-        name: 'matCode'
         },
         {
         header: '자재명',
         name: 'matName'
         },
         {
-        header: '검사량',
-        name: 'matTestQnt'
+        header: '자재코드',
+        name: 'matCode'
         },
         {
-        header: '합격량',
-        name: 'matPassQnt'
+        header: '홀드해제 전 재고량',
+        name: 'bmatQnt'
         },
         {
-        header: '폐기량',
-        name: 'matStaQnt'
+        header: '재고량',
+        name: 'matQnt'
         },
         {
-        header: '변경보관기한',
-        name: 'matChkeepdate'
+        header: '홀드해제수량',
+        name: 'matRlsqnt'
+        },
+        {
+        header: '해제일자',
+        name: 'matRlsdate'
+        },
+        {
+        header: '해제사유',
+        name: 'matHoldresn'
         }
         ]
         });
     
     
     $.ajax({
-        url : "/mat/disposeresultlist",
+        url : "/mat/allmatoptionholdlist",
         method : "GET",
         dataType : "JSON",
         success : function(result){
         	console.log(result);
-        	grid.resetData(result);
-        	grid.refreshLayout();
+        	holdgrid.resetData(result);
+        	holdgrid.refreshLayout();
         }
       });
 	
+    
   
+
+    
    //조회버튼
    $("#submitbtn").on('click',function(){
 			   
 	   $.ajax({
-		 url: "/mat/disposeresultsearchlist",
+		 url: "/mat/matoptionholdsearchlist",
 		 method: "GET",
 		 data :$('#searchform').serialize(),
 		 success : function(result){
 			 console.log(result)
-			 grid.resetData(result);
-			 grid.refreshLayout();
+			 holdgrid.resetData(result);
+			 holdgrid.refreshLayout();
 		 },
 		 error : function(reject){
 			 console.log(reject)
 		 }
 	   });
-   })
-   
-   
-   //결과반영버튼
-   $("#resul").on('click', function(){
-	   let checked = grid.getCheckedRows();
-	   console.log(checked)
-	   window.open('/mat/matadjustlist')
-	   
-	   $.ajax({
-	  		url : "/mat/disposeresultlistresu",
-	  		method : "POST",
-	  		data : JSON.stringify(grid.getCheckedRows()),
-	  		beforeSend: function (xhr) {
-	            xhr.setRequestHeader(header, token);
-	          },
-	  	
-	  		contentType: "application/json",
-	  		success : function(result3){
-	  			console.log(result3);
-	  		},
-	  		error: function(reject){
-	  			console.log(reject)
-	  		}
-	         
-	  	});    	 	
-	  	 	
    })
    
  

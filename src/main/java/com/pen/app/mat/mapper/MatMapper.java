@@ -6,6 +6,7 @@ import java.util.List;
 import com.pen.app.mat.vo.AdjustVO;
 import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
+import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -36,12 +37,6 @@ public interface MatMapper {
 	List<WarehousingVO> getwarehousingsearchajax(WarehousingVO vo); //자재입고리스트 다중검색
 	List<WarehousingVO> getwarehousingmatlistajax(); //자재입고조회
 	
-	//반제품입고관리
-	List<WarehousingVO> getsemiwarehousingtestlist(); //반제품입고페이지 검사내역리스트
-	public void getsemiwarehousingregister(List<WarehousingVO> list); //반제품 입고등록
-	
-	//반제품입고조회
-	List<WarehousingVO> getsemiwarehousinglistajax(); //반제품입고리스트
 	
 	//자재재고조회
 	List<InventoryVO> getinventorysearch(String keyword); //자재재고조회 자재코드 검색
@@ -65,6 +60,14 @@ public interface MatMapper {
 	//폐기자재조회
 	List<DisposeResultVO> getdisposeresultlist(); //폐기자재조회리스트
 	List<DisposeResultVO> getdisposeresultsearchlist(DisposeResultVO vo); //폐기자재조회 다중검색
+	public void getdisposeresultlistresu(DisposeResultVO vo); //결과반영
 	
+	//자재홀드임의해제
+	public void getmatoptionholdregister(HoldVO vo); //임의해제등록
+	
+	//자재홀드임의해제내역
+	List<HoldVO> getallmatoptionholdlist(); 
+	//임의해제다중검색
+	List<HoldVO> getmatoptionholdsearchlist(HoldVO vo);
 }
 	

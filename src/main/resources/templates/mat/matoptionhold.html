@@ -1,0 +1,343 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org" xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+  layout:decorate="~{layout/template}">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="_csrf" th:content="${_csrf.token}" />
+  <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+  <title>자재홀드관리</title>
+
+  <style>
+    .ordersearch {
+      border: 1px solid black;
+      padding: 20px;
+    }
+    .text1 {
+      margin: 15px;
+      padding: 0 5px 0 ;
+    }
+    
+    #dlivy{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+	#subtn{
+	margin : 10px;
+	float:right;
+	margin-right:10px;
+
+	}
+    #lotholdgrid{
+      margin: 20px 0 0px;
+    }
+    #matholdgrid{
+     display:none;
+     margin:20px 0 0;
+    }
+
+  </style>
+  <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+  <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+</head>
+
+
+<body>
+  <div layout:fragment="title">
+    <h3>자재홀드관리</h3>
+  </div>
+  
+  <div layout:fragment="content">
+    <div class="ordersearch">
+      <label>자재명</label>
+      <input class="text1" type="text" id="matmodalmatname" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+    </div>
+
+    <!-- 자재명모달 -->
+    <div class="modal fade bd-example-modal-lg" id="matmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-lg">
+    <div class="modal-content">
+      <div class="modal-header">
+      	<h5 class="modal-title">자재목록</h5>
+		<button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>      
+      </div>
+      <div class="modal-body">
+        <label>자재명</label>
+        <input class="modaltext" type="text" id="ckmat-text">
+        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+      	<div id="mat-modal-grid"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+	<div id="lotholdgrid"></div>
+	<div id="matholdgrid"></div>
+	
+	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+     <button type="button" class="btn btn-primary" id="subtn">임의해제</button>
+	</div>
+	
+    <script>
+    const token = $('meta[name="_csrf"]').attr("content");
+    const header = $('meta[name="_csrf_header"]').attr("content");
+
+    //lot리스트
+    var lotholdgrid = new tui.Grid({
+        el: document.getElementById('lotholdgrid'),
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['rowNum'],
+        bodyHeight : 200,
+        columns: [{
+        header: 'LOT번호',
+        name: 'matLot'
+        },
+        {
+        header: '자재명',
+        name: 'matName'
+        },
+        {
+        header: '자재코드',
+        name: 'matCode'
+        },
+        {
+        header: '거래처명',
+        name: 'matBcncname'
+        },
+        {
+        header: '수량',
+        name: 'matQnt'
+        },
+        ]
+        });
+    
+    
+    $.ajax({
+        url : "/mat/matadjustlotlist",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	console.log(result);
+        	lotholdgrid.resetData(result);
+        	lotholdgrid.refreshLayout();
+        }
+      });
+	
+       
+    
+  //자재명모달
+    $.ajax({
+        url : "/mat/matlist",
+        method : "GET",
+        dataType : "JSON",
+        success : function(result){
+        	console.log(result);
+          modal_grid.resetData(result);
+          modal_grid.refreshLayout();
+        }
+      });
+
+
+	  
+      var modal_grid = new tui.Grid({
+        el: document.getElementById('mat-modal-grid'),
+
+        scrollX: false,
+        scrollY: false,
+        rowHeaders: ['rowNum'],
+        columns: [{
+          header: '자재코드',
+          name: 'matCode'
+        },
+        {
+          header: '자재명',
+          name: 'matName'
+        }
+      ]
+    })
+      
+    
+    $(function(){  
+    $('#matmodal').on('shown.bs.modal', function(e){
+    	modal_grid.refreshLayout();
+    });
+    })
+
+    
+    //자재모달검색조회
+    $("#ckmat").on('click', function(){
+    	console.log(document.getElementById('ckmat-text').value)
+    	let data0 = document.getElementById('ckmat-text').value;
+    	let result2 = "%";
+    	result2+=document.getElementById('ckmat-text').value;
+    	result2+="%";
+		$("#ckmat-text").val('');
+    	
+    	$.ajax({
+    		 url : "/mat/matminilist",
+    	     method : "GET",
+    	     data : {'result' : result2},
+    	     success : function(result){
+    	     modal_grid.resetData(result);
+    	     modal_grid.refreshLayout();	
+    	     },
+    	     error: function(reject){
+    	    	 console.log(reject)
+  
+      		}
+    	})
+    });
+     
+    //자재모달선택
+    modal_grid.on('click', ev=> {
+      console.log(ev.rowKey)
+      console.log(ev.columns)
+
+      const focusCell = modal_grid.getFocusedCell()
+      console.log(focusCell)
+
+      let dataRow = modal_grid.getRow(ev.rowKey);
+      console.log(dataRow);
+
+      console.log('자재코드 : ' + dataRow.matCode + ', 자재명 : ' + dataRow.matName);
+      $('#matmodalmatname').val(dataRow.matName);
+      $('#matmodalmatcode').val(dataRow.matCode);
+
+      
+      $('#matmodal').modal('hide');
+      
+      $.ajax({
+          url : "/mat/matlist",
+          method : "GET",
+          dataType : "JSON",
+          success : function(result){
+          	console.log(result);
+            modal_grid.resetData(result);
+            modal_grid.refreshLayout();
+          }
+        });
+    })	
+
+    
+   //조회버튼
+   $("#submitbtn").on('click',function(){
+	   let data1 = document.getElementById('matmodalmatname').value;
+	   
+	   $("#matmodalmatname").val("");
+	   $.ajax({
+		 url: "/mat/matadjustsearch",
+		 method: "GET",
+		 data : {'result' : data1},
+		 success : function(result){
+			 console.log(result)
+			 lotholdgrid.resetData(result);
+			 lotholdgrid.refreshLayout();
+		 },
+		 error : function(reject){
+			 console.log(reject)
+		 }
+	   });
+   })
+   
+    
+     
+	//임의해제
+   var matholdgrid = new tui.Grid({
+    el: document.getElementById('matholdgrid'),
+    scrollX: false,
+    scrollY: false,
+    rowHeaders: ['checkbox'],
+    columns: [{
+    header: 'LOT번호',
+    name: 'matLot'
+    },
+    {
+    header: '단위',
+    name: 'matUnit'
+    },
+    {
+    header: '해제수량',
+    name: 'matRlsqnt',
+    editor:'text'
+    },
+    {
+    header: '해제사유',
+    name: 'matHoldresn',
+    editor: 'text'
+    }    
+    ]
+    });
+
+    lotholdgrid.on('click', ev =>{
+    	console.log('클릭');
+    	document.getElementById('matholdgrid').setAttribute('style', 'display:block;');
+    	var matLot = lotholdgrid.getRow(ev.rowKey).matLot;
+    	console.log(matLot)
+    	
+    	$.ajax({
+	   		 url : "/mat/matadjustlot",
+	   	     method : "GET",
+	   	     data : {"matLot" : matLot},
+	   	     success : function(result){
+	   	    	 console.log(result)
+	   	    	matholdgrid.resetData(result);
+	   	    	matholdgrid.refreshLayout();
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	     }
+	   }); 
+    	
+    })
+    
+    //입고버튼
+    document.getElementById('subtn').addEventListener('click', function(){
+    	let checked = matholdgrid.getCheckedRows();
+    	
+    	console.log(checked);
+    	 $.ajax({
+    	  		url : "/mat/matoptionholdregister",
+    	  		method : "POST",
+    	  		data : JSON.stringify(matholdgrid.getCheckedRows()),
+    	  		beforeSend: function (xhr) {
+    	            xhr.setRequestHeader(header, token);
+    	          },
+    	  		dataType : "JSON",
+    	  		contentType: "application/json",
+    	  		success : function(result3){
+    	  			console.log(result3);
+    	  		},
+    	  		error: function(reject){
+    	  			console.log(reject)
+    	  		}
+    	         
+    	  	});    	 	
+    	
+    })
+    
+    
+  
+   
+    </script>
+
+    </div>
+    
+    </body>
+    
+    </html>

@@ -14,6 +14,7 @@ import com.pen.app.mat.service.MatService;
 import com.pen.app.mat.vo.AdjustVO;
 import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
+import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
@@ -160,30 +161,6 @@ public class MatController {
 		return  matservice.getwarehousingsearchajax(WarehousingVO);
 	 }
 	 
-	 //반제품입고관리
-	 @GetMapping("/semiwarehousing")
-	 public void semiwarehousing() {
-		 
-	 }	 
-	 
-	 //반제품 검사내역리스트
-	 @RequestMapping("/semiwarehousingtestlist")
-	 @ResponseBody
-	 public List<WarehousingVO> semiwarehousingtestlist(){
-		List<WarehousingVO> list = matservice.getsemiwarehousingtestlist();
-		return list;
-	 }
-	 
-	 //반제품 입고등록
-	 @RequestMapping("/semiwarehousingregister")
-	 @ResponseBody
-	 public WarehousingVO semiwarehousingregister(@RequestBody List<WarehousingVO> list) {
-		 System.err.println(list);
-		 
-		 matservice.getsemiwarehousingregister(list);
-		 return null;
-	 }
-	 
 
 	 //자재 입고조회
 	 @GetMapping("/warehousinglist")
@@ -213,26 +190,12 @@ public class MatController {
 		 List<InventoryVO> list = matservice.getinventorysearch(result);
 		 return list;
 	 }
-	 
+	 	
 	 //자재 lot 조회
 	 @RequestMapping("/inventorysearchlot")
 	 @ResponseBody
 	 public List<InventoryVO> inventorysearchlot(@RequestParam String matCode){
 		 List<InventoryVO> list = matservice.getinventorysearchlot(matCode);
-		 return list;
-	 }
-	 
-	 //반제품 입고 조회
-	 @GetMapping("/semiwarehousinglist")
-	 public void semiwarehousinglist() {
-		 
-	 }
-	 
-	 //반제품입고조회리스트
-	 @GetMapping("/semiwarehousinglistajax")
-	 @ResponseBody
-	 public List<WarehousingVO> semiwarehousinglistajax(){
-		 List<WarehousingVO> list = matservice.getsemiwarehousinglistajax();
 		 return list;
 	 }
 	 
@@ -353,6 +316,54 @@ public class MatController {
 		 System.err.println(disposeResultVO);
 		 
 		 return matservice.getdisposeresultsearchlist(disposeResultVO);		 
+	 }
+	 
+	 //폐기자재결과반영
+	 @RequestMapping("/disposeresultlistresu")
+	 @ResponseBody
+	 public DisposeResultVO disposeresultlistresu(@RequestBody List<DisposeResultVO> list) {
+		 System.err.println(list);
+		 matservice.getdisposeresultlistresu(list);
+		 return null;
+	 }	
+	 
+	 //자재홀드임의해제
+	 @GetMapping("/matoptionhold")
+	 public void matoptionhold() {
+		 
+	 }
+	 
+	 //자재홀드임의해제
+	 @RequestMapping("/matoptionholdregister")
+	 @ResponseBody
+	 public HoldVO matoptionholdregister(@RequestBody List<HoldVO> list) {
+		 System.err.println(list);
+		 
+		 matservice.getmatoptionholdregister(list);
+		 return null;
+	 }
+	 
+	//자재홀드임의해제리스트
+	@GetMapping("/matoptionholdlist")
+	public void matoptionholdlist() {
+			 
+	}
+	
+	 //자재홀드임의해제전체리스트
+	 @GetMapping("/allmatoptionholdlist")
+	 @ResponseBody
+	 public List<HoldVO> allmatoptionholdlist(){
+		 List<HoldVO> list = matservice.getallmatoptionholdlist();
+		 return list;
+	 }
+	 
+	 //자재홀드임의해제리스트 다중검색
+	 @GetMapping("/matoptionholdsearchlist")
+	 @ResponseBody
+	 public List<HoldVO> matoptionholdsearchlist(HoldVO holdVO){
+		 System.err.println(holdVO);
+		 
+		 return matservice.getmatoptionholdsearchlist(holdVO);
 	 }
 	 
 }
