@@ -8,6 +8,8 @@
 <title>Insert title here</title>
 <script src="https://kit.fontawesome.com/56e7c5522c.js"
 	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
 <script
@@ -137,6 +139,10 @@ var StoreGrid = new tui.Grid({
    bodyHeight : 500,
      el: document.getElementById('StoreGrid'),
      scrollX: false,
+     pageOptions: {
+	  	    useClient: true,	// front에서만 페이징 하는 속성
+	  	    perPage: 10
+	  	  },
      rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
      columns: [
        {
@@ -168,6 +174,7 @@ var product_Grid = new tui.Grid({
 bodyHeight : 200,
  el: document.getElementById('productGrid'),
  scrollX: false,
+ 
  rowHeaders: ['rowNum'],
  columns: [
    {

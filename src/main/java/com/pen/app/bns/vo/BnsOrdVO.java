@@ -8,11 +8,15 @@ public class BnsOrdVO {
 	String accCode;
 	String accName;
 	String ordDate;
+	String ordDate1;
+	String ordDate2;
 	String ordDueDate;
+	String ordDueDate1;
+	String ordDueDate2;
 	String ordProgress;
 	String empNum;
 	String ordNote;
-	
+	String all;
 	String ordDetCode;
 	String prodCode;
 	String prodName;

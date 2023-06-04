@@ -375,18 +375,25 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 			return bnsService.getStoreSearchListCon(vo);
 		}
 		
-		//출고대기 페이지(계약) 아작스
-				@ResponseBody
-				@RequestMapping("/releaseContListconAjax")
-				public List<BnsReleaseVO> releaseContListconAjax(BnsReleaseVO vo){
-					return bnsService.getreleaseContListCon(vo);
-				}
-				//출고대기 페이지(주문) 아작스
-				@ResponseBody
-				@RequestMapping("/releaseOrdListconAjax")
-				public List<BnsReleaseVO> releaseOrdListconAjax(BnsReleaseVO vo){
-					return bnsService.getreleaseOrdListCon(vo);
-				}
-	
+		//출고관리페이지 출고대기 페이지(계약) 아작스
+		@ResponseBody
+		@RequestMapping("/releaseContListconAjax")
+		public List<BnsReleaseVO> releaseContListconAjax(BnsReleaseVO vo){
+			return bnsService.getreleaseContListCon(vo);
+		}
+		//출고관리페이지출고대기 페이지(주문) 아작스
+		@ResponseBody
+		@RequestMapping("/releaseOrdListconAjax")
+		public List<BnsReleaseVO> releaseOrdListconAjax(BnsReleaseVO vo){
+			return bnsService.getreleaseOrdListCon(vo);
+		}
+		
+		//출고조회내역페이지 아작스
+		@ResponseBody
+		@RequestMapping("/releaseSearchListconAjax")
+		public List<BnsReleaseVO> releaseSearchListconAjax(BnsReleaseVO vo){
+			return bnsService.getreleaseSearchListCon(vo);
+		}
+
 }
 

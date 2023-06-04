@@ -18,7 +18,8 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-
+<script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
 <!-- <script src="https://code.jquery.com/jquery-1.11.3.js"></script> -->
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
@@ -72,38 +73,32 @@
 	</div>
 
 	<div layout:fragment="content">
-		
-		진행구분 <label class="process">진행 <input type="checkbox"
-			checked="checked"> <span class="checkmark"></span>
-		</label> <label class="process">완료 <input type="checkbox"> <span
-			class="checkmark"></span>
-		</label> <label class="process">전체 <input type="checkbox"> <span
-			class="checkmark"></span>
-		</label>
+		<form id="searchform">
+     	진행구분
+     	<input style = "margin-left : 5px;" type="radio" name="all" value ="all"checked>전체
+		<input style = "margin-left : 5px;" type="radio" name="all" value ="ing">진행
+     	<input style = "margin-left : 5px;" type="radio" name="all"  value ="finish">완료
 		<p>
-			거래처명 <input type="text" id="accountlist-text"
+			거래처명 <input name="accName" type="text" id="accountlist-text"
 				style="background-color: #e2e1e1" readonly>
-			<button id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+			<button type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 		</p>
-		<!-- <p>
-			제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1">
-			<button id="productList" class="fa-solid fa-magnifying-glass"
-				data-toggle="modal" data-target=".bd-product-modal-lg"></button>
-		</p> -->
+		
 		<p>
-			계약작성일자 <input type="date" id="contdate-text1"> - <input
+			계약작성일자 <input name="contDate1" type="date" id="contdate-text1"> - <input name="contDate2"
 				type="date" id="contdate-text2">
 		</p>
-		계약만료일자 <input type="date" id="contduedate-text1"> - <input
+		계약만료일자 <input name="contDueDate1" type="date" id="contduedate-text1"> - <input name="contDueDate2"
 			type="date" id="contduedate-text2">
-		<button id="searchcont" class="btn btn-primary">조회</button> <button class="btn btn-primary" id="pageReset">초기화</button>
+		<button type="button" id="searchcont" class="btn btn-primary">조회</button> <button type="button" class="btn btn-primary" id="pageReset">초기화</button>
+		</form>
+		
 		<div class="contbtn">
 			<button type="button" class="btn btn btn-primary"
 				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
 				등록</button>
-			<button id="BtnContCancle" class="btn btn btn-danger" >계약서
+			<button type="button" id="BtnContCancle" class="btn btn btn-danger" >계약서
 				취소</button>
 		</div>
 
@@ -1006,17 +1001,12 @@ $.ajax({
 	
 	
 	$("#searchcont").on('click', function(){
-		let accName = $('#accountlist-text').val();
-		let prodName = $('#productlist-text').val();
-		let contDate = $('#contdate-text').val();
-	    let contDueDate = $('#contduedate-text').val(); 	
-		let data1 = {'accName':accName,'prodName':prodName,'contDate':contDate,'contDueDate':contDueDate};
 		
 	//조건검색 아작스	
 	$.ajax({
 		url : "/bns/contListconAjax",
 		method : "GET",
-		data : data1,
+		data : $('#searchform').serialize(),
 		dataType : "JSON",
 		success : function(result){
 			grid.resetData(result);
@@ -1029,6 +1019,10 @@ $.ajax({
 	   bodyHeight : 400,
      el: document.getElementById('grid'),
      scrollX: false,
+     pageOptions: {
+ 	    useClient: true,	// front에서만 페이징 하는 속성
+ 	    perPage: 10
+ 	  },
      rowHeaders: [
          {
            type: 'rowNum'

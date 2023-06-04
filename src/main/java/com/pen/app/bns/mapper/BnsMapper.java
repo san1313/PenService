@@ -57,6 +57,7 @@ public interface BnsMapper {
 	
 	List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo);//출고 대기(계약)조건조회
 	List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고 대기(주문)조건조회
+	List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo);//출고내역 대기(주문)조건조회
 	
 	
 }

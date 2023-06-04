@@ -18,6 +18,7 @@ public class BnsReleaseVO {
 	String prdtNm;
 	int ordDetQuan; //주문서 주문량
 	String ordDueDate;
+	String ordDueDate1;
 	String ordDetRelease; //납기일자
 	String prdtLot; //로트번호
 	int contDetQuan; //주문량
@@ -26,7 +27,9 @@ public class BnsReleaseVO {
 	String contDetCode;
 	String contCode;
 	String contDetRelease; //납기일자
+	String contDetRelease1; //납기일자1
 	String bnsReleaseDate; //출고일자
+	String bnsReleaseDate1; //출고일자1
 	String empNum;
 	String empName; //담당자명
 	String bnsReleaseNote; //출고 비고

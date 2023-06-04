@@ -8,7 +8,12 @@ public class BnsContVO {
 	String accCode;
 	String accName;
 	String contDate;
+	String contDate1;
+	String contDate2;
+	String all;
 	String contDueDate;
+	String contDueDate1;
+	String contDueDate2;
 	String contProgress;
 	String contNote;
 	String empNum;
