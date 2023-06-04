@@ -9,6 +9,7 @@ import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
+import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
 
@@ -27,6 +28,9 @@ public interface MatService {
 	public String getmatordercode();//발주코드
 	public void getmatregister(List<OrderVO> list); //발주등록
 	public List<OrderVO> gettodaymatregister(); //당일발주등록리스트
+	public List<OrderVO> getordlistsearchmodal(OrderVO vo); //발주리스트모달다중검색
+	public void getordmodify(MatOrdVO list); //발주수정
+	public void getdeleteord(MatOrdVO list); //발주삭제
 	
 	//자재발주조회
 	public List<OrderVO> getorderlistajax(); //발주등록조회페이지
