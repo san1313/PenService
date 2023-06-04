@@ -207,6 +207,59 @@ public class MakIndServiceImpl implements MakIndService{
 		// TODO Auto-generated method stub
 		return mapper.dirIndList();
 	}
+	
+	/* 작업상태 변경<<공정실적 있는 경우&없는 경우 */
+	@Override
+	public List<MakVO> oerfProcList(String indicaCode) {
+		// TODO Auto-generated method stub
+		return mapper.oerfProcList(indicaCode);
+	}
+
+	@Override
+	@Transactional
+	public List<MakVO> getProcList(MakVO vo) {
+		List<MakVO> list = mapper.getAllProcMat(vo);
+		list.addAll(mapper.getProcFac(vo.getProcCode()));
+		return list;
+	}
+
+	@Override
+	@Transactional
+	public List<MakVO> insertProcProd(MakVO vo) {
+		System.err.println(vo.getProdCode().substring(0,4));
+		if(vo.getProdCode().substring(0,4).equals("SEMI")) {
+			System.out.println("??");
+		vo.setProdNm((mapper.selectSemi(vo.getProdCode())).getSemiName());
+		}else if(vo.getProdCode().substring(0,4).equals("PROD")){
+			System.out.println("왜 이게 선택됨?");
+			vo.setProdNm((mapper.selectProd(vo.getProdCode())).getProdName());
+		}
+		if(mapper.insertProcProd(vo)>0) {
+			if(mapper.updateProcInd(vo.getIndicaCode())>0) {
+				return mapper.perfIndList();
+				
+			};
+		};
+		return null;
+	}
+
+	@Override
+	@Transactional
+	public String updateProcProd(IndicaListVO list) {
+		int i =0;
+		String prcsCode = mapper.getProcProd(list.getList().get(0));
+		list.getList().get(0).setPrcsCode(prcsCode);
+		mapper.updateProcProd(list.getList().get(0));
+		for (MakVO vo : list.getList()) {
+			i+=mapper.updateIndMakHold(vo);
+			i+=mapper.insertMatDlivy(vo);
+		}
+		String result="";
+		if(i>0) {
+			result="성공";
+		}
+		return result;
+	}
 
 
 

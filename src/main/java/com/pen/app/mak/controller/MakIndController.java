@@ -144,4 +144,39 @@ public class MakIndController {
 	List<MakVO> perfIndList(){
 		return mapper.perfIndList();
 	}
+	
+	@RequestMapping("/oerfProcList")
+	@ResponseBody
+	List<MakVO> oerfProcList(@RequestParam String indicaCode){
+		return service.oerfProcList(indicaCode);
+	}
+	
+	@GetMapping("/userList")
+	@ResponseBody
+	List<MakVO> userList(){
+	return mapper.userList();
+	}
+	
+	@RequestMapping("/getProcList")
+	@ResponseBody
+	List<MakVO> getProcList(@RequestBody MakVO vo){
+		
+		return service.getProcList(vo);
+	}
+	
+	@RequestMapping("/insertProcProd")
+	@ResponseBody
+	List<MakVO> insertProcProd(@RequestBody MakVO vo){
+		
+		return service.insertProcProd(vo);
+	}
+	
+	@RequestMapping(value = "/updateProcProd", method= {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	String updateProcProd(@RequestBody IndicaListVO list) {
+		System.out.println("삭제 받아온 값 : "+list);
+		String result = service.updateProcProd(list);
+			
+		return result;
+	}
 }
