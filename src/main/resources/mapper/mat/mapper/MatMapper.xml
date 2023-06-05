@@ -133,14 +133,14 @@
 			</if>
 			<if test="matOrderdate != null and matOrderdate !=''">
 	<![CDATA[		   
-			   and mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
+			   and TRUNC(mat_orderdate) >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
 	]]>
 			</if>
 		</where>
 		)
 		<if test="matOrderdate1 != null and matOrderdate1 !=''">
 	<![CDATA[
-		where mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+		where TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
 		</if>
 	</select>
@@ -211,12 +211,12 @@
 		</if>
 		<if test="matOrderdate != null and matOrderdate !=''">
 	<![CDATA[		   
-	    and mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
+	    and TRUNC(mat_orderdate) >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
 	]]>
 		</if>		
 		<if test="matOrderdate1 != null and matOrderdate1 !=''">
 	<![CDATA[
-		and mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+		and TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
 		</if>
 		</where>
@@ -281,7 +281,7 @@
 		join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat)
 		join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode)
 		join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
-		where TRUNC(a.mat_wrhdate) = trunc(SYSDATE)
+		where TRUNC(a.mat_wrhdate) = TRUNC(SYSDATE)
 	</select>
 
 	<!-- 입고등록리스트 -->
@@ -318,14 +318,14 @@
 			</if>
 			<if test="matWrhdate != null and matWrhdate != ''">
 	<![CDATA[
-			and mat_wrhdate >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
+			and TRUNC(mat_wrhdate) >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
 	]]>
 			</if>
 		</where>
 		)
 		<if test="matWrhdate1 != null and matWrhdate1 != ''">
 	<![CDATA[		
-		where mat_wrhdate <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
+		where TRUNC(mat_wrhdate) <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
 	]]>
 		</if>
 	</select>
@@ -369,8 +369,8 @@
 	<![CDATA[
 		select * 
 			from mat_dlivy
-			where mat_name=#{matName} and mat_dlivydate >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
-			and mat_dlivydate <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
+			where mat_name=#{matName} and TRUNC(mat_dlivydate) >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
+			and TRUNC(mat_dlivydate) <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
 	]]>
 	</select>
 
@@ -480,7 +480,7 @@
 			</if>
 			<if test="matMdatdate != null and matMdatdate != ''">
 		         <![CDATA[
-		         and mat_mdatdate >= TO_DATE(#{matMdatdate}, 'YYYY-MM-DD') 
+		         and TRUNC(mat_mdatdate) >= TO_DATE(#{matMdatdate}, 'YYYY-MM-DD') 
 		         ]]>
 			</if>
 		</where>
@@ -488,7 +488,7 @@
 		)
 		<if test="matMdatdate1 != null and matMdatdate1 != ''">
           <![CDATA[
-        where mat_mdatdate <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
+        where TRUNC(mat_mdatdate) <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
           ]]>
 		</if>
 	</select>
@@ -530,14 +530,14 @@
 			</if>
 			<if test="matChkeepdate != null and matChkeepdate != ''">
 			 <![CDATA[ 
-    		and MAT_CHKEEPDATE >= TO_DATE(#{matChkeepdate}, 'YYYY-MM-DD')
+    		and TRUNC(MAT_CHKEEPDATE) >= TO_DATE(#{matChkeepdate}, 'YYYY-MM-DD')
     		]]>
 			</if>
 		</where>
 		)
 		<if test="matChkeepdate1 != null and matChkeepdate1 != ''">
 		   <![CDATA[ 
-        where MAT_CHKEEPDATE <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
+        where TRUNC(MAT_CHKEEPDATE) <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
         	]]>
 		</if>
 	</select>
@@ -598,14 +598,14 @@
 			</if>
 			<if test="matRlsdate != null and matRlsdate != ''">
 			 <![CDATA[ 
-    		and MAT_RLSDATE >= TO_DATE(#{matRlsdate}, 'YYYY-MM-DD')
+    		and TRUNC(MAT_RLSDATE) >= TO_DATE(#{matRlsdate}, 'YYYY-MM-DD')
     		]]>
 			</if>
 		</where>
 		)
 		<if test="matRlsdate1 != null and matRlsdate1 != ''">
 		   <![CDATA[ 
-        where MAT_RLSDATE <= TO_DATE(#{matRlsdate1}, 'YYYY-MM-DD')
+        where TRUNC(MAT_RLSDATE) <= TO_DATE(#{matRlsdate1}, 'YYYY-MM-DD')
         	]]>
 		</if>
 
