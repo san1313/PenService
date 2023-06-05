@@ -231,12 +231,9 @@ public class MakIndServiceImpl implements MakIndService{
 	@Override
 	@Transactional
 	public List<MakVO> insertProcProd(MakVO vo) {
-		System.err.println(vo.getProdCode().substring(0,4));
 		if(vo.getProdCode().substring(0,4).equals("SEMI")) {
-			System.out.println("??");
 		vo.setProdNm((mapper.selectSemi(vo.getProdCode())).getSemiName());
 		}else if(vo.getProdCode().substring(0,4).equals("PROD")){
-			System.out.println("왜 이게 선택됨?");
 			vo.setProdNm((mapper.selectProd(vo.getProdCode())).getProdName());
 		}
 		if(mapper.insertProcProd(vo)>0) {
