@@ -16,6 +16,7 @@ import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
+import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
 /*
@@ -83,7 +84,6 @@ public class MatController {
 	 @ResponseBody 
 	 public OrderVO matregister(@RequestBody List<OrderVO> list){
 		 System.err.println(list);
-		 //System.out.println(vo.getList().get(0));
 		 matservice.getmatregister(list);		 
 	 	 return null; 
 	 }
@@ -94,6 +94,33 @@ public class MatController {
 	 public List<OrderVO> todaymatregister(){
 		 List<OrderVO> list = matservice.gettodaymatregister();
 		 return list;
+	 }
+	 
+	 //자재발주리스트모달다중검색
+	 @RequestMapping("/ordlistsearchmodal")
+	 @ResponseBody
+	 public List<OrderVO> ordlistsearchmodal(OrderVO OrderVO) {
+		 System.err.println(OrderVO);
+
+		return matservice.getordlistsearchmodal(OrderVO);
+	 }
+	 
+	 //발주수정
+	 @RequestMapping("/ordmodify")
+	 @ResponseBody 
+	 public OrderVO ordmodify(@RequestBody MatOrdVO list){
+		 System.err.println(list);
+		 matservice.getordmodify(list);		 
+	 	 return null; 
+	 }
+	 
+	 //발주삭제
+	 @RequestMapping("/deleteord")
+	 @ResponseBody
+	 public OrderVO deleteord(@RequestBody MatOrdVO list) {
+		 System.err.println(list);
+		 matservice.getdeleteord(list);		 
+	 	 return null; 
 	 }
 	 
 	 //자재발주조회페이지

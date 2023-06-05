@@ -216,4 +216,9 @@ public class BnsServiceImpl implements BnsService {
 			public List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo) {
 				return mapper.getreleaseOrdListCon(vo);
 			}
+		//출고조회페이지 조건검색
+		@Override
+			public List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo) {
+				return mapper.getreleaseSearchListCon(vo);
+			}
 }

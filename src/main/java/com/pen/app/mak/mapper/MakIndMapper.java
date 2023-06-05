@@ -47,4 +47,15 @@ public interface MakIndMapper {
 	
 	List<MakVO> modalProd(String prodName);
 	List<MakVO> perfIndList();
+	List<MakVO> oerfProcList(String indicaCode);
+	List<MakVO> userList();
+	List<MakVO> getAllProcMat(MakVO vo);
+	List<MakVO> getProcFac(String procCode);
+	int insertProcProd(MakVO vo);
+	int updateProcInd(String indicaCode);
+	MakVO selectSemi(String resultCode);
+	MakVO selectProd(String resultCode);
+	String getProcProd(MakVO vo);
+	int updateProcProd(MakVO vo);
+	int insertMatDlivy(MakVO vo);
 }

@@ -211,24 +211,28 @@ insert into mak_bom(mak_bom_code,
                     prod_code,
                     amount,
                     plan_indica,
-                    mak_flow_code) values(
+                    mak_flow_code,
+                    result_code) values(
                                         mak_bom_seq.nextval,
                                         #{makStep},
                                         #{bomProdCode},
                                         #{amount},
                                         'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),
-                                        #{makFlowCode}
+                                        #{makFlowCode},
+                                        #{resultCode}
                                         )
 </update>
 
 <update id="insertFlow">
 insert into mak_flow(mak_flow_code,
                      mak_flow_step,
-                     proc_code
+                     proc_code,
+                     indica_code
                      ) values(
                                           mak_flow_seq.nextval,
                                           #{makFlowStep},
-                                          #{procCode}
+                                          #{procCode},
+                                          'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ')
                                           )
 </update>
 
@@ -299,10 +303,190 @@ select * from com_code_prod where prod_name like ('%'||#{prodName}||'%')
 </select>
 
 <select id="perfIndList" resultType="MakVO">
-select * from mak_indica join com_code_prod using(prod_code)
+select prod_code, indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date, to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state, pd_code,prod_code,prod_name from mak_indica join com_code_prod using(prod_code)
+</select>
+
+<select id="oerfProcList" resultType="MakVO" parameterType="string">
+SELECT
+    proc_code,
+    COUNT(proc_code) count,
+    indica_code,
+    proc_name,
+    indica_state,
+    ordr_qnt,
+    mak_flow_step
+FROM
+         mak_flow
+    JOIN mak_bom USING ( mak_flow_code )
+    JOIN mak_indica USING ( indica_code )
+    JOIN com_code_proc USING ( proc_code )
+WHERE
+    indica_code = #{indica_code}
+GROUP BY
+    proc_code,
+    indica_code,
+    proc_name,
+    indica_state,
+    ordr_qnt,
+    mak_flow_step
+intersect
+SELECT
+    proc_code,
+    COUNT(proc_code) count,
+    indica_code,
+    proc_name,
+    indica_state,
+    ordr_qnt,
+    mak_flow_step
+FROM
+         mak_hold
+    JOIN mak_indica USING ( indica_code )
+    JOIN mak_bom b ON indica_code = plan_indica
+    JOIN mak_flow USING ( mak_flow_code,
+                          indica_code )
+    JOIN com_code_proc USING ( proc_code )
+WHERE
+        indica_code = #{indicaCode}
+    AND mat_code = b.prod_code
+        AND mat_code LIKE 'MAT%'
+            OR indica_code = #{indicaCode}
+               AND mat_code = b.prod_code
+                   AND mat_code LIKE 'PRD%'
+                       AND qip_code_list_prod IS NOT NULL
+GROUP BY
+    proc_code,
+    indica_code,
+    proc_name,
+    indica_state,
+    ordr_qnt,
+    mak_flow_step
+ORDER BY
+	mak_flow_step
+</select>
+
+<select id="getAllProcMat" resultType="MakVO" parameterType="MakVO">
+SELECT
+    amount / ordr_qnt                bom_mat_usage,
+    proc_code,
+    cnt,
+    mat_code,
+    mat_name,
+    semi_name,
+    nvl(ordr_qnt - re_qnt, ordr_qnt) ordr_qnt,
+    result_code,
+    mat_lot,
+    rsc_code,
+    mak_bom_code
+FROM
+         mak_bom a
+    JOIN mak_flow USING ( mak_flow_code )
+    JOIN mak_indica USING ( indica_code )
+    JOIN mak_hold      d USING ( indica_code )
+    LEFT OUTER JOIN mat_invntry USING ( mat_lot,
+                                        mat_code )
+    LEFT OUTER JOIN com_code_semi e ON ( e.semi_code = mat_code )
+    LEFT OUTER JOIN (
+        SELECT
+            indica_code,
+            proc_code,
+            SUM(prod_cnt) re_qnt
+        FROM
+            mak_proc_prod
+        WHERE
+                indica_code = #{indicaCode}
+            AND proc_code = #{procCode}
+        GROUP BY
+            proc_code,
+            indica_code
+    ) USING ( proc_code,
+              indica_code )
+WHERE
+        mat_code = a.prod_code
+    AND indica_code = #{indicaCode}
+    AND proc_code = #{procCode}
+</select>
+<select id="getProcFac" resultType="MakVO" parameterType="string">
+select * from fac_info join fac_conn_proc using(fac_code) join com_code_proc using(proc_code) left outer join mak_proc_prod using(fac_code,proc_code) where proc_code=#{procCode} and operate_check='Y'
 </select>
  <!-- 사원 리스트 출력 -->
-  <!-- <select id="getUserList" resultType="UserVO">
-	SELECT * FROM COM_INFO_EMP JOIN COM_CODE_AUTH USING(AUTH_CODE) where auth_name like '%사원%' ORDER BY EMP_NUM
-  </select> -->
+ <select id="userList" resultType="MakVO">
+	SELECT
+    *
+	FROM
+        com_info_emp
+    	JOIN com_code_auth USING ( auth_code )
+   	 	LEFT OUTER JOIN mak_proc_prod USING ( emp_num )
+	WHERE
+   	 	auth_name LIKE '%생산%'
+	ORDER BY
+    	emp_num
+ </select>
+ 
+ <update id="insertProcProd" parameterType="MakVO">
+ insert
+    INTO mak_proc_prod (
+        prcs_code,
+        indica_code,
+        prod_nm,
+        proc_code,
+        fac_code,
+        emp_num,
+        prod_cnt,
+        prcs_fr_date,
+        prcs_state
+    ) values (
+    	get_prcs_seq(),
+    	#{indicaCode},
+    	#{prodNm},
+    	#{procCode},
+    	#{facCode},
+    	#{empNum},
+    	0,
+    	to_date(current_date,'yyyy-mm-dd HH24:mi:ss'),
+    	'작업중'
+    	 )
+ </update>
+ 
+ <update id="updateProcInd" parameterType="string">
+ update mak_indica set indica_state='작업중' where indica_code=#{indicaCode}
+ </update>
+ 
+ <select id="selectProd" parameterType="string" resultType="MakVO">
+ select * from com_code_prod where prod_code=#{resultCode}
+ </select>
+ 
+ <select id="selectSemi" parameterType="string" resultType="MakVO">
+ select * from com_code_semi where semi_code=#{resultCode}
+ </select>
+ 
+ <select id="getProcProd" parameterType="MakVO" resultType="string">
+ select prcs_code from mak_proc_prod where indica_code=#{indicaCode} and emp_num=#{empNum} and proc_code =#{procCode}
+ </select>
+ 
+ <update id="updateProcProd" parameterType="MakVO">
+ update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(current_date,'yyyy-mm-dd HH24:mi:ss'), rsc_code = #{rscCode},prcs_state='작업완료' where prcs_code=#{prcsCode}
+ </update>
+ 
+ <update id="insertMatDlivy" parameterType="MakVO">
+insert
+    INTO mat_dlivy (
+        mat_dlivycode,
+        mat_code,
+        mat_name,
+        mat_lot,
+        mat_dlivydate,
+        mat_dlivyqnt,
+        emp_num,
+        mat_content
+    ) values(GET_MAK_dilvy_seq(),
+    		#{matCode},
+    		#{matName},
+    		#{matLot},
+    		to_date(current_date,'yyyy-mm-dd HH24:mi:ss'),
+    		#{cnt},
+    		#{empNum},
+    		'제조공정'
+    		 )
+ </update>
+ 
 </mapper>
