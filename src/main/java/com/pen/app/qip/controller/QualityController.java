@@ -43,7 +43,7 @@ public class QualityController {
 	// 검사코드 관리 페이지 ------------------------------------------------
 	@GetMapping("/testCodeManage")
 	String testCodeManage() {
-		return "/qip/testCodeManage";
+		return "qip/testCodeManage";
 	}
 	
 	// 검사코드 리스트 조회
@@ -77,7 +77,7 @@ public class QualityController {
 	// 항목별 검사 관리 페이지 -----------------------------------------------
 	@GetMapping("/testPerItemManage")
 	String testPerItemManage() {
-		return "/qip/testPerItemManage";
+		return "qip/testPerItemManage";
 	}
 	
 	// 검사항목 리스트 조회
@@ -111,7 +111,7 @@ public class QualityController {
 	// 검사 페이지 -----------------------------------------------------
 	@GetMapping("/test")
 	String test() {
-		return "/qip/itemTest";
+		return "qip/itemTest";
 	}
 	
 	// 발주 검사 리스트 조회
@@ -145,7 +145,7 @@ public class QualityController {
 	// 검사 조회 페이지 ------------------------------------------------
 	@GetMapping("/testView")
 	String testView() {
-		return "/qip/testView";
+		return "qip/testView";
 	}
 	
 	// 자재입고검사 리스트

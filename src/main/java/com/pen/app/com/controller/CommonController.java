@@ -64,7 +64,7 @@ public class CommonController {
 
 	@GetMapping(value = { "/top", "/" })
 	public String top() {
-		return "/top";
+		return "top";
 	}
 
 	// 아이디로 유저 조회
@@ -83,7 +83,7 @@ public class CommonController {
 		vo.setEmpId(principal.getName());
 		vo = userService.getUser(vo);
 		model.addAttribute("vo", vo);
-		return "/com/modifyUser";
+		return "com/modifyUser";
 
 	}
 
@@ -114,14 +114,14 @@ public class CommonController {
 		if(principal != null) {
 			return "redirect:"+request.getContextPath()+"/top";
 		}else {
-			return "/login";
+			return "login";
 		}
 	}
 
 	// 사원관리페이지 -----------------------------------------------
 	@GetMapping("/admin/userManage")
 	public String userManage() {
-		return "/com/userManage";
+		return "com/userManage";
 	}
 
 	// 권한 리스트 조회
@@ -196,7 +196,7 @@ public class CommonController {
 	// 품목정보 페이지 -----------------------------------------------
 	@GetMapping("/admin/itemManage")
 	public String itemManage() {
-		return "/com/itemManage";
+		return "com/itemManage";
 	}
 
 	// 자재 리스트 조회
@@ -334,7 +334,7 @@ public class CommonController {
 	// 공통코드 관리 페이지 -----------------------------------------------
 	@GetMapping("/admin/comCodeManage")
 	public String comCode() {
-		return "/com/comCodeManage";
+		return "com/comCodeManage";
 	}
 
 	// 공통코드 리스트 조회
@@ -373,7 +373,7 @@ public class CommonController {
 	// 거래처관리 페이지-------------------------------------------------
 	@GetMapping("/admin/accountManage")
 	public String accountManage() {
-		return "/com/accountManage";
+		return "com/accountManage";
 
 	}
 
@@ -450,7 +450,7 @@ public class CommonController {
 	// 거래 품목 관리 페이지 -------------------------------------------------------
 	@GetMapping("/admin/accountItemManage")
 	public String accountItemManage() {
-		return "/com/accountItemManage";
+		return "com/accountItemManage";
 	}
 	
 	// 거래처 목록가져오기
@@ -483,7 +483,7 @@ public class CommonController {
 	// 공정 관리 페이지---------------------------------------------------
 	@GetMapping("/admin/processManage")
 	public String processManage() {
-		return "/com/processManage";
+		return "com/processManage";
 	}
 
 	// 공정구분 리스트 받아오기
@@ -524,7 +524,7 @@ public class CommonController {
 	// 공정 흐름 페이지-----------------------------------------------
 	@GetMapping("/admin/procFlowManage")
 	public String procFlowManage() {
-		return "/com/procFlowManage";
+		return "com/procFlowManage";
 	}
 	
 	// 제품 리스트 조회
@@ -558,7 +558,7 @@ public class CommonController {
 	// BOM 관리 페이지 ---------------------------------------------------
 	@GetMapping("/admin/bomManage")
 	public String bomManage() {
-		return "/com/bomManage";
+		return "com/bomManage";
 	}
 	
 	@GetMapping("/admin/getBomList")
