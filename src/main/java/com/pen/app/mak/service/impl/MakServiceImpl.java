@@ -63,6 +63,7 @@ public List<PlanVO> getContr(ArrayList<String> detCoList) {
 	return list;
 }
 
+/*[계약서기반] 계획서 등록, 계획상세 등록, 참고테이블 등록 */
 @Override
 @Transactional
 public int insertPlan(PlanListVO vo) {
@@ -74,6 +75,7 @@ public int insertPlan(PlanListVO vo) {
 	return result;
 }
 
+/* 계획서 삭제, 계획상세서 삭제, 참고테이블 삭제 */
 @Override
 @Transactional
 public String delPlan(PlanVO vo) {
@@ -92,6 +94,7 @@ public String delPlan(PlanVO vo) {
 	return result;
 }
 
+/* 계획서 수정 */
 @Override
 public int modPlan(PlanVO vo) {
 	int result = mapper.modPlan(vo);
@@ -141,6 +144,7 @@ public List<PlanVO> getOrdList() {
 		return list;
 }
 
+/* 계획서등록, 계획상세등록, 주문상세 업데이트, 참고테이블 등록 [계약서기반과 컬럼 다름] */
 @Override
 @Transactional
 public int insertOrd(PlanListVO vo) {
@@ -157,6 +161,7 @@ public int insertOrd(PlanListVO vo) {
 	return result;
 }
 
+/* 계획상세 삭제, 계획서 삭제, 참고테이블 삭제, 주문상세 업데이트 */
 @Override
 @Transactional
 public String delOrd(PlanVO vo) {
