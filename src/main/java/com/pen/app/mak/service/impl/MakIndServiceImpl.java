@@ -86,6 +86,7 @@ public class MakIndServiceImpl implements MakIndService{
 		return mapper.getOperateCheck(condi);
 	}
 
+	/* 지시서 등록, 생산공정 등록, hold등록, bom등록, 자재재고 업데이트 */
 	@Override
 	@Transactional
 	public String insertIndica(IndicaListVO list) {
@@ -152,6 +153,7 @@ public class MakIndServiceImpl implements MakIndService{
 		return mapper.getIndicatedBom(indicaCode);
 	}
 
+	/* 지시서 수정,hold수정,자재재고수정,bom 수정,공정 수정 */
 	@Override
 	@Transactional
 	public String updateIndica(IndicaListVO list) {
@@ -180,7 +182,9 @@ public class MakIndServiceImpl implements MakIndService{
 		return result;
 	}
 
+	/* 지시서삭제, bom삭제,공정삭제,자재재고수정,hold삭제 */
 	@Override
+	@Transactional
 	public String delIndica(IndicaListVO list) {
 		String result="";
 		int a = mapper.delIndica(list.getList().get(0));
@@ -223,6 +227,7 @@ public class MakIndServiceImpl implements MakIndService{
 		return list;
 	}
 
+	/* 공정실적 등록,지시서 수정 */
 	@Override
 	@Transactional
 	public List<MakVO> insertProcProd(MakVO vo) {
@@ -243,6 +248,7 @@ public class MakIndServiceImpl implements MakIndService{
 		return null;
 	}
 
+	/* 공정실적 수정, 자재출고 등록, hold 수정 */
 	@Override
 	@Transactional
 	public String updateProcProd(IndicaListVO list) {

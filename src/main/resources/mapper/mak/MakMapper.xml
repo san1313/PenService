@@ -105,8 +105,8 @@
 		    #{planState},
 		    #{prodCode},
 		    #{planQnt},
-		    #{planSdate},
-		    #{planClsdate},
+		    to_date(#{planSdate},'yyyy-mm-dd'),
+		    to_date(#{planClsdate},'yyyy-mm-dd'),
 		    #{priority},
 		    'MAK-PLAN-'||(select last_number-1 from user_sequences where sequence_name='MAK_PLAN_SEQ'))
 	</update>
@@ -151,8 +151,8 @@
 		   set
 		       plan_qnt    = #{planQnt},
 		       priority    = #{priority},
-		       plan_sdate  = #{planSdate},
-		       plan_clsdate= #{planClsdate}
+		       plan_sdate  = to_date(#{planSdate},'yyyy-mm-dd'),
+		       plan_clsdate= to_date(#{planClsdate},'yyyy-mm-dd'),
 		 where pd_code=#{pdCode}
 	</update>
 
@@ -166,7 +166,7 @@
 		plan_state,plan_qnt,cont_det_quan-plan_qnt contDetQuan,prod_code 
 		from conplan_view 
 		where plan_type='plan' 
-		  and trunc(plan_date)	between #{planSdate} and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
+		  and trunc(plan_date)	between to_date(#{planSdate},'yyyy-mm-dd') and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss')
 		order by pd_code
 	</select>
 
@@ -283,7 +283,7 @@ MAK_EMP_NUM )
 	 to_char(plan_sdate,'yyyy-MM-dd') planSdate,priority,ord_det_code,plan_code,pd_code,connect_code,plan_type, 
 		to_char(plan_clsdate,'yyyy-MM-dd') planClsdate,to_char(ord_due_date,'yyyy-MM-dd') 
 		ordDueDate, plan_state,plan_qnt,ord_det_quan-plan_qnt ordDetQuan,prod_code 
-		from ordplan_view where plan_type='order' and plan_date between #{planSdate} 
+		from ordplan_view where plan_type='order' and plan_date between to_date(#{planSdate},'yyyy-mm-dd') 
 		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by pd_code
 		 </select>
 		 
