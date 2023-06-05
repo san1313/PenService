@@ -185,21 +185,21 @@
           //검사 추가 시작
           let nextCode; // testCode
           $("#add").click((e) => {
-            if (!nextCode) {
-              // 코드를 가져온적이 없으면 새로 가져옴
-              $.ajax({
-                url: "/qip/getTestCode",
-                async: false,
-              }).done((r) => {
-                nextCode = r;
-              });
-            } else {
-              // 코드를 이미 가져왔다면 코드에 1을 추가함
-              let word = nextCode.substr(0, 5);
-              let num = parseInt(nextCode.substr(5)) + 1 + "";
-              nextCode = word + num.padStart(5, "0");
-            }
-            grid.appendRow({ testCode: nextCode }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            // if (!nextCode) {
+            //   // 코드를 가져온적이 없으면 새로 가져옴
+            //   $.ajax({
+            //     url: "/qip/getTestCode",
+            //     async: false,
+            //   }).done((r) => {
+            //     nextCode = r;
+            //   });
+            // } else {
+            //   // 코드를 이미 가져왔다면 코드에 1을 추가함
+            //   let word = nextCode.substr(0, 5);
+            //   let num = parseInt(nextCode.substr(5)) + 1 + "";
+            //   nextCode = word + num.padStart(5, "0");
+            // }
+            grid.appendRow({}, { focus: true }); // 행을 추가하고 마우스 커서를 이동
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
           });
           //검사 추가 끝
