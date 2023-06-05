@@ -369,6 +369,12 @@
                       <p>설비 점검 관리</p>
                     </a>
                   </li>
+                  <li class="nav-item">
+                    <a href="/fac/downTime" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>설비 비가동 관리</p>
+                    </a>
+                  </li>
                 </ul>
               </li>
               <!-- 설비 메뉴 끝 -->
@@ -611,6 +617,9 @@
             break;
           case "confirm":
             $("#facNav").find("a[href='/fac/confirm']").addClass("active");
+            break;
+          case "downTime":
+            $("#facNav").find("a[href='/fac/downTime']").addClass("active");
             break;
         }
       } else if (path.startsWith("/qip")) {
