@@ -488,5 +488,16 @@ insert
     		'제조공정'
     		 )
  </update>
- 
+<!--  <update id="insertProcSemiHold" parameterType="MakVO">
+ insert into mak_hold(
+ 				rsc_code,
+ 				indica_code,
+ 				mat_code,
+ 				mat_lot,
+ 				cnt,
+ 				hold_date,
+ 				
+ 				)
+ 		 values(get_hold_seq(),'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),#{matCode},#{matLot},#{cnt},sysdate)
+ </update> -->
 </mapper>
