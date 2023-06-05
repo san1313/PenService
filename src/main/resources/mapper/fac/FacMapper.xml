@@ -111,7 +111,8 @@
 		   	   decision = #{decision}
 		 WHERE confirm_code = #{confirmCode}	   	   
 	</update>
-
+	
+	
 
 
 	<!-- 설비삭제 -->

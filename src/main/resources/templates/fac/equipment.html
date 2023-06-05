@@ -332,6 +332,7 @@
   
    	//설비삭제버튼 이벤트
    	$("#delete").on('click', function(){
+   	
    		$.ajax({
    			url: "/fac/facDelete", //컨트롤러에 연결된 주소
 			method : "post", //조회는 항상 get, 나머진 post
