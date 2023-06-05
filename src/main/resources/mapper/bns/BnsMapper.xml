@@ -88,8 +88,8 @@
 		insert all into bns_order values('bns_ord_'||LPAD(ord_seq.nextval, 3,'0'),
 		#{list[0].accCode},
 		#{list[0].accName},
-		#{list[0].ordDate},
-		#{list[0].ordDueDate},
+		to_date(#{list[0].ordDate},'yyyy-mm-dd'),
+		to_date(#{list[0].ordDueDate},'yyyy-mm-dd'),
 		'접수완료',
 		#{list[0].empNum},
 		null)
@@ -106,7 +106,7 @@
 	<update id="modOrdList">
 
 		declare begin
-		update bns_order set ord_due_date = #{list[0].ordDueDate}
+		update bns_order set ord_due_date = to_date(#{list[0].ordDueDate},'yyyy-mm-dd')
 		, ord_note =
 		#{list[0].ordNote} where ord_code = #{list[0].ordCode};
 
@@ -291,14 +291,14 @@
 	<!-- 계약서 등록 -->
 	<insert id="insertContList">
 		insert all into bns_contract
-		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},#{list[0].contDate},#{list[0].contDueDate},'접수완료',null,#{list[0].empNum},
-		#{list[0].contStartDate})
+		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},to_date(#{list[0].contDate},'yyyy-mm-dd'),to_date(#{list[0].contDueDate},'yyyy-mm-dd'),'접수완료',null,#{list[0].empNum},
+		to_date(#{list[0].contStartDate},'yyyy-mm-dd'))
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
 			into bns_contract_detail
 			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),'bns_cont_'||LPAD(cont_seq.currval,
 			3,
-			'0'),#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},#{vo.contDetRelease},'납기불필요',#{vo.contDetTotPrice})
+			'0'),#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},to_date(#{vo.contDetRelease},'yyyy-mm-dd'),'납기불필요',#{vo.contDetTotPrice})
 		</foreach>
 	</insert>
 
@@ -306,8 +306,8 @@
 	<update id="modContList">
 		declare begin
 		update bns_contract set cont_start_date =
-		#{list[0].contStartDate},
-		cont_due_date = #{list[0].contDueDate} ,
+		to_date(#{list[0].contStartDate},'yyyy-mm-dd'),
+		cont_due_date = to_date(#{list[0].contDueDate},'yyyy-mm-dd') ,
 		cont_note =
 		#{list[0].contNote} where cont_code = #{list[0].contCode};
 		<foreach collection="list" item="vo" index="index"
@@ -325,13 +325,13 @@
 			cont_det_quan = #{vo.contDetQuan},
 			cont_det_tot_price = #{vo.contDetTotPrice},
 			cont_det_release =
-			#{vo.contDetRelease}
+			to_date(#{vo.contDetRelease},'yyyy-mm-dd')
 
 			where cont_code = #{vo.contCode}
 			WHEN NOT MATCHED
 			THEN
 			insert(cont_det_code,cont_code,prod_code,prod_name,cont_det_price,cont_det_quan,cont_det_release,cont_det_progress,cont_det_tot_price)
-			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),#{vo.contCode},#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},#{vo.contDetRelease},'납기불필요',#{vo.contDetTotPrice})
+			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),#{vo.contCode},#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},to_date(#{vo.contDetRelease},'yyyy-mm-dd'),'납기불필요',#{vo.contDetTotPrice})
 			
 		</foreach>
 	</update>
@@ -521,7 +521,7 @@ GROUP BY ord_det_code,
 		prdt_nm, 
 		prod_code, 
 		cnt, 
-		to_char(prdt_date,'yyyy-mm-dd') prdt_date, 
+		prdt_date, 
 		prdt_state
 		from MAK_PRDT
 		<where>
@@ -530,7 +530,7 @@ GROUP BY ord_det_code,
 		</if>
 		<if test="prdtDate != null and prdtDate != ''">
 	<![CDATA[
-			and prdt_date >= TO_DATE(#{prdtDate}, 'YYYY-MM-DD') 
+			and prdt_date >= TO_date(#{prdtDate}, 'YYYY-MM-DD') 
 	]]>
 		</if>
 		</where>
@@ -553,7 +553,7 @@ GROUP BY ord_det_code,
 	select p.prdt_lot,
 	 b.prdt_nm, 
 	 b.bns_store_quan,
-	  to_char(bns_store_date,'yyyy-mm-dd') bns_store_date,
+	  bns_store_date,
 	   e.emp_name emp_name, 
 	   b.bns_store_note,
 	    p.prdt_state 
@@ -596,7 +596,7 @@ from(
        d.prod_name,
        d.cont_det_quan,
        d.cont_det_quan - nvl(SUM(r.bns_release_quan), 0) AS cont_req_quan,
-       to_char(cont_det_release,'yyyy-mm-dd') cont_det_release
+        cont_det_release
 FROM bns_contract c
 JOIN bns_contract_detail d on(c.cont_code = d.cont_code)
 LEFT OUTER JOIN bns_release r on ( d.cont_det_code= r.cont_det_code )
@@ -643,7 +643,7 @@ from(
        d.prod_name,
        d.ord_det_quan,
        d.ord_det_quan - nvl(SUM(r.bns_release_quan), 0) AS ord_req_quan,
-       to_char(o.ord_due_date,'yyyy-mm-dd') ord_due_date
+       ord_due_date
 FROM bns_order o
 JOIN bns_order_detail d on(o.ord_code = d.ord_code)
 LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
@@ -684,7 +684,7 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 	acc_name,
 	prdt_nm,
 	bns_release_quan,
-	to_char(bns_release_date,'yyyy-mm-dd') bns_release_date,
+	bns_release_date,
 	bns_release_note,
 	e.emp_name
          from bns_release r join com_info_emp e 
