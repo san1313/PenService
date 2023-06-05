@@ -38,10 +38,10 @@
 		on (b.acc_item = c.mat_code)
 		<where>
 		<if test="matName != null and matName != ''">
-		 	and c.mat_name = #{matName}
+		 	and c.mat_name like #{matName}
 		 	</if>
 		<if test="accName != null and accName != ''">
-			and a.acc_name = #{accName}
+			and a.acc_name like #{accName}
 		</if>
 		</where>
 		order by 1
@@ -128,7 +128,7 @@
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
 		join com_code_account c on(a.acc_code = c.acc_code)
 		<where>
-			<if test="matName != null and matName != ''">
+			<if test="matName != null and matName != '' ">
 				and	b.mat_name like '%'|| #{matName} || '%'
 			</if>
 			<if test="matOrderdate != null and matOrderdate !=''">
@@ -186,8 +186,7 @@
 
 	<!-- 발주등록 다중검색 조회 -->
 	<select id="getorderlistsearchajax" resultType="OrderVO">
-		select *
-		from(
+
 		select a.mat_ordernum,
 		a.acc_code,
 		a.mat_ordername,
@@ -203,19 +202,24 @@
 		from mat_order_header a
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
 		join com_code_account c on(a.acc_code = c.acc_code)
-		where b.mat_name = #{matName}
+		<where>
+		<if test="matName != null and matName !=''">
+		and b.mat_name = #{matName}
+		</if>
+		<if test="accCode != null and accCode !=''">
 		and c.acc_code= #{accCode}
+		</if>
 		<if test="matOrderdate != null and matOrderdate !=''">
 	<![CDATA[		   
-			   and mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
+	    and mat_orderdate >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
 	]]>
-		</if>
-		)
+		</if>		
 		<if test="matOrderdate1 != null and matOrderdate1 !=''">
 	<![CDATA[
-		where mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+		and mat_orderdate <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
 		</if>
+		</where>
 
 	</select>
 
@@ -277,8 +281,7 @@
 		join qip_list_mat d on(a.qip_code_list_mat = d.qip_code_list_mat)
 		join mat_order c on(d.mat_dtaordcode=c.mat_dtaordcode)
 		join mat_order_header b on(c.mat_ordernum=b.mat_ordernum)
-		where TRUNC(a.mat_wrhdate) = TO_DATE(TO_CHAR(SYSDATE, 'YY/MM/DD'),
-		'YY/MM/DD')
+		where TRUNC(a.mat_wrhdate) = trunc(SYSDATE)
 	</select>
 
 	<!-- 입고등록리스트 -->
