@@ -26,7 +26,8 @@ public interface FacService {
 	public int confirmUpdate(FacConfirmVO list);//점검수정
 	
 	public int facDelete(FacInfoVO vo); //설비삭제
-	public int confirmDelete(FacConfirmVO vo); //점검삭제   
+	public int confirmDelete(FacConfirmVO vo); //점검삭제
+	public int downTimeDelete(FacDownTimeVO vo); //비가동삭제
 	  
 	public FacInfoVO getFac(String facCode); //단건조회
 	public List<FacInfoVO> getfacminilist(String keyword);//설비명으로 설비코드조회
