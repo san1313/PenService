@@ -18,4 +18,8 @@ public interface MakIndService {
 	String updateIndica(IndicaListVO list);
 	String delIndica(IndicaListVO list);
 	List<MakVO> dirIndList();
+	List<MakVO> oerfProcList(String indicaCode);
+	List<MakVO> getProcList(MakVO vo);
+	List<MakVO> insertProcProd(MakVO vo);
+	String updateProcProd(IndicaListVO list);
 }

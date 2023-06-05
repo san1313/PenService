@@ -67,4 +67,39 @@ public class MakVO{
 	int matQnt;
 	String matState;
 	
+	//공정실적
+	String prcsCode;
+	int prodCnt;
+	String prcsFrDate;
+	String prcsFlDate;
+	String prcsState;
+	
+	//완제품
+	String prdtLot;
+	String prdtNm;
+	String prdtDate;
+	String prdtUnit;
+	String qipCodeListProd;
+	
+	//제품검사
+	String testType;
+	String testDate;
+	int testNumProd;
+	int testTnumDef;
+	int testTnumPass;
+	//자재
+	String matKeepdate;
+	
+	//유저
+	String empName;
+	String empId;
+	String empPw;
+	String empTel;
+	String hireDate;
+	String authCode;
+	String authName;
+	
+	int makUsage;
+	String resultCode;
+	String semiName;
 }
