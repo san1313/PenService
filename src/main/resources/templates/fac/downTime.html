@@ -360,13 +360,13 @@
    
    
       //비가동삭제버튼 이벤트    
-      /*$("#delete").on('click', function(){
+           $("#delete").on('click', function(){
          $.ajax({
-            url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
+            url: "/fac/downTimeDelete", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진 post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-            confirmCode : $('#confirm_code').val()
+            downTimeCode : $('#downTime_code').val()
          },
           beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
@@ -374,7 +374,7 @@
            success: function (result){
             alert('삭제성공');
             $.ajax({
-                  url : "/fac/confirmListAjax",
+                  url : "/fac/downTimeListAjax",
                   method : "GET",
                   dataType : "JSON",
                   success : function(result){
@@ -382,7 +382,8 @@
                   grid.refreshLayout();
                   }
                   })
-                  $('div input').not("input[name=confirm_issue]").val('');
+                  //$('div input').not("input[name=confirm_issue]").val('');
+                  $('div input').val('');
          },
          error:function(reject){
             console.log(reject)
@@ -390,7 +391,7 @@
          })
 
       });
-    */ 
+     
     
     //비가동수정버튼 이벤트
   /* $("#update").on('click',function(){

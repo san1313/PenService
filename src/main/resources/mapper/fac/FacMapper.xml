@@ -125,6 +125,13 @@
    DELETE FROM FAC_CONFIRM 
 		 WHERE confirm_code=#{confirmCode}
 	</delete>
+	
+	<!-- 비가동삭제 -->
+	<delete id="downTimeDelete" parameterType="FacDownTimeVO">
+	DELETE FROM FAC_DOWNTIME
+		  WHERE downTime_code=#{downTimeCode}
+	
+	</delete>
 
 	<!-- 공정코드목록 -->
 	<select id="getproclist" resultType="FacConnProcVO">
