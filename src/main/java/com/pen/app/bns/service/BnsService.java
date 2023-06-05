@@ -58,6 +58,7 @@ public interface BnsService {
 	
 	public  List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo);//출고관리(계약) 조건 조회
 	public  List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고관리(주문) 조건 조회
+	public  List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo);//출고관리(주문) 조건 조회
 	
 	
 }

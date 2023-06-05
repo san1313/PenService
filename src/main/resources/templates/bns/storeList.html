@@ -9,6 +9,8 @@
 <title>Insert title here</title>
 <script src="https://kit.fontawesome.com/56e7c5522c.js"
 	crossorigin="anonymous"></script>
+	<script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
 <script
@@ -113,6 +115,10 @@
 		 bodyHeight : 200,
 	     el: document.getElementById('beforeStoreGrid'),
 	     scrollX: false,
+	     pageOptions: {
+		  	    useClient: true,	// front에서만 페이징 하는 속성
+		  	    perPage: 10
+		  	  },
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 	     columns: [
 	       {
@@ -160,6 +166,10 @@
 		   bodyHeight : 200,
 		     el: document.getElementById('afterStoreGrid'),
 		     scrollX: false,
+		     pageOptions: {
+		    	    useClient: true,	// front에서만 페이징 하는 속성
+		    	    perPage: 10
+		    	  },
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 		     columns: [
 		       {
