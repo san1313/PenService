@@ -1,7 +1,6 @@
 package com.pen.app.mat.vo;
 
 
-
 import lombok.Data;
 
 @Data
@@ -18,16 +17,18 @@ public class OrderVO { //발주
 	String matDtaordcode; //발주상세코드
 	String matCode; //자재코드
 	String matName; //자재명
-	int matOrderQy; //발주량
-	int matUntpc; //단가
-	int matTotamt; //총금액
+	long matOrderQy; //발주량
+	long matUntpc; //단가
+	long matTotamt; //총금액
 	String matReqdate; //납기요청일
 
 	
 	String accName; //거래처명
 	String empNum; //사원번호
-	int testNumMat;
-	int testTnumDef;
-	int testTnumPass;
-
+	long testNumMat;
+	long testTnumDef;
+	long testTnumPass;
+	
+	String accType;
+	String accItem;
 }

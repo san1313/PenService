@@ -23,6 +23,9 @@ public interface MatMapper {
 	String getmatordercode();//발주코드
 	public void getmatregister(List<OrderVO> list); //발주등록
 	List<OrderVO> gettodaymatregister(); //당일발주등록리스트
+	List<OrderVO> getordlistsearchmodal(OrderVO vo); //발주리스트모달다중검색
+	public void getordmodify(OrderVO list); //발주수정
+	public void getdeleteord(OrderVO list); //발주삭제
 	
 	//자재발주조회
 	List<OrderVO> getorderlistajax(); //발주등록조회페이지리스트

@@ -1,6 +1,5 @@
 package com.pen.app.mat.service.impl;
 
-import java.util.Iterator;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +12,7 @@ import com.pen.app.mat.vo.DisposeResultVO;
 import com.pen.app.mat.vo.DlivyVO;
 import com.pen.app.mat.vo.HoldVO;
 import com.pen.app.mat.vo.InventoryVO;
+import com.pen.app.mat.vo.MatOrdVO;
 import com.pen.app.mat.vo.OrderVO;
 import com.pen.app.mat.vo.WarehousingVO;
 
@@ -72,6 +72,32 @@ public class MatServiceimpl implements MatService {
 	public List<OrderVO> gettodaymatregister() {
 		// 당일발주등록리스트
 		return matmapper.gettodaymatregister();
+	}
+	
+	@Override
+	public List<OrderVO> getordlistsearchmodal(OrderVO vo) {
+		// 발주등록리스트모달다중검색
+		return matmapper.getordlistsearchmodal(vo);
+	}
+	
+	@Override
+	public void getordmodify(MatOrdVO list) {
+		// 발주수정
+		
+		for(int i = 0; i<list.getList().size(); i++) {
+			
+			matmapper.getordmodify(list.getList().get(i));
+		}
+		
+	}
+	
+	@Override
+	public void getdeleteord(MatOrdVO list) {
+		// 발주삭제
+		for(int i = 0; i<list.getList().size(); i++) {
+			
+			matmapper.getdeleteord(list.getList().get(i));
+		}
 	}
 
 	@Override
@@ -242,6 +268,12 @@ public class MatServiceimpl implements MatService {
 		//임의해제 다중검색
 		return matmapper.getmatoptionholdsearchlist(vo);
 	}
+
+	
+
+	
+
+
 
 
 
