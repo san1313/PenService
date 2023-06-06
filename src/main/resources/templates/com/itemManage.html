@@ -167,6 +167,9 @@
                 name: "matSfst",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
               },
               {
                 header: "사용여부",
@@ -273,6 +276,9 @@
                 name: "prodSfst",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
               },
               {
                 header: "사용여부",
