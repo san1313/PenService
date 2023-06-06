@@ -22,9 +22,11 @@
    FROM fac_info
 	<where>
 		<if test="searchDiv != null and searchDiv != ''">
-			${searchDiv} = #{searchName}
+			<!-- ${searchDiv} = #{searchName} title LIKE '%'|| #{keyword} || '%' -->
+			${searchDiv} = #{searchName} 
 		</if>
 	</where>
+	
 	</select>
 
 	<!-- 설비정보목록조회 <select id="getList" resultType="FacInfoVO"> select fac_code 
@@ -57,7 +59,8 @@
 		  VALUES (fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
 		</foreach>
 	</insert>
-
+	
+	
 	<!-- 점검등록 -->
 	<insert id="insertConfirmList" parameterType="FacConfirmVO">
    INSERT INTO fac_confirm(confirm_code,confirm_date,confirm_category,action_history,decision,confirm_issue,emp_num,fac_code)
@@ -111,9 +114,17 @@
 		   	   decision = #{decision}
 		 WHERE confirm_code = #{confirmCode}	   	   
 	</update>
-
-
-
+	
+	<!-- 비가동수정
+	<update id="downTimeUpdate" parameterType="FacDownTimeVO">
+		UPDATE fac_downTime
+		   SET downtime_reason = #{downTimeReason},
+		   	   reason_explain=#{reasonExplain},
+		   	   DOWNTIME_START_DAY=to_date(#{downtimeStartDay},'YYYY-MM-DD'),
+		   	   START_TIME=to_date(#{startTime},'PM HH24:MI')
+		 WHERE DOWNTIME_CODE=#{downtimeCode} 	   
+	</update> -->	
+	
 	<!-- 설비삭제 -->
 	<delete id="facDelete" parameterType="FacInfoVO">
    DELETE FROM fac_info 
@@ -129,8 +140,7 @@
 	<!-- 비가동삭제 -->
 	<delete id="downTimeDelete" parameterType="FacDownTimeVO">
 	DELETE FROM FAC_DOWNTIME
-		  WHERE downTime_code=#{downTimeCode}
-	
+		  WHERE downTime_code=#{downTimeCode}	
 	</delete>
 
 	<!-- 공정코드목록 -->
@@ -197,8 +207,8 @@
 			   a.reason_explain ,
 			   to_char(DOWNTIME_START_DAY,'yyyy-MM-dd') DOWNTIME_START_DAY ,
 			   to_char(START_TIME,'PM HH24:MI') START_TIME,
-			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'-') AS DOWNTIME_END_DAY,
-			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'-') AS END_TIME,
+			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'') AS DOWNTIME_END_DAY,
+			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'') AS END_TIME,
 			   b.OPERATE_CHECK,
 			   a.emp_num
 		  FROM FAC_DOWNTIME a

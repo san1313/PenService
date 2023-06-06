@@ -70,6 +70,8 @@ public class FacServiceImpl implements FacService {
 	@Override
 	public int facDelete(FacInfoVO vo) {
 		// 설비삭제
+		//mapper.checkProcState(vo.getFacCode()) //설비 작업상태체크
+		
 		return mapper.facDelete(vo);
 	}
 

@@ -159,6 +159,13 @@ public class FacController {
 		return service.facDelete(vo);
 	}
 	
+	//작업상태 체크 
+//	@ResponseBody
+//	@RequestMapping("/checkProcState")
+//	public int checkProcState(FacConnProcVO vo) {
+//		
+//	}
+//	
 	//점검삭제
 	@ResponseBody
 	@RequestMapping("/confirmDelete")
