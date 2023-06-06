@@ -66,6 +66,8 @@
       margin: 10px 0 10px;
       float: right;
     }
+    
+  
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -97,7 +99,7 @@
       <label>납기일</label>
       <input class="text1" type="date" id="matReqdate"><br>
       <label>발주명</label>
-      <input class="text1" type="text" id="ordername"><br>
+      <input class="text1" type="text" id="ordername">
       <label>거래처명</label>
       <input class="text1" type="text" id="accmodalname" readonly>
       <input class="text1" type="hidden" id="accmodalcode" readonly>
@@ -212,6 +214,7 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 200,
         columns: [{
           header: '발주번호',
           name: 'matOrdernum'

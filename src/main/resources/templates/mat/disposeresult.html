@@ -67,8 +67,8 @@
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 	</form>
+	<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul">결과반영</button>
 	<div id="grid"></div>
-		<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul">결과반영</button>
 	
 	
     <script>
@@ -81,6 +81,7 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 550,
         columns: [{
         header: 'LOT번호',
         name: 'matLot'
@@ -155,6 +156,7 @@
 	   console.log(checked)
 	   window.open('/mat/matadjustlist')
 	   
+	   
 	   $.ajax({
 	  		url : "/mat/disposeresultlistresu",
 	  		method : "POST",
@@ -171,7 +173,7 @@
 	  			console.log(reject)
 	  		}
 	         
-	  	});    	 	
+	  	});    	 
 	  	 	
    })
    

@@ -25,6 +25,7 @@
 		select * from
 		com_code_mat
 		where mat_name like #{keyword}
+		order by 1
 	</select>
 
 	<!-- 모달거래처목록 -->
@@ -58,6 +59,7 @@
 		left join COM_CODE_MAT c
 		on (b.acc_item = c.mat_code)
 		where a.acc_name = #{matName} and a.acc_code like #{keyword}
+		order by 1
 	</select>
 
 	<!-- 발주번호 -->
@@ -109,8 +111,6 @@
 
 	<!-- 발주리스트모달 다중검색 -->
 	<select id="getordlistsearchmodal" resultType="OrderVO">
-		select *
-		from(
 		select a.mat_ordernum,
 		b.mat_dtaordcode,
 		a.acc_code,
@@ -136,13 +136,13 @@
 			   and TRUNC(mat_orderdate) >= TO_DATE(#{matOrderdate}, 'YYYY-MM-DD') 
 	]]>
 			</if>
-		</where>
-		)
 		<if test="matOrderdate1 != null and matOrderdate1 !=''">
 	<![CDATA[
-		where TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
+		and TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
 		</if>
+		</where>
+		order by 1 a.mat_ordernum desc
 	</select>
 
 	<!-- 발주수정 -->
@@ -182,6 +182,7 @@
 		b.mat_totamt
 		from mat_order_header a
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
+		order by a.mat_ordernum desc
 	</select>
 
 	<!-- 발주등록 다중검색 조회 -->
@@ -220,7 +221,8 @@
 		]]>
 		</if>
 		</where>
-
+		order by a.mat_ordernum desc
+		
 	</select>
 
 
@@ -236,7 +238,7 @@
 		join mat_order b on(a.mat_ordernum = b.mat_ordernum)
 		join qip_list_mat c on(b.mat_dtaordcode = c.mat_dtaordcode)
 		where not exists(select * from mat_wrhousng where QIP_CODE_LIST_MAT =
-		c.QIP_CODE_LIST_MAT)
+		c.QIP_CODE_LIST_MAT) order by 1
 	</select>
 
 	<!-- 자재입고등록 -->
@@ -302,8 +304,6 @@
 
 	<!-- 입고등록리스트 다중검색 -->
 	<select id="getwarehousingsearchajax" resultType="WarehousingVO">
-		select *
-		from(
 		select a.mat_lot, d.mat_ordernum, b.mat_code, a.mat_bcncname, a.mat_wrhqy,
 		a.mat_wrhdate
 		from mat_wrhousng a join mat_invntry b on (a.mat_lot=b.mat_lot)
@@ -321,13 +321,12 @@
 			and TRUNC(mat_wrhdate) >= TO_DATE(#{matWrhdate}, 'YYYY-MM-DD') 
 	]]>
 			</if>
-		</where>
-		)
 		<if test="matWrhdate1 != null and matWrhdate1 != ''">
 	<![CDATA[		
-		where TRUNC(mat_wrhdate) <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
+		and TRUNC(mat_wrhdate) <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
 	]]>
 		</if>
+		</where>
 	</select>
 
 
@@ -340,7 +339,9 @@
 		join com_code_mat using(mat_code)
 		where a.mat_name=#{keyword}
 		group by mat_code, a.mat_name, mat_sfst
+		order by 1
 	</select>
+	
 	<!-- 자재재고조회 lot -->
 	<select id="getinventorysearchlot" resultType="InventoryVO">
 		select a.mat_code,
@@ -357,21 +358,35 @@
 		right outer join mat_invntry using(mat_lot) where mat_qnt>0 ) a
 		left outer join (select sum(cnt) cnt,mat_lot from mak_hold group by
 		mat_lot) b using(mat_lot)
+		where mat_code = #{matCode}
 	</select>
 
 	<!-- 자재출고조회 -->
 	<select id="getmatdlivylist" resultType="DlivyVO">
-		select * from mat_dlivy
+		select * from mat_dlivy order by mat_dlivydate desc
 	</select>
 
 	<!-- 자재출고조회 다중검색 -->
 	<select id="getmatdlivysearchlist" resultType="DlivyVO">
-	<![CDATA[
 		select * 
 			from mat_dlivy
-			where mat_name=#{matName} and TRUNC(mat_dlivydate) >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
+			<where>
+		<if test="matName != null and matName != ''">	
+			and mat_name=#{matName} 
+			</if>
+			<if test="matDlivydate != null and matDlivydate != ''">
+	<![CDATA[
+			and TRUNC(mat_dlivydate) >= TO_DATE(#{matDlivydate}, 'YYYY-MM-DD')
+			
+		]]>
+		</if>
+		<if test="matDlivydate1 != null and matDlivydate1 != ''">
+	<![CDATA[
 			and TRUNC(mat_dlivydate) <= TO_DATE(#{matDlivydate1}, 'YYYY-MM-DD')
-	]]>
+			]]>
+			</if>
+			</where>
+			order by mat_dlivydate desc
 	</select>
 
 	<!-- 자재조정 lot리스트 -->
@@ -384,8 +399,10 @@
 		a.mat_qnt
 		from mat_invntry a
 		join mat_wrhousng b on(a.mat_lot = b.mat_lot)
+		order by 1
 	</select>
-
+	
+	<!-- 자재조정 자재코드 검색 -->
 	<select id="getmatadjustsearch" resultType="AdjustVO">
 		select distinct
 		a.mat_code,
@@ -398,7 +415,6 @@
 		where a.mat_name = #{keyword}
 		order by 1
 	</select>
-
 
 
 	<!-- 자재조정 lot 단건조회 -->
@@ -423,7 +439,9 @@
 		#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
 		#{matWrhqy, mode=IN, jdbcType=VARCHAR},
 		#{matQnt, mode=IN, jdbcType=VARCHAR},
-		#{matBcncname, mode=IN, jdbcType=VARCHAR}
+		#{matBcncname, mode=IN, jdbcType=VARCHAR},
+		#{matCode, mode=IN, jdbcType=VARCHAR},
+		#{empId, mode=IN, jdbcType=VARCHAR}
 		)}
 	</select>
 
@@ -435,7 +453,8 @@
 		#{matMdatresn, mode=IN, jdbcType=VARCHAR},
 		#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
 		#{matDlivyqnt, mode=IN, jdbcType=VARCHAR},
-		#{matQnt, mode=IN, jdbcType=VARCHAR}
+		#{matQnt, mode=IN, jdbcType=VARCHAR},
+		#{empId, mode=IN, jdbcType=VARCHAR}
 		)}
 	</select>
 
@@ -453,13 +472,13 @@
 		a.mat_mdatresn
 		from mat_mdat a
 		join mat_invntry b on(a.mat_lot = b.mat_lot)
-		join mat_wrhousng c on(b.mat_lot = c.mat_lot) order by 1
+		join mat_wrhousng c on(b.mat_lot = c.mat_lot)
+		order by a.mat_mdatdate desc
 	</select>
 
 	<!-- 자재조정리스트 다중검색 -->
 	<select id="getmatadjustsearchlist" resultType="AdjustVO">
-		select *
-		from (select distinct b.mat_lot,
+		select distinct b.mat_lot,
 		b.mat_name,
 		b.mat_code,
 		(b.mat_qnt + a.mat_mdatqnt) as bmatQnt,
@@ -483,14 +502,13 @@
 		         and TRUNC(mat_mdatdate) >= TO_DATE(#{matMdatdate}, 'YYYY-MM-DD') 
 		         ]]>
 			</if>
-		</where>
-
-		)
 		<if test="matMdatdate1 != null and matMdatdate1 != ''">
           <![CDATA[
-        where TRUNC(mat_mdatdate) <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
+        and TRUNC(mat_mdatdate) <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
           ]]>
 		</if>
+		</where>
+		order by a.mat_mdatdate desc
 	</select>
 
 	<!-- 폐기자재리스트 -->
@@ -506,14 +524,13 @@
 		a.mat_state
 		from mat_invntry a
 		join mat_dsuse b on(a.mat_lot = b.mat_lot)
-		order by 1
+		order by b.MAT_CHKEEPDATE desc
 	</select>
 
 	<!-- 폐기자재다중검색 -->
 	<select id="getdisposeresultsearchlist"
 		resultType="DisposeResultVO">
-		select *
-		from(select b. mat_dsnum,
+		select b. mat_dsnum,
 		a.mat_lot,
 		a.mat_code,
 		a.mat_name,
@@ -533,13 +550,13 @@
     		and TRUNC(MAT_CHKEEPDATE) >= TO_DATE(#{matChkeepdate}, 'YYYY-MM-DD')
     		]]>
 			</if>
-		</where>
-		)
 		<if test="matChkeepdate1 != null and matChkeepdate1 != ''">
 		   <![CDATA[ 
-        where TRUNC(MAT_CHKEEPDATE) <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
+        and TRUNC(MAT_CHKEEPDATE) <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
         	]]>
 		</if>
+		</where>
+		order by b.MAT_CHKEEPDATE desc
 	</select>
 
 	<!-- 결과반영 -->
@@ -577,12 +594,13 @@
 		b.mat_holdresn
 		from mat_invntry a
 		join mat_hold b on(a.mat_lot = b.mat_lot)
+		order by mat_rlsdate desc
 	</select>
 
 	<!-- 임의해제리스트 다중검색 -->
 	<select id="getmatoptionholdsearchlist" resultType="HoldVO">
-		select *
-		from(select a.mat_lot,
+
+		select a.mat_lot,
 		a.mat_code,
 		a.mat_name,
 		(a.mat_qnt - b.mat_rlsqnt) as bmatQnt,
@@ -601,13 +619,12 @@
     		and TRUNC(MAT_RLSDATE) >= TO_DATE(#{matRlsdate}, 'YYYY-MM-DD')
     		]]>
 			</if>
-		</where>
-		)
 		<if test="matRlsdate1 != null and matRlsdate1 != ''">
 		   <![CDATA[ 
-        where TRUNC(MAT_RLSDATE) <= TO_DATE(#{matRlsdate1}, 'YYYY-MM-DD')
+        and TRUNC(MAT_RLSDATE) <= TO_DATE(#{matRlsdate1}, 'YYYY-MM-DD')
         	]]>
 		</if>
-
+		</where>
+		order by mat_rlsdate desc
 	</select>
 </mapper>
