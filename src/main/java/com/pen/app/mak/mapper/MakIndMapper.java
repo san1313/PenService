@@ -58,4 +58,6 @@ public interface MakIndMapper {
 	String getProcProd(MakVO vo);
 	int updateProcProd(MakVO vo);
 	int insertMatDlivy(MakVO vo);
+	int insertProcSemiHold(MakVO vo);
+	int insertProcPrdt(MakVO vo);
 }

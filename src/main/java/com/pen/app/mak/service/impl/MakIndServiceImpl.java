@@ -245,18 +245,26 @@ public class MakIndServiceImpl implements MakIndService{
 		return null;
 	}
 
-	/* 공정실적 수정, 자재출고 등록, hold 수정 */
+	/* 공정실적 수정, 자재출고 등록, hold 수정  + a [홀드 등록, 완제품 등록]*/
 	@Override
 	@Transactional
 	public String updateProcProd(IndicaListVO list) {
 		int i =0;
 		String prcsCode = mapper.getProcProd(list.getList().get(0));
 		list.getList().get(0).setPrcsCode(prcsCode);
+		//홀드에 생산품 넣기
+		if(list.getList().get(0).getProdCode().substring(0,4).equals("SEMI")) {
+			i+=mapper.insertProcSemiHold(list.getList().get(0));
+		}else if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
+			//완제품에 생산품 넣기
+			i+=mapper.insertProcPrdt(list.getList().get(0));
+		}
 		mapper.updateProcProd(list.getList().get(0));
 		for (MakVO vo : list.getList()) {
 			i+=mapper.updateIndMakHold(vo);
 			i+=mapper.insertMatDlivy(vo);
 		}
+
 		String result="";
 		if(i>0) {
 			result="성공";
