@@ -167,6 +167,9 @@
                 name: "matSfst",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
               },
               {
                 header: "사용여부",
@@ -273,6 +276,9 @@
                 name: "prodSfst",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
               },
               {
                 header: "사용여부",
@@ -480,43 +486,46 @@
           $("#add").click((e) => {
             let url;
             let type = $("input[name=type]:checked").val();
-            if (!nextNum) {
-              // 코드를 가져온적이 없으면 새로 가져옴
-              if (type == "mat") {
-                url = "Mat";
-              } else if (type == "semi") {
-                url = "Semi";
-              } else {
-                url = "Prod";
-              }
-              $.ajax({
-                url: "/admin/get" + url + "Code",
-                async: false,
-              }).done((r) => {
-                nextNum = r;
-              });
-            } else {
-              // 코드를 이미 가져왔다면 코드에 1을 추가함
-              let word;
-              let num;
-              if (type == "mat") {
-                word = nextNum.substr(0, 4);
-                num = parseInt(nextNum.substr(4)) + 1 + "";
-              } else {
-                word = nextNum.substr(0, 5);
-                num = parseInt(nextNum.substr(5)) + 1 + "";
-              }
-              nextNum = word + num.padStart(5, "0");
-            }
+            // if (!nextNum) {
+            //   // 코드를 가져온적이 없으면 새로 가져옴
+            //   if (type == "mat") {
+            //     url = "Mat";
+            //   } else if (type == "semi") {
+            //     url = "Semi";
+            //   } else {
+            //     url = "Prod";
+            //   }
+            //   $.ajax({
+            //     url: "/admin/get" + url + "Code",
+            //     async: false,
+            //   }).done((r) => {
+            //     nextNum = r;
+            //   });
+            // } else {
+            //   // 코드를 이미 가져왔다면 코드에 1을 추가함
+            //   let word;
+            //   let num;
+            //   if (type == "mat") {
+            //     word = nextNum.substr(0, 4);
+            //     num = parseInt(nextNum.substr(4)) + 1 + "";
+            //   } else {
+            //     word = nextNum.substr(0, 5);
+            //     num = parseInt(nextNum.substr(5)) + 1 + "";
+            //   }
+            //   nextNum = word + num.padStart(5, "0");
+            // }
             switch (type) {
               case "mat":
-                grid.appendRow({ matCode: nextNum, matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+                // grid.appendRow({ matCode: nextNum, matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+                grid.appendRow({ matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
                 break;
               case "semi":
-                grid.appendRow({ semiCode: nextNum, semiUse: "Y" }, { focus: true });
+                // grid.appendRow({ semiCode: nextNum, semiUse: "Y" }, { focus: true });
+                grid.appendRow({ semiUse: "Y" }, { focus: true });
                 break;
               case "prod":
-                grid.appendRow({ prodCode: nextNum, prodUse: "Y" }, { focus: true });
+                // grid.appendRow({ prodCode: nextNum, prodUse: "Y" }, { focus: true });
+                grid.appendRow({ prodUse: "Y" }, { focus: true });
             }
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
           });

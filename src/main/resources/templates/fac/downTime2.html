@@ -357,13 +357,13 @@
    
    
       //비가동삭제버튼 이벤트    
-      /*$("#delete").on('click', function(){
+      $("#delete").on('click', function(){
          $.ajax({
-            url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
+            url: "/fac/downTimeDelete", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진 post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-            confirmCode : $('#confirm_code').val()
+            downTimeCode : $('#downTime_code').val()
          },
           beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
@@ -371,7 +371,7 @@
            success: function (result){
             alert('삭제성공');
             $.ajax({
-                  url : "/fac/confirmListAjax",
+                  url : "/fac/downTimeListAjax",
                   method : "GET",
                   dataType : "JSON",
                   success : function(result){
@@ -379,7 +379,8 @@
                   grid.refreshLayout();
                   }
                   })
-                  $('div input').not("input[name=confirm_issue]").val('');
+                  //$('div input').not("input[name=confirm_issue]").val('');
+                  $('div input').val('');
          },
          error:function(reject){
             console.log(reject)
@@ -387,24 +388,37 @@
          })
 
       });
-    */ 
+    
     
     //비가동수정버튼 이벤트
   /* $("#update").on('click',function(){
 	
       $.ajax({
-         url: "/fac/confirmUpdate", //컨트롤러에 연결된 주소
+         url: "/fac/downTimeUpdate", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-               confirmCode : $('#confirm_code').val(),
-               //facName : $('#fac_name').val(),
-               confirmDate :$('#confirmDatei').val(),
-               confirmCategory : $('input[name=confirm_category]:checked').val(),
-               actionHistory : $("#action_history").val(),
-               confirmIssue : $('#confirm_issue').val(),
-               decision : $('input[name=decision]:checked').val(), 
-               //empNum : $('#emp_num').val()
+        	 $('#downTime_code').val(dblclickRows.downTimeCode); //비가동코드
+             $('#fac_name').val(dblclickRows.facName); //설비명
+             $('#downTime_reason').val(dblclickRows.downTimeReason); //비가동사유             
+             $('#reason_explain').val(dblclickRows.reasonExplain); //사유설명
+             $('#emp_num').val(dblclickRows.empNum);//담당자
+             $('#downTime_start_day').val(dblclickRows.downTimeStartDay); //시작날
+             $('#start_time').val(dblclickRows.startTime.substr(3)); //시작시간
+        	 
+        	 
+        	 
+        	 
+        	 downTimeCode : $('#downTime_code').val(),       
+             downTimeReason : $('select[name="downTime_reason"] option:eq(4)').prop("selected",true),           
+             reasonExplain : $('#reason_explain').val(),          
+             downTimeStartDay: $('#downTime_start_day').val(),
+             startTime.substr(3):$('#start_time').val,
+               
+             //decision : $('input[name=decision]:checked').val(), 
+             //facName : $('#fac_name').val(),
+            //empNum : $('#emp_num').val(),
+            //confirmCategory : $('input[name=confirm_category]:checked').val()
                },
             beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);

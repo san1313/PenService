@@ -252,6 +252,9 @@
                 name: "bomMatUsage",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                },
               },
               {
                 header: "단위",
