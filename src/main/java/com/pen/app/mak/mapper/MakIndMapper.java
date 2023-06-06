@@ -60,4 +60,5 @@ public interface MakIndMapper {
 	int insertMatDlivy(MakVO vo);
 	int insertProcSemiHold(MakVO vo);
 	int insertProcPrdt(MakVO vo);
+	int updateProcIndica(MakVO vo);
 }

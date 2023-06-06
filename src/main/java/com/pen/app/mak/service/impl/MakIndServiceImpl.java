@@ -258,6 +258,7 @@ public class MakIndServiceImpl implements MakIndService{
 		}else if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
 			//완제품에 생산품 넣기
 			i+=mapper.insertProcPrdt(list.getList().get(0));
+			i+=mapper.updateProcIndica(list.getList().get(0));
 		}
 		mapper.updateProcProd(list.getList().get(0));
 		for (MakVO vo : list.getList()) {
