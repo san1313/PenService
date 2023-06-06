@@ -41,7 +41,7 @@
        item_date,
        item_type,
        (
-           SELECT proc_name
+           SELECT DISTINCT proc_name
            FROM mak_proc_prod
            JOIN com_code_proc USING ( proc_code )
            WHERE indica_code = b.indica_code
