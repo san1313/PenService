@@ -348,7 +348,7 @@
                 } else {
                   getAllWithType();
                 }
-                  nextNum = null;
+                nextNum = null;
               }
             }
             accName.val("");
@@ -358,21 +358,21 @@
           //거래처 추가 시작
           let nextNum; //
           $("#add").click((e) => {
-            if (!nextNum) {
-              // 코드를 가져온적이 없으면 새로 가져옴
-              $.ajax({
-                url: "/admin/getAccCode",
-                async: false,
-              }).done((r) => {
-                nextNum = r;
-              });
-            } else {
-              // 코드를 이미 가져왔다면 코드에 1을 추가함
-              let word = nextNum.substr(0, 4);
-              let num = parseInt(nextNum.substr(4)) + 1 + "";
-              nextNum = word + num.padStart(5, "0");
-            }
-            grid.appendRow({ accCode: nextNum }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            // if (!nextNum) {
+            //   // 코드를 가져온적이 없으면 새로 가져옴
+            //   $.ajax({
+            //     url: "/admin/getAccCode",
+            //     async: false,
+            //   }).done((r) => {
+            //     nextNum = r;
+            //   });
+            // } else {
+            //   // 코드를 이미 가져왔다면 코드에 1을 추가함
+            //   let word = nextNum.substr(0, 4);
+            //   let num = parseInt(nextNum.substr(4)) + 1 + "";
+            //   nextNum = word + num.padStart(5, "0");
+            // }
+            grid.appendRow({}, { focus: true }); // 행을 추가하고 마우스 커서를 이동
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified"); // 색칠
           });
           //거래처 추가 끝

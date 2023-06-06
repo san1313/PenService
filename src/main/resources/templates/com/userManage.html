@@ -313,21 +313,22 @@
             var day = today.getDate();
             var format = year + "-" + ("00" + month.toString()).slice(-2) + "-" + ("00" + day.toString()).slice(-2);
             //오늘 날짜 가져오기 끝
-            if (!nextNum) {
-              // 코드를 가져온적이 없으면 새로 가져옴
-              $.ajax({
-                url: "/admin/getEmpCode",
-                async: false,
-              }).done((r) => {
-                nextNum = r;
-              });
-            } else {
-              // 코드를 이미 가져왔다면 코드에 1을 추가함
-              let word = nextNum.substr(0, 4);
-              let num = parseInt(nextNum.substr(4)) + 1 + "";
-              nextNum = word + num.padStart(4, "0");
-            }
-            grid.appendRow({ empNum: nextNum, hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+//             if (!nextNum) {
+//               // 코드를 가져온적이 없으면 새로 가져옴
+//               $.ajax({
+//                 url: "/admin/getEmpCode",
+//                 async: false,
+//               }).done((r) => {
+//                 nextNum = r;
+//               });
+//             } else {
+//               // 코드를 이미 가져왔다면 코드에 1을 추가함
+//               let word = nextNum.substr(0, 4);
+//               let num = parseInt(nextNum.substr(4)) + 1 + "";
+//               nextNum = word + num.padStart(4, "0");
+//             }
+//             grid.appendRow({ empNum: nextNum, hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            grid.appendRow({ hireDate: format }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
           });
           //사원 추가 끝

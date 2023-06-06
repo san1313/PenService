@@ -122,6 +122,12 @@ public class FacServiceImpl implements FacService {
 		return mapper.insertDownTimeList(list);
 	}
 
+	@Override
+	public int downTimeDelete(FacDownTimeVO vo) {
+		// 비가동삭제
+		return mapper.downTimeDelete(vo);
+	}
+
 	
 
 }

@@ -166,6 +166,13 @@ public class FacController {
 		return service.confirmDelete(vo);
 	}
 	
+	//비가동삭제
+	@ResponseBody
+	@RequestMapping("/downTimeDelete")
+	public int downTimeDelete(FacDownTimeVO vo) {
+		return service.downTimeDelete(vo);
+	}
+	
 	//설비명 단건 검색리스트
 	@ResponseBody
 	@RequestMapping("/facminilist")

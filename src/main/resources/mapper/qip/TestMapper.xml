@@ -90,7 +90,7 @@
 		INTO QIP_LIST_MAT VALUES(
 		'TEST-MAT-'||LPAD(TEST_MAT_SEQ.NEXTVAL,6,'0'),
 		#{rVO.targetCode},
-		#{rVO.testDate},
+		to_date(#{rVO.testDate}, 'yyyy-mm-dd'),
 		#{rVO.empNum},
 		#{rVO.testNum},
 		#{rVO.testTnumDef},
@@ -117,7 +117,7 @@
 		INTO QIP_LIST_PROD VALUES(
 		v_qip_seq,
 		#{rVo.targetCode},
-		#{rVo.testDate},
+		to_date(#{rVo.testDate}, 'yyyy-mm-dd'),
 		#{rVo.empNum},
 		#{rVo.testNum},
 		#{rVo.testTnumDef},
@@ -157,7 +157,7 @@
 		INTO QIP_LIST_EXPIRED VALUES(
 		'TEST-EXP-'||LPAD(TEST_EXP_SEQ.NEXTVAL,6,'0'),
 		#{rVO.targetCode},
-		#{rVO.testDate},
+		to_date(#{rVO.testDate}, 'yyyy-mm-dd'),
 		#{rVO.empNum},
 		#{rVO.testNum},
 		#{rVO.testTnumDef},
@@ -171,7 +171,7 @@
 		#{rVO.testNum},
 		#{rVO.testTnumDef},
 		#{rVO.testTnumPass},
-		#{rVO.testExpDate}
+		to_date(#{rVO.testExpDate}, 'yyyy-mm-dd')
 		)
 		<foreach collection="list" item="vo" separator=" ">
 			INTO
@@ -188,7 +188,7 @@
 		UPDATE MAT_INVNTRY
 		SET
 		MAT_STATE = '검사완료',
-		MAT_KEEPDATE = #{rVO.testExpDate}
+		MAT_KEEPDATE = to_date(#{rVO.testExpDate}, 'yyyy-mm-dd')
 		WHERE MAT_LOT = #{rVO.targetCode};
 		
 	END; 
