@@ -33,28 +33,45 @@
 	<!-- 제품 검사 모달 리스트 조회 -->
 	<select id="itemTestList" resultType="TestItemModalVO">
 	SELECT indica_code,
-	       mat_lot                          AS item_lot,
-	       mat_code                         AS item_code,
-	       ( SELECT semi_name
-	         FROM com_code_semi
-	         WHERE semi_code = mat_code
-	       )                                AS item_name,
-	       cnt                              AS item_cnt,
-	       ( SELECT semi_unit
-	         FROM com_code_semi
-	         WHERE semi_code = a.mat_code
-	       )                                AS item_unit,
-	       to_char(hold_date, 'yyyy-mm-dd') AS item_date,
-	       proc_name                        AS prev_proc_name,
-	       'semi'                           AS item_type
-	FROM ( SELECT *
-	       FROM mak_hold
-	       JOIN mak_indica USING ( indica_code )
-	       WHERE mat_code LIKE 'PRD-S%'
-	             AND qip_code_list_prod IS NULL
-	     ) a
-	JOIN mak_proc_prod USING ( indica_code )
-	JOIN com_code_proc USING ( proc_code )
+       item_lot,
+       item_code,
+       item_name,
+       item_cnt,
+       item_unit,
+       item_date,
+       item_type,
+       (
+           SELECT proc_name
+           FROM mak_proc_prod
+           JOIN com_code_proc USING ( proc_code )
+           WHERE indica_code = b.indica_code
+                 AND prod_nm = b.item_name
+       ) AS prev_proc_name
+FROM (
+    SELECT indica_code,
+           mat_lot                          AS item_lot,
+           mat_code                         AS item_code,
+           (
+               SELECT semi_name
+               FROM com_code_semi
+               WHERE semi_code = mat_code
+           )                                AS item_name,
+           cnt                              AS item_cnt,
+           (
+               SELECT semi_unit
+               FROM com_code_semi
+               WHERE semi_code = a.mat_code
+           )                                AS item_unit,
+           to_char(hold_date, 'yyyy-mm-dd') AS item_date,
+           'semi'                           AS item_type
+    FROM (
+        SELECT *
+        FROM mak_hold
+        JOIN mak_indica USING ( indica_code )
+        WHERE mat_lot LIKE 'PRD-S%'
+              AND qip_code_list_prod IS NULL
+    ) a
+) b
 	UNION
 	SELECT indica_code,
 	       prdt_lot,
@@ -177,7 +194,7 @@
 			INTO
 			QIP_LIST_DETAIL VALUES (
 			GET_TEST_DETAIL_SEQ(),
-			'TEST-EXP-'||LPAD(TEST_MAT_SEQ.NEXTVAL,6,'0'),
+			'TEST-EXP-'||LPAD(TEST_EXP_SEQ.NEXTVAL,6,'0'),
 			#{vo.testCode},
 			#{vo.testNumDef}
 			)

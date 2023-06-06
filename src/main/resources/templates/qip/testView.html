@@ -32,6 +32,10 @@
         margin: -6px 0 0 0;
         background-position: -17px -14px;
       }
+      td[data-column-name="testTnumDef"] {
+        color: #00a9ff;
+        cursor: pointer;
+      }
     </style>
   </head>
   <body>
@@ -92,7 +96,7 @@
             <button class="btn btn-primary" id="search" style="height: 38px">조건 조회</button>
           </div>
           <div class="col-auto">
-            <button class="btn btn-primary" id="all" style="height: 38px">전체 조회</button>
+            <button class="btn btn-primary" id="all" style="height: 38px">기간 내 전체 조회</button>
           </div>
           <div class="col-auto">
             <button class="btn btn-light" id="export" style="height: 38px">
@@ -101,16 +105,75 @@
           </div>
         </div>
       </div>
+      <!-- 검사상세 모달 시작 -->
+
+      <div class="modal fade detail" tabindex="-1" role="dialog">
+        <div class="modal-dialog modal-lg">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title">검사상세</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <div class="row">
+                <div class="col-2">
+                  <label class="col-form-label">제품명 :</label>
+                </div>
+                <div class="col-3">
+                  <label class="col-form-label" id="detItemName">제품명</label>
+                </div>
+                <div class="col-2"></div>
+                <div class="col-2">
+                  <label class="col-form-label">검사 수량:</label>
+                </div>
+                <div class="col-3">
+                  <label class="col-form-label" id="detCnt">수량</label>
+                </div>
+              </div>
+              <div id="detailGrid"></div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">닫기</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- 검사상세 모달 끝 -->
       <!-- 자재 입고 검사 내역 -->
       <div id="matGrid"></div>
       <div id="itemGrid" style="display: none"></div>
       <div id="expGrid" style="display: none"></div>
       <script src="/plugins/jquery/jquery.min.js"></script>
+      <script th:inline="none">
+        //dateRangePicker
+        $(function () {
+          var today = new Date();
+          var picker = tui.DatePicker.createRangePicker({
+            startpicker: {
+              date: today - 24 * 60 * 60 * 1000 * 6,
+              input: "#startpicker-input",
+              container: "#startpicker-container",
+            },
+            endpicker: {
+              date: today,
+              input: "#endpicker-input",
+              container: "#endpicker-container",
+            },
+            selectableRanges: [[new Date(2010, 0, 1), today]],
+            format: "YYYY-MM-dd",
+            language: "ko",
+          });
+        });
+      </script>
       <script>
         $(function () {
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
           // 메인그리드시작;
+          let reg = /\B(?=(\d{3})+(?!\d))/g;
 
           //그리드폼 시작
           const matGrid = new tui.Grid({
@@ -122,6 +185,10 @@
                 readData: {
                   url: "/qip/matView",
                   method: "GET",
+                  initParams: {
+                    startDate: $("#startpicker-input").val(),
+                    endDate: $("#endpicker-input").val(),
+                  },
                 },
               },
             },
@@ -159,16 +226,25 @@
                 header: "검사수량",
                 name: "testNumMat",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총합격량",
                 name: "testTnumPass",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총불량량",
                 name: "testTnumDef",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
             ],
           });
@@ -181,6 +257,10 @@
                 readData: {
                   url: "/qip/itemView",
                   method: "GET",
+                  initParams: {
+                    startDate: $("#startpicker-input").val(),
+                    endDate: $("#endpicker-input").val(),
+                  },
                 },
               },
             },
@@ -221,18 +301,27 @@
               },
               {
                 header: "검사수량",
-                name: "testNumMat",
+                name: "testNumProd",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총합격량",
                 name: "testTnumPass",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총불량량",
                 name: "testTnumDef",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
             ],
           });
@@ -245,6 +334,10 @@
                 readData: {
                   url: "/qip/expView",
                   method: "GET",
+                  initParams: {
+                    startDate: $("#startpicker-input").val(),
+                    endDate: $("#endpicker-input").val(),
+                  },
                 },
               },
             },
@@ -282,18 +375,75 @@
                 header: "검사수량",
                 name: "testNumMat",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총합격량",
                 name: "testTnumPass",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "총불량량",
                 name: "testTnumDef",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
             ],
+          });
+          const detailGrid = new tui.Grid({
+            el: document.getElementById("detailGrid"),
+            contextMenu: null,
+            data: {
+              contentType: "application/json",
+              api: {
+                readData: {
+                  url: "/qip/detailView",
+                  method: "GET",
+                },
+              },
+              initialRequest: false,
+            },
+            bodyHeight: 450,
+            scrollX: false,
+            rowHeaders: ["rowNum"],
+            columns: [
+              {
+                header: "검사명",
+                name: "testName",
+                align: "center",
+              },
+              {
+                header: "검사설명",
+                name: "testDetail",
+                align: "center",
+                width: 350,
+              },
+              {
+                header: "불량량",
+                name: "testNumDef",
+                align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
+              },
+            ],
+            summary: {
+              height: 30,
+              columnContent: {
+                testNumDef: {
+                  template(s) {
+                    return `총 불량량 : ${s.sum.toString().replace(reg, ",")}`;
+                  },
+                },
+              },
+            },
           });
           //그리드 폼 끝
 
@@ -334,7 +484,7 @@
 
           // 전체 조회 버튼 동작
           $("#all").click((e) => {
-            grid.setRequestParams();
+            grid.setRequestParams({ startDate: $("#startpicker-input").val(), endDate: $("#endpicker-input").val() });
             grid.readData();
           });
 
@@ -348,6 +498,7 @@
             grid.readData();
           });
 
+          // 엑셀 내보내기
           $("#export").click((e) => {
             let today = new Date();
             let year = today.getFullYear();
@@ -372,27 +523,41 @@
                 break;
             }
           });
-        });
-      </script>
 
-      <script th:inline="none">
-        //dateRangePicker
-        $(function () {
-          var today = new Date();
-          var picker = tui.DatePicker.createRangePicker({
-            startpicker: {
-              date: today,
-              input: "#startpicker-input",
-              container: "#startpicker-container",
-            },
-            endpicker: {
-              date: today,
-              input: "#endpicker-input",
-              container: "#endpicker-container",
-            },
-            selectableRanges: [[new Date(2010, 0, 1), today]],
-            format: "YYYY-MM-dd",
-            language: "ko",
+          // 총불량량 클릭시 검사상세
+          matGrid.on("click", (e) => {
+            if (e.columnName == "testTnumDef") {
+              let row = matGrid.getRow(e.rowKey);
+              $("#detItemName").text(row.matName);
+              $("#detCnt").text(row.testNumMat.toString().replace(reg, ","));
+              detailGrid.setRequestParams({ qipCode: row.qipCodeListMat });
+              detailGrid.readData();
+              $(".detail").modal("show");
+            }
+          });
+          itemGrid.on("click", (e) => {
+            if (e.columnName == "testTnumDef") {
+              let row = itemGrid.getRow(e.rowKey);
+              $("#detItemName").text(row.matName);
+              $("#detCnt").text(row.testNumProd.toString().replace(reg, ","));
+              detailGrid.setRequestParams({ qipCode: row.qipCodeListProd });
+              detailGrid.readData();
+              $(".detail").modal("show");
+            }
+          });
+          expGrid.on("click", (e) => {
+            if (e.columnName == "testTnumDef") {
+              let row = expGrid.getRow(e.rowKey);
+              $("#detItemName").text(row.matName);
+              $("#detCnt").text(row.testNumMat.toString().replace(reg, ","));
+              detailGrid.setRequestParams({ qipCode: row.qipCodeListExp });
+              detailGrid.readData();
+              $(".detail").modal("show");
+            }
+          });
+
+          $(".detail").on("shown.bs.modal", (e) => {
+            detailGrid.refreshLayout();
           });
         });
       </script>

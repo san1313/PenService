@@ -64,7 +64,7 @@
 	       mat_name,
 	       to_char(test_date, 'yyyy-mm-dd') AS test_date,
 	       emp_name,
-	       test_num_exp,
+	       test_num_exp as test_num_mat,
 	       test_tnum_pass,
 	       test_tnum_def
 	FROM qip_list_expired
@@ -79,5 +79,14 @@
 	</if>
 	</where>
 	ORDER BY qip_code_list_exp DESC
+	</select>
+	
+		<!-- 검사 상세 리스트 조회 -->
+	<select id="getDetailView" resultType="TestViewVO">
+		SELECT *
+		FROM qip_list_detail
+		JOIN qip_code_test USING ( test_code )
+		WHERE test_detail_code = #{qipCode}
+		ORDER BY 2
 	</select>
 </mapper>

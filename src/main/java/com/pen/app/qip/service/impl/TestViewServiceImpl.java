@@ -16,7 +16,6 @@ public class TestViewServiceImpl implements TestViewService{
 	
 	@Override
 	public ToastUiResponseDTO getMatView(Map<String, String> map) {
-		System.err.println(map);
 		return new ToastUiResponseDTO(mapper.getMatView(map));
 	}
 	
@@ -30,5 +29,11 @@ public class TestViewServiceImpl implements TestViewService{
 	public ToastUiResponseDTO getExpView(Map<String, String> map) {
 		
 		return new ToastUiResponseDTO(mapper.getExpView(map));
+	}
+	
+	@Override
+	public ToastUiResponseDTO getDetailView(String qipCode) {
+		
+		return new ToastUiResponseDTO(mapper.getDetailView(qipCode));
 	}
 }

@@ -10,4 +10,6 @@ public interface TestViewService {
 	ToastUiResponseDTO getItemView(Map<String, String> map);
 
 	ToastUiResponseDTO getExpView(Map<String, String> map);
+
+	ToastUiResponseDTO getDetailView(String qipCode);
 }
