@@ -66,6 +66,8 @@
       margin: 10px 0 10px;
       float: right;
     }
+    
+  
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -96,6 +98,8 @@
         data-target="#matmodal"></button>
       <label>납기일</label>
       <input class="text1" type="date" id="matReqdate"><br>
+      <label>발주명</label>
+      <input class="text1" type="text" id="ordername">
       <label>거래처명</label>
       <input class="text1" type="text" id="accmodalname" readonly>
       <input class="text1" type="hidden" id="accmodalcode" readonly>
@@ -210,19 +214,19 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 200,
         columns: [{
           header: '발주번호',
           name: 'matOrdernum'
         },
         {
-            header: '발주상세번호',
-            name: 'matDtaordcode',
-            hidden:true
-            },
+        header: '발주상세번호',
+        name: 'matDtaordcode',
+        hidden:true
+        },
         {
           header: '발주명',
-          name: 'matOrdername',
-          editor: 'text'
+          name: 'matOrdername'
         },
         {
           header: '거래처코드',
@@ -540,8 +544,7 @@
         },
         {
         header: '발주명',
-        name: 'matOrdername',
-        editor: 'text'
+        name: 'matOrdername'
         },
         {
           header: '거래처코드',
@@ -581,24 +584,8 @@
           header: '발주일자',
           name: 'matOrderdate'
         }
-        ],
-        summary: {
-          height: 40,
-          position: 'bottom',
-          columnContent: {
-            matOrderQy: {
-              template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
-              }
-            },
-            matTotamt: {
-              template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
-              }
-            }
-          }
-        }
-      });
+        ]
+      	});
 	
     //조회버튼
       document.getElementById('ordck').addEventListener('click',function(){
@@ -634,6 +621,27 @@
           },         
           contentType: "application/json",
           success: function (result4) {
+        	  $.ajax({
+                  url: "/mat/todaymatregister",
+                  method: "GET",
+                  dataType: "JSON",
+                  success: function (result) {
+                    console.log(result);
+                    ckgrid.resetData(result);
+                    ckgrid.refreshLayout();
+                  }
+                });
+
+        		$.ajax({
+                url: "/mat/orderlistajax",
+                method: "GET",
+                dataType: "JSON",
+                success: function (result) {
+                  console.log(result);
+                  ordmodal.resetData(result);
+                  ordmodal.refreshLayout();
+                }
+              });
           //  let app = result4;
             //ordmodal.appendRows(app);
             //onsole.log(result4);
@@ -644,16 +652,7 @@
 
         });
     	
-    	 $.ajax({
-    	        url: "/mat/orderlistajax",
-    	        method: "GET",
-    	        dataType: "JSON",
-    	        success: function (result) {
-    	          console.log(result);
-    	          ordmodal.resetData(result);
     	          ordmodal.refreshLayout();
-    	        }
-    	      });   	 
      })
      
 
@@ -671,6 +670,28 @@
              },
              contentType: "application/json",
              success: function (result4) {
+            	 
+            	 $.ajax({
+                     url: "/mat/todaymatregister",
+                     method: "GET",
+                     dataType: "JSON",
+                     success: function (result) {
+                       console.log(result);
+                       ckgrid.resetData(result);
+                       ckgrid.refreshLayout();
+                     }
+                   });
+
+           		$.ajax({
+                   url: "/mat/orderlistajax",
+                   method: "GET",
+                   dataType: "JSON",
+                   success: function (result) {
+                     console.log(result);
+                     ordmodal.resetData(result);
+                     ordmodal.refreshLayout();
+                   }
+                 });
                //let app = result4;
                //ordmodal.appendRows(app);
                //onsole.log(result4);
@@ -680,16 +701,6 @@
              }
 
            });
-    	 $.ajax({
- 	        url: "/mat/orderlistajax",
- 	        method: "GET",
- 	        dataType: "JSON",
- 	        success: function (result) {
- 	          console.log(result);
- 	          ordmodal.resetData(result);
- 	          ordmodal.refreshLayout();
- 	        }
- 	      }); 
     	 
      })
      
@@ -708,6 +719,7 @@
             matOrdernum: $('#orderCode').val(),
             matName: $('#matmodalmatname').val(),
             matCode: $('#matmodalmatcode').val(),
+            matOrdername: $('#ordername').val(),
             accCode: $('#accmodalcode').val(),
             accName: $('#accmodalname').val(),
             matReqdate: $('#matReqdate').val(),
@@ -765,28 +777,27 @@
           dataType: "JSON",
           contentType: "application/json",
           success: function (result3) {
-            let app = result3;
-            ckgrid.appendRows(app);
-            console.log(result3);
+        	  
+        	  $.ajax({
+                  url: "/mat/todaymatregister",
+                  method: "GET",
+                  dataType: "JSON",
+                  success: function (result) {
+                    console.log(result);
+                    ckgrid.resetData(result);
+                    ckgrid.refreshLayout();
+                  }
+                });
+        	  
 
           }
 
         });
         grid.removeCheckedRows(false);
 
-        $.ajax({
-          url: "/mat/todaymatregister",
-          method: "GET",
-          dataType: "JSON",
-          success: function (result) {
-            console.log(result);
-            ckgrid.resetData(result);
-            ckgrid.refreshLayout();
-          }
-        });
+       
 
       })
-
 
 
       var ckgrid = new tui.Grid({

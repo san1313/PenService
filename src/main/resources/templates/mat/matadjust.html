@@ -21,21 +21,16 @@
     #dlivy{
 	margin : 10px;
 	float:right;
-	margin-right:10px;
-
 	}
 	#subtn{
 	margin : 10px;
-	float:right;
-	margin-right:10px;
-
+	float:right;	
 	}
     #lotadjustgride{
       margin: 20px 0 0px;
     }
     #matadjustgrid{
      display:none;
-     margin:20px 0 0;
     }
 
   </style>
@@ -87,12 +82,12 @@
 
 
 	<div id="lotadjustgride"></div>
-	<div id="matadjustgrid"></div>
-	
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
      <button type="button" class="btn btn-primary" id="subtn">입고</button>
      <button type="button" class="btn btn-primary" id="dlivy">출고</button>
 	</div>
+	<div id="matadjustgrid"></div>
+	
 	
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
@@ -104,7 +99,7 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['rowNum'],
-        bodyHeight : 200,
+        bodyHeight : 250,
         columns: [{
         header: 'LOT번호',
         name: 'matLot'
@@ -264,6 +259,7 @@
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
+    bodyHeight : 250,
     columns: [{
     header: 'LOT번호',
     name: 'matLot'
@@ -289,7 +285,7 @@
     header: '조정사유',
     name: 'matMdatresn',
     editor:'text'
-    }
+    }  
     ]
     });
 
@@ -320,10 +316,15 @@
     	let checked = matadjustgrid.getCheckedRows();
     	
     	console.log(checked);
+    	let data = matadjustgrid.getCheckedRows()
+    	data[0].matMdev= '입고'; 
+    	data[0].empId = 'test';
+    
+    	
     	 $.ajax({
     	  		url : "/mat/matadjustregister",
     	  		method : "POST",
-    	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+    	  		data : JSON.stringify(data),
     	  		beforeSend: function (xhr) {
     	            xhr.setRequestHeader(header, token);
     	          },
@@ -345,10 +346,13 @@
     	let checked2 = matadjustgrid.getCheckedRows();
     	console.log(checked2);
     	
+    	checked2[0].matMdev='출고';
+    	checked2[0].empId ='test';
+    	
     	$.ajax({
 	  		url : "/mat/matadjustdliregister",
 	  		method : "POST",
-	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+	  		data : JSON.stringify(checked2),
 	  		beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);
 	          },
@@ -363,10 +367,7 @@
 	         
 	  	});    	 	
     	
-    })
-    
-  
-   
+    })  
     </script>
 
     </div>
