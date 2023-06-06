@@ -651,6 +651,20 @@ insert
  </update>
 
 <update id="updateProcIndica" parameterType="MakVO">
- update mak_indica a, mak_hold b set a.indica_state = case when b.cnt=0 then '작업완료' else '미작업' end where a.indica_code = b.indica_code and a.indica_code=#{indicaCode} and b.indicaCode=#{indicaCode}  
+UPDATE mak_indica a
+SET
+    a.indica_state = '작업완료'
+WHERE
+    EXISTS (
+        SELECT
+            1
+        FROM
+            mak_hold b
+        WHERE
+                a.indica_code = b.indica_code
+            AND ( b.cnt = 0
+                  AND ( b.mat_code LIKE 'SEM%'
+                        AND ( b.indica_code = #{indicaCode} ) ) )
+    )  
  </update>
 </mapper>

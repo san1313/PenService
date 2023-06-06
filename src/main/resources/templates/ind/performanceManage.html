@@ -155,6 +155,7 @@ var modReQnt=0;
 var indicaCode="";
 var prdtNm="";
 var minQnt = 0;
+var miniQnt = 100000;
 $(function () {
 	//기본값 설정
     $('#indDatei').val(new Date().toISOString().slice(0, 10));
@@ -300,6 +301,7 @@ $(function () {
      grid2.on("dblclick",function(e){
     	let planProcData = grid2.getRow(e.rowKey);
     	minQnt=0;
+    	miniQnt=100000;
     	$('#stBtn').prop('disabled',false);
     	console.log(planProcData);
   	 let insertData = {
@@ -370,11 +372,39 @@ $(function () {
 								}
 								
 								document.getElementById('facNmi').appendChild(options);	
-								console.log(ele);
 								
 							 }
 	   	            	})
 	   	            	console.log(resolve);
+	   	            	console.log(result);
+	   	       	
+	             	result.forEach(function(ele,idx){
+	              	console.log('z');
+	              	console.log(ele);
+	              	if(ele.cnt>ele.ordrQnt*ele.bomMatUsage){
+	              		if(minQnt<ele.ordrQnt){
+	              			console.log('a');
+	              		minQnt=ele.ordrQnt;
+	              		}
+	              	}
+	              	if(ele.cnt==ele.ordrQnt*ele.bomMatUsage){
+	              		if(minQnt<ele.ordrQnt){
+	              			console.log('b');
+	              		minQnt=ele.ordrQnt;
+	              		}
+	              	}
+	              	if(ele.cnt<ele.ordrQnt*ele.bomMatUsage){
+	              		console.log('c');
+	              		console.log(miniQnt);
+	              		console.log(ele.cnt/ele.bomMatUsage);
+	              		if(miniQnt>ele.cnt/ele.bomMatUsage){
+	              			console.log('?');
+	              			miniQnt=ele.cnt/ele.bomMatUsage;
+	              		}
+	              	}
+	              });
+	              console.log(miniQnt);
+	              console.log(minQnt);
 	   	            	grid3.resetData(result);
 	   	            }
 	          	  });
@@ -382,26 +412,22 @@ $(function () {
     }); 
     //지시수량 keyup이벤트
     $('#prodCnti').keyup(function(e){
-    	  let limit = grid3.getData();
-            limit.forEach(function(ele,idx){
-            	console.log(ele);
-            	if(ele.cnt>=ele.ordrQnt*ele.bomMatUsage){
-            		if(minQnt<ele.ordrQnt){
-            		minQnt=ele.ordrQnt;
-            		}
-            	}else if(ele.cnt<ele.ordrQnt*ele.bomMatUsage){
-            		if(minQnt<ele.cnt/ele.bomMatUsage){
-            			minQnt=ele.cnt/ele.bomMatusage;
-            		}
-            	}
-            });
+      	let limit = grid3.getData();
+           if(miniQnt==100000){
           	if(Math.abs($('#prodCnti').val())>minQnt){
           		$('#prodCnti').val(minQnt);
           	}
           	limit.forEach(function(ele,idx){
           	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#prodCnti').val()*ele.bomMatUsage),false);
           	})
-            
+           }else{
+        	   if(Math.abs($('#prodCnti').val())>miniQnt){
+             		$('#prodCnti').val(miniQnt);
+             	}
+        	   limit.forEach(function(ele,idx){
+               	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#prodCnti').val()*ele.bomMatUsage),false);
+               	}) 
+           }
     });
     $('#useri').change(function(){
     	
