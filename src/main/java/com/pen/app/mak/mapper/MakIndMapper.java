@@ -61,4 +61,7 @@ public interface MakIndMapper {
 	int insertProcSemiHold(MakVO vo);
 	int insertProcPrdt(MakVO vo);
 	int updateProcIndica(MakVO vo);
+	int getProcProdCount(MakVO vo);
+	int getProcReCnt(MakVO vo);
+	List<MakVO> getProcProdInfo(MakVO vo);
 }

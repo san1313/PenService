@@ -218,7 +218,17 @@ public class MakIndServiceImpl implements MakIndService{
 		// TODO Auto-generated method stub
 		List<MakVO> list = mapper.oerfProcList(indicaCode);
 		for (MakVO vo : list) {
-			mapper.getProcProd(vo);
+			int i = mapper.getProcProdCount(vo);
+			if(i>0) {
+				int j = mapper.getProcReCnt(vo);
+				if(j>0) {
+					vo.setIndicaState("작업중");
+				}else {
+					vo.setIndicaState("작업완료");
+				}
+			}else {
+				vo.setIndicaState("미작업");
+			}
 		}
 		return list;
 	}
@@ -278,6 +288,12 @@ public class MakIndServiceImpl implements MakIndService{
 			result="성공";
 		}
 		return result;
+	}
+
+	@Override
+	public List<MakVO> getProcProdInfo(MakVO vo) {
+		
+		return mapper.getProcProdInfo(vo);
 	}
 
 

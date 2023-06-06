@@ -178,11 +178,11 @@ grid = new tui.Grid({
         },
         {
           header: '시작일시',
-          name: 'prcs_fr_date'
+          name: 'prcsFrDate'
         },
         {
             header: '종료일시',
-            name: 'prcs_fl_date'
+            name: 'prcsFlDate'
           },
         {
       	  header: '작업량',
@@ -190,11 +190,11 @@ grid = new tui.Grid({
         },
           {
         	  header: '불량량',
-        	  name : 'procName'
+        	  name : 'reQnt'
           },
         {
         	  header: '사용설비',
-        	  name : 'facCode'
+        	  name : 'facName'
           }
       ]
       });
@@ -206,84 +206,26 @@ grid = new tui.Grid({
 			grid.resetData(result);
 		}
 	})
-	//사원정보 불러오기
-    		    	$.ajax({
-    		    		url:"/ind/userList",
-    		    		method : "GET",
-    		    		success:function(result){
-    		    			console.log(result);
-    		    			$('#useri option').remove();
-    		    			result.forEach(function(ele,i){
-    		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
-    		    				let options = document.createElement("option");
-    		    				options.setAttribute('name',ele.empNum);
-    		    				options.dataset.num=i;
-    		    				options.dataset.procCode=ele.procCode;
-    		    				options.dataset.indicaCode=ele.indicaCode;
-    		    				options.dataset.facCode=ele.facCode;
-    		    				options.dataset.fldate=ele.prcsFlDate;
-    		    				options.append(ele.empName);
-    		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
-    		    					options.append("-");
-    		    					let getindicaNm = grid.getData();
-    		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
-    		    						options.append(ind.indicaNm);
-    		    					});
-    		    					options.append("-");
-    		    					options.append(ele.procCode);
-    		    				}
-    		    				if(ele.facCode!=null){
-    		    					options.setAttribute('disabled',true);
-    		    				}else{
-    		    					options.removeAttribute('disabled');
-    		    				}
-    		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
-    		    				}
-    		    				
-    		    			})
-    		    			
-    		    		}
-    		    	})
+
     //공정 그리드 설정
      grid2.on("dblclick",function(e){
     	let planProcData = grid2.getRow(e.rowKey);
-    	minQnt=0;
-    	miniQnt=100000;
-    	$('#stBtn').prop('disabled',false);
-    	console.log(planProcData);
+
   	 let insertData = {
   			 "procCode" : planProcData.procCode,
   			 "indicaCode" : planProcData.indicaCode
   	 };
-  	 $('#facNmi option').remove();
-  	 $('#procNamei').val(planProcData.procName);
-  	 $('#procNamei').data('procCode',planProcData.procCode);
-  	 $('#prodCnti').val('0');
-  	 for(i=0;i<$('#useri option').length;i++){
-  		 if($('#useri option').eq(i).data('procCode')!=null){
-  			if($('#procNamei').data('procCode')==$('#useri option').eq(i).data('procCode') && $('#indNmi').data('indicaCode')==$('#useri option').eq(i).data('indicaCode')){
-  				$('#useri option').eq(i).prop('disabled',false);
-			}else{
-				if($('#useri option').eq(i).prop('selected')){
-					$('#useri').val('');
-				}
-				$('#useri option').eq(i).prop('disabled',true);
-				}
-  		 }
-  	 }
 	            //공정정보 불러오기
 	          	   $.ajax({
-	          		  url:"/ind/getProcList",
+	          		  url:"/ind/getProcProdInfo",
 	          		  method:"POST",
 	          		  data:JSON.stringify(insertData),
 	          		  contentType : "application/json",
 	          		 beforeSend: function (xhr) {
 	   	              xhr.setRequestHeader(header, token);
 	   	            },
-	   	            success : function(resolve){
-	   	            	let result = [];
+	   	            success : function(result){
+/* 	   	            	let result = [];
 	   	            	resolve.forEach(function(ele,i){
 	   	            		 if(ele.facName==null) {
 	   	            			 if(ele.matName==null){
@@ -311,320 +253,20 @@ grid = new tui.Grid({
 									})
 									
 								}
-								if(ele.indicaCode!=null&&ele.prcsFlDate==null){
-									options.setAttribute('disabled',true);
-								}else{
-									options.removeAttribute('disabled');
-								}
-								if($('#procNamei').data('procCode')==options.dataset.procCode&&$('#useri option:selected').data('facCode')==options.dataset.facCode){
-									options.removeAttribute('disabled');
-								}
 								
 								document.getElementById('facNmi').appendChild(options);	
 								
 							 }
-	   	            	})
-	   	            	console.log(resolve);
+	   	            	}) */
 	   	            	console.log(result);
 	   	       	
-	             	result.forEach(function(ele,idx){
-	              	console.log('z');
-	              	console.log(ele);
-	              	if(ele.cnt>ele.ordrQnt*ele.bomMatUsage){
-	              		if(minQnt<ele.ordrQnt){
-	              			console.log('a');
-	              		minQnt=ele.ordrQnt;
-	              		}
-	              	}
-	              	if(ele.cnt==ele.ordrQnt*ele.bomMatUsage){
-	              		if(minQnt<ele.ordrQnt){
-	              			console.log('b');
-	              		minQnt=ele.ordrQnt;
-	              		}
-	              	}
-	              	if(ele.cnt<ele.ordrQnt*ele.bomMatUsage){
-	              		console.log('c');
-	              		console.log(miniQnt);
-	              		console.log(ele.cnt/ele.bomMatUsage);
-	              		if(miniQnt>ele.cnt/ele.bomMatUsage){
-	              			console.log('?');
-	              			miniQnt=ele.cnt/ele.bomMatUsage;
-	              		}
-	              	}
-	              });
-	              console.log(miniQnt);
-	              console.log(minQnt);
+	             
 	   	            	grid3.resetData(result);
 	   	            }
 	          	  });
 	         
     }); 
-    //지시수량 keyup이벤트
-    $('#prodCnti').keyup(function(e){
-      	let limit = grid3.getData();
-           if(miniQnt==100000){
-          	if(Math.abs($('#prodCnti').val())>minQnt){
-          		$('#prodCnti').val(minQnt);
-          	}
-          	limit.forEach(function(ele,idx){
-          	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#prodCnti').val()*ele.bomMatUsage),false);
-          	})
-           }else{
-        	   if(Math.abs($('#prodCnti').val())>miniQnt){
-             		$('#prodCnti').val(miniQnt);
-             	}
-        	   limit.forEach(function(ele,idx){
-               	  grid3.setValue(ele.rowKey,'makUsage',Math.abs($('#prodCnti').val()*ele.bomMatUsage),false);
-               	}) 
-           }
-    });
-    $('#useri').change(function(){
-    	
-    	//설비 선택제어
-    	for(let i =0;i<$('#facNmi').length;i++){
-    		if($('#facNmi option').eq(i).data('indicaCode')!=null){
-    	if($('#useri option:selected').data('facCode')==$('#facNmi option').eq(i).attr('name')){
-    		$('#facNmi option').eq(i).prop('disabled',false);
-    	}else{
-    		$('#facNmi option').eq(i).prop('disabled',true);
-    		$('#facNmi').val("");
-    	}
-    	}
-    	}
-    	
-    	if($('#useri option:selected').data('facCode')!=null){
-    		$('#stBtn').prop('disabled',true);
-    		$('#endBtn').prop('disabled',false);
-    	}else{
-    		$('#stBtn').prop('disabled',false);
-    		$('#endBtn').prop('disabled',true);
-    	}
-    })
-    //종료버튼 클릭이벤트
-    $('#endBtn').click(function(){
-    	 let makMat = grid3.getData(); 
-    	let innerData = [];
-    	console.log($('#stDatei').val());
-    	console.log(makMat);
-    	
-    	//그리드3 반복;; 홀드테이블도 같이
-    	makMat.forEach(function(ele,i){
-    		console.log(ele);
-    			
-    	let insertData = {
-    			"cnt": ele.makUsage,
-    			"procCode":ele.matCode,
-    			"matLot":ele.matLot,
-    			"prodCode" : ele.resultCode,
-    			"makBomCode" : ele.makBomCode,
-    			"empNum" : $('#useri option:selected').attr('name'),
-    			"indicaCode":$('#indNmi').data('indicaCode'),
-    			"procCode":$('#procNamei').data('procCode'),
-    			"rscCode" : ele.rscCode,
-    			"prodCnt" : $('#prodCnti').val(),
-    			"prodName" : ele.prodName,
-    			"matCode":ele.matCode,
-    			"matName" : ele.prodName,
-    			"prdtNm" : prdtNm
-    	};
-    	innerData.push(insertData);
-    	});
-    	
-    	let insertData = {"list" : innerData}
-    	
-    	//종료 아작스 시작
-    	$.ajax({
-    		url:"/ind/updateProcProd",
-    		method : "POST",
-    		data : JSON.stringify(insertData),
-    		contentType : "application/json",
-    		 beforeSend: function (xhr) {
-  	              xhr.setRequestHeader(header, token);
-  	            },
-    		success : function(result){
-    			console.log(result);
-    			 let grid2Rows = grid2.getData();
-    		    	grid2Rows.forEach(function(ele,i){
-    		    		grid2.removeRow(grid2Rows[i].rowKey);
-    		    	});
-    		    	 let grid3Rows = grid3.getData();
-    		    	grid3Rows.forEach(function(ele,i){
-    		    		grid3.removeRow(grid3Rows[i].rowKey);
-    		    	}); 
-    		    	//인풋 초기화
-    	$('#prodCnti').val('0');
-    		    	$('#indNmi').val('');
-    		    	$('#facNmi option').remove();
-    		    	$('#procNamei').val('');
-    		    	$('#useri option').remove();
-    		    	$('#useri').val('');
-    		    	$('#endBtn').prop('disabled',true);
-    		    	//그리드 다시 불러오기
-    		    	 $.ajax({
-    		    			url:"/ind/perfIndList",
-    		    			method : "GET",
-    		    			success:function(result){
-    		    				grid.resetData(result);
-    		    			}
-    		    		});
-    		    	//사원정보 불러오기
-    		    	$.ajax({
-    		    		url:"/ind/userList",
-    		    		method : "GET",
-    		    		success:function(result){
-    		    			console.log(result);
-    		    			$('#useri option').remove();
-    		    			result.forEach(function(ele,i){
-    		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
-    		    				let options = document.createElement("option");
-    		    				options.setAttribute('name',ele.empNum);
-    		    				options.dataset.num=i;
-    		    				options.dataset.procCode=ele.procCode;
-    		    				options.dataset.indicaCode=ele.indicaCode;
-    		    				options.dataset.facCode=ele.facCode;
-    		    				options.dataset.fldate=ele.prcsFlDate;
-    		    				options.append(ele.empName);
-    		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
-    		    					options.append("-");
-    		    					let getindicaNm = grid.getData();
-    		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
-    		    						options.append(ind.indicaNm);
-    		    					});
-    		    					options.append("-");
-    		    					options.append(ele.procCode);
-    		    				}
-    		    				if(ele.facCode!=null){
-    		    					options.setAttribute('disabled',true);
-    		    				}else{
-    		    					options.removeAttribute('disabled');
-    		    				}
-    		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
-    		    				}
-    		    				
-    		    			})
-    		    			
-    		    		}
-    		    	})
-    		    	//사원정보 불러오기 끝
-    			
-    		},
-    		error:function(reject){
-    			console.error(reject);
-    		}
-    	}); 
-    	//종료 아작스 끝
-    });
-  
-    /* grid.setWidth(660); */
-    //모달창 열릴떄 작동
-/* 	$('#matmodalbtn').on('shown.bs.modal', function(){
-        modal_grid.refreshLayout();
-        $.ajax({
-            url : "/ind/product",
-            method : "GET",
-            success : function(result){
-          	  modal_grid.textContent="";
-          	  
-              modal_grid.resetData(result);
-            }
-          });     
-       });	 */
-    //시작버튼 클릭시 이벤트
-	$('#stBtn').click(function(){
-		
-    	let makFlow = grid3.getData();
-    	
-    	let innerData = [];
-    	let insertData={
-    			"prodCode": makFlow[0].resultCode,
-    			"indicaCode":$('#indNmi').data('indicaCode'),
-    			"procCode":$('#procNamei').data('procCode'),
-    			"facCode":$('#facNmi option:selected').attr('name'),
-    			"empNum":$('#useri option:selected').attr('name'),
-    			"prodCnt":$('#prodCnti').val()
-    	};
 
-		console.log(makFlow);
-    	//등록 아작스 시작
-    	$.ajax({
-    		url:"/ind/insertProcProd",
-    		method : "POST",
-    		data : JSON.stringify(insertData),
-    		contentType : "application/json",
-    		 beforeSend: function (xhr) {
-  	              xhr.setRequestHeader(header, token);
-  	            },
-    		success : function(result){
-    			console.log(result);
-    			 let grid2Rows = grid2.getData();
-    		    	grid2Rows.forEach(function(ele,i){
-    		    		grid2.removeRow(grid2Rows[i].rowKey);
-    		    	});
-    		    	 let grid3Rows = grid3.getData();
-    		    	grid3Rows.forEach(function(ele,i){
-    		    		grid3.removeRow(grid3Rows[i].rowKey);
-    		    	});
-    		    	
-    		    	$('#prodCnti').val('0');
-    		    	$('#indNmi').val('');
-    		    	$('#facNmi option').remove();
-    		    	$('#procNamei').val('');
-    		    	$('#stBtn').prop('disabled',true);
-    		    	$('#useri').val('');
-    		    	$('#facNmi').val('');
-    				grid.resetData(result);
-    				$('#useri option').remove();
-    				//사원정보 불러오기
-    		    	$.ajax({
-    		    		url:"/ind/userList",
-    		    		method : "GET",
-    		    		success:function(result){
-    		    			console.log(result);
-    		    			$('#useri option').remove();
-    		    			result.forEach(function(ele,i){
-    		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
-    		    				let options = document.createElement("option");
-    		    				options.setAttribute('name',ele.empNum);
-    		    				options.dataset.num=i;
-    		    				options.dataset.procCode=ele.procCode;
-    		    				options.dataset.indicaCode=ele.indicaCode;
-    		    				options.dataset.facCode=ele.facCode;
-    		    				options.dataset.fldate=ele.prcsFlDate;
-    		    				options.append(ele.empName);
-    		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
-    		    					options.append("-");
-    		    					let getindicaNm = grid.getData();
-    		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
-    		    						options.append(ind.indicaNm);
-    		    					});
-    		    					options.append("-");
-    		    					options.append(ele.procCode);
-    		    				}
-    		    				if(ele.facCode!=null){
-    		    					options.setAttribute('disabled',true);
-    		    				}else{
-    		    					options.removeAttribute('disabled');
-    		    				}
-    		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
-    		    				}
-    		    				
-    		    			})
-    		    			
-    		    		}
-    		    	})
-    		    	//사원정보 불러오기 끝
-    		},
-    		error:function(reject){
-    			console.error(reject);
-    		}
-    	}); 
-    	//등록 아작스 끝
-	});
-    //등록버튼 끝
     
     grid.on('dblclick',function(e){
     	modData = grid.getRow(e.rowKey);
@@ -632,16 +274,7 @@ grid = new tui.Grid({
     	pdCode=modData.pdCode;
     	indicaCode=modData.indicaCode;
     	prodCode=modData.prodCode;
-    	$('#stBtn').prop('disabled',true);
-    	$('#endBtn').prop('disabled',true);
-    	//수정버튼 활성화
-    	$('#indNmi').val(modData.indicaNm);
-		$('#indNmi').data("indicaCode",indicaCode);
-		$('#procNamei').val("");
-		$('#facNmi').val("");
-		$('#facNmi option').remove();
-		$("#useri").val("");
-		$('#procnamei').data('procCode',"");
+    	
 		 let grid2Rows = grid2.getData();
 	    	grid2Rows.forEach(function(ele,i){
 	    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -651,18 +284,6 @@ grid = new tui.Grid({
 	    		grid3.removeRow(grid3Rows[i].rowKey);
 	    	});
     	console.log(modData);
-    	 for(i=0;i<$('#useri').length;i++){
-      		 if($('#useri option').eq(i).data('indicaCode')!=null){
-      			if($('#procNamei').data('procCode')==$('#useri option').eq(i).data('procCode')&&$('#indNmi').data('indicaCode')==$('#useri option').eq(i).data('indicaCode')){
-    				$('#useri option').eq(i).prop('disabled',false);
-    			}else{
-    				if($('#useri option').eq(i).prop('selected')){
-    					$('#useri option').eq(++i).prop('selected','selected');
-    				}
-    				$('#useri option').eq(i).prop('disabled',true);
-    			}
-      		 }
-      	 }
     	
     	//공정 bom 데이터 넣기
 	      $.ajax({
