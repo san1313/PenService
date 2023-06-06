@@ -508,6 +508,16 @@ $(function () {
     		    	$('#facNmi option').remove();
     		    	$('#procNamei').val('');
     		    	$('#useri option').remove();
+    		    	$('#useri').val('');
+    		    	$('#endBtn').prop('disabled',true);
+    		    	//그리드 다시 불러오기
+    		    	 $.ajax({
+    		    			url:"/ind/perfIndList",
+    		    			method : "GET",
+    		    			success:function(result){
+    		    				grid.resetData(result);
+    		    			}
+    		    		});
     		    	//사원정보 불러오기
     		    	$.ajax({
     		    		url:"/ind/userList",
@@ -612,9 +622,11 @@ $(function () {
     		    	$('#indNmi').val('');
     		    	$('#facNmi option').remove();
     		    	$('#procNamei').val('');
-    		    	
+    		    	$('#stBtn').prop('disabled',true);
+    		    	$('#useri').val('');
+    		    	$('#facNmi').val('');
     				grid.resetData(result);
-    				$('useri option').remove();
+    				$('#useri option').remove();
     				//사원정보 불러오기
     		    	$.ajax({
     		    		url:"/ind/userList",

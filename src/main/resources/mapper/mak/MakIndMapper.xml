@@ -667,4 +667,8 @@ WHERE
                         AND ( b.indica_code = #{indicaCode} ) ) )
     )  
  </update>
+ 
+ <select id="getProcProdCount" parameterType="MakVO">
+ select count(*) from mak_proc_prod where indica_code=#{indicaCode} and proc_code = #{procCode}
+ </select>
 </mapper>
