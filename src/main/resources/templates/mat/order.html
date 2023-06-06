@@ -124,7 +124,7 @@
           <div class="modal-body">
             <label>자재명</label>
             <input class="modaltext" type="text" id="ckmat-text">
-            <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+            <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
             <div id="mat-modal-grid"></div>
           </div>
         </div>
@@ -146,7 +146,7 @@
           <div class="modal-body">
             <label>거래처코드</label>
             <input class="modaltext" type="text" id="ckacc-text">
-            <button class="ckaccmodalbtn" type="button" id="ckacc">조회</button>
+            <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckacc">조회</button>
             <div id="acc-modal-grid"></div>
           </div>
         </div>
@@ -788,14 +788,10 @@
                     ckgrid.refreshLayout();
                   }
                 });
-        	  
-
           }
 
         });
         grid.removeCheckedRows(false);
-
-       
 
       })
 

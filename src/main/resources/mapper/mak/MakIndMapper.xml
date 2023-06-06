@@ -649,8 +649,9 @@ insert
  					'입고대기'
  					)
  </update>
- 
+ <!--  
  <update id="updateIndica">
  update mak_indica a, mak_hold b set 
  </update>
+ -->
 </mapper>
