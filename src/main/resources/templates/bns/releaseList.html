@@ -41,42 +41,50 @@
 		<h1>출고 관리</h1>
 	</div>
 	<div layout:fragment="content">
-	<h2 id="nowCont">계약건 출고대기현황</h2>
-	<h2 id="nowOrd" style="display: none">주문건 출고대기현황</h2>
+	<h5 id="nowCont" class="font-weight-bold">계약건 출고대기현황</h5>
+	<h5 id="nowOrd" class="font-weight-bold" style="display: none">주문건 출고대기현황</h5>
 	<input type="radio" name="type" id="contractBtn" value="contract" checked> 계약서
 	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> 주문서
 	
 	<!-- 계약건 조건검색폼 -->
 	<form id="searchform">
-	<p>
+	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+	<div class= "col-4">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prodName" readonly>
 		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
-	</p>
-	<p>
+	</div>
+	<div class= "col-4">
 	납기일자 <input type="date" id="contDetRelease-text" name="contDetRelease"> - <input type="date" id="contDetRelease1-text" name="contDetRelease1">
+	</div>
+	<div >
 	<button style="margin-left : 10px" type="button" id="releaseList"class="btn btn-primary">조회</button>
-	</p>	 
+	</div>
+	</div>
 	</form>
 	
 	<!-- 주문건 조건검색폼 -->
 	<form id="searchform1" style="display:none">
-	<p>
+	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+	<div class= "col-4">
 	제품명 <input type="text" id="productlist-text1"
 				style="background-color: #e2e1e1" name="prodName" readonly>
 		 <button type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
-	</p>
-	<p>
+	</div>
+	<div class= "col-4">
 	납기일자 <input type="date" id="ordDetRelease-text" name="ordDueDate"> - <input type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	</div>
+	<div>
 	<button style="margin-left : 10px" type="button" id="releaseList1"class="btn btn-primary">조회</button>
-	</p>	 
+	</div>
+	</div>
 	</form>
 	<!-- 계약상세건 -->
 	<div id="beforeReleaseContGrid"></div>
 	<!-- 주문상세건 -->
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
-	<h2>출고등록</h2>
+	<h5 class="font-weight-bold">출고등록</h5>
 	<button id="releaseRegBtn" style="float:right;" class="btn btn-primary">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
 	
@@ -389,7 +397,7 @@
           
           //출고등록 버튼 클릭 시
            $('#releaseRegBtn').on('click' ,function(){
-        	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
+        	/*    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
    				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
    				return;
    				}
@@ -400,7 +408,8 @@
         	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
       				alert("출고량을 입력하세요 ");
       				return;
-      			}
+      			} */
+        	   
 			let checked = afterReleaseGrid.getCheckedRows();
 			console.log(checked);
 			console.log(targetRow);
@@ -408,7 +417,6 @@
 			checked.forEach(ele=>{
 				ele.contDetCode = targetRow.contDetCode;
 				ele.ordDetCode = targetRow.ordDetCode;
-				ele.prdtLot = targetRow.prdtLot;
 				ele.prdtCode = targetRow.prodCode;
 				ele.accName = targetRow.accName;
 				ele.bnsReleaseDate = ele.sys;

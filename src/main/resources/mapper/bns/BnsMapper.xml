@@ -239,8 +239,9 @@
 		c.cont_code cont_code,
 		 acc_code, 
 		 acc_name,
-		 to_char(cont_date,'YYYY-MM-DD') as cont_date,
-		 to_char(cont_due_date,'YYYY-MM-DD') as cont_due_date,
+		 to_char(cont_date,'yyyy-mm-dd') cont_date,
+		 to_char(cont_due_date,'yyyy-mm-dd') cont_due_date,
+		 to_char(cont_start_date, 'yyyy-mm-dd') cont_start_date,
 		 cont_progress, 
 		e.emp_name emp_name,
 		cont_note 
@@ -248,7 +249,6 @@
 		c on(d.cont_code =c.cont_code) 
 		join com_info_emp e on(c.emp_num = e.emp_num)
 		<where>
-		 
 		 
 		<if test="all == 'all' "> 
 		 and c.cont_progress is not null
@@ -365,7 +365,7 @@
 
 <!-- 입고전 그리드 조회 -->
 	<select id="getbeforeStoreList" resultType="BnsStoreVO">
-	select prdt_lot, prcs_code, prod_code, prdt_nm, cnt, to_char(prdt_date,'yyyy-mm-dd') prdt_date, prdt_unit, qip_code_list_prod, prdt_state from MAK_PRDT where prdt_state = '입고대기' order by prdt_lot desc
+	select prdt_lot, prcs_code, prod_code, prdt_nm, cnt, to_char(prdt_date,'yyyy-mm-dd') prdt_date, prdt_unit, qip_code_list_prod, prdt_state from MAK_PRDT where prdt_state = '입고대기' and qip_code_list_prod is not null order by prdt_lot desc
 	<!-- 수정해야 될 쿼리 select * from mak_prdt join mak_proc_prod using(prcs_code) where proc_code='PROC8' -->
 	</select>
 
@@ -398,7 +398,7 @@
 		)}
 	</delete>
 
-<!-- 출고 전 그리드 조회 -->
+<!-- 출고 전 계약서 그리드 조회 -->
 <select id="getbeforeReleaseContList" resultType="BnsReleaseVO">
 SELECT cont_det_code,
        cont_code,
@@ -474,18 +474,12 @@ GROUP BY ord_det_code,
 			#{prdtCode, mode=IN, jdbcType=VARCHAR},
 			#{accName, mode=IN, jdbcType=VARCHAR},
 			#{prdtNm, mode=IN, jdbcType=VARCHAR},
-			#{prdtLot, mode=IN, jdbcType=VARCHAR},
 			#{bnsReleaseNote, mode=IN, jdbcType=VARCHAR},
 			#{empNum, mode=IN, jdbcType=VARCHAR}
 		)}
 	</insert>
 	
-<!-- 출고내역 그리드 -->
-	<select id="getSearchReleaseList" resultType="BnsReleaseVO">
-	select bns_release_code,prdt_lot,acc_name,prdt_nm,bns_release_quan,to_char(bns_release_date,'yyyy-mm-dd') bns_release_date,bns_release_note,e.emp_name
-         from bns_release r join com_info_emp e on(r.emp_num = e.emp_num)
-         order by bns_release_code
-	</select>
+
 	
 	
 		<!-- 완제품LOT,제품코드, 제품명 검색 조회 -->
@@ -521,7 +515,7 @@ GROUP BY ord_det_code,
 		prdt_nm, 
 		prod_code, 
 		cnt, 
-		prdt_date, 
+		to_char(prdt_date,'yyyy-mm-dd') prdt_date, 
 		prdt_state
 		from MAK_PRDT
 		<where>
@@ -553,7 +547,7 @@ GROUP BY ord_det_code,
 	select p.prdt_lot,
 	 b.prdt_nm, 
 	 b.bns_store_quan,
-	  bns_store_date,
+	  to_char(b.bns_store_date,'yyyy-mm-dd')bns_store_date,
 	   e.emp_name emp_name, 
 	   b.bns_store_note,
 	    p.prdt_state 
@@ -596,7 +590,7 @@ from(
        d.prod_name,
        d.cont_det_quan,
        d.cont_det_quan - nvl(SUM(r.bns_release_quan), 0) AS cont_req_quan,
-        cont_det_release
+        to_char(d.cont_det_release,'yyyy-mm-dd') cont_det_release
 FROM bns_contract c
 JOIN bns_contract_detail d on(c.cont_code = d.cont_code)
 LEFT OUTER JOIN bns_release r on ( d.cont_det_code= r.cont_det_code )
@@ -643,7 +637,7 @@ from(
        d.prod_name,
        d.ord_det_quan,
        d.ord_det_quan - nvl(SUM(r.bns_release_quan), 0) AS ord_req_quan,
-       ord_due_date
+       to_char(o.ord_due_date,'yyyy-mm-dd') ord_due_date
 FROM bns_order o
 JOIN bns_order_detail d on(o.ord_code = d.ord_code)
 LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
@@ -674,7 +668,22 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
          order by d.ord_det_code)
 	</select>
 	
+	<!-- 출고내역 페이지 그리드 -->
+	<select id="getSearchReleaseList" resultType="BnsReleaseVO">
+	select bns_release_code,
+	prdt_lot,
+	acc_name,
+	prdt_nm,
+	bns_release_quan,
+	to_char(bns_release_date,'yyyy-mm-dd') bns_release_date,
+	bns_release_note,
+	e.emp_name
+         from bns_release r join com_info_emp e 
+         on(r.emp_num = e.emp_num)
+         order by bns_release_code
+	</select>
 	
+	<!-- 출고내역 페이지 조건검색 후 그리드 -->
 	<select id="getreleaseSearchListCon" resultType="BnsReleaseVO">
 	select *
 	from(
@@ -684,12 +693,11 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 	acc_name,
 	prdt_nm,
 	bns_release_quan,
-	bns_release_date,
+	to_char(bns_release_date,'yyyy-mm-dd') bns_release_date,
 	bns_release_note,
 	e.emp_name
          from bns_release r join com_info_emp e 
          on(r.emp_num = e.emp_num)
-         
 		<where>
 		 <if test="prdtNm != null and prdtNm != ''"> 
 		 and prdt_nm=#{prdtNm}

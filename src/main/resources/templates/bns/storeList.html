@@ -42,25 +42,32 @@
 	
 	<div layout:fragment="content">
 
-	<h2>입고대기현황</h2> 
+	<h5 class="font-weight-bold">입고대기현황</h5>
 	<form id="searchform">
-	<p>
+	<div style= "border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+	<div class="col-3">
 		완제품LOT <input type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
-	</p>
-	
+	</div>
+	<div class="col-3">
 	생산일자 <input type="date" id="prdtDate-text" name="prdtDate"> -
 	 <input type="date" id="prdtDate1-text" name="prdtDate1">
+	 </div>
+	 <div >
 	 <button type="button" id="searchStoreList"class="btn btn-primary">조회</button>
+	</div>
+	</div>
+	
 	
 	</form>
 	<button type="button" style="float:right;" id="storeRegBtn" class="btn btn-primary">전량입고</button>
 	
 	<div id="beforeStoreGrid"></div>
 	<br>
-	<h2>입고완료현황 <button type="button" style="float:right;" id="storeCancleBtn" class="btn btn-danger">입고취소</button></h2>
+	<h5 class="font-weight-bold">입고완료현황</h5>
+	<button type="button" style="float:right;" id="storeCancleBtn" class="btn btn-danger">입고취소</button>
 	<input type="hidden" th:value="${#authentication.principal.empNum}" id="empNum">
 	<div id="afterStoreGrid"></div>
 	
@@ -143,7 +150,7 @@
 	         sortable: true
 	       },
 	       {
-	         header: '입고상태',
+	         header: '진행상태',
 	         name: 'prdtState'
 	       }
 	     ]
@@ -194,7 +201,7 @@
 		         name: 'empName'
 		       },
 		       {
-		         header: '입고상태',
+		         header: '진행상태',
 		         name: 'prdtState'
 		       }
 	   
