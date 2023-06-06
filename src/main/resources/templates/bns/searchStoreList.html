@@ -43,20 +43,26 @@
 	
 	<div layout:fragment="content">
 	<form id="searchform">
-	<p>
+	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+	<div class="col-3">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prdtNm" readonly>
 		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
-	</p>
-	<p>
+	</div>
+	<div class="col-3">
 		완제품LOT <input type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
-	</p>						
-	<p>
-	입고일자 <input type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input type="date" id="bnsStoreDate-text2" name="bnsStoreDate1"> <button type="button" id="searchStore" class="btn btn-primary">조회</button>
-	</p>
+	</div>				
+	<div class="col-3">
+	입고일자 <input type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
+	</div>
+	<div class="col-3">
+	<button type="button" id="searchStore" class="btn btn-primary">조회</button>
+	</div>
+	</div>
+	
 	</form>
 	<!-- 제품명 모달 -->
 	<div class="modal fade bd-product-modal-lg" id="productListModal"

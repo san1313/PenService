@@ -33,8 +33,6 @@ import com.pen.app.bns.vo.BnsStoreVO;
 @Controller
 @RequestMapping("/bns")
 public class BnsController {
-   
-
 
 	@Autowired BnsService bnsService;
    
@@ -158,6 +156,7 @@ public class BnsController {
 	      model.addAttribute("userVO", user);
 	      return "bns/contList";
 	   }
+	   
 	 //계약서리스트 아작스
 		@ResponseBody
 		@GetMapping("/contListAjax")
@@ -165,6 +164,7 @@ public class BnsController {
 			List<BnsContVO> list = bnsService.getContList();
 			return list;
 		}
+		
 		//계약서조건검색 아작스
 		@ResponseBody
 		@GetMapping("/contListconAjax")
@@ -174,6 +174,7 @@ public class BnsController {
 			System.out.println("조회 이후 나온 데이터 : "+list);
 			return list;
 		}
+		
 		//계약서 등록
 		@RequestMapping("/insertcontList")
 		@ResponseBody

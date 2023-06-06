@@ -40,25 +40,27 @@
 <div layout:fragment="title">
 		<h1>출고내역 조회</h1>
 	</div>
-	
-	
-	
 		<div layout:fragment="content">
 		<form id="searchform">
-	<p>
+		<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+		<div class="col-3">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prdtNm" readonly>
 		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
-	</p>
-	<p>
+		</div>
+		<div class="col-3">
 		거래처명 <input type="text" id="accountlist-text"
 			style="background-color: #e2e1e1" name="accName" readonly>
 		<button type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-account-modal-lg"></button>
-	</p>
-	<p>
-	출고일자 <input type="date" name="bnsReleaseDate"> - <input type="date" name="bnsReleaseDate1"> <button type="button" id="searchRelease" class = "btn btn-primary">조회</button>
-	</p>
+			</div>
+			<div class="col-3">
+	출고일자 <input type="date" name="bnsReleaseDate"> - <input type="date" name="bnsReleaseDate1"> 
+	</div>
+	<div>
+	<button type="button" id="searchRelease" class = "btn btn-primary">조회</button>
+	</div>
+	</div>
 	</form>
 	<!-- 본문 출고 그리드 -->
 	<div id="ReleaseGrid"></div>
