@@ -650,7 +650,7 @@ insert
  					)
  </update>
  
- <update id="updateIndica">
+ <!-- <update id="updateIndica">
  update mak_indica a, mak_hold b set 
- </update>
+ </update> -->
 </mapper>

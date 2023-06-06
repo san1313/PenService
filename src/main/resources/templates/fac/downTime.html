@@ -313,7 +313,7 @@
       //초기화버튼 이벤트
       $("#reset").on('click',function(){
          //$('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
-         $('div input').val('');
+         $('div input').not("#emp_num").val('');
          $('div select').option('');
          //$('div input').not($('#confirmDatei')).val('');
       });
