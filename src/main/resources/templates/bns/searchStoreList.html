@@ -52,29 +52,29 @@ text-align:center;
 	</div>
 	
 	<div layout:fragment="content">
-	<div style="text-align : center;">
 	<form id="searchform">
-	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
-	<div class="col-4">
+	<div class="row">
+	<div class="col-3">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prdtNm" readonly>
 		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
-	<div class="col-4">
+	<div class="col-3">
 		완제품LOT <input type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>				
-	<div class="col-4">
+	<div class="col-3">
 	입고일자 <input type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
-	<button style="margin-left : 40px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
 	</div>
-	
+	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
+	<button style="width:80px; margin-right:10px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
+	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
+	</div>
 	</div>
 	
 	</form>
-	</div>
 	<!-- 제품명 모달 -->
 	<div class="modal fade bd-product-modal-lg" id="productListModal"
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
@@ -143,7 +143,7 @@ $(document).ready(function(){
 	
 	//입고내역 그리드 아작스
 $.ajax({
-	url : "/bns/afterStoreListAjax",
+	url : "/bns/searchStoreListAjax",
 	method : "GET",
 	dataType : "JSON",
 	success : function(result){

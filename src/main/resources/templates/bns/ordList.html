@@ -77,14 +77,14 @@ text-align:center;
 
 	<div layout:fragment="content">
 	<form id="searchform">
-	<div style="border: 1px solid #aaa; padding : 30px; margin-bottom : 20px;">
+	<div style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
      <div class="row">
      <label style="margin-left : 15px;">진행구분</label>
      <input style = "margin : 0 5px;" type="radio" id="allBtn" name="all" value="all" checked><label for="allBtn" style="margin-right:10px">전체</label> 
      <input style = "margin : 0 5px;" type="radio" id="ingBtn" name="all" value="ing"><label for="ingBtn" style="margin-right:10px">진행</label>
      <input style = "margin : 0 5px;" type="radio" id="finBtn" name="all" value="finish"><label for="finBtn" style="margin-right:10px">완료</label>
      </div>
-		<div class="row" style="margin:20px 0">
+		<div class="row" style="margin:10px 0">
 		<div class="col-3">
 			거래처명 <input name="accName" type="text" id="accountlist-text"
 				style="background-color: #e2e1e1;width:240px" readonly>
@@ -103,14 +103,14 @@ text-align:center;
 			납기일자 <input name="ordDueDate1" type="date" id="ordduedate-text"> - <input style="margin-right : 20px;" name="ordDueDate2" type="date" id="ordduedate-text">
 		</div>
 		</div>
-		<div class="row justify-content-center">
-			<button type="button" id="searchOrd" class="btn btn-primary" style="margin-right:10px">조회</button>
+		<div style="margin-top:50px; "  class="row justify-content-center">
+			<button type="button" id="searchOrd" class="btn btn-primary" style="margin-right:10px; width:74px;">조회</button>
 			<button type="button" id="pageReset" class="btn btn-primary">초기화</button>
 		</div>		
 	</div>
 	</form>
 		
-		<div class="ordbtn">
+		<div class="ordbtn" style="padding-bottom:10px;">
 			<button type="button" class="btn btn-primary "
 				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
 				등록</button>
@@ -206,19 +206,16 @@ text-align:center;
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">담당자명
 								</label> <input type="text" id="ordempname" class="form-control"
-									name="empName" th:value="${#authentication.principal.username}"
+									name="empName" th:value="${#authentication.principal.empName}"
 									readonly>
 							</div>
-
 							<input type="hidden" th:value="${userVO.empNum}" id="ordempnum"
 								class="form-control" name="empCode" readonly>
-
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">거래처명
+								<label for="recipient-name" class="col-form-label">거래처명</label>
 									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
-								</label> <input id="ordaccname" type="text" class="form-control"
-									name="accName" readonly>
+								 <input id="ordaccname" type="text" class="form-control" name="accName" readonly>
 							</div>
 						</div>
 						<div style="display: flex;">
@@ -244,7 +241,6 @@ text-align:center;
 						<input type="hidden" id="modalOrdNote" class="form-control"
 							name="ordNote"></input> <br>
 						<hr>
-						<h2>주문상세</h2>
 						<br> 
 						<label style="float:left;">제품리스트</label>
 						<button style="float:left; "type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
@@ -255,7 +251,7 @@ text-align:center;
 						<div class="modalbtn">
 							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal" >취소</button>
+								data-dismiss="modal" >취소</button>
 						</div>
 					</div>
 
@@ -490,16 +486,28 @@ text-align:center;
                {
                  header: '주문량',
                  name: 'ordDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+
                },
                {
                    header: '단가',
                    name: 'ordDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     },
+
                  },
                {
                  header: '주문금액',
-                 name: 'ordDetTotPrice'
+                 name: 'ordDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+
                  
                }
              ],
@@ -509,17 +517,17 @@ text-align:center;
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOT: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVE: ${valueMap.avg}원`;
+                	   return `AVG: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOT: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }
@@ -766,7 +774,11 @@ $.ajax({
 
      let dataRow = productReg_Grid.getRow(ev.rowKey);
      delete dataRow.rowKey;
-
+	
+     dataRow.ordDetPrice = 0;
+     dataRow.ordDetTotPrice = 0;
+     dataRow.ordDetQuan = 0;
+     
    	addProdgrid.appendRow(dataRow,{
  		  focus:true
  	  });
@@ -1140,17 +1152,26 @@ $.ajax({
                {
                  header: '주문량',
                  name: 'ordDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
                },
                {
                    header: '단가',
                    name: 'ordDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     }
                  },
                {
                  header: '주문금액',
-                 name: 'ordDetTotPrice'
-               }
+                 name: 'ordDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+               },
              ],
                summary: {
             	   height: 40,
@@ -1158,17 +1179,17 @@ $.ajax({
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOT: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVE: ${valueMap.avg}원`;
+                	   return `AVG: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOT: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }

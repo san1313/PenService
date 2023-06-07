@@ -53,52 +53,50 @@ text-align:center;
 	<div layout:fragment="content">
 	<h5 id="nowCont" class="font-weight-bold">계약건 출고대기현황</h5>
 	<h5 id="nowOrd" class="font-weight-bold" style="display: none">주문건 출고대기현황</h5>
-	<input type="radio" name="type" id="contractBtn" value="contract" checked> 계약서
-	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> 주문서
+	<input type="radio" name="type" id="contractBtn" value="contract" checked> <label for="contractBtn">계약서</label>
+	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> <label for="orderBtn">주문서</label>
 	
 	<!-- 계약건 조건검색폼 -->
-	<div style="text-align : center;">
 	<form id="searchform">
-	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
-	<div class= "col-4">
+	<div class="row">
+	<div class= "col-3">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prodName" readonly>
 		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
-	<div class= "col-4">
+	<div class= "col-3">
 	납기일자 <input type="date" id="contDetRelease-text" name="contDetRelease"> - <input type="date" id="contDetRelease1-text" name="contDetRelease1">
 	</div>
-	<div class= "col-4">
-	<button style="margin-left : 100px" type="button" id="releaseList"class="btn btn-primary">조회</button>
+	<div class= "col-6 row justify-content-end" style="padding-bottom:10px;">
+	<button style="width:80px; margin-right:10px;"type="button" id="releaseList"class="btn btn-primary">조회</button>
+	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
-	</div>
 	<!-- 주문건 조건검색폼 -->
-	<div style="text-align : center;">
 	<form id="searchform1" style="display:none">
-	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
-	<div class= "col-4">
+	<div class="row">
+	<div class= "col-3">
 	제품명 <input type="text" id="productlist-text1"
 				style="background-color: #e2e1e1" name="prodName" readonly>
 		 <button type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
 	</div>
-	<div class= "col-4">
+	<div class= "col-3">
 	납기일자 <input type="date" id="ordDetRelease-text" name="ordDueDate"> - <input type="date" id="ordDetRelease1-text" name="ordDueDate1">
 	</div>
-	<div class= "col-4">
-	<button style="margin-left : 100px" type="button" id="releaseList1"class="btn btn-primary">조회</button>
+	<div class= "col-6 row justify-content-end" style="padding-bottom:10px;">
+	<button  type="button" style="width:80px; margin-right:10px;" id="releaseList1" class="btn btn-primary">조회</button>
+	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
-	</div>
 	<!-- 계약상세건 -->
 	<div id="beforeReleaseContGrid"></div>
 	<!-- 주문상세건 -->
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
-	<h5 class="font-weight-bold">출고등록</h5>
-	<button id="releaseRegBtn" style="float:right;" class="btn btn-primary">출고 등록</button>
+	<h5 class="font-weight-bold" >출고등록</h5>
+	<button id="releaseRegBtn" style="float:right ; margin-bottom:10px;" class="btn btn-primary">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
 	
 	<!-- 제품명 모달 -->
