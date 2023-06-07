@@ -199,9 +199,9 @@ select a.mak_bom_code,a.mak_flow_code,a.mak_step,a.prod_code,a.amount,a.plan_ind
 						             '1111',
 						             #{prodCode},
 						             #{ordrQnt},
-						             to_date(TO_CHAR(#{indicaDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
-						             to_date(TO_CHAR(#{stDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
-						             to_date(TO_CHAR(#{clsDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
+						             to_date(#{indicaDate},'YYYY-MM-DD'),
+						             to_date(#{stDate},'YYYY-MM-DD'),
+						             to_date(#{clsDate},'YYYY-MM-DD'),
 						             #{pdCode})
 </update>
 

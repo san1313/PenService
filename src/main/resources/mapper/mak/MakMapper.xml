@@ -105,8 +105,8 @@
 		    #{planState},
 		    #{prodCode},
 		    #{planQnt},
-		    to_date(TO_CHAR(#{planSdate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
-		    to_date(TO_CHAR(#{planClsdate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
+		    to_date(#{planSdate},'YYYY-MM-DD'),
+		    to_date(#{planClsdate},'YYYY-MM-DD'),
 		    #{priority},
 		    'MAK-PLAN-'||(select last_number-1 from user_sequences where sequence_name='MAK_PLAN_SEQ'))
 	</update>
@@ -151,8 +151,8 @@
 		   set
 		       plan_qnt    = #{planQnt},
 		       priority    = #{priority},
-		       plan_sdate  = to_date(TO_CHAR(#{planSdate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
-		       plan_clsdate= to_date(TO_CHAR(#{planClsdate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
+		       plan_sdate  = to_date(#{planSdate},'YYYY-MM-DD'),
+		       plan_clsdate= to_date(#{planClsdate},'YYYY-MM-DD'),
 		 where pd_code=#{pdCode}
 	</update>
 
