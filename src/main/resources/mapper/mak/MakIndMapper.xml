@@ -309,52 +309,13 @@ select prod_code, indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yy
 <select id="oerfProcList" resultType="MakVO" parameterType="string">
 SELECT
     proc_code,
-    COUNT(proc_code) count,
+    COUNT(proc_code)          count,
     indica_code,
     proc_name,
     indica_state,
     ordr_qnt,
     mak_flow_step,
-    ordr_qnt-nvl(re_qnt,0) re_qnt
-FROM
-         mak_flow
-    JOIN mak_bom USING ( mak_flow_code )
-    JOIN mak_indica USING ( indica_code )
-    JOIN com_code_proc USING ( proc_code )
-    LEFT OUTER JOIN (
-     SELECT
-            indica_code,
-            proc_code,
-            SUM(prod_cnt) re_qnt
-        FROM
-            mak_proc_prod
-        WHERE
-                indica_code = #{indicaCode}
-        GROUP BY
-            proc_code,
-            indica_code
-    ) USING ( proc_code,
-              indica_code )    
-WHERE
-    indica_code = #{indica_code}
-GROUP BY
-    proc_code,
-    indica_code,
-    proc_name,
-    indica_state,
-    ordr_qnt,
-    mak_flow_step,
-    re_qnt
-intersect
-SELECT
-    proc_code,
-    COUNT(proc_code) count,
-    indica_code,
-    proc_name,
-    indica_state,
-    ordr_qnt,
-    mak_flow_step,
-    ordr_qnt-nvl(re_qnt,0) re_qnt
+    ordr_qnt - nvl(re_qnt, 0) re_qnt
 FROM
          mak_hold
     JOIN mak_indica USING ( indica_code )
@@ -363,27 +324,76 @@ FROM
                           indica_code )
     JOIN com_code_proc USING ( proc_code )
     LEFT OUTER JOIN (
-     SELECT
+        SELECT
             indica_code,
             proc_code,
             SUM(prod_cnt) re_qnt
         FROM
             mak_proc_prod
         WHERE
-                indica_code = #{indicaCode}
+            indica_code = #{indicaCode}
         GROUP BY
             proc_code,
             indica_code
     ) USING ( proc_code,
-              indica_code )   
+              indica_code )
+    FULL OUTER JOIN (
+        SELECT
+            origin_count,
+            proc_name,
+            ordr_qnt,
+            indica_code
+        FROM
+            (
+                SELECT
+                    COUNT(proc_code)          AS origin_count,
+                    indica_code,
+                    proc_name,
+                    indica_state,
+                    ordr_qnt,
+                    mak_flow_step,
+                    ordr_qnt - nvl(re_qnt, 0) re_qnt
+                FROM
+                         mak_flow
+                    JOIN mak_bom USING ( mak_flow_code )
+                    JOIN mak_indica USING ( indica_code )
+                    JOIN com_code_proc USING ( proc_code )
+                    LEFT OUTER JOIN (
+                        SELECT
+                            indica_code,
+                            proc_code,
+                            SUM(prod_cnt) re_qnt
+                        FROM
+                            mak_proc_prod
+                        WHERE
+                            indica_code = #{indicaCode}
+                        GROUP BY
+                            proc_code,
+                            indica_code
+                    ) USING ( proc_code,
+                              indica_code )
+                WHERE
+                    indica_code = #{indicaCode}
+                GROUP BY
+                    proc_code,
+                    indica_code,
+                    proc_name,
+                    indica_state,
+                    ordr_qnt,
+                    mak_flow_step,
+                    re_qnt
+            )
+    ) USING ( indica_code,
+              proc_name,
+              ordr_qnt )
 WHERE
         indica_code = #{indicaCode}
     AND mat_code = b.prod_code
-        AND mat_code LIKE 'MAT%'
-            OR indica_code = #{indicaCode}
-               AND mat_code = b.prod_code
-                   AND mat_code LIKE 'SEM%'
-                       AND qip_code_list_prod IS NOT NULL
+    AND mat_code LIKE 'MAT%'
+    OR indica_code = #{indicaCode}
+    AND mat_code = b.prod_code
+    AND mat_code LIKE 'SEM%'
+    AND qip_code_list_prod IS NOT NULL
 GROUP BY
     proc_code,
     indica_code,
@@ -391,9 +401,12 @@ GROUP BY
     indica_state,
     ordr_qnt,
     mak_flow_step,
-    re_qnt
+    re_qnt,
+    origin_count
+HAVING
+    COUNT(proc_code) >= origin_count
 ORDER BY
-	mak_flow_step
+    mak_flow_step
 </select>
 
 <select id="getAllProcMat" resultType="MakVO" parameterType="MakVO">
