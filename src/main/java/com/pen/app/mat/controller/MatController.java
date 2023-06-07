@@ -240,13 +240,12 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 //자재조정 자재코드 검색
+	 //자재조정관리 다중검색
 	 @RequestMapping("/matadjustsearch")
 	 @ResponseBody
-	 public List<AdjustVO> matadjustsearch(@RequestParam String result){
-		 System.out.println(result);
-		 List<AdjustVO> list = matservice.getmatadjustsearch(result);
-		 return list;
+	 public List<AdjustVO> matadjustsearch(AdjustVO AdjustVO){
+		 System.out.println(AdjustVO);
+		 return matservice.getmatadjustsearch(AdjustVO);
 	 }
 	 
 	 //자재조정 lot 상세

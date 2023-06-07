@@ -51,7 +51,7 @@ public interface MatService {
 
 	//자재조정관리
 	public List<AdjustVO> getmatadjustlotlist(); //조정내역 lot리스트
-	public List<AdjustVO> getmatadjustsearch(String keyword); //자재조정 자재코드 검색
+	public List<AdjustVO> getmatadjustsearch(AdjustVO vo); //자재조정다중검색
 	public List<AdjustVO> getmatadjustlot(String matLot);//조정 단건조회
 	public void getmatadjustregister(List<AdjustVO> list); //조정등록(입고)
 	public void getmatadjustdliregister(List<AdjustVO> list); //조정등록(출고)

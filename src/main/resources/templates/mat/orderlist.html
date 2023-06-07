@@ -76,7 +76,8 @@
       <input class="text1" type="hidden" id="accmodalcode" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
       <label>발주일자</label>
-      <input class="text1" type="date" id="matOrderdate1"> ~ <input class="text1" type="date" id="matOrderdate2">
+      <input class="text1" type="date" id="matOrderdate1"> ~ 
+      <input class="text1" type="date" id="matOrderdate2">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 
@@ -93,7 +94,7 @@
       <div class="modal-body">
         <label>자재명</label>
         <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
       	<div id="mat-modal-grid"></div>
       </div>
     </div>
@@ -114,7 +115,7 @@
       <div class="modal-body">
         <label>거래처코드</label>
         <input class="modaltext" type="text" id="ckacc-text">
-        <button class="ckaccmodalbtn" type="button" id="ckacc">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckacc">조회</button>
       	<div id="acc-modal-grid"></div>
       </div>
     </div>
@@ -131,6 +132,8 @@
     const header = $('meta[name="_csrf_header"]').attr("content");
 
     // 발주리스트
+    //document.getElementById('matOrderdate1').value = new Date().toISOString().substring(0,10);
+    
     $.ajax({
   		url : "/mat/orderlistajax",
   		method : "GET",

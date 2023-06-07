@@ -185,9 +185,9 @@ public class MatServiceimpl implements MatService {
 		return matmapper.getmatadjustlotlist();
 	}
 	@Override
-	public List<AdjustVO> getmatadjustsearch(String keyword) {
+	public List<AdjustVO> getmatadjustsearch(AdjustVO vo) {
 		// 자재조정 자재코드 검색
-		return matmapper.getmatadjustsearch(keyword);
+		return matmapper.getmatadjustsearch(vo);
 	}
 
 	@Override
