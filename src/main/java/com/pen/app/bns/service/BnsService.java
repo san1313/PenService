@@ -42,7 +42,7 @@ public interface BnsService {
 	public List<BnsStoreVO> getafterStoreList(); //입고후 그리드 조회
 	public void insertStoreList(BnsStoreListVO list); //입고 등록
 	public void delStoreList(BnsStoreListVO list);//입고 취소
-	
+	public List<BnsStoreVO> getSearchStoreList();
 	//출고
 	
 	public  List<BnsReleaseVO> getbeforeReleaseContList();//출고전 계약서 조회

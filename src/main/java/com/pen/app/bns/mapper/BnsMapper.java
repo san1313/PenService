@@ -41,6 +41,8 @@ public interface BnsMapper {
 	void insertStore(BnsStoreVO list);// 입고 등록
 	void delStoreList(BnsStoreVO list);// 주문서 삭제
 	
+	//입고조회 페이지
+	List<BnsStoreVO> getSearchStoreList();
 	
 	//출고
 	List<BnsReleaseVO> getbeforeReleaseContList(); //출고전 계약서 그리드

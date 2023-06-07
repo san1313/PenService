@@ -153,7 +153,10 @@ public class BnsServiceImpl implements BnsService {
 			}
 		}
 
-		
+		@Override
+			public List<BnsStoreVO> getSearchStoreList() {
+				return mapper.getSearchStoreList();
+			}
 //출고
 		
 		//출고전 계약상황리스트
