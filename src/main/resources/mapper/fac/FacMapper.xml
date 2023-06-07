@@ -23,10 +23,10 @@
 	<where>
 		<if test="searchDiv != null and searchDiv != ''">
 			<!-- ${searchDiv} = #{searchName} title LIKE '%'|| #{keyword} || '%' -->
-		 	UPPER(${searchDiv}) LIKE '%' || UPPER(#{searchName}) || '%'
+			UPPER(${searchDiv}) LIKE '%' || UPPER(#{searchName}) || '%'
 		</if>
 	</where>
-	
+	ORDER BY fac_code
 	</select>
 
 	<!-- 설비정보목록조회 <select id="getList" resultType="FacInfoVO"> select fac_code 
@@ -46,7 +46,7 @@
 	INSERT ALL into fac_info
 		values('EQMAN'||fac_seq.nextval,
 		#{list[0].facName},
-		#{list[0].installDate},
+		to_date(#{list[0].installDate},'YYYY-MM-DD'),
 		#{list[0].tempMin},
 		#{list[0].tempMax},
 		#{list[0].makerName},
@@ -84,6 +84,7 @@
 		  JOIN com_code_proc b
 		    ON a.proc_code = b.proc_code
 		 WHERE fac_code=#{facCode}
+	  ORDER BY a.proc_code
 	</select>
 
 	<!-- 해당설비 공정삭제 -->
@@ -171,6 +172,7 @@
 		  FROM FAC_CONFIRM a
 		  JOIN FAC_INFO b
 		 USING (fac_code)
+	  ORDER BY a.confirm_code
 	</select>
 
 	<!-- 설비코드검색조회 -->
@@ -216,6 +218,7 @@
 		 USING (fac_code)
 		 WHERE downtime_start_day is not null 
 		   AND downtime_end_day is null or operate_check = 'N'
+	  ORDER BY a.downtime_code   
 	</select>
 	
 	<!-- 비가동등록 -->

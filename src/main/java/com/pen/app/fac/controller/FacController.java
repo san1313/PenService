@@ -53,11 +53,6 @@ public class FacController {
 	}
 
 	
-//	@GetMapping("/register") // 설비정보관리 페이지
-//	public void register() {
-//
-//	}
-	
 //	@GetMapping("/management") // 설비관리 페이지
 //	public void management() {
 //
@@ -122,6 +117,8 @@ public class FacController {
 		// 돌려보내줌<<
 		return service.insertFacList(list);
 	}
+	
+	
 	
 	//점검등록
 	@RequestMapping("/confirmRegister")
