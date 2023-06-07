@@ -63,8 +63,8 @@
 .form-control {
 	width: 150px;
 }
- {
-	margin : 100px;
+.modal-content{
+text-align:center;
 }
 </style>
 
@@ -126,16 +126,16 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 			<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">거래처 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						거래처명 <input type="text" id="searchacc-text">
+						<label>거래처명</label> <input type="text" id="searchacc-text">
 						<button id="searchacc" type="submit"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="accountGrid"></div>
@@ -154,17 +154,17 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">제품 목록</h1>
-
+					<h1 class="modaltitle"></h1>
+	
 					<p>
-						제품명 <input id="searchprod-text" type="text">
+						<label>제품명</label> <input id="searchprod-text" type="text">
 						<button type="submit" id="searchprod"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
@@ -186,7 +186,7 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title">주문서 등록</h1>
 						<button type="button" class="close" data-dismiss="modal"
@@ -245,8 +245,9 @@
 							name="ordNote"></input> <br>
 						<hr>
 						<h2>주문상세</h2>
-						<br> <label>제품리스트</label>
-						<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+						<br> 
+						<label style="float:left;">제품리스트</label>
+						<button style="float:left; "type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
 						<button class = "btn btn-danger" style="float: right; margin-right: 5px;"
 							id="ordProdDelete">삭제</button>
@@ -263,16 +264,16 @@
 						id="accountRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-3 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-								<h2 class="modaltitle">거래처 목록</h2>
+								<h2 class="modaltitle"></h2>
 								<p>
-									거래처명 <input id="searchaccreg-text" type="text">
+									거래처명 <input style="width:100px;"id="searchaccreg-text" type="text">
 									<button id="searchaccreg" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="accountRegGrid"></div>
@@ -291,16 +292,16 @@
 						id="productRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-3 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-								<h2 class="modaltitle">제품리스트</h2>
+								<h2 class="modaltitle"></h2>
 								<p>
-									제품명 <input id="searchprodreg-text" type="text">
+									제품명 <input style="width:100px;" id="searchprodreg-text" type="text">
 									<button id="searchprodreg" type="submit"
 										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
@@ -325,7 +326,7 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title">주문서 수정</h1>
 						<button type="button" class="close" data-dismiss="modal"
@@ -377,14 +378,16 @@
 									</label> <input id="modalModOrdDueDate" type="date"
 										class="form-control" name="ordDueDateMod">
 								</div>
+							<div style="float: left; margin-right: 10px">
+							<label for="recipient-name" class="col-form-label">비고
+							</label> <input id="modalModOrdNote" class="form-control" name="ordNote">
 							</div>
-							<label for="recipient-name" class="col-form-label">비고</label> <input
-								id="modalModOrdNote" class="form-control" name="ordNote"></input>
+							</div>
 							<br>
 							<hr>
 							<h2>주문상세</h2>
-							<br> <label>제품리스트</label>
-							<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+							<br> <label style="float:left;">제품리스트</label>
+							<button style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
 							<button class= "btn btn-danger" style="float: right; margin-right: 5px;"
 								id="ordProdDelete2">삭제</button>
@@ -401,7 +404,7 @@
 						id="productModModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-1 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
@@ -410,7 +413,7 @@
 						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
-									제품명 <input id="searchprodmod-text" type="text">
+									제품명 <input style="width:100px;" id="searchprodmod-text" type="text">
 									<button id="searchprodmod" type="submit"
 										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
@@ -506,17 +509,17 @@
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOTAL: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVERAGE: ${valueMap.avg}원`;
+                     return `AVE: ${valueMap.avg}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOTAL: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum}원`;
                      }
                    }
                }
@@ -1155,17 +1158,17 @@ $.ajax({
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOTAL: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVERAGE: ${valueMap.avg}원`;
+                     return `AVE: ${valueMap.avg}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOTAL: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum}원`;
                      }
                    }
                }

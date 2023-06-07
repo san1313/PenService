@@ -165,14 +165,16 @@
 	<select id="getAccList" resultType="BnsAccVO">
 		select acc_code, acc_name
 		from com_code_account
+		where acc_type='제품 판매'
 	</select>
 	
 	<!-- 거래처코드, 거래처명 검색 조회 -->
 	<select id="getAccKeyList" resultType="BnsAccVO">
 		select acc_code, acc_name
 		from com_code_account
+		where acc_type='제품 판매'
 		<if test="keyword != null and keyword != ''">
-		where acc_name =#{keyword}
+		and acc_name =#{keyword}
 		</if>
 	</select>
 	
