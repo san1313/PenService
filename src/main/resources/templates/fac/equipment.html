@@ -326,13 +326,31 @@
 	    
    	//초기화버튼 이벤트
    	$("#reset").on('click',function(){
-   		$('div input').not("input[name=operate_check]").val('');
+   		$('div input').not("input[name=operate_check],#emp_num").val('');
    	});
   
   
    	//설비삭제버튼 이벤트
    	$("#delete").on('click', function(){
-   	
+   		var facCode = $('#fac_code').val();
+   		
+   	// 사용 중인 설비인지 확인
+   	  /*  $.ajax({
+   	         url: "/fac/checkFacOperate",
+   	        method: "POST",
+   	        data: {
+   	            facCode: facCode
+   	        },
+   	        beforeSend: function(xhr) {
+   	            xhr.setRequestHeader(header, token);
+   	        },
+   	        success: function(result) {
+   	            if (result.operate_check ==='Y') {
+   	                if (!confirm("설비가 사용 중입니다. 그래도 삭제하시겠습니까?")) {
+   	                    return; // 삭제 취소
+   	                }
+   	            } */
+   		
    		$.ajax({
    			url: "/fac/facDelete", //컨트롤러에 연결된 주소
 			method : "post", //조회는 항상 get, 나머진 post
@@ -343,7 +361,7 @@
 		 	beforeSend: function (xhr) {
 	        	xhr.setRequestHeader(header, token);
 	        },
-	        success: function (result){
+	        success: function (result){	        	
 				alert('삭제성공');
 			   $.ajax({
 			   		url : "/fac/infoListAjax",
