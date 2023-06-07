@@ -258,7 +258,7 @@ grid = new tui.Grid({
 								
 							 }
 	   	            	}) */
-	   	            	console.log(result);
+	   	            	
 	   	       	
 	             
 	   	            	grid3.resetData(result);
@@ -283,7 +283,7 @@ grid = new tui.Grid({
 	    	grid3Rows.forEach(function(ele,i){
 	    		grid3.removeRow(grid3Rows[i].rowKey);
 	    	});
-    	console.log(modData);
+    	
     	
     	//공정 bom 데이터 넣기
 	      $.ajax({
@@ -295,7 +295,7 @@ grid = new tui.Grid({
 	            },
 	          success : function(result){
 	        	grid2.textContent="";
-	            console.log(result);
+	            
 	            grid2.resetData(result);
 
 	          }

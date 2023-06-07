@@ -23,17 +23,11 @@ public class MakServiceImpl implements MakService {
 public List<PlanVO> getPlanList() {
 	List<PlanVO> list = mapper.getPlanList();
 	for(int i=0;i<list.size();i++) {
-		System.out.println(list.size());
-		System.out.println("조회된 list : "+list);
 		String contDetCode = list.get(i).getContDetCode();
-		System.out.println("조회된 코드 : "+contDetCode);
 		int count = mapper.getContCount(contDetCode);
-		System.out.println("각 계약건수 : "+count);
 		if(count>1) {
 			list.get(i).setContDetQuan(mapper.getLeftQuan(contDetCode));
-			System.out.println("잔류수량 삽입 : "+list.get(i));
 		}else if(count<=0) {
-			System.out.println("조회조건 이상");
 		}
 	}
 	return list;
@@ -106,17 +100,11 @@ public int modPlan(PlanVO vo) {
 public List<PlanVO> selectPlan(PlanVO vo) {
 	List<PlanVO> list = mapper.getPlanningList(vo);
 	for(int i=0;i<list.size();i++) {
-		System.out.println(list.size());
-		System.out.println("조회된 list : "+list);
 		String contDetCode = list.get(i).getContDetCode();
-		System.out.println("조회된 코드 : "+contDetCode);
 		int count = mapper.getContCount(contDetCode);
-		System.out.println("각 계약건수 : "+count);
 		if(count>1) {
 			list.get(i).setContDetQuan(mapper.getLeftQuan(contDetCode));
-			System.out.println("잔류수량 삽입 : "+list.get(i));
 		}else if(count<=0) {
-			System.out.println("조회조건 이상");
 		}
 	}
 	return list;
@@ -128,17 +116,11 @@ public List<PlanVO> getOrdList() {
 	
 		List<PlanVO> list = mapper.getOrdList();
 		for(int i=0;i<list.size();i++) {
-			System.out.println(list.size());
-			System.out.println("조회된 list : "+list);
 			String contDetCode = list.get(i).getOrdDetCode();
-			System.out.println("조회된 코드 : "+contDetCode);
 			int count = mapper.getOrdCount(contDetCode);
-			System.out.println("각 계약건수 : "+count);
 			if(count>1) {
 				list.get(i).setContDetQuan(mapper.getLeaveQuan(contDetCode));
-				System.out.println("잔류수량 삽입 : "+list.get(i));
 			}else if(count<=0) {
-				System.out.println("조회조건 이상");
 			}
 		}
 		return list;
@@ -189,17 +171,11 @@ public String delOrd(PlanVO vo) {
 public List<PlanVO> selectOrd(PlanVO vo) {
 	List<PlanVO> list = mapper.getOrderingList(vo);
 	for(int i=0;i<list.size();i++) {
-		System.out.println(list.size());
-		System.out.println("조회된 list : "+list);
 		String contDetCode = list.get(i).getOrdDetCode();
-		System.out.println("조회된 코드 : "+contDetCode);
 		int count = mapper.getOrdCount(contDetCode);
-		System.out.println("각 계약건수 : "+count);
 		if(count>1) {
 			list.get(i).setContDetQuan(mapper.getLeaveQuan(contDetCode));
-			System.out.println("잔류수량 삽입 : "+list.get(i));
 		}else if(count<=0) {
-			System.out.println("조회조건 이상");
 		}
 	}
 	return list;
@@ -217,16 +193,11 @@ public List<PlanVO> selectOrdList(PlanVO vo) {
 	List<PlanVO> list = mapper.getOrderingList(vo);
 	for(int i=0;i<list.size();i++) {
 		System.out.println(list.size());
-		System.out.println("조회된 list : "+list);
 		String contDetCode = list.get(i).getOrdDetCode();
-		System.out.println("조회된 코드 : "+contDetCode);
 		int count = mapper.getOrdCount(contDetCode);
-		System.out.println("각 계약건수 : "+count);
 		if(count>1) {
 			list.get(i).setContDetQuan(mapper.getLeaveQuan(contDetCode));
-			System.out.println("잔류수량 삽입 : "+list.get(i));
 		}else if(count<=0) {
-			System.out.println("조회조건 이상");
 		}
 	}
 	return list;

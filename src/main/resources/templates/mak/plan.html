@@ -381,9 +381,7 @@ $('#sCon').change(function(){
     	
     	/* 등록버튼 데이터 가공 */
     	for(let i = 0; i<size;i++){
-    		console.log(i+"번 계획명 : "+$('#plnmi'+i).val());
     		reAmount = $("#abplcoi"+i).val()-$("#plcoi"+i).val();
-    		console.log($("#planBtn").val());
     		let data = {
     				"planNm":$('#plnmi'+i).val(),
     				"prodCode":$("#prodCode"+i).val(),
@@ -406,8 +404,6 @@ $('#sCon').change(function(){
     		
     	}
     	planData={"planList":innerData};
-    	console.log(innerData);
-    	console.log(planData);
     	
     	//계획서 계획상세 연결테이블 등록
     	 $.ajax({
@@ -465,8 +461,6 @@ $('#sCon').change(function(){
     //삭제버튼 클릭이벤트
     $('#delBtn').click(function(e){
     	e.preventDefault();
-    	console.log($("#planBtn").val());
-    	console.log(modData);
     	
     	if(confirm(`생산계획명 : ${modData.planNm},\n계획 일자 : ${modData.planDate},\n생산제품명 : ${modData.prodName},\n생산계획수량 : ${modData.planQnt} 건을 삭제하시겠습니까?`)){
     		
@@ -518,7 +512,7 @@ $('#sCon').change(function(){
     	e.preventDefault();
     	
 		//수정을 위한 조건, 수정등록
-		console.log(Math.abs($("#plcoi").val()));
+		
     		let data = {
     				"planQnt":Math.abs($("#plcoi").val()),
     				"planSdate":$("#dsti").val(),
@@ -526,7 +520,7 @@ $('#sCon').change(function(){
     				"priority":$("#priorityi").val(),
     				"pdCode" : $("#pdCode0").val()
     		};
-		console.log(data);
+		
     	//수정 등록 아작스
     		 $.ajax({
      	        url : "/mak/updatePlan",
@@ -566,8 +560,6 @@ $('#sCon').change(function(){
     	e.preventDefault();
     	let sDate=$("#sCon").val();
     	let clsDate=$("#clsCon").val();
-    	console.log(sDate);
-    	console.log(clsDate);
     	if(sDate==''||clsDate==''){
     		alert("계획일자 범위가 규정되지 않았습니다.");
     	}
@@ -732,8 +724,6 @@ $('#sCon').change(function(){
         });
       if(planType=="plan"){
       	grid.on("dblclick", function(obj){
-      		console.log(obj.rowKey);
-      		console.log(grid.getRow(obj.rowKey));
       		if(comDev==2){
       			//수정 중복 클릭시 제어
       	    	$("input").val("");
@@ -803,7 +793,6 @@ $('#sCon').change(function(){
             modal_grid.resetData(result);
             
         	conData.forEach(function(conCheck){
-        		console.log(conCheck.rowKey);
         		modal_grid.check(conCheck.rowKey);
         	})
         	conData=[];
@@ -892,7 +881,6 @@ function planChoice(){
 	conData = modal_grid.getCheckedRows();
 	let options=null;
 	let input=null;
-	console.log(conData[0]);
 	
 	for(let i=0;i<conData.length;i++){
 		//계획명 수정 가능하게 바꾸기
@@ -1004,7 +992,6 @@ function planChoice(){
 		conData = modal_grid.getCheckedRows();
 		let options=null;
 		let input=null;
-		console.log(conData[0]);
 		
 		for(let i=0;i<conData.length;i++){
 			//계획명 수정 가능하게 바꾸기
@@ -1392,9 +1379,7 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	
     	/* 등록버튼 데이터 가공 */
     	for(let i = 0; i<size;i++){
-    		console.log(i+"번 계획명 : "+$('#plnmi'+i).val());
     		reAmount = $("#abplcoi"+i).val()-$("#plcoi"+i).val();
-    		console.log($("#planBtn").val());
     		let data = {
     				"planNm":$('#plnmi'+i).val(),
     				"prodCode":$("#prodCode"+i).val(),
@@ -1417,8 +1402,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     		
     	}
     	planData={"planList":innerData};
-    	console.log(innerData);
-    	console.log(planData);
     	
     	//계획서 계획상세 연결테이블 등록
     	 $.ajax({
@@ -1476,8 +1459,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     //삭제버튼 클릭이벤트
     $('#delBtn').click(function(e){
     	e.preventDefault();
-    	console.log($("#planBtn").val());
-    	console.log(modData);
     	
     	if(confirm(`생산계획명 : ${modData.planNm},\n계획 일자 : ${modData.planDate},\n생산제품명 : ${modData.prodName},\n생산계획수량 : ${modData.planQnt} 건을 삭제하시겠습니까?`)){
     		
@@ -1529,7 +1510,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	e.preventDefault();
     	
 		//수정을 위한 조건, 수정등록
-		console.log(Math.abs($("#plcoi").val()));
     		let data = {
     				"planQnt":Math.abs($("#plcoi").val()),
     				"planSdate":$("#dsti").val(),
@@ -1537,7 +1517,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     				"priority":$("#priorityi").val(),
     				"pdCode" : $("#pdCode0").val()
     		};
-		console.log(data);
     	//수정 등록 아작스
     		 $.ajax({
      	        url : "/mak/updatePlan",
@@ -1577,8 +1556,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	e.preventDefault();
     	let sDate=$("#sCon").val();
     	let clsDate=$("#clsCon").val();
-    	console.log(sDate);
-    	console.log(clsDate);
     	if(sDate==''||clsDate==''){
     		alert("계획일자 범위가 규정되지 않았습니다.");
     	}
@@ -1736,8 +1713,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
         });
       if(planType=="order"){
       	grid.on("dblclick", function(obj){
-      		console.log(obj.rowKey);
-      		console.log(grid.getRow(obj.rowKey));
       		if(comDev==2){
       			//수정 중복 클릭시 제어
       	    	$("input").val("");
@@ -1807,7 +1782,6 @@ document.getElementById('orderBtn').addEventListener('click',function(){
             modal_grid.resetData(result);
             
         	conData.forEach(function(conCheck){
-        		console.log(conCheck.rowKey);
         		modal_grid.check(conCheck.rowKey);
         	})
         	conData=[];
