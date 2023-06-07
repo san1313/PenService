@@ -31,7 +31,7 @@ public class MatController {
 
 	@Autowired MatService matservice;
 
-	//발주페이지
+	//발주관리
 	@GetMapping("/order")
 	public void ordermain() {
 		
@@ -82,10 +82,10 @@ public class MatController {
 	//발주등록
 	 @RequestMapping("/matregister")
 	 @ResponseBody 
-	 public OrderVO matregister(@RequestBody List<OrderVO> list){
+	 public boolean matregister(@RequestBody List<OrderVO> list){
 		 System.err.println(list);
 		 matservice.getmatregister(list);		 
-	 	 return null; 
+	 	 return true; 
 	 }
 		 
 	 //당일발주등록조회

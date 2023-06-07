@@ -13,7 +13,6 @@ import com.pen.app.mat.vo.WarehousingVO;
 
 public interface MatMapper {
 	//모달
-	List<OrderVO> getorderlist();
 	List<OrderVO> getmatlist(String accName); //모달자재목록
 	List<OrderVO> getmatminilist(String keyword);//거래처모달검색조회
 	List<OrderVO> getacclist(String matName); //모달거래처목록
@@ -33,7 +32,9 @@ public interface MatMapper {
 	
 	//자재입고관리
 	List<WarehousingVO> getestwarehousinglist(); //자재입고페이지 검사내역리스트
-	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
+	public void getwarehousingregister(WarehousingVO vo); //자재입고등록
+	public void getmativntryregister(WarehousingVO vo);
+	public String getMatLotWarehousing();
 	
 	//자재입고조회
 	List<WarehousingVO> gettodaywarehousinglist(); //당일건자재입고리스트

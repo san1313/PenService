@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.pen.app.mat.mapper.MatMapper;
 import com.pen.app.mat.service.MatService;
@@ -25,11 +26,6 @@ public class MatServiceimpl implements MatService {
 	@Override
 	public void orderregister(OrderVO order) {
 
-	}
-
-	@Override
-	public List<OrderVO> getorderlist() {
-		return matmapper.getorderlist();
 	}
 
 	@Override
@@ -119,6 +115,7 @@ public class MatServiceimpl implements MatService {
 	}
 
 	@Override
+	@Transactional
 	public void getwarehousingregister(List<WarehousingVO> list) {
 		//자재입고
 		int sum = 0;
@@ -133,7 +130,13 @@ public class MatServiceimpl implements MatService {
 			int pass = list.get(i).getTestTnumPass();
 			list.get(i).setMatWrhqy(pass);
 		}
-		matmapper.getwarehousingregister(list);
+		for (WarehousingVO in : list) {
+			matmapper.getwarehousingregister(in);
+			//로트번호 조회해서 셋팅
+			in.setMatLot(matmapper.getMatLotWarehousing()); 
+			matmapper.getmativntryregister(in);
+		}
+		
 	}
 
 	@Override
