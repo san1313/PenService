@@ -132,6 +132,7 @@ public class MatServiceimpl implements MatService {
 		}
 		for (WarehousingVO in : list) {
 			matmapper.getwarehousingregister(in);
+			//로트번호 조회해서 셋팅
 			in.setMatLot(matmapper.getMatLotWarehousing()); 
 			matmapper.getmativntryregister(in);
 		}
