@@ -179,4 +179,11 @@ public class MakIndController {
 			
 		return result;
 	}
+	
+	@RequestMapping(value = "/getProcProdInfo", method= {RequestMethod.GET, RequestMethod.POST})
+	@ResponseBody
+	List<MakVO> getProcProdInfo(@RequestBody MakVO vo) {
+		return service.getProcProdInfo(vo);
+	}
+	
 }

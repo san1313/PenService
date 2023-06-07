@@ -216,7 +216,21 @@ public class MakIndServiceImpl implements MakIndService{
 	@Override
 	public List<MakVO> oerfProcList(String indicaCode) {
 		// TODO Auto-generated method stub
-		return mapper.oerfProcList(indicaCode);
+		List<MakVO> list = mapper.oerfProcList(indicaCode);
+		for (MakVO vo : list) {
+			int i = mapper.getProcProdCount(vo);
+			if(i>0) {
+				int j = mapper.getProcReCnt(vo);
+				if(j>0) {
+					vo.setIndicaState("작업중");
+				}else {
+					vo.setIndicaState("작업완료");
+				}
+			}else {
+				vo.setIndicaState("미작업");
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -255,21 +269,31 @@ public class MakIndServiceImpl implements MakIndService{
 		//홀드에 생산품 넣기
 		if(list.getList().get(0).getProdCode().substring(0,4).equals("SEMI")) {
 			i+=mapper.insertProcSemiHold(list.getList().get(0));
-		}else if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
-			//완제품에 생산품 넣기
-			i+=mapper.insertProcPrdt(list.getList().get(0));
-		}
+		};
 		mapper.updateProcProd(list.getList().get(0));
 		for (MakVO vo : list.getList()) {
 			i+=mapper.updateIndMakHold(vo);
 			i+=mapper.insertMatDlivy(vo);
-		}
-
+		};
+		
+		if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
+			//완제품에 생산품 넣기
+			i+=mapper.insertProcPrdt(list.getList().get(0));
+			i+=mapper.updateProcIndica(list.getList().get(0));
+			
+			
+		};
 		String result="";
 		if(i>0) {
 			result="성공";
 		}
 		return result;
+	}
+
+	@Override
+	public List<MakVO> getProcProdInfo(MakVO vo) {
+		
+		return mapper.getProcProdInfo(vo);
 	}
 
 

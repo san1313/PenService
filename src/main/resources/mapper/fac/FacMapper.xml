@@ -23,7 +23,7 @@
 	<where>
 		<if test="searchDiv != null and searchDiv != ''">
 			<!-- ${searchDiv} = #{searchName} title LIKE '%'|| #{keyword} || '%' -->
-			${searchDiv} = #{searchName} 
+		 	UPPER(${searchDiv}) LIKE '%' || UPPER(#{searchName}) || '%'
 		</if>
 	</where>
 	
