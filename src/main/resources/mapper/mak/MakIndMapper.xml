@@ -608,7 +608,7 @@ insert
     		#{matCode},
     		#{matName},
     		#{matLot},
-    		to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS),'yyyy-mm-dd HH24:mi:ss'),
+    		to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'),
     		#{cnt},
     		#{empNum},
     		'제조공정'
@@ -683,7 +683,6 @@ FROM
 WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}
-    AND cnt = 0
 GROUP BY
     ordr_qnt
  </select>
