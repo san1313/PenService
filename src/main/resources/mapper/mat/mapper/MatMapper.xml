@@ -16,49 +16,56 @@
 
 	<!-- 모달자재목록 -->
 	<select id="getmatlist" resultType="OrderVO">
-		select * from com_code_mat
+		select distinct c.mat_code, c.mat_name
+		from COM_CODE_ACCOUNT a
+		join COM_ACCOUNT_ITEM b
+		on (a.acc_code = b.acc_code)
+		join COM_CODE_MAT c
+		on (b.acc_item = c.mat_code)
+		<if test="accName != null and accName != ''">
+		 	where a.acc_name like '%'|| #{accName} || '%'
+		 </if>
 		order by 1
 	</select>
 
 	<!-- 모달자재검색조회 -->
 	<select id="getmatminilist" resultType="OrderVO">
-		select * from
-		com_code_mat
-		where mat_name like #{keyword}
+		select distinct *
+		from COM_CODE_ACCOUNT a
+		left join COM_ACCOUNT_ITEM b
+		on (a.acc_code = b.acc_code)
+		left join COM_CODE_MAT c
+		on (b.acc_item = c.mat_code)
+		<if test="matName != null and matName != ''">
+		where c.mat_name like '%'|| #{matName} || '%'
+		</if>
 		order by 1
 	</select>
 
 	<!-- 모달거래처목록 -->
 	<select id="getacclist" resultType="OrderVO">
-		select a.acc_code,
+		select distinct a.acc_code,
 		a.acc_name
 		from COM_CODE_ACCOUNT a
 		left join COM_ACCOUNT_ITEM b
 		on (a.acc_code = b.acc_code)
 		left join COM_CODE_MAT c
 		on (b.acc_item = c.mat_code)
-		<where>
-		<if test="matName != null and matName != ''">
-		 	and c.mat_name like #{matName}
-		 	</if>
-		<if test="accName != null and accName != ''">
-			and a.acc_name like #{accName}
-		</if>
-		</where>
-		order by 1
 	</select>
 
 
 	<!-- 모달거래처검색조회 -->
 	<select id="getaccminilist" resultType="OrderVO">
-		select a.acc_code,
+		select distinct a.acc_code,
 		a.acc_name
 		from COM_CODE_ACCOUNT a
 		left join COM_ACCOUNT_ITEM b
 		on (a.acc_code = b.acc_code)
 		left join COM_CODE_MAT c
 		on (b.acc_item = c.mat_code)
-		where a.acc_name = #{matName} and a.acc_code like #{keyword}
+		<if test="accName != null and accName != ''">
+		where a.acc_name like '%'|| #{accName} || '%'
+		</if>
 		order by 1
 	</select>
 
@@ -449,9 +456,7 @@
 		#{matMdev, mode=IN, jdbcType=VARCHAR},
 		#{matMdatresn, mode=IN, jdbcType=VARCHAR},
 		#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
-		#{matWrhqy, mode=IN, jdbcType=VARCHAR},
 		#{matQnt, mode=IN, jdbcType=VARCHAR},
-		#{matBcncname, mode=IN, jdbcType=VARCHAR},
 		#{matCode, mode=IN, jdbcType=VARCHAR},
 		#{empId, mode=IN, jdbcType=VARCHAR}
 		)}

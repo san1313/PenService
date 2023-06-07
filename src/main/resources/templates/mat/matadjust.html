@@ -60,7 +60,8 @@
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>LOT번호</label>
       <input class="text1" type="text" id="matlot" name="matLot">
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
+      <input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>    
     </div>
     </form>
 
@@ -88,6 +89,7 @@
 
 	<div id="lotadjustgride"></div>
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	<input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}" readonly>
      <button type="button" class="btn btn-primary" id="subtn">입고</button>
      <button type="button" class="btn btn-primary" id="dlivy">출고</button>
 	</div>
@@ -327,8 +329,8 @@
     	
     	console.log(checked);
     	checked[0].matMdev= '입고'; 
-    	checked[0].empId = 'test';
-    
+    	checked[0].empId =$('#empId').val();
+   
     	
     	 $.ajax({
     	  		url : "/mat/matadjustregister",
@@ -341,6 +343,7 @@
     	  		contentType: "application/json",
     	  		success : function(result3){
     	  			console.log(result3);
+    	  			
     	  		},
     	  		error: function(reject){
     	  			console.log(reject)
@@ -356,7 +359,7 @@
     	console.log(checked2);
     	
     	checked2[0].matMdev='출고';
-    	checked2[0].empId ='test';
+    	checked2[0].empId =$('#empId').val();
     	
     	$.ajax({
 	  		url : "/mat/matadjustdliregister",

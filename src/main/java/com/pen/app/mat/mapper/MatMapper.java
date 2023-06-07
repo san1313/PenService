@@ -14,7 +14,7 @@ import com.pen.app.mat.vo.WarehousingVO;
 public interface MatMapper {
 	//모달
 	List<OrderVO> getorderlist();
-	List<OrderVO> getmatlist(); //모달자재목록
+	List<OrderVO> getmatlist(String accName); //모달자재목록
 	List<OrderVO> getmatminilist(String keyword);//거래처모달검색조회
 	List<OrderVO> getacclist(String matName); //모달거래처목록
 	List<OrderVO> getaccminilist(String keyword);//거래처모달검색조회

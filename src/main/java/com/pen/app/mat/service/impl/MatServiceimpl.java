@@ -33,9 +33,9 @@ public class MatServiceimpl implements MatService {
 	}
 
 	@Override
-	public List<OrderVO> getmatlist() {
+	public List<OrderVO> getmatlist(String accName) {
 		// 모달자재목록
-		return matmapper.getmatlist();
+		return matmapper.getmatlist(accName);
 	}
 
 	@Override
