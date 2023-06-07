@@ -14,6 +14,7 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -147,6 +148,14 @@ public class FacController {
 	@RequestMapping("/confirmUpdate")
 	public int confirmUpdate(FacConfirmVO list) {
 		return service.confirmUpdate(list);
+	}
+	
+	
+	//비가동수정
+	@ResponseBody
+	@RequestMapping("/downTimeUpdate")
+	public int downTimeUpdate(FacDownTimeVO vo) {
+		return service.downTimeUpdate(vo);
 	}
 
 	// 설비삭제
