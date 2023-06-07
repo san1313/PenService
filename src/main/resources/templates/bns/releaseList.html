@@ -31,8 +31,18 @@
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 <style>
-.container-fluid {
+ .container-fluid {
 	text-align: left !important;
+} 
+.modaltitle {
+	text-align: center;
+}
+
+.modalbtn {
+	text-align: center;
+}
+.modal-content{
+text-align:center;
 }
 </style>
 </head>
@@ -47,6 +57,7 @@
 	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> 주문서
 	
 	<!-- 계약건 조건검색폼 -->
+	<div style="text-align : center;">
 	<form id="searchform">
 	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
 	<div class= "col-4">
@@ -57,13 +68,14 @@
 	<div class= "col-4">
 	납기일자 <input type="date" id="contDetRelease-text" name="contDetRelease"> - <input type="date" id="contDetRelease1-text" name="contDetRelease1">
 	</div>
-	<div >
-	<button style="margin-left : 10px" type="button" id="releaseList"class="btn btn-primary">조회</button>
+	<div class= "col-4">
+	<button style="margin-left : 100px" type="button" id="releaseList"class="btn btn-primary">조회</button>
 	</div>
 	</div>
 	</form>
-	
+	</div>
 	<!-- 주문건 조건검색폼 -->
+	<div style="text-align : center;">
 	<form id="searchform1" style="display:none">
 	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
 	<div class= "col-4">
@@ -74,11 +86,12 @@
 	<div class= "col-4">
 	납기일자 <input type="date" id="ordDetRelease-text" name="ordDueDate"> - <input type="date" id="ordDetRelease1-text" name="ordDueDate1">
 	</div>
-	<div>
-	<button style="margin-left : 10px" type="button" id="releaseList1"class="btn btn-primary">조회</button>
+	<div class= "col-4">
+	<button style="margin-left : 100px" type="button" id="releaseList1"class="btn btn-primary">조회</button>
 	</div>
 	</div>
 	</form>
+	</div>
 	<!-- 계약상세건 -->
 	<div id="beforeReleaseContGrid"></div>
 	<!-- 주문상세건 -->
@@ -93,16 +106,16 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">제품 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						제품명 <input id="searchprod-text" type="text">
+						<label>제품명</label> <input id="searchprod-text" type="text">
 						<button type="button" id="searchprod"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
@@ -120,7 +133,7 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
@@ -259,13 +272,13 @@
 		
 	//출고등록 LOT리스트 그리드
 	   var afterReleaseGrid = new tui.Grid({
-		   bodyHeight : 200,
+		   bodyHeight : 100,
 		     el: document.getElementById('afterReleaseGrid'),
 		     scrollX: false,
-		     pageOptions: {
+		     /* pageOptions: {
 		  	    useClient: true,	// front에서만 페이징 하는 속성
 		  	    perPage: 10
-		  	  },
+		  	  }, */
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 		     columns: [
 		       {

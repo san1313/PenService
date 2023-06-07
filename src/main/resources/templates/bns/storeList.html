@@ -32,6 +32,16 @@
 .container-fluid {
 	text-align: left !important;
 }
+.modaltitle {
+	text-align: center;
+}
+
+.modalbtn {
+	text-align: center;
+}
+.modal-content{
+text-align:center;
+}
 </style>
 </head>
 <body>
@@ -43,15 +53,16 @@
 	<div layout:fragment="content">
 
 	<h5 class="font-weight-bold">입고대기현황</h5>
+	<div style="text-align:center;">
 	<form id="searchform">
 	<div style= "border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
-	<div class="col-3">
+	<div class="col-5">
 		완제품LOT <input type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>
-	<div class="col-3">
+	<div class="col-5">
 	생산일자 <input type="date" id="prdtDate-text" name="prdtDate"> -
 	 <input type="date" id="prdtDate1-text" name="prdtDate1">
 	 </div>
@@ -59,9 +70,8 @@
 	 <button type="button" id="searchStoreList"class="btn btn-primary">조회</button>
 	</div>
 	</div>
-	
-	
 	</form>
+	</div>
 	<button type="button" style="float:right;" id="storeRegBtn" class="btn btn-primary">전량입고</button>
 	
 	<div id="beforeStoreGrid"></div>
@@ -77,16 +87,16 @@
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">완제품LOT 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						완제품LOT <input type="text" id="searchlot-text">
+						<label>완제품LOT</label> <input type="text" id="searchlot-text">
 						<button id="searchlot" type="submit"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="lotGrid"></div>
@@ -122,10 +132,10 @@
 		 bodyHeight : 200,
 	     el: document.getElementById('beforeStoreGrid'),
 	     scrollX: false,
-	     pageOptions: {
+	   /*   pageOptions: {
 		  	    useClient: true,	// front에서만 페이징 하는 속성
 		  	    perPage: 10
-		  	  },
+		  	  }, */
 	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 	     columns: [
 	       {
@@ -173,10 +183,10 @@
 		   bodyHeight : 200,
 		     el: document.getElementById('afterStoreGrid'),
 		     scrollX: false,
-		     pageOptions: {
+		    /*  pageOptions: {
 		    	    useClient: true,	// front에서만 페이징 하는 속성
 		    	    perPage: 10
-		    	  },
+		    	  }, */
 		     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
 		     columns: [
 		       {
