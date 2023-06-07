@@ -32,7 +32,7 @@
 		ord_code, acc_code,
 		acc_name,
 		d.prod_name,
-		to_char(ord_date,'YYYY-MM-DD') asord_date,
+		to_char(ord_date,'YYYY-MM-DD') as ord_date,
 		to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date,
 		ord_progress,
 		e.emp_name emp_name,ord_note
@@ -174,7 +174,7 @@
 		from com_code_account
 		where acc_type='제품 판매'
 		<if test="keyword != null and keyword != ''">
-		and acc_name =#{keyword}
+		and acc_name like '%'||#{keyword}||'%'
 		</if>
 	</select>
 	
@@ -189,7 +189,7 @@
 		select prod_code,
 		prod_name
 		from com_code_prod
-		where prod_name = #{keyword}
+		where prod_name like '%'||#{keyword}||'%'
 	</select>
 
 	<!-- 주문코드,현재날짜 조회 -->
@@ -204,7 +204,7 @@
 	<select id="getProdModList" resultType="BnsOrdVO">
 		select *
 		from bns_order_detail
-		where ord_code = #{keyword}
+		where ord_code like '%'||#{keyword}||'%'
 	</select>
 	
 <!-- 계약서 -->
@@ -313,7 +313,7 @@
 			,#{vo.contDetPrice}
 			,#{vo.contDetQuan}
 			,to_date(#{vo.contDetRelease},'yyyy-mm-dd')
-			,'납기불필요'
+			,'납기필요'
 			,#{vo.contDetTotPrice})
 		</foreach>
 	</insert>
@@ -396,7 +396,7 @@
 		,to_char(cont_det_release,'yyyy-mm-dd') as cont_det_release
 		,cont_det_progress
 		from bns_contract_detail
-		where cont_code = #{keyword}
+		where cont_code like '%'||#{keyword}||'%'
 	</select>
 
 <!-- 입고전 그리드 조회 -->
@@ -537,7 +537,7 @@ GROUP BY ord_det_code,
 	where prdt_state = '입고대기' 
 	order by prdt_lot desc
 	<if test="keyword != null and keyword != ''">
-	where prdt_lot =#{keyword}
+	where prdt_lot = #{keyword}
 	</if>
 	</select>
 	
@@ -550,7 +550,7 @@ GROUP BY ord_det_code,
 	where prdt_state = '입고완료' 
 	order by prdt_lot desc
 	<if test="keyword != null and keyword != ''">
-	where prdt_lot =#{keyword}
+	where prdt_lot like '%'||#{keyword}||'%'
 	</if>
 	</select>
 	

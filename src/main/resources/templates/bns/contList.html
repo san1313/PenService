@@ -43,9 +43,9 @@
 	display: inline;
 }
 
-/* .container-fluid {
+ .container-fluid {
 	text-align: left !important;
-} */
+} 
 
 .contbtn {
 	float: right;
@@ -77,14 +77,14 @@ text-align:center;
 
 	<div layout:fragment="content">
 		<form id="searchform">
-     <div style="border: 1px solid #aaa; padding : 30px; margin-bottom : 20px;">
+     <div style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
      <div class="row">
      <label style="margin-left : 15px;">진행구분</label>
      <input style = "margin : 0 5px;" type="radio" id="allBtn" name="all" value="all" checked><label for="allBtn" style="margin-right:10px">전체</label> 
      <input style = "margin : 0 5px;" type="radio" id="ingBtn" name="all" value="ing"><label for="ingBtn" style="margin-right:10px">진행</label>
      <input style = "margin : 0 5px;" type="radio" id="finBtn" name="all" value="finish"><label for="finBtn" style="margin-right:10px">완료</label>
      </div>
-		<div class="row" style="margin:20px 0">
+		<div class="row" style="margin:10px 0">
 		<div class="col-3">
 			거래처명 <input name="accName" type="text" id="accountlist-text"
 				style="background-color: #e2e1e1;width:240px" readonly>
@@ -103,14 +103,14 @@ text-align:center;
 			계약만료일자 <input name="contDueDate1" type="date" id="contduedate-text"> - <input style="margin-right : 20px;" name="contDueDate2" type="date" id="contduedate-text">
 		</div>
 		</div>
-		<div class="row justify-content-center">
-			<button type="button" id="searchCont" class="btn btn-primary" style="margin-right:10px">조회</button>
+		<div style="margin-top:50px; " class="row justify-content-center">
+			<button type="button" id="searchCont" class="btn btn-primary" style="margin-right:10px; width:74px;">조회</button>
 			<button type="button" id="pageReset" class="btn btn-primary">초기화</button>
 		</div>	
 		</div>
 		</form>
 		
-		<div class="contbtn">
+		<div class="contbtn" style="padding-bottom:10px;">
 			<button type="button" class="btn btn btn-primary"
 				data-toggle="modal" data-target=".bd-contList-modal-lg">계약서
 				등록</button>
@@ -210,15 +210,13 @@ text-align:center;
 									name="empName" th:value="${#authentication.principal.username}"
 									readonly>
 							</div>
-
 							<input type="hidden" th:value="${userVO.empNum}" id="contempnum"
 								class="form-control" name="empCode" readonly>
-
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">거래처명
+								<label for="recipient-name" class="col-form-label">거래처명</label>
 									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
-								</label> <input id="contaccname" type="text" class="form-control"
+								 <input id="contaccname" type="text" class="form-control"
 									name="accName" readonly>
 							</div>
 						</div>
@@ -250,7 +248,6 @@ text-align:center;
 						<input type="hidden" id="modalcontNote" class="form-control"
 							name="contNote"></input> <br>
 						<hr>
-						<h2>계약상세</h2>
 						<br> 
 						<div style="float:left;">
 						<label>제품리스트</label>
@@ -263,7 +260,7 @@ text-align:center;
 						<div class="modalbtn">
 							<button id="contregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn btn-secondary"
-								data-bs-dismiss="modal">취소</button>
+								data-dismiss="modal">취소</button>
 						</div>
 					</div>
 
@@ -505,16 +502,25 @@ text-align:center;
                {
                  header: '계약량',
                  name: 'contDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   },
                },
                {
                    header: '단가',
                    name: 'contDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     }
                  },
                {
                  header: '계약금액',
-                 name: 'contDetTotPrice'
+                 name: 'contDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
                },
                {
                 header: '납기일자',
@@ -528,17 +534,17 @@ text-align:center;
              columnContent: {
             	 contDetQuan: {
                    template: function(valueMap) {
-                     return `TOT: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  contDetPrice: {
                    template: function(valueMap) {
-                     return `AVR: ${valueMap.avg}원`;
+                     return `AVR: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  contDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOT: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }
@@ -784,11 +790,13 @@ $.ajax({
      const focusCell = productReg_Grid.getFocusedCell()
 
      let dataRow = productReg_Grid.getRow(ev.rowKey);
+     dataRow.contDetPrice = 0;
+     dataRow.contDetTotPrice = 0;
+     dataRow.contDetQuan = 0;
      delete dataRow.rowKey;
 
-   	addProdgrid.appendRow(dataRow,{
- 		  focus:true
- 	  });
+   	addProdgrid.appendRow(dataRow,{focus:true});
+   	
      $('#contprodname').val(dataRow.prodName);
      $('#contprodcode').val(dataRow.prodCode);
      
@@ -1165,16 +1173,25 @@ $.ajax({
                {
                  header: '계약량',
                  name: 'contDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
                },
                {
                    header: '단가',
                    name: 'contDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     }
                  },
                {
                  header: '계약금액',
-                 name: 'contDetTotPrice'
+                 name: 'contDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
                }
                  ,
                  {
@@ -1195,17 +1212,17 @@ $.ajax({
              columnContent: {
             	 contDetQuan: {
                    template: function(valueMap) {
-                     return `TOT: ${valueMap.sum}`;
+                	   return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  contDetPrice: {
                    template: function(valueMap) {
-                     return `AVE: ${valueMap.avg}원`;
+                	   return `AVR: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  contDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOT: ${valueMap.sum}원`;
+                    	 return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }

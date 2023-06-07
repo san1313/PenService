@@ -51,9 +51,8 @@ text-align:center;
 		<h1>출고내역 조회</h1>
 	</div>
 		<div layout:fragment="content">
-		<div style="text-align:center;">
 		<form id="searchform">
-		<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+		<div class="row">
 		<div class="col-3">
 	제품명 <input type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prdtNm" readonly>
@@ -68,12 +67,12 @@ text-align:center;
 			<div class="col-3">
 	출고일자 <input type="date" name="bnsReleaseDate"> - <input type="date" name="bnsReleaseDate1"> 
 	</div >
-	<div class="col-3">
-	<button type="button" id="searchRelease" class = "btn btn-primary">조회</button>
+	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
+	<button style="width:80px; margin-right:10px;" type="button" id="searchRelease" class = "btn btn-primary">조회</button>
+	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
-	</div>
 	<!-- 본문 출고 그리드 -->
 	<div id="ReleaseGrid"></div>
 	<!-- 본문 출고 그리드 끝 -->
