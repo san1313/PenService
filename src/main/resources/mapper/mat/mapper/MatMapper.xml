@@ -182,6 +182,7 @@
 		b.mat_totamt
 		from mat_order_header a
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
+		WHERE trunc(a.mat_orderdate) between sysdate-7 and sysdate
 		order by a.mat_ordernum desc
 	</select>
 
@@ -300,6 +301,8 @@
 		join qip_list_mat c
 		on(a.qip_code_list_mat=c.qip_code_list_mat)
 		join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
+		WHERE trunc(a.mat_wrhdate) between sysdate-7 and sysdate
+        order by a.mat_wrhdate desc
 	</select>
 
 	<!-- 입고등록리스트 다중검색 -->
@@ -363,7 +366,9 @@
 
 	<!-- 자재출고조회 -->
 	<select id="getmatdlivylist" resultType="DlivyVO">
-		select * from mat_dlivy order by mat_dlivydate desc
+		select * 
+			from mat_dlivy 
+			where trunc(mat_dlivydate) between sysdate-7 and sysdate order by mat_dlivydate desc
 	</select>
 
 	<!-- 자재출고조회 다중검색 -->
@@ -412,7 +417,14 @@
 		a.mat_qnt
 		from mat_invntry a
 		join mat_wrhousng b on(a.mat_lot = b.mat_lot)
-		where a.mat_name = #{keyword}
+		<where>
+		<if test="matName != null and matName != ''">
+		and a.mat_name = #{matName}
+		</if>
+		<if test="matLot != null and matLot != ''">
+		and a.mat_lot like '%'|| #{matLot} ||'%'
+		</if>
+		</where>
 		order by 1
 	</select>
 
@@ -473,6 +485,7 @@
 		from mat_mdat a
 		join mat_invntry b on(a.mat_lot = b.mat_lot)
 		join mat_wrhousng c on(b.mat_lot = c.mat_lot)
+        where trunc(a.mat_mdatdate) between sysdate-7 and sysdate
 		order by a.mat_mdatdate desc
 	</select>
 
@@ -594,6 +607,7 @@
 		b.mat_holdresn
 		from mat_invntry a
 		join mat_hold b on(a.mat_lot = b.mat_lot)
+		where trunc(b.mat_rlsdate) between sysdate-7 and sysdate
 		order by mat_rlsdate desc
 	</select>
 

@@ -649,12 +649,7 @@ insert
  					'입고대기'
  					)
  </update>
-<<<<<<< HEAD
- 
- <!-- <update id="updateIndica">
- update mak_indica a, mak_hold b set 
- </update> -->
-=======
+
 
 <update id="updateProcIndica" parameterType="MakVO">
 UPDATE mak_indica a
@@ -730,5 +725,5 @@ WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}
  </select>
->>>>>>> branch 'jh' of https://github.com/san1313/PenService.git
+
 </mapper>

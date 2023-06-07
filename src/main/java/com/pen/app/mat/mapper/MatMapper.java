@@ -47,7 +47,7 @@ public interface MatMapper {
 	
 	//자재조정관리
 	List<AdjustVO> getmatadjustlotlist(); //자재조정 lot리스트
-	List<AdjustVO> getmatadjustsearch(String keyword); //자재조정 자재코드 검색
+	List<AdjustVO> getmatadjustsearch(AdjustVO vo); //자재조정 다중검색
 	List<AdjustVO> getmatadjustlot(String matLot); //자재조정 lot 상세
 	public void getmatadjustregister(AdjustVO vo); //조정등록(입고)
 	public void getmatadjustdliregister(AdjustVO vo); //조정등록(출고)
