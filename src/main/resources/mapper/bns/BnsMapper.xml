@@ -1,9 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-
 <!DOCTYPE mapper
   PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
-
 <mapper namespace="com.pen.app.bns.mapper.BnsMapper">
 
 	<!-- 주문서 전체 조회 -->
@@ -18,27 +16,25 @@
 		       ord_progress, 
 		       e.emp_name,
 		       ord_note
-		       
 		 from  bns_order_detail d 
 		 join  bns_order o
 		   on  (d.ord_code =o.ord_code)
 		 join  com_info_emp e
 		   on  (o.emp_num = e.emp_num)
-		   
 		order by ord_code desc
 	</select>
 
 	<!-- 주문서 조건 조회 -->
 	<select id="getOrdListCon" resultType="BnsOrdVO">
-	
 	select *
 	from(
 		select distinct o.ord_code
 		ord_code, acc_code,
-		acc_name,to_char(ord_date,'YYYY-MM-DD') as
-		ord_date,
-		to_char(ord_due_date,'YYYY-MM-DD') as
-		ord_due_date,ord_progress,
+		acc_name,
+		d.prod_name,
+		to_char(ord_date,'YYYY-MM-DD') asord_date,
+		to_char(ord_due_date,'YYYY-MM-DD') as ord_due_date,
+		ord_progress,
 		e.emp_name emp_name,ord_note
 		from
 		bns_order_detail d join bns_order o
@@ -58,6 +54,9 @@
 		</if>
 		<if test="accName != null and accName != ''"> 
 		 and o.acc_name = #{accName}
+		</if>
+		<if test="prodName != null and prodName != ''"> 
+		 and d.prod_name = #{prodName}
 		</if>
 		<if test="ordDate1 != null and ordDate1 != ''">
 	<![CDATA[
@@ -96,29 +95,29 @@
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
 			into bns_order_detail
-			values('bns_ord_det_'||LPAD(get_ord_det_seq,3,'0'),'bns_ord_'||LPAD(ord_seq.currval,
-			3,
-			'0'),#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice},'접수완료')
+			values('bns_ord_det_'||LPAD(get_ord_det_seq,3,'0'),
+			'bns_ord_'||LPAD(ord_seq.currval,3,'0')
+			,#{vo.prodCode}
+			,#{vo.prodName}
+			,#{vo.ordDetPrice}
+			,#{vo.ordDetQuan}
+			,#{vo.ordDetTotPrice}
+			,'접수완료')
 		</foreach>
 	</insert>
 
 	<!-- 주문서 수정 -->
 	<update id="modOrdList">
-
 		declare begin
 		update bns_order set ord_due_date = to_date(#{list[0].ordDueDate},'yyyy-mm-dd')
 		, ord_note =
 		#{list[0].ordNote} where ord_code = #{list[0].ordCode};
-
 		<foreach collection="list" item="vo" index="index"
 			separator=";" close="; END;">
-
 			merge into
 			bns_order_detail
 			using dual
-			on(ord_det_code =
-			#{vo.ordDetCode})
-
+			on(ord_det_code =#{vo.ordDetCode})
 			when matched then
 			UPDATE
 			SET
@@ -126,20 +125,25 @@
 			       ord_det_quan = #{vo.ordDetQuan},
 			       ord_det_tot_price =	#{vo.ordDetTotPrice}
 			 where ord_code = #{vo.ordCode}
-
 			WHEN NOT MATCHED
 			THEN
-			insert(ord_det_code,ord_code,prod_code,prod_name,ord_det_price,ord_det_quan,ord_det_tot_price)
-			values('bns_ord_det'||LPAD(get_ord_det_seq,3,'0'),#{vo.ordCode},#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice})
-
-			<!-- UPDATE bns_order_detail SET ord_det_code = #{vo.ordDetCode}, ord_code 
-				= ${vo.ordCode}, prod_code = #{vo.prodCode}, prod_name = #{vo.prodName}, 
-				ord_det_price = #{vo.ordDetPrice}, ord_det_quan = #{vo.ordDetQuan}, ord_det_tot_price 
-				= #{vo.ordDetTotPrice} where ord_code = #{vo.ordCode} -->
+			insert(ord_det_code
+			,ord_code
+			,prod_code
+			,prod_name
+			,ord_det_price
+			,ord_det_quan
+			,ord_det_tot_price)
+			values('bns_ord_det'||LPAD(get_ord_det_seq,3,'0')
+			,#{vo.ordCode}
+			,#{vo.prodCode}
+			,#{vo.prodName}
+			,#{vo.ordDetPrice}
+			,#{vo.ordDetQuan}
+			,#{vo.ordDetTotPrice})
 		</foreach>
-
 	</update>
-
+	
 	<!-- 주문상세 취소 -->
 	<delete id="delOrdDetList">
 		delete from bns_order_detail 
@@ -148,7 +152,7 @@
 			ord_det_code =	#{vo.ordDetCode}
 		</foreach>
 	</delete>
-
+	
 	<!-- 주문서 취소 -->
 	<delete id="delOrdList">
 		delete from bns_order where
@@ -156,20 +160,13 @@
 			ord_code = #{vo.ordCode}
 		</foreach>
 	</delete>
-
-	<!-- <select id="getEmpList" resultType="BnsEmpVO"> select emp_num, emp_name 
-		from com_info_emp </select> -->
-
-	<!-- <select id ="getEmpKeyList" resultType="BnsEmpVO"> select emp_num, 
-		emp_name from com_info_emp where emp_name =#{keyword} </select> -->
-
-<!-- 삭제 -->
+	
 	<!-- 거래처코드,거래처명 조회 -->
 	<select id="getAccList" resultType="BnsAccVO">
 		select acc_code, acc_name
 		from com_code_account
 	</select>
-
+	
 	<!-- 거래처코드, 거래처명 검색 조회 -->
 	<select id="getAccKeyList" resultType="BnsAccVO">
 		select acc_code, acc_name
@@ -178,13 +175,13 @@
 		where acc_name =#{keyword}
 		</if>
 	</select>
-
+	
 	<!-- 제품코드, 제품명 조회 -->
 	<select id="getProdList" resultType="BnsProdVO">
 		select prod_code, prod_name
 		from com_code_prod
 	</select>
-
+	
 	<!-- 제품코드, 제품명 검색 조회 -->
 	<select id="getProdKeyList" resultType="BnsProdVO">
 		select prod_code,
@@ -207,15 +204,18 @@
 		from bns_order_detail
 		where ord_code = #{keyword}
 	</select>
+	
 <!-- 계약서 -->
 	<!-- 계약서 전체 조회 -->
 	<select id="getContList" resultType="BnsContVO">
 		select distinct c.cont_code
 		cont_code, acc_code,
-		acc_name,to_char(cont_date,'YYYY-MM-DD') as
-		cont_date,to_char(cont_start_date,'YYYY-MM-DD') as
-		cont_start_date,to_char(cont_due_date,'YYYY-MM-DD') as
-		cont_due_date,cont_progress, e.emp_name emp_name,cont_note
+		acc_name,to_char(cont_date,'YYYY-MM-DD') as cont_date
+		,to_char(cont_start_date,'YYYY-MM-DD') as cont_start_date
+		,to_char(cont_due_date,'YYYY-MM-DD') as cont_due_date
+		,cont_progress
+		,e.emp_name emp_name
+		,cont_note
 		from
 		bns_contract_detail d join bns_contract c
 		on(d.cont_code =c.cont_code)
@@ -239,7 +239,8 @@
 		c.cont_code cont_code,
 		 acc_code, 
 		 acc_name,
-		 to_char(cont_date,'yyyy-mm-dd') cont_date,
+		 d.prod_name,
+		 to_char(cont_date,'yyyy-mm-dd') 	cont_date,
 		 to_char(cont_due_date,'yyyy-mm-dd') cont_due_date,
 		 to_char(cont_start_date, 'yyyy-mm-dd') cont_start_date,
 		 cont_progress, 
@@ -249,7 +250,6 @@
 		c on(d.cont_code =c.cont_code) 
 		join com_info_emp e on(c.emp_num = e.emp_num)
 		<where>
-		 
 		<if test="all == 'all' "> 
 		 and c.cont_progress is not null
 		</if>
@@ -259,16 +259,17 @@
 		<if test="all == 'finish'"> 
 		 and c.cont_progress = '출고완료'
 		</if>
+		<if test="prodName != null and prodName != ''"> 
+		 and d.prod_name = #{prodName}
+		</if>
 		<if test="accName != null and accName != ''"> 
 		 and c.acc_name = #{accName}
 		</if>
-		
 		<if test="contDate1 != null and contDate1 != ''">
 	<![CDATA[
 			and cont_date >= TO_DATE(#{contDate1}, 'YYYY-MM-DD') 
 	]]>
 		</if>
-		
 	<if test="contDate2 != null and contDate2 != ''">
 	<![CDATA[		
 		and cont_date <= TO_DATE(#{contDate2}, 'YYYY-MM-DD')
@@ -291,25 +292,38 @@
 	<!-- 계약서 등록 -->
 	<insert id="insertContList">
 		insert all into bns_contract
-		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0'),#{list[0].accCode},#{list[0].accName},to_date(#{list[0].contDate},'yyyy-mm-dd'),to_date(#{list[0].contDueDate},'yyyy-mm-dd'),'접수완료',null,#{list[0].empNum},
-		to_date(#{list[0].contStartDate},'yyyy-mm-dd'))
+		values('bns_cont_'||LPAD(cont_seq.nextval, 3,'0')
+		,#{list[0].accCode}
+		,#{list[0].accName}
+		,to_date(#{list[0].contDate},'yyyy-mm-dd') 
+		,to_date(#{list[0].contDueDate},'yyyy-mm-dd')
+		,'접수완료'
+		,null
+		,#{list[0].empNum}
+		,to_date(#{list[0].contStartDate},'yyyy-mm-dd'))
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
 			into bns_contract_detail
-			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),'bns_cont_'||LPAD(cont_seq.currval,
-			3,
-			'0'),#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},to_date(#{vo.contDetRelease},'yyyy-mm-dd'),'납기불필요',#{vo.contDetTotPrice})
+			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0')
+			,'bns_cont_'||LPAD(cont_seq.currval,3,'0')
+			,#{vo.prodCode}
+			,#{vo.prodName}
+			,#{vo.contDetPrice}
+			,#{vo.contDetQuan}
+			,to_date(#{vo.contDetRelease},'yyyy-mm-dd')
+			,'납기불필요'
+			,#{vo.contDetTotPrice})
 		</foreach>
 	</insert>
 
 	<!-- 계약서 수정 -->
 	<update id="modContList">
 		declare begin
-		update bns_contract set cont_start_date =
-		to_date(#{list[0].contStartDate},'yyyy-mm-dd'),
+		update bns_contract 
+		set cont_start_date = to_date(#{list[0].contStartDate},'yyyy-mm-dd'),
 		cont_due_date = to_date(#{list[0].contDueDate},'yyyy-mm-dd') ,
-		cont_note =
-		#{list[0].contNote} where cont_code = #{list[0].contCode};
+		cont_note = #{list[0].contNote} 
+		where cont_code = #{list[0].contCode};
 		<foreach collection="list" item="vo" index="index"
 			separator=";" close="; END;">
 			merge into
@@ -330,8 +344,24 @@
 			where cont_code = #{vo.contCode}
 			WHEN NOT MATCHED
 			THEN
-			insert(cont_det_code,cont_code,prod_code,prod_name,cont_det_price,cont_det_quan,cont_det_release,cont_det_progress,cont_det_tot_price)
-			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0'),#{vo.contCode},#{vo.prodCode},#{vo.prodName},#{vo.contDetPrice},#{vo.contDetQuan},to_date(#{vo.contDetRelease},'yyyy-mm-dd'),'납기불필요',#{vo.contDetTotPrice})
+			insert(cont_det_code
+			,cont_code
+			,prod_code
+			,prod_name
+			,cont_det_price
+			,cont_det_quan
+			,cont_det_release
+			,cont_det_progress
+			,cont_det_tot_price)
+			values('bns_cont_det_'||LPAD(get_cont_det_seq,3,'0')
+			,#{vo.contCode}
+			,#{vo.prodCode}
+			,#{vo.prodName}
+			,#{vo.contDetPrice}
+			,#{vo.contDetQuan}
+			,to_date(#{vo.contDetRelease},'yyyy-mm-dd')
+			,'납기불필요'
+			,#{vo.contDetTotPrice})
 			
 		</foreach>
 	</update>
@@ -356,22 +386,42 @@
 	<!-- 계약서 수정 모달창 내의 제품 리스트 조회 -->
 	<select id="getContProdModList" resultType="BnsContVO">
 		select
-		cont_det_code,prod_name, prod_code, cont_det_quan, cont_det_price,
-		cont_det_tot_price,to_char(cont_det_release,'yyyy-mm-dd') as
-		cont_det_release,cont_det_progress
+		cont_det_code,prod_name
+		,prod_code
+		,cont_det_quan
+		, cont_det_price
+		,cont_det_tot_price
+		,to_char(cont_det_release,'yyyy-mm-dd') as cont_det_release
+		,cont_det_progress
 		from bns_contract_detail
 		where cont_code = #{keyword}
 	</select>
 
 <!-- 입고전 그리드 조회 -->
 	<select id="getbeforeStoreList" resultType="BnsStoreVO">
-	select prdt_lot, prcs_code, prod_code, prdt_nm, cnt, to_char(prdt_date,'yyyy-mm-dd') prdt_date, prdt_unit, qip_code_list_prod, prdt_state from MAK_PRDT where prdt_state = '입고대기' and qip_code_list_prod is not null order by prdt_lot desc
+	select prdt_lot
+	, prcs_code
+	, prod_code
+	, prdt_nm, cnt
+	, to_char(prdt_date,'yyyy-mm-dd') prdt_date
+	, prdt_unit
+	, qip_code_list_prod
+	, prdt_state from MAK_PRDT 
+	where prdt_state = '입고대기' 
+	and qip_code_list_prod is not null
+	 order by prdt_lot desc
 	<!-- 수정해야 될 쿼리 select * from mak_prdt join mak_proc_prod using(prcs_code) where proc_code='PROC8' -->
 	</select>
 
 <!-- 입고후 그리드 조회 -->
 	<select id="getafterStoreList" resultType="BnsStoreVO">
-	select p.prdt_lot, b.prdt_nm, b.bns_store_quan, to_char(bns_store_date,'yyyy-mm-dd') bns_store_date, e.emp_name emp_name, b.bns_store_note, p.prdt_state 
+	select p.prdt_lot
+	, b.prdt_nm
+	, b.bns_store_quan
+	, to_char(bns_store_date,'yyyy-mm-dd') bns_store_date
+	, e.emp_name emp_name
+	, b.bns_store_note
+	, p.prdt_state 
     from com_info_emp e join bns_store b on(b.emp_num = e.emp_num)
     join mak_prdt p on (b.prdt_lot = p.prdt_lot)
     where p.prdt_state = '입고완료'
@@ -380,7 +430,6 @@
 	
 	<!-- 입고 등록 -->
 	<insert id="insertStore" statementType="CALLABLE">
-		
 		{call prdt_store_register (
 			#{prdtLot, mode=IN, jdbcType=VARCHAR},
 			#{prdtNm, mode=IN, jdbcType=VARCHAR},
@@ -479,12 +528,8 @@ GROUP BY ord_det_code,
 		)}
 	</insert>
 	
-
-	
-	
 		<!-- 완제품LOT,제품코드, 제품명 검색 조회 -->
 	<select id="getLOTPrdtList" resultType="BnsStoreVO">
-	
 	select prdt_lot, prod_code, prdt_nm
 	from MAK_PRDT 
 	where prdt_state = '입고대기' 
@@ -496,8 +541,9 @@ GROUP BY ord_det_code,
 	
 			<!-- 완제품LOT,제품코드, 제품명 검색 조회 -->
 	<select id="getLOTPrdtAfterList" resultType="BnsStoreVO">
-	
-	select prdt_lot, prod_code, prdt_nm
+	select prdt_lot
+	, prod_code
+	, prdt_nm
 	from MAK_PRDT 
 	where prdt_state = '입고완료' 
 	order by prdt_lot desc
@@ -577,7 +623,6 @@ GROUP BY ord_det_code,
 		</where>
 	</select>
 	
-	
 	<!-- 출고관리페이지(계약) 조건 조회 -->
 	<select id="getreleaseContListCon" resultType="BnsReleaseVO">
 SELECT *
@@ -595,8 +640,6 @@ FROM bns_contract c
 JOIN bns_contract_detail d on(c.cont_code = d.cont_code)
 LEFT OUTER JOIN bns_release r on ( d.cont_det_code= r.cont_det_code )
 
-
-         
 		<where>
 		 <if test="prodName != null and prodName != ''"> 
 		 and prod_name=#{prodName}
@@ -606,7 +649,6 @@ LEFT OUTER JOIN bns_release r on ( d.cont_det_code= r.cont_det_code )
 		and cont_det_release >= TO_DATE(#{contDetRelease}, 'YYYY-MM-DD') 
 	]]>
 		</if>
-		
 	<if test="contDetRelease1 != null and contDetRelease1 != ''">
 	<![CDATA[		
 		and cont_det_release <= TO_DATE(#{contDetRelease1}, 'YYYY-MM-DD')
@@ -720,7 +762,5 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 		</if>
 		</where>
 	</select>
-	
-
 	
 </mapper>
