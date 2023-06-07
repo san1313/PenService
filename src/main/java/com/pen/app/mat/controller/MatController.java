@@ -40,8 +40,8 @@ public class MatController {
 	//자재모달창리스트
 	@ResponseBody
 	@GetMapping("/matlist")
-	public List<OrderVO> matlist(){
-		List<OrderVO> list = matservice.getmatlist();
+	public List<OrderVO> matlist(@RequestParam(required = false) String accName){
+		List<OrderVO> list = matservice.getmatlist(accName);
 		return list;
 	}
 	

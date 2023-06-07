@@ -67,14 +67,14 @@
   
   <div layout:fragment="content">
     <div class="ordersearch">
-      <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly	>
-      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
-      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>거래처명</label>
       <input class="text1" type="text" id="accmodalname" readonly	>
       <input class="text1" type="hidden" id="accmodalcode" readonly	>
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
+      <label>자재명</label>
+      <input class="text1" type="text" id="matmodalmatname" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>발주일자</label>
       <input class="text1" type="date" id="matOrderdate1"> ~ 
       <input class="text1" type="date" id="matOrderdate2">
@@ -228,16 +228,20 @@
     
     
   //자재명모달
+  function matmodallist(){
     $.ajax({
         url : "/mat/matlist",
         method : "GET",
         dataType : "JSON",
+        data:{accName : $('#accmodalname').val()},
         success : function(result){
         	console.log(result);
           modal_grid.resetData(result);
           modal_grid.refreshLayout();
         }
       });
+	  
+  }
 
 
 	  
@@ -261,6 +265,7 @@
     
     $(function(){  
     $('#matmodal').on('shown.bs.modal', function(e){
+    	matmodallist();
     	modal_grid.refreshLayout();
     });
     $('#accmodal').on('shown.bs.modal', function(e){
