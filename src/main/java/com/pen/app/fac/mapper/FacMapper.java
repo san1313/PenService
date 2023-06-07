@@ -4,6 +4,7 @@ import java.util.List;
 
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -22,7 +23,7 @@ public interface FacMapper {
    public int facUpdate(FacInfoVO vo); //설비수정
    public int facDelete(FacInfoVO facCode); //설비삭제 
    public FacInfoVO getFac(String facCode); //단건조회
-   
+   public int facOperateState(FacDownTimeVO vo); //설비상태수정
    
    //설비점검관리
    public List<FacConfirmVO> getConfirmList(FacConfirmVO vo); //점검전체조회
@@ -36,7 +37,7 @@ public interface FacMapper {
    public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo); //비가동전체조회
    public int insertDownTimeList(FacDownTimeVO list); //비가동 등록 
    public int downTimeDelete(FacDownTimeVO vo); //비가동삭제
-   
+   public int downTimeUpdate(FacDownTimeVO vo); //비가동수정
    
 	/* int insertDownFac(FacInfoVO vo); */
    
