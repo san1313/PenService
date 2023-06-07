@@ -199,9 +199,9 @@ select a.mak_bom_code,a.mak_flow_code,a.mak_step,a.prod_code,a.amount,a.plan_ind
 						             '1111',
 						             #{prodCode},
 						             #{ordrQnt},
-						             to_date(#{indicaDate},'yyyy-mm-dd'),
-						             to_date(#{stDate},'yyyy-mm-dd'),
-						             to_date(#{clsDate},'yyyy-mm-dd'),
+						             to_date(TO_CHAR(#{indicaDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
+						             to_date(TO_CHAR(#{stDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
+						             to_date(TO_CHAR(#{clsDate},'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
 						             #{pdCode})
 </update>
 
@@ -568,7 +568,7 @@ ORDER BY
     	#{facCode},
     	#{empNum},
     	0,
-    	to_date(current_date,'yyyy-mm-dd HH24:mi:ss'),
+    	to_date(TO_CHAR(current_date,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'),
     	'작업중'
     	 )
  </update>
@@ -590,7 +590,7 @@ ORDER BY
  </select>
  
  <update id="updateProcProd" parameterType="MakVO">
- update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(current_date,'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
+ update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(TO_CHAR(current_date,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
  </update>
  
  <update id="insertMatDlivy" parameterType="MakVO">
@@ -608,7 +608,7 @@ insert
     		#{matCode},
     		#{matName},
     		#{matLot},
-    		to_date(sysdate,'yyyy-mm-dd HH24:mi:ss'),
+    		to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS),'yyyy-mm-dd HH24:mi:ss'),
     		#{cnt},
     		#{empNum},
     		'제조공정'
@@ -623,7 +623,7 @@ insert
  				cnt,
  				hold_date
  				)
- 		 values(get_hold_seq(),#{indicaCode},#{prodCode},get_semi_lot_seq(),#{prodCnt},to_date(sysdate))
+ 		 values(get_hold_seq(),#{indicaCode},#{prodCode},get_semi_lot_seq(),#{prodCnt},to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'))
  		 
  </update> 
  
@@ -644,13 +644,91 @@ insert
  					#{prodCode},
  					#{prdtNm},
  					#{prodCnt},
- 					to_date(sysdate),
+ 					to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'),'YYYY-MM-DD HH24:MI:SS'),
  					'EA',
  					'입고대기'
  					)
  </update>
+<<<<<<< HEAD
  
  <!-- <update id="updateIndica">
  update mak_indica a, mak_hold b set 
  </update> -->
+=======
+
+<update id="updateProcIndica" parameterType="MakVO">
+UPDATE mak_indica a
+SET
+    a.indica_state = '작업완료'
+WHERE
+    EXISTS (
+        SELECT
+            1
+        FROM
+            mak_hold b
+        WHERE
+                a.indica_code = b.indica_code
+            AND ( b.cnt = 0
+                  AND ( b.mat_code LIKE 'SEM%'
+                        AND ( b.indica_code = #{indicaCode} ) ) )
+    )  
+ </update>
+ 
+ <select id="getProcProdCount" parameterType="MakVO" resultType="integer">
+ select count(*) from mak_proc_prod where indica_code=#{indicaCode} and proc_code = #{procCode}
+ </select>
+ 
+ <select id="getProcReCnt" parameterType="MakVO" resultType="integer">
+ SELECT
+    ordr_qnt - NVL(SUM(prod_cnt),0) re_qnt
+FROM
+         mak_indica
+    JOIN mak_proc_prod USING ( indica_code )
+    JOIN mak_hold USING ( indica_code )
+WHERE
+        indica_code = #{indicaCode}
+    AND proc_code = #{procCode}
+    AND cnt = 0
+GROUP BY
+    ordr_qnt
+ </select>
+ 
+ <select id="getProcProdInfo" parameterType="MakVO" resultType="MakVO">
+SELECT
+    prcs_code,
+    indica_code,
+    fac_code,
+    prod_nm,
+    proc_code,
+    prod_cnt,
+    to_char(prcs_fr_date, 'YYYY-MM-DD HH24:MI:SS') prcs_fr_date,
+    to_char(prcs_fl_date, 'YYYY-MM-DD HH24:MI:SS') prcs_fl_date,
+    prcs_state,
+    rsc_code,
+    re_qnt,
+    FAC_NAME,
+    B.EMP_NAME||' - '||A.EMP_NUM EMP_NUM 
+FROM
+         mak_proc_prod a
+    JOIN (
+        SELECT
+            indica_code,
+            ordr_qnt - SUM(prod_cnt) re_qnt
+        FROM
+                 mak_proc_prod
+            JOIN mak_indica USING ( indica_code )
+        WHERE
+                indica_code = #{indicaCode}
+            AND proc_code = #{procCode}
+        GROUP BY
+            ordr_qnt,
+            indica_code
+    ) USING ( indica_code )
+    JOIN fac_info USING ( fac_code )
+    JOIN com_info_emp b ON a.emp_num = b.emp_num
+WHERE
+        indica_code = #{indicaCode}
+    AND proc_code = #{procCode}
+ </select>
+>>>>>>> branch 'jh' of https://github.com/san1313/PenService.git
 </mapper>

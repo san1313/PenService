@@ -22,4 +22,5 @@ public interface MakIndService {
 	List<MakVO> getProcList(MakVO vo);
 	List<MakVO> insertProcProd(MakVO vo);
 	String updateProcProd(IndicaListVO list);
+	List<MakVO> getProcProdInfo(MakVO vo);
 }
