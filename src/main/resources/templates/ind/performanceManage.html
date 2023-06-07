@@ -262,7 +262,7 @@ $(function () {
     		    		url:"/ind/userList",
     		    		method : "GET",
     		    		success:function(result){
-    		    			console.log(result);
+    		    			
     		    			$('#useri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
@@ -290,7 +290,7 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
+    		    				
     		    				}
     		    				
     		    			})
@@ -303,7 +303,7 @@ $(function () {
     	minQnt=0;
     	miniQnt=100000;
     	$('#stBtn').prop('disabled',false);
-    	console.log(planProcData);
+    	
   	 let insertData = {
   			 "procCode" : planProcData.procCode,
   			 "indicaCode" : planProcData.indicaCode
@@ -375,36 +375,25 @@ $(function () {
 								
 							 }
 	   	            	})
-	   	            	console.log(resolve);
-	   	            	console.log(result);
 	   	       	
 	             	result.forEach(function(ele,idx){
-	              	console.log('z');
-	              	console.log(ele);
+
 	              	if(ele.cnt>ele.ordrQnt*ele.bomMatUsage){
 	              		if(minQnt<ele.ordrQnt){
-	              			console.log('a');
 	              		minQnt=ele.ordrQnt;
 	              		}
 	              	}
 	              	if(ele.cnt==ele.ordrQnt*ele.bomMatUsage){
 	              		if(minQnt<ele.ordrQnt){
-	              			console.log('b');
 	              		minQnt=ele.ordrQnt;
 	              		}
 	              	}
 	              	if(ele.cnt<ele.ordrQnt*ele.bomMatUsage){
-	              		console.log('c');
-	              		console.log(miniQnt);
-	              		console.log(ele.cnt/ele.bomMatUsage);
 	              		if(miniQnt>ele.cnt/ele.bomMatUsage){
-	              			console.log('?');
 	              			miniQnt=ele.cnt/ele.bomMatUsage;
 	              		}
 	              	}
 	              });
-	              console.log(miniQnt);
-	              console.log(minQnt);
 	   	            	grid3.resetData(result);
 	   	            }
 	          	  });
@@ -455,13 +444,9 @@ $(function () {
     $('#endBtn').click(function(){
     	 let makMat = grid3.getData(); 
     	let innerData = [];
-    	console.log($('#stDatei').val());
-    	console.log(makMat);
     	
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
-    		console.log(ele);
-    			
     	let insertData = {
     			"cnt": ele.makUsage,
     			"procCode":ele.matCode,
@@ -493,7 +478,6 @@ $(function () {
   	              xhr.setRequestHeader(header, token);
   	            },
     		success : function(result){
-    			console.log(result);
     			 let grid2Rows = grid2.getData();
     		    	grid2Rows.forEach(function(ele,i){
     		    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -523,7 +507,7 @@ $(function () {
     		    		url:"/ind/userList",
     		    		method : "GET",
     		    		success:function(result){
-    		    			console.log(result);
+    		    			
     		    			$('#useri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
@@ -551,7 +535,7 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
+    		    				
     		    				}
     		    				
     		    			})
@@ -597,7 +581,7 @@ $(function () {
     			"prodCnt":$('#prodCnti').val()
     	};
 
-		console.log(makFlow);
+		
     	//등록 아작스 시작
     	$.ajax({
     		url:"/ind/insertProcProd",
@@ -608,7 +592,7 @@ $(function () {
   	              xhr.setRequestHeader(header, token);
   	            },
     		success : function(result){
-    			console.log(result);
+    			
     			 let grid2Rows = grid2.getData();
     		    	grid2Rows.forEach(function(ele,i){
     		    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -632,7 +616,7 @@ $(function () {
     		    		url:"/ind/userList",
     		    		method : "GET",
     		    		success:function(result){
-    		    			console.log(result);
+    		    			
     		    			$('#useri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
@@ -660,7 +644,7 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				console.log(ele);
+    		    				
     		    				}
     		    				
     		    			})
@@ -701,7 +685,7 @@ $(function () {
 	    	grid3Rows.forEach(function(ele,i){
 	    		grid3.removeRow(grid3Rows[i].rowKey);
 	    	});
-    	console.log(modData);
+    	
     	 for(i=0;i<$('#useri').length;i++){
       		 if($('#useri option').eq(i).data('indicaCode')!=null){
       			if($('#procNamei').data('procCode')==$('#useri option').eq(i).data('procCode')&&$('#indNmi').data('indicaCode')==$('#useri option').eq(i).data('indicaCode')){
@@ -725,7 +709,7 @@ $(function () {
 	            },
 	          success : function(result){
 	        	grid2.textContent="";
-	            console.log(result);
+	            
 	            grid2.resetData(result);
 
 	          }

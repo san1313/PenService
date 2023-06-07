@@ -317,9 +317,9 @@ $(function () {
     	let planModalData = modal_grid.getRow(e.rowKey);
     	let planProdCode = modal_grid.getRow(e.rowKey).prodCode;
     	prodCode = planProdCode;
-    	console.log(planProdCode);
+    	
     	pdCode = modal_grid.getRow(e.rowKey).pdCode;
-    	console.log(planModalData);
+    	
   	  $('#matmodalbtn').modal('hide'); 
       $('#matmodalbtn').hide();
       $('.bd-example-modal-lg').hide();
@@ -423,12 +423,12 @@ $(function () {
     $('#delBtn').click(function(){
     	let makMat = grid3.getData();
     	let innerData = [];
-    	console.log($('#stDatei').val());
-    	console.log(makMat);
+    	
+    	
     	
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
-    		console.log(ele);
+    		
     		if(ele.procCode!=null){
     			
     	let insertData = {
@@ -439,7 +439,7 @@ $(function () {
     			"makBomCode" : ele.makBomCode,
     			"amount" : ele.amount
     	};
-    	console.log("그리드3 : "+ makMat[i]);
+    	
     	innerData.push(insertData);
     		}
     	});
@@ -456,7 +456,7 @@ $(function () {
   	              xhr.setRequestHeader(header, token);
   	            },
     		success : function(result){
-    			console.log(result);
+    			
     			 let grid2Rows = grid2.getData();
     		    	grid2Rows.forEach(function(ele,i){
     		    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -504,12 +504,11 @@ $(function () {
     $('#modBtn').click(function(){
     	let makMat = grid3.getData();
     	let innerData = [];
-    	console.log($('#stDatei').val());
-    	console.log(makMat);
+    	
     	
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
-    		console.log(ele);
+    		
     		if(ele.procCode!=null){
     			
     	let insertData = {
@@ -524,7 +523,7 @@ $(function () {
     			"reQnt" : ele.amount-ele.makUsage,
     			"makBomCode" : ele.makBomCode
     	};
-    	console.log("그리드3 : "+ makMat[i]);
+    	
     	innerData.push(insertData);
     		}
     	});
@@ -541,7 +540,7 @@ $(function () {
   	              xhr.setRequestHeader(header, token);
   	            },
     		success : function(result){
-    			console.log(result);
+    			
     			 let grid2Rows = grid2.getData();
     		    	grid2Rows.forEach(function(ele,i){
     		    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -594,14 +593,14 @@ $(function () {
             method : "GET",
             success : function(result){
           	  modal_grid.textContent="";
-          	  console.log(result);
+          	  
               modal_grid.resetData(result);
             }
           });     
        });	
     //등록버튼 클릭시 이벤트
 	$('#subBtn').click(function(){
-		console.log(pdCode);
+		
 		
 		if($('#indNmi').val()==''){
     		alert('지시명을 지정해주세요.');
@@ -620,13 +619,13 @@ $(function () {
     	let makFlow = grid2.getData();
     	let makMat = grid3.getData();
     	let innerData = [];
-    	console.log($('#stDatei').val());
+    	
     	
     	
      	//그리드2 반복
     	makFlow.forEach(function(ele,i){
-    		console.log(ele);
-    		console.log("그리드2 : "+makFlow);
+    		
+    		
     		let insertData = {
     				"makFlowStep" : makFlow[i].procOrder,
     				"procCode" : makFlow[i].procCode
@@ -636,7 +635,7 @@ $(function () {
     	
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
-    		console.log(ele);
+    		
     		if(ele.procCode!=null){
     			
     	let insertData = {
@@ -653,7 +652,7 @@ $(function () {
     			"prodCode" : prodCode,
     			"resultCode":ele.parentCode
     	};
-    	console.log("그리드3 : "+ makMat[i]);
+    	
     	innerData.push(insertData);
     		}
     	});
@@ -670,7 +669,7 @@ $(function () {
   	              xhr.setRequestHeader(header, token);
   	            },
     		success : function(result){
-    			console.log(result);
+    			
     			 let grid2Rows = grid2.getData();
     		    	grid2Rows.forEach(function(ele,i){
     		    		grid2.removeRow(grid2Rows[i].rowKey);
@@ -709,7 +708,7 @@ $(function () {
     	pdCode=modData.pdCode;
     	indicaCode=modData.indicaCode;
     	prodCode=modData.prodCode;
-    	console.log(indicaCode);
+    	
     	$('#subBtn').attr('disabled',true);
     	//수정버튼 활성화
     	if(modData.indicaState=="미작업"||modData.indicaState=="작업중"){
@@ -734,7 +733,7 @@ $(function () {
     	}
     	document.getElementById('clsDatei').max = modData.planClsdate;
     	document.getElementById('ordrQnti').max=modData.ordrQnt+modData.reQnt;
-    	console.log(modData);
+    	
     	
     	//검색버튼 숨기기
     	$('ion-icon[name="search"]').css('display','none');
@@ -749,7 +748,7 @@ $(function () {
 	          success : function(result){
 	        	grid2.textContent="";
 	        	grid3.textContent="";
-	            console.log(result);
+	            
 	            grid3.resetData(result);
 	            let limit = grid3.getData();
 	            //결과값 받아온 수량과 매칭해서 소모예정량 수정

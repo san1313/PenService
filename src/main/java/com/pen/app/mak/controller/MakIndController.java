@@ -57,7 +57,6 @@ public class MakIndController {
 	@RequestMapping(value = "/planFlow", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	List<MakVO> planFlow(@RequestParam String prodCode){
-		System.out.println("공정조회"+prodCode);
 		return service.planFlow(prodCode);
 	}
 	
@@ -70,14 +69,12 @@ public class MakIndController {
 	@RequestMapping("/getFlowList")
 	@ResponseBody
 	List<MakVO> getFlowList(@RequestBody IndicaListVO list){
-		System.out.println("넘겨받은 값 : "+list);
 		return service.getFlowList(list);
 	}
 	
 	@RequestMapping(value = "/insertIndica", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	String insertIndica(@RequestBody IndicaListVO list) {
-		System.out.println("등록 받아온 값 : "+list);
 		String result = service.insertIndica(list);
 			
 		return result;
@@ -86,14 +83,12 @@ public class MakIndController {
 	@RequestMapping(value = "/getIndicatedBom", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	List<MakVO> getIndicatedBom(@RequestParam String indicaCode) {
-		System.out.println("그리드 받아오는 값 : "+indicaCode);
 		return service.getIndicatedBom(indicaCode);
 	}
 	
 	@RequestMapping(value = "/updateIndica", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	String updateIndica(@RequestBody IndicaListVO list) {
-		System.out.println("등록 받아온 값 : "+list);
 		String result = service.updateIndica(list);
 			
 		return result;
@@ -102,7 +97,6 @@ public class MakIndController {
 	@RequestMapping(value = "/delIndica", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	String delIndica(@RequestBody IndicaListVO list) {
-		System.out.println("삭제 받아온 값 : "+list);
 		String result = service.delIndica(list);
 			
 		return result;
@@ -174,7 +168,6 @@ public class MakIndController {
 	@RequestMapping(value = "/updateProcProd", method= {RequestMethod.GET, RequestMethod.POST})
 	@ResponseBody
 	String updateProcProd(@RequestBody IndicaListVO list) {
-		System.out.println("삭제 받아온 값 : "+list);
 		String result = service.updateProcProd(list);
 			
 		return result;
