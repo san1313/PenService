@@ -20,4 +20,7 @@ public class FacConfirmVO {
 	String confirmday1; //점검일자1
 	String confirmday2; //점검일자2
 	
+	String searchDiv;
+	String searchName;
+	
 }	

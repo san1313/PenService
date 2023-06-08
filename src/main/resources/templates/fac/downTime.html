@@ -66,22 +66,22 @@
             <br><br>
             
             <div class="col-12">
-               <div class="col-8" style="margin:0 auto">
-                  <button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
+               <div class="col-5" style="margin:0 auto">
+                  <button class="w-30 btn btn-primary btn" id="register" type="submit">비가동시행</button>
                   <!-- <button class="w-30 btn btn-warning btn" id="update" type="button">수정</button> -->
                   <button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
-                  <button class="w-30 btn btn-success btn" id="reset" type="reset">초기화</button>
+                  <button class="w-30 btn btn-primary btn" id="reset" type="reset">초기화</button>
                </div>
             </div>
       </div>      
   <!-- 비가동종료 실행 -->
-		<div class = "col-6 fac_downTime"> 
-			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">비가동종료</button>
-			<br><br>
+		<div class = "col-6 fac_downTime">
+			<br><br><br> 						
 			<label for="downTime_end_day">종료일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		  	<input type="date" id="downTime_end_day">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;         
-            <label for="end_time">종료시간</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-			<input type="time" id="end_time">
+            <label for="end_time">종료시간</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<input type="time" id="end_time">&nbsp;&nbsp;&nbsp;		
+			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">비가동해제</button>
 		</div> 			                       
 </div>
 
@@ -108,20 +108,20 @@
     </div>
   </div>
 </div> 
-<div id = "hiddenDiv">
-</div>
+<div id = "hiddenDiv"></div>
 
 <hr>
 <!-- 가동여부확인
 <div class="col-lg-12" style="text-align:left">
 <form id="searchform">
 <label for="operation_check">가동여부</label>&nbsp;&nbsp;&nbsp;
- <input type="radio" id="A"name="operation_check" value="전체" checked> 전체 &nbsp;&nbsp;&nbsp;
- <input type="radio" id="Y"name="operation_check" value="가동" checked> 가동 &nbsp;&nbsp;&nbsp;
- <input type="radio" id="N" name="operation_check" value="비가동"> 비가동 &nbsp;&nbsp;&nbsp;
- <!--  <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>  		
+ <input type="radio" id="A"name="operation_check" value="A" checked> 전체 &nbsp;&nbsp;&nbsp;
+ <input type="radio" id="Y"name="operation_check" value="Y" > 가동 &nbsp;&nbsp;&nbsp;
+ <input type="radio" id="N" name="operation_check" value="N"> 비가동 &nbsp;&nbsp;&nbsp;	
 </form>
-</div> -->
+</div> 
+-->
+
 
 
  <!-- 비가동내역그리드화면 -->
@@ -186,7 +186,8 @@
           grid = new tui.Grid({
           el: document.getElementById('grid'),
           scrollX: false,
-          scrollY: false,
+     	 //scrollY: false,
+		  bodyHeight: 300,
           rowHeaders: ['rowNum'],
           columns: [
             {
@@ -242,7 +243,8 @@
           grid2 = new tui.Grid({
           el: document.getElementById('grid2'),
           scrollX: false,
-          scrollY: false,
+     	 //scrollY: false,
+		  bodyHeight: 200,
           rowHeaders: ['rowNum','checkbox'],
           columns: [
             {
@@ -252,11 +254,8 @@
             {
               header: '설비명',
               name: 'facName'
-            },
-            {
-              header: '가동여부',
-              name: 'operateCheck'
             }
+         
           ]
          })
  
@@ -294,27 +293,7 @@
          hidden.appendChild(hidInput);
          
       })      
-      
-       //점검기간 조회버튼
-        /* document.getElementById('submitbtn').addEventListener('click',function(){
-          	
-      		$.ajax({
-         		 url : "/fac/confirmdaysSearchAjax",
-         	     method : "GET",
-         	    data: $('#searchform').serialize(),       
-         	     dataType : "JSON",
-         	     success : function(result){
-         	    	 console.log(result)
-         	    	grid.resetData(result);
-         	    	grid.refreshLayout();	
-         	     },
-         	     error: function(reject){
-         	    	 console.log(reject)
-           }
-         }); 
-         })        
-    */  
-         
+               
       //초기화버튼 이벤트
       $("#reset").on('click',function(){
          //$('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
@@ -345,6 +324,8 @@
               $('#emp_num').val(dblclickRows.empNum);//담당자
               $('#downTime_start_day').val(dblclickRows.downTimeStartDay); //시작날
               $('#start_time').val(dblclickRows.startTime.substr(3)); //시작시간
+              $('#downTime_end_day').val(dblclickRows.downTimeEndDay); //종료날
+              $('#end_time').val(dblclickRows.endTime.substr(3)); //종료시간
                             
               //$('#confirm_category').val(dblclickRows.confirmCategory); //점검구분 -라디오버튼
               //$('input[name="confirm_category"]:checked').val(dblclickRows.confirmCategory);

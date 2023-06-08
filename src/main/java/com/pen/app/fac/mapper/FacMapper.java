@@ -4,7 +4,7 @@ import java.util.List;
 
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
-import com.pen.app.fac.vo.FacDownTimeListVO;
+
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -39,7 +39,7 @@ public interface FacMapper {
    public int downTimeDelete(FacDownTimeVO vo); //비가동삭제
    public int downTimeUpdate(FacDownTimeVO vo); //비가동수정
    
-	/* int insertDownFac(FacInfoVO vo); */
+
    
    
    

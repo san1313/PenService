@@ -9,7 +9,6 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
-import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
