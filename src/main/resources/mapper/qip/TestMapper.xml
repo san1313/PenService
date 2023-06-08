@@ -80,11 +80,11 @@ FROM (
 	       cnt,
 	       prdt_unit,
 	       to_char(prdt_date, 'yyyy-mm-dd'),
+	       'prod',
 	       ( SELECT proc_name
 	         FROM com_code_proc
 	         WHERE proc_code = mak_proc_prod.proc_code
-	       ),
-	       'prod'
+	       )
 	FROM mak_prdt
 	JOIN mak_proc_prod USING ( prcs_code )
 	WHERE qip_code_list_prod IS NULL

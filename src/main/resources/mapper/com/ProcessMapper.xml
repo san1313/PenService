@@ -13,7 +13,7 @@
 	
 	<!-- 공정 리스트 받아오기 -->
 	<select id="getProcList" resultType="ProcessVO">
-		SELECT * FROM COM_CODE_PROC ORDER BY TO_NUMBER(SUBSTR(PROC_CODE, 5))
+		SELECT * FROM COM_CODE_PROC ORDER BY TO_NUMBER(SUBSTR(PROC_CODE, 5)) DESC
 	</select>
 	
 	<!-- 공정 구분으로 리스트 조회 -->
@@ -47,8 +47,8 @@
         separator=" ">
     INTO COM_CODE_PROC VALUES (
           GET_PROC_SEQ,
-          #{vo.procType},
           #{vo.procName},
+          #{vo.procType},
           #{vo.procDetail}
     )
     </foreach>

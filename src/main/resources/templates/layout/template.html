@@ -268,7 +268,7 @@
                       <p>자재 출고 조회</p>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <li class="nav-item" sec:authorize="hasAnyAuthority('총관리자','자재팀장')">
                     <a href="/mat/matadjust" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>자재 조정 관리</p>
@@ -286,7 +286,7 @@
                       <p>자재 폐기 내역</p>
                     </a>
                   </li>
-                  <li class="nav-item">
+                  <!-- <li class="nav-item" sec:authorize="hasAnyAuthority('총관리자','자재팀장')">
                     <a href="/mat/matoptionhold" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>자재 홀드 관리</p>
@@ -297,7 +297,7 @@
                       <i class="far fa-circle nav-icon"></i>
                       <p>자재 홀드 조회</p>
                     </a>
-                  </li>
+                  </li> -->
                 </ul>
               </li>
               <!-- 자재 메뉴 끝 -->
@@ -354,7 +354,7 @@
                   </p>
                 </a>
                 <ul class="nav nav-treeview">
-                  <li class="nav-item">
+                  <li class="nav-item" sec:authorize="hasAnyAuthority('총관리자','설비팀장')">
                     <a href="/fac/equipment" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>설비 정보 관리</p>
