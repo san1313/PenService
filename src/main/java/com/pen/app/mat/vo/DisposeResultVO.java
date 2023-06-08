@@ -39,4 +39,5 @@ public class DisposeResultVO {//폐기처리결과
 	String matWrhst; //상태
 	int bmatQnt; //처리 전 재고량
 	String vo;
+	String empId;
 }

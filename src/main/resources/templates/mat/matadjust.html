@@ -32,7 +32,9 @@
     #matadjustgrid{
      display:none;
     }
-
+    .ordersearch label{
+    margin-left: 50px;
+    }
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
@@ -61,9 +63,9 @@
       <label>LOT번호</label>
       <input class="text1" type="text" id="matlot" name="matLot">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
-      <input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>    
-    </div>
+      </div>
     </form>
+      <input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>    
 
 
     <!-- 자재명모달 -->
@@ -131,7 +133,7 @@
         });
     
     
-    $.ajax({
+/*     $.ajax({
         url : "/mat/matadjustlotlist",
         method : "GET",
         dataType : "JSON",
@@ -140,7 +142,7 @@
         	lotadjustgride.resetData(result);
         	lotadjustgride.refreshLayout();
         }
-      });
+      }); */
 	
        
     
@@ -240,9 +242,7 @@
     
    //조회버튼
    $("#submitbtn").on('click',function(){
-
 	   
-	   $("#matmodalmatname").val("");
 	   $.ajax({
 		 url: "/mat/matadjustsearch",
 		 method: "GET",

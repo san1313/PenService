@@ -27,6 +27,7 @@ public interface MatService {
 	public String getmatordercode();//발주코드
 	public void getmatregister(List<OrderVO> list); //발주등록
 	public List<OrderVO> gettodaymatregister(); //당일발주등록리스트
+	public List<OrderVO> getorderlistmodal(); //발주리스트모달
 	public List<OrderVO> getordlistsearchmodal(OrderVO vo); //발주리스트모달다중검색
 	public void getordmodify(MatOrdVO list); //발주수정
 	public void getdeleteord(MatOrdVO list); //발주삭제

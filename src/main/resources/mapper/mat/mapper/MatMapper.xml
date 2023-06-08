@@ -112,21 +112,22 @@
 	<select id="getordlistsearchmodal" resultType="OrderVO">
 		select a.mat_ordernum,
 		b.mat_dtaordcode,
-		a.acc_code,
 		a.mat_ordername,
 		b.mat_code,
 		b.mat_name,
+		a.acc_code,
 		a.mat_orderdate,
 		b.mat_reqdate,
 		a.mat_charger,
 		b.mat_untpc,
 		b.mat_order_qy,
-		b.mat_totamt,
-		c.acc_name
+		b.mat_totamt
 		from mat_order_header a
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
-		join com_code_account c on(a.acc_code = c.acc_code)
-		<where>
+		where not exists(
+        				select * from qip_list_mat c 
+        				where b.mat_dtaordcode = c.mat_dtaordcode)
+		
 			<if test="matName != null and matName != '' ">
 				and	b.mat_name like '%'|| #{matName} || '%'
 			</if>
@@ -140,8 +141,28 @@
 		and TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
 		</if>
-		</where>
-		order by 1 a.mat_ordernum desc
+		
+		order by a.mat_ordernum desc
+	</select>
+	
+	<!--발주수정 검사전 리스트 -->
+	<select id="getorderlistmodal" resultType="OrderVO">
+	select a.mat_ordernum,
+		b.mat_dtaordcode,
+		a.mat_ordername,
+		b.mat_code,
+		b.mat_name,
+		a.acc_code,
+		a.mat_orderdate,
+		b.mat_reqdate,
+		a.mat_charger,
+		b.mat_untpc,
+		b.mat_order_qy,
+		b.mat_totamt
+		from mat_order_header a
+		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
+        where not exists(
+        select * from qip_list_mat c where b.mat_dtaordcode = c.mat_dtaordcode)
 	</select>
 
 	<!-- 발주수정 -->
@@ -481,37 +502,60 @@
 
 	<!-- 조정조회리스트 -->
 	<select id="getallmatadjustlist" resultType="AdjustVO">
-		select distinct b.mat_lot,
-						b.mat_name,
-						b.mat_code,
-						(b.mat_qnt + a.mat_mdatqnt) as bmatQnt,
-						b.mat_qnt,
-						a.mat_mdatqnt,
-						a.mat_mdev,
-						a.mat_mdatdate,
-						a.mat_mdatresn
-				from mat_mdat a
-			join mat_invntry b on(a.mat_lot = b.mat_lot)
-			join mat_wrhousng c on(b.mat_lot = c.mat_lot)
-        where trunc(a.mat_mdatdate) between sysdate-7 and sysdate
-		order by a.mat_mdatdate desc
+		SELECT DISTINCT
+    b.mat_lot,
+    b.mat_name,
+    b.mat_code,
+    ( b.mat_qnt - a.mat_mdatqnt ) AS bmatqnt,
+    b.mat_qnt,
+    a.mat_mdatqnt,
+    a.mat_mdev,
+    a.mat_mdatdate,
+    a.mat_mdatresn
+FROM
+         mat_mdat a
+    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
+WHERE
+    trunc(a.mat_mdatdate) BETWEEN sysdate - 7 AND sysdate
+    AND a.mat_mdev = '입고'
+UNION ALL
+SELECT DISTINCT
+    b.mat_lot,
+    b.mat_name,
+    b.mat_code,
+    ( b.mat_qnt + a.mat_mdatqnt ) AS bmatqnt,
+    b.mat_qnt,
+    a.mat_mdatqnt,
+    a.mat_mdev,
+    a.mat_mdatdate,
+    a.mat_mdatresn
+FROM
+         mat_mdat a
+    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
+WHERE
+    trunc(a.mat_mdatdate) BETWEEN sysdate - 7 AND sysdate
+    AND a.mat_mdev = '출고'
+ORDER BY
+    mat_mdatdate DESC
 	</select>
 
 	<!-- 자재조정리스트 다중검색 -->
 	<select id="getmatadjustsearchlist" resultType="AdjustVO">
-		select distinct b.mat_lot,
-						b.mat_name,
-						b.mat_code,
-						(b.mat_qnt + a.mat_mdatqnt) as bmatQnt,
-						b.mat_qnt,
-						a.mat_mdatqnt,
-						a.mat_mdev,
-						a.mat_mdatdate,
-						a.mat_mdatresn
-				from mat_mdat a
-			join mat_invntry b on(a.mat_lot = b.mat_lot)
-		join mat_wrhousng c on(b.mat_lot = c.mat_lot)
+		SELECT DISTINCT
+    b.mat_lot,
+    b.mat_name,
+    b.mat_code,
+    ( b.mat_qnt - a.mat_mdatqnt ) AS bmatqnt,
+    b.mat_qnt,
+    a.mat_mdatqnt,
+    a.mat_mdev,
+    a.mat_mdatdate,
+    a.mat_mdatresn
+FROM
+         mat_mdat a
+    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
 		<where>
+		a.mat_mdev = '입고'
 			<if test="matLot != null and matLot != ''">
 				and b.mat_lot like '%'|| #{matLot} || '%'
 			</if>
@@ -529,7 +573,40 @@
           ]]>
 		</if>
 		</where>
-		order by a.mat_mdatdate desc
+		union all
+				SELECT DISTINCT
+    b.mat_lot,
+    b.mat_name,
+    b.mat_code,
+    ( b.mat_qnt + a.mat_mdatqnt ) AS bmatqnt,
+    b.mat_qnt,
+    a.mat_mdatqnt,
+    a.mat_mdev,
+    a.mat_mdatdate,
+    a.mat_mdatresn
+FROM
+         mat_mdat a
+    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
+		<where>
+		a.mat_mdev = '출고'
+			<if test="matLot != null and matLot != ''">
+				and b.mat_lot like '%'|| #{matLot} || '%'
+			</if>
+			<if test="matMdev != null and matMdev != ''">
+				and a.mat_mdev = #{matMdev}
+			</if>
+			<if test="matMdatdate != null and matMdatdate != ''">
+		         <![CDATA[
+		         and TRUNC(mat_mdatdate) >= TO_DATE(#{matMdatdate}, 'YYYY-MM-DD') 
+		         ]]>
+			</if>
+		<if test="matMdatdate1 != null and matMdatdate1 != ''">
+          <![CDATA[
+        and TRUNC(mat_mdatdate) <= TO_DATE(#{matMdatdate1}, 'YYYY-MM-DD')
+          ]]>
+		</if>
+		</where>
+		order by mat_mdatdate desc
 	</select>
 
 	<!-- 폐기자재리스트 -->
@@ -544,7 +621,8 @@
 			   b.MAT_CHKEEPDATE,
 			   a.mat_state
 			from mat_invntry a
-		join mat_dsuse b on(a.mat_lot = b.mat_lot)
+		join (select * from mat_dsuse where MAT_STA_QNT>0) b on(a.mat_lot = b.mat_lot)
+		where not exists (select * from mat_mdat where MAT_DSNUM =  b. mat_dsnum)
 		order by b.MAT_CHKEEPDATE desc
 	</select>
 
@@ -561,8 +639,8 @@
 			   b.MAT_CHKEEPDATE,
 			   a.mat_state
 			from mat_invntry a
-		join mat_dsuse b on(a.mat_lot = b.mat_lot)
-		<where>
+		join (select * from mat_dsuse where MAT_STA_QNT>0) b on(a.mat_lot = b.mat_lot)
+		where not exists (select * from mat_mdat where MAT_DSNUM =  b. mat_dsnum)
 			<if test="matLot != null and matLot != ''">
 				and a.mat_lot like '%'|| #{matLot} || '%'
 			</if>
@@ -576,7 +654,6 @@
         and TRUNC(MAT_CHKEEPDATE) <= TO_DATE(#{matChkeepdate1}, 'YYYY-MM-DD')
         	]]>
 		</if>
-		</where>
 		order by b.MAT_CHKEEPDATE desc
 	</select>
 
@@ -587,7 +664,11 @@
 		#{matMdev, mode=IN, jdbcType=VARCHAR},
 		#{matMdatresn, mode=IN, jdbcType=VARCHAR},
 		#{matMdatqnt, mode=IN, jdbcType=VARCHAR},
-		#{matQnt, mode=IN, jdbcType=VARCHAR}
+		#{matQnt, mode=IN, jdbcType=VARCHAR},
+		#{matStaQnt, mode=IN, jdbcType=VARCHAR},
+		#{empId, mode=IN, jdbcType=VARCHAR},
+		#{matTestQnt, mode=IN, jdbcType=VARCHAR},
+		#{matDsnum, mode=IN, jdbcType=VARCHAR}
 		)}
 	</select>
 
