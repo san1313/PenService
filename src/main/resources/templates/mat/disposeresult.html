@@ -67,7 +67,8 @@
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
 	</form>
-	<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul">결과반영</button>
+	<input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>  
+	<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul" >결과반영</button>
 	<div id="grid"></div>
 	
 	
@@ -114,6 +115,11 @@
         {
         header: '변경보관기한',
         name: 'matChkeepdate'
+        },
+        {
+        header: '사원번호',
+        name: 'empId',
+        hidden: true
         }
         ]
         });
@@ -154,13 +160,12 @@
    $("#resul").on('click', function(){
 	   let checked = grid.getCheckedRows();
 	   console.log(checked)
-	   window.open('/mat/matadjustlist')
-	   
+	   checked[0].empId = $('#empId').val();
 	   
 	   $.ajax({
 	  		url : "/mat/disposeresultlistresu",
 	  		method : "POST",
-	  		data : JSON.stringify(grid.getCheckedRows()),
+	  		data : JSON.stringify(checked),
 	  		beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);
 	          },
@@ -168,13 +173,27 @@
 	  		contentType: "application/json",
 	  		success : function(result3){
 	  			console.log(result3);
+	  			//grid.resetData(result3);
+				// grid.refreshLayout();
+	  			 location.href='/mat/matadjustlist';
 	  		},
 	  		error: function(reject){
 	  			console.log(reject)
 	  		}
 	         
-	  	});    	 
-	  	 	
+	  	});
+	   
+	   $.ajax({
+	        url : "/mat/disposeresultlist",
+	        method : "GET",
+	        dataType : "JSON",
+	        success : function(result){
+	        	console.log(result);
+	        	grid.resetData(result);
+	        	grid.refreshLayout();
+	        }
+	      });
+
    })
    
  

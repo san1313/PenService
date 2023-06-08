@@ -39,12 +39,18 @@
 	float:right;
 	}
     .text1 {
-      margin: 15px;
       padding: 0 5px 0 0;
     }
     
     #ckgrid{
      margin-top: 30px;
+    }
+    .ordersearch label{
+    margin-left: 10px;
+    padding: 5px;
+    }
+    .ordersearch button{
+    height:38px;
     }
 
   </style>
@@ -67,18 +73,48 @@
   
   <div layout:fragment="content">
     <div class="ordersearch">
-      <label>거래처명</label>
-      <input class="text1" type="text" id="accmodalname" readonly	>
+    <div class="row" style ="margin:15px 0 15px 0;">
+         <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="accmodalname">거래처명</label>
+      </div>
+      <div class="row col-2">
+      <div class="col-9">
+      <input class="text1 form-control" type="text" id="accmodalname" readonly	>
       <input class="text1" type="hidden" id="accmodalcode" readonly	>
+      </div>
+      <div class="col-3">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#accmodal"></button>
-      <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly	>
+      </div>
+      </div>
+         <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="matmodalmatname">자재명</label>
+      </div>
+      <div class="row col-2">
+      <div class="col-9">
+      <input class="text1 form-control" type="text" id="matmodalmatname" readonly	>
       <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      </div>
+      <div class="col-3">
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
-      <label>발주일자</label>
-      <input class="text1" type="date" id="matOrderdate1"> ~ 
-      <input class="text1" type="date" id="matOrderdate2">
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+      </div>
+     </div>
+        <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="matOrderdate1">발주일자</label>
+      </div>
+     <div class=" row col-5">
+     <div class="row col-5">
+     <div class="col-11">
+      <input class="text1 form-control" type="date" id="matOrderdate1"></div>
+      <div class="col-1"> ~</div>
+      </div>
+      <div class="col-5">
+      <input class="text1 form-control" type="date" id="matOrderdate2">
+      </div>
+      <div class="col-2">      
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
+      </div> 
+      </div>
+      </div>
     </div>
 
     <!-- 자재명모달 -->

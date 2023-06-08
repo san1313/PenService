@@ -96,6 +96,14 @@ public class MatController {
 		 return list;
 	 }
 	 
+	 //자재발주리스트모달
+	 @RequestMapping("/orderlistmodal")
+	 @ResponseBody
+	 public List<OrderVO> orderlistmodal(){
+		 List<OrderVO> list = matservice.getorderlistmodal();
+		 return list;
+	 }
+	 
 	 //자재발주리스트모달다중검색
 	 @RequestMapping("/ordlistsearchmodal")
 	 @ResponseBody

@@ -71,6 +71,12 @@ public class MatServiceimpl implements MatService {
 	}
 	
 	@Override
+	public List<OrderVO> getorderlistmodal() {
+		// 수정발주리스트모달
+		return matmapper.getorderlistmodal();
+	}
+	
+	@Override
 	public List<OrderVO> getordlistsearchmodal(OrderVO vo) {
 		// 발주등록리스트모달다중검색
 		return matmapper.getordlistsearchmodal(vo);
@@ -271,6 +277,8 @@ public class MatServiceimpl implements MatService {
 		//임의해제 다중검색
 		return matmapper.getmatoptionholdsearchlist(vo);
 	}
+
+	
 
 	
 

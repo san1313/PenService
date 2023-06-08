@@ -73,6 +73,12 @@
   	margin-top:15px;
   	height:38px;
   	}
+  	#modiford{
+  	margin-right:10px;
+  	}
+  	#ordmodal{
+  	margin:10px 0 0;
+  	}
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -216,9 +222,9 @@
             <input class="text1" type="date" name="matOrderdate" id="matOrderdate"> ~
             <input class="text1" type="date" id="matOrderdate1" name="matOrderdate1">
             <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ordck">조회</button>
-            <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="modiford">수정</button>
-              <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="delord">삭제</button>
+             <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+              <button class="btn btn-success" type="button" id="modiford">수정</button>
+              <button class="btn btn-danger" type="button" id="delord">삭제</button>
             </div>
             </form>
             <div id="ordmodal">
@@ -562,7 +568,7 @@
 
       //발주목록모달
       $.ajax({
-        url: "/mat/orderlistajax",
+        url: "/mat/orderlistmodal",
         method: "GET",
         dataType: "JSON",
         success: function (result) {
