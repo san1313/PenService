@@ -48,7 +48,12 @@ text-align:center;
 .tui-grid-cell.cell-red{
 background-color : #ffe4e4;
 }
-
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -66,17 +71,17 @@ background-color : #ffe4e4;
 	<form id="searchform">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input type="text" id="productlist-text"
+	제품명 <input class="form-control" type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prodName" readonly>
-		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	계약코드 <input type="text" id="contCodeList-text"
+	계약코드 <input class="form-control" type="text" id="contCodeList-text"
 				style="background-color: #e2e1e1" name="contCode" readonly>
-		 <button type="button" id="contCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-contCode-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="contCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-contCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input type="date" id="contDetRelease-text" name="contDetRelease"> - <input type="date" id="contDetRelease1-text" name="contDetRelease1">
+	납기일자 <input class="form-control" type="date" id="contDetRelease-text" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease1-text" name="contDetRelease1">
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;"type="button" id="releaseList"class="btn btn-primary">조회</button>
@@ -88,17 +93,17 @@ background-color : #ffe4e4;
 	<form id="searchform1" style="display:none">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input type="text" id="productlist-text1"
+	제품명 <input class="form-control" type="text" id="productlist-text1"
 				style="background-color: #e2e1e1" name="prodName" readonly>
-		 <button type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	주문코드 <input type="text" id="ordCode-text"
+	주문코드 <input class="form-control" type="text" id="ordCode-text"
 				style="background-color: #e2e1e1" name="ordCode" readonly>
-		 <button type="button" id="ordCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-ordCode-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="ordCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-ordCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input type="date" id="ordDetRelease-text" name="ordDueDate"> - <input type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	납기일자 <input class="form-control" type="date" id="ordDetRelease-text" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease1-text" name="ordDueDate1">
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button  type="button" style="width:80px; margin-right:10px;" id="releaseList1" class="btn btn-primary">조회</button>

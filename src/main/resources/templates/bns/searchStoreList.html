@@ -44,6 +44,12 @@
 .modal-content{
 text-align:center;
 }
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -55,18 +61,18 @@ text-align:center;
 	<form id="searchform">
 	<div class="row">
 	<div class="col-3">
-	제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1" name="prdtNm" readonly>
-		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+	제품명 <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:230px;" name="prdtNm" readonly>
+		 <button style="height:38px; margin-bottom : 3px;"type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class="col-3">
-		완제품LOT <input type="text" id="lotlist-text"
+		완제품LOT <input class="form-control" type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
-		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
+		<button style="height:38px; margin-bottom : 3px;"type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>				
 	<div class="col-3">
-	입고일자 <input type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
+	입고일자 <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
 	</div>
 	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
