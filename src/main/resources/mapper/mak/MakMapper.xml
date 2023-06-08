@@ -152,7 +152,7 @@
 		       plan_qnt    = #{planQnt},
 		       priority    = #{priority},
 		       plan_sdate  = to_date(#{planSdate},'YYYY-MM-DD'),
-		       plan_clsdate= to_date(#{planClsdate},'YYYY-MM-DD'),
+		       plan_clsdate= to_date(#{planClsdate},'YYYY-MM-DD')
 		 where pd_code=#{pdCode}
 	</update>
 

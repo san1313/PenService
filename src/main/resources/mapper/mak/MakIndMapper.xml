@@ -315,7 +315,7 @@ SELECT
     indica_code,
     proc_name,
     indica_state,
-    ordr_qnt,
+    ordr_qnt ordr_qnt,
     mak_flow_step,
     ordr_qnt - nvl(re_qnt, 0) re_qnt
 FROM
