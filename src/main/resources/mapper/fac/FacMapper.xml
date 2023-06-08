@@ -106,6 +106,13 @@
 		 WHERE fac_code = #{facCode}
 	</update>
 
+	<!-- 설비상태수정 -->
+	<update id="facOperateState" parameterType="FacDownTimeVO">
+		UPDATE fac_info
+		   SET operate_check =#{operateCheck}		      
+		 WHERE fac_code = #{facCode}
+	</update>
+	
 	<!-- 점검수정 -->
 	<update id="confirmUpdate" parameterType="FacConfirmVO">
 		UPDATE fac_confirm
@@ -116,15 +123,19 @@
 		 WHERE confirm_code = #{confirmCode}	   	   
 	</update>
 	
-	<!-- 비가동수정
-	<update id="downTimeUpdate" parameterType="FacDownTimeVO">
+	
+	
+	<!-- 비가동수정-->	
+	<update id="downTimeUpdate" parameterType="FacDownTimeListVO">
 		UPDATE fac_downTime
 		   SET downtime_reason = #{downTimeReason},
 		   	   reason_explain=#{reasonExplain},
-		   	   DOWNTIME_START_DAY=to_date(#{downtimeStartDay},'YYYY-MM-DD'),
-		   	   START_TIME=to_date(#{startTime},'PM HH24:MI')
-		 WHERE DOWNTIME_CODE=#{downtimeCode} 	   
-	</update> -->	
+		   	   DOWNTIME_START_DAY=to_date(#{downTimeStartDay},'YYYY-MM-DD'),
+		   	   START_TIME=to_date(#{startTime},'HH24:MI'),
+		   	   DOWNTIME_END_DAY=to_date(#{downTimeEndDay},'YYYY-MM-DD'),
+		   	   END_TIME=to_date(#{endTime},'HH24:MI')
+		 WHERE DOWNTIME_CODE=#{downTimeCode} 	   
+	</update> 
 	
 	<!-- 설비삭제 -->
 	<delete id="facDelete" parameterType="FacInfoVO">
@@ -187,7 +198,7 @@
 	<!-- 점검기간 조회 -->
 	<select id="confirmdaysSearchAjax" resultType="FacConfirmVO">
 		SELECT  a.confirm_code,
-				to_char(confirm_date,'yyyy-MM-dd') confirm_Date,
+				to_char(confirm_date,'YYYY-MM-DD') confirm_Date,
 				b.fac_name,
 				a.action_history,
 				a.confirm_category,
@@ -196,14 +207,29 @@
 				a.emp_num		
 		   FROM FAC_CONFIRM a
 		   JOIN FAC_INFO b on a.fac_code=b.fac_code
-		  WHERE confirm_date 
-		BETWEEN to_date(#{confirmday1},'YYYY-MM-DD')
-		    AND to_date(#{confirmday2},'YYYY-MM-DD')		        
+		   <where>
+		   <if test="facName != null and facName != ''">
+		   and b.fac_name like '%'|| #{facName} || '%'
+		   </if>
+		   <if test="confirmCode != null and confirmCode != ''">
+          and a.confirm_code=#{confirmCode}
+          </if>
+          <if test="empNum != null and empNum != ''">
+          and a.emp_num =#{empNum}
+          </if>
+          <if test="confirmday1 != null and confirmday1 != ''">
+			and BETWEEN to_date(#{confirmday1} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="confirmday2 != null and confirmday2 != ''">
+		    AND to_date(#{confirmday2} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+		    </if>		        
+		   </where>
 	</select>
 
 	<!--비가동전체조회 -->
 	<select id="getDownTimeList" resultType="FacDownTimeVO">
 		SELECT a.downtime_code,
+			   b.fac_code,
 			   b.fac_name ,
 		 	   a.downtime_reason ,
 			   a.reason_explain ,
@@ -215,9 +241,9 @@
 			   a.emp_num
 		  FROM FAC_DOWNTIME a
 		  JOIN FAC_INFO b
-		 USING (fac_code)
-		 WHERE downtime_start_day is not null 
-		   AND downtime_end_day is null or operate_check = 'N'
+		    ON (a.fac_code = b.fac_code)
+		 <!--  WHERE downtime_start_day is not null 
+		   AND downtime_end_day is null or operate_check = 'N' -->
 	  ORDER BY a.downtime_code   
 	</select>
 	

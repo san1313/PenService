@@ -207,7 +207,7 @@ text-align:center;
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">담당자명
 								</label> <input type="text" id="contempname" class="form-control"
-									name="empName" th:value="${#authentication.principal.username}"
+									name="empName" th:value="${#authentication.principal.empName}"
 									readonly>
 							</div>
 							<input type="hidden" th:value="${userVO.empNum}" id="contempnum"

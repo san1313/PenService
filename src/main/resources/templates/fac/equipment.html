@@ -6,7 +6,9 @@
 <meta charset="UTF-8" />
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    
 <title>PenServiceMES</title>
+
 <style>
 @media screen and (max-width: 600px) {
 	 .search-container {
@@ -26,18 +28,17 @@
 </style>
 
  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
- 
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
-
-<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script> <!-- 모달 -->
+<!--<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha3/dist/js/bootstrap.bundle.min.js"></script>  모달 -->
 </head>
 
 <body>
-<!----------설비등록시작--------->
-<div layout:fragment="title">설비정보관리</div>
+<div layout:fragment="title">
+		<h1>설비정보관리</h1>
+</div>
 
 <!--메인 콘텐츠 -->
 	<div layout:fragment="content">
@@ -80,14 +81,14 @@
 						<button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
 						<button class="w-30 btn btn-warning btn" id="update" type="button">수정</button>
 						<button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
-						<button class="w-30 btn btn-success btn" id="reset" type="reset">초기화</button>
+						<button class="w-30 btn btn-primary btn" id="reset" type="reset">초기화</button>
 					</div>
 				</div>
 	</div>
 		<!-- 공정추가창 -->
 		<div class = "col-4 proc_search"> 
 			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">공정추가</button>
-			<button style="float:right; margin-right: 5px;" id="selecProgDelete">삭제</button>
+			<button type="button" class="w-20 btn btn-danger btn" style="float:right; margin-right: 5px;" id="selecProgDelete">공정삭제</button>
 			
 			<!-- 선택된공정모달그리드창 -->
 			<div id="Progaddgrid"></div>
@@ -129,7 +130,7 @@
   	 </select>
   	<input type="text" id="searchName">
   	<button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
-  	<button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>
+  	<!-- <button class="btn btn-primary" type="button" id="facInitBtn">초기화</button> -->
   
  <!-- 설비목록그리드화면 -->
  <div id="grid"></div>
@@ -147,10 +148,11 @@
     $(function(){  
     		
     		//조건검색기능초기화 버튼이벤트
-    		$('#facInitBtn').on("click", function(e){
+    		/*$('#facInitBtn').on("click", function(e){
     			$('[name="searchDiv"]').val("");
-    			$('#searchName').val("");
+    			$('#searchName').val('');
     		})
+    		*/
     		
     		//조건검색돋보기 버튼이벤트 
     		$('#facBtn').on("click",function(e){
@@ -160,6 +162,8 @@
     			//if (searchDiv != '' && searchName )
     			let data = { searchDiv, searchName }
     			facListSearch(data);
+    			$('[name="searchDiv"]').val('');
+    			$("#searchName").val('');
     		})
 		
 		    //설비목록리스트그리드

@@ -329,6 +329,12 @@ public class BnsController {
 		      model.addAttribute("userVO", user);
 		  return "bns/searchStoreList";
 		   }  
+@ResponseBody
+@GetMapping("/searchStoreListAjax")
+public List<BnsStoreVO> searchStoreListAjax(){
+	List<BnsStoreVO> list = bnsService.getSearchStoreList();
+	return list;
+}
 
 //출고내역 조회페이지
 @GetMapping("/searchReleaseList")
