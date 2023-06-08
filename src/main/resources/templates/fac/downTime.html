@@ -27,23 +27,23 @@
 <div class= "row col-12" style="text-align:left">
    <div class = "col-6 fac_downTime">
    				
-   			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    			<input type="text" id="fac_code" readonly hidden style="width:120px; height:30px;" >
             <input type="text" id="fac_name" readonly placeholder="조회 후 등록" style="width:120px; height:30px;" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;
             <br>
 
-            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
-            <label for="downTime_code" >비가동코드&nbsp;&nbsp;&nbsp;
+            <label for="downTime_code">비가동코드&nbsp;&nbsp;&nbsp;
             <input type="text" id="downTime_code" placeholder="REST" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
   
          	<br>   	               
-          	<label for="downTime_reason">비가동사유</label>&nbsp;
+          	&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="downTime_reason">비가동사유</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <select name="downTime_reason" id="downTime_reason" style="width:120px; height:30px;" >
               		 <option value="선택" selected="selected">---선택---</option>
                		 <option value="점검">점검</option>
@@ -57,7 +57,7 @@
             </label>
             
            <br>
-            <label for="downTime_start_day">시작일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="downTime_start_day">시작일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 		  	<input type="date" id="downTime_start_day">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
             
             <label for="start_time">시작시간</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
@@ -66,7 +66,7 @@
             <br><br>
             
             <div class="col-12">
-               <div class="col-5" style="margin:0 auto">
+               <div class="col-4" style="margin:0 auto">
                   <button class="w-30 btn btn-primary btn" id="register" type="submit">비가동시행</button>
                   <!-- <button class="w-30 btn btn-warning btn" id="update" type="button">수정</button> -->
                   <button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
@@ -405,7 +405,7 @@
               xhr.setRequestHeader(header, token);
            },
       success: function (result){
-         alert('비가동 수정 완료');
+         alert('비가동 해제 완료');
          
          $.ajax({
                url : "/fac/downTimeListAjax",
@@ -456,6 +456,7 @@
                   method : "GET",
                  dataType : "JSON", //키:값 형식으로 가져온다.
                   success : function(result2){
+                	  alert('비가동시행 완료');
                    grid.resetData(result2);
                    grid.refreshLayout();
                   }
