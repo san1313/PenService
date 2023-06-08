@@ -25,6 +25,12 @@ public interface BnsMapper {
 	void delOrdList(List<BnsOrdVO> list);// 주문서 삭제
 	BnsOrdVO getOrdCode();//주문코드 조회
 	
+	
+	List<BnsContVO> getcontCodesList();// 모달창 제품리스트 조회
+	List<BnsContVO> getcontCodesKeyList(String keyword);
+	List<BnsOrdVO> getordCodesList();// 모달창 제품리스트 조회
+	List<BnsOrdVO> getordCodesKeyList(String keyword);
+	
 	//계약서
 	List<BnsContVO> getContList(); //계약서 전체 조회
 	List<BnsContVO> getContListCon(BnsContVO vo); //계약서 조건 조회

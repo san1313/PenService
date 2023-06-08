@@ -67,6 +67,7 @@ text-align:center;
 	 </div>
 	 <div class="col-5 row justify-content-end" style="padding-bottom:10px;">
 	 <button style="width:90px; margin-right:10px;"type="button" id="searchStoreList"class="btn btn-primary">조회</button>
+	 <button style="width:90px; margin-right:10px; "type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 	<button type="button"  id="storeRegBtn" class="btn btn-primary">전량입고</button>
 	</div>
 	</div>
@@ -387,6 +388,33 @@ text-align:center;
 	    		}
 	    	});
 	    })
+	    
+	    //초기화 버튼 클릭 시
+		$('#pageReset').on('click',function(){
+			
+			 $.ajax({
+					url : "/bns/beforeStoreListAjax",
+					method : "GET",
+					success : function(result){
+						beforeStoreGrid.resetData(result);
+					},
+					error: function(reject){
+						console.log(reject);
+					}
+				});
+			 $.ajax({
+					url : "/bns/afterStoreListAjax",
+					method : "GET",
+					dataType : "JSON",
+					success : function(result){
+						afterStoreGrid.resetData(result);
+					}
+				});
+			
+		})
+	    
+	    
+	    
 	});
 	</script>
 	</div>

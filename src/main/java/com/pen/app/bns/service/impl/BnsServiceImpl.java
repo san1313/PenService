@@ -224,4 +224,23 @@ public class BnsServiceImpl implements BnsService {
 			public List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo) {
 				return mapper.getreleaseSearchListCon(vo);
 			}
+		
+		@Override
+			public List<BnsContVO> getcontCodesKeyList(String keyword) {
+				return mapper.getcontCodesKeyList(keyword);
+			}
+		
+		@Override
+			public List<BnsContVO> getcontCodesList() {
+				return mapper.getcontCodesList();
+			}
+		@Override
+			public List<BnsOrdVO> getordCodesList() {
+				return mapper.getordCodesList();
+			}
+		
+		@Override
+			public List<BnsOrdVO> getordCodesKeyList(String keyword) {
+				return mapper.getordCodesKeyList(keyword);
+			}
 }
