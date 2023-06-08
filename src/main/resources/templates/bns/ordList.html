@@ -79,6 +79,10 @@ display:inline-block;
 	</div>
 
 	<div layout:fragment="content">
+	<div class="row justify-content-end" style="margin:0 2px 8px 0;">
+	<button style=" width:200px; height:40px;" type="button" class="btn btn-primary " data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서 등록</button>
+	<button style=" width:200px; height:40px; margin-left:10px;" id="BtnOrdCancle" class="btn btn btn-danger">주문서 취소</button>
+	</div>
 	<form id="searchform">
 	<div class="formInput" style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
      <div class="row">
@@ -112,16 +116,9 @@ display:inline-block;
 		</div>		
 	</div>
 	</form>
+		 
 		
-		<div class="ordbtn" style="padding-bottom:10px;">
-			<button type="button" class="btn btn-primary "
-				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
-				등록</button>
-			<button id="BtnOrdCancle" class="btn btn btn-danger">주문서
-				취소</button>
-		</div>
 
-		<br>
 
 		<!------------------------------ 본문 모달 ------------------------------------->
 		<!-- 거래처리스트 모달 -->
