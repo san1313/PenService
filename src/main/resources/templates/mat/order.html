@@ -688,7 +688,7 @@
                 });
 
         		$.ajax({
-                url: "/mat/orderlistajax",
+                url: "/mat/orderlistmodal",
                 method: "GET",
                 dataType: "JSON",
                 success: function (result) {
@@ -697,9 +697,6 @@
                   ordmodal.refreshLayout();
                 }
               });
-          //  let app = result4;
-            //ordmodal.appendRows(app);
-            //onsole.log(result4);
 
           },error : function(reject){
         	  console.log(reject);
@@ -707,7 +704,7 @@
 
         });
     	
-    	          ordmodal.refreshLayout();
+    	ordmodal.refreshLayout();
      })
      
 
@@ -738,7 +735,7 @@
                    });
 
            		$.ajax({
-                   url: "/mat/orderlistajax",
+                   url: "/mat/orderlistmodal",
                    method: "GET",
                    dataType: "JSON",
                    success: function (result) {
@@ -747,9 +744,6 @@
                      ordmodal.refreshLayout();
                    }
                  });
-               //let app = result4;
-               //ordmodal.appendRows(app);
-               //onsole.log(result4);
 
              },error : function(reject){
            	  console.log(reject);
@@ -847,6 +841,16 @@
         });
         grid.removeCheckedRows(false);
 
+        $.ajax({
+            url: "/mat/orderlistmodal",
+            method: "GET",
+            dataType: "JSON",
+            success: function (result) {
+              console.log(result);
+              ordmodal.resetData(result);
+              ordmodal.refreshLayout();
+            }
+          });
       })
 
 

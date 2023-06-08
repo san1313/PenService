@@ -203,7 +203,7 @@
 		from mat_order_header a
 		join mat_order b on (a.mat_ordernum=b.mat_ordernum)
 		WHERE trunc(a.mat_orderdate) between sysdate-7 and sysdate
-		order by a.mat_ordernum desc
+		order by b.mat_dtaordcode desc
 	</select>
 
 	<!-- 발주등록 다중검색 조회 -->
@@ -242,7 +242,7 @@
 		]]>
 		</if>
 		</where>
-		order by a.mat_ordernum desc
+		order by b.mat_dtaordcode desc
 		
 	</select>
 
