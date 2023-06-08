@@ -96,9 +96,8 @@
 		<foreach collection="list" item="vo"
 			close="SELECT * FROM DUAL" separator=" ">
 			into bns_order_detail
-			values('bns_ord_det_'||LPAD(get_ord_det_seq,3,'0'),'bns_ord_'||LPAD(ord_seq.currval,
-			3,
-			'0'),#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice},'접수완료')
+			values('bns_ord_det_'||LPAD(get_ord_det_seq,3,'0'),'bns_ord_'||LPAD(ord_seq.currval,3,'0'),
+			#{vo.prodCode},#{vo.prodName},#{vo.ordDetPrice},#{vo.ordDetQuan},#{vo.ordDetTotPrice},'접수완료')
 		</foreach>
 	</insert>
 
