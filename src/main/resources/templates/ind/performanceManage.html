@@ -298,7 +298,7 @@ $(function () {
     		    		}
     		    	})
     //공정 그리드 설정
-     grid2.on("dblclick",function(e){
+     grid2.on("click",function(e){
     	let planProcData = grid2.getRow(e.rowKey);
     	minQnt=0;
     	miniQnt=100000;
@@ -336,6 +336,10 @@ $(function () {
 	   	            success : function(resolve){
 	   	            	let result = [];
 	   	            	resolve.forEach(function(ele,i){
+	   	            		
+	   	            		
+	   	            	})
+	   	            	resolve.forEach(function(ele,i){
 	   	            		 if(ele.facName==null) {
 	   	            			 if(ele.matName==null){
 	   	            				 ele.prodName=ele.semiName;
@@ -343,7 +347,8 @@ $(function () {
 	   	            			 }else{
 	   	            				 ele.prodName=ele.matName;
 								result.push(ele);
-	   	            			 }
+	   	            			 };
+	   	            			 
 							 }else{
 								let options = document.createElement("option");
 								options.setAttribute('name',ele.facCode);
@@ -660,7 +665,7 @@ $(function () {
 	});
     //등록버튼 끝
     
-    grid.on('dblclick',function(e){
+    grid.on('click',function(e){
     	modData = grid.getRow(e.rowKey);
     	prdtNm=modData.prodName;
     	pdCode=modData.pdCode;
@@ -708,7 +713,13 @@ $(function () {
 	            },
 	          success : function(result){
 	        	grid2.textContent="";
-	            
+	        	let def=0;
+	            result.forEach(function(ele,idx){
+	            	def+=ele.testTnumDef;
+	            	if(ele.makFlowStep>1){
+	            		ele.reQnt=ele.reQnt-def;
+	            	}
+	            });
 	            grid2.resetData(result);
 
 	          }
