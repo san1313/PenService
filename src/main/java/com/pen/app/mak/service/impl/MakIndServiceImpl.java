@@ -68,8 +68,19 @@ public class MakIndServiceImpl implements MakIndService{
 	//필요자재 조회
 	@Override
 	public List<MakVO> planFlow(String prodCode) {
-
-		return mapper.planFlow(prodCode);
+		List<MakVO> result =mapper.planFlow(prodCode);
+		for (MakVO vo : result) {
+			for (MakVO innervo : result) {
+				if(vo.getParentCode()!=null) {
+				if(vo.getParentCode().equals(innervo.getBomProdCode())) {
+					if(innervo.getBomMatUsage()>0) {
+					vo.setBomMatUsage(vo.getBomMatUsage()*innervo.getBomMatUsage());
+					}
+				}
+				}
+			}
+		}
+		return result;
 	}
 
 
@@ -109,11 +120,23 @@ public class MakIndServiceImpl implements MakIndService{
 				step.put(vo.getProcCode(),seq);
 				step.put(seq, vo.getMakFlowStep());
 			}else if(vo.getAmount()>0) {
-				System.err.println(step);
-				System.err.println(vo);
-				System.err.println(vo.getProcCode());
 				vo.setMakFlowCode(step.get(vo.getProcCode()));
 				vo.setMakStep(step.get(vo.getMakFlowCode()));
+				
+				for (MakVO innervo : list.getList()) {
+					if(innervo.getAmount()>0) {
+						if(innervo.getBomProdCode()!=null||vo.getResultCode()!=null) {
+						if(vo.getResultCode().equals(innervo.getBomProdCode())) {
+							if(innervo.getBomMatUsage()>0) {
+								System.err.println(vo.getBomMatUsage());
+								System.err.println(innervo.getBomMatUsage());
+							vo.setBomMatUsage(Math.round(vo.getBomMatUsage()/innervo.getBomMatUsage()));
+							}
+							}
+						}
+					}
+				};
+				
 				k+=mapper.insertBOM(vo);
 			};
 		};
@@ -270,11 +293,33 @@ public class MakIndServiceImpl implements MakIndService{
 		if(list.getList().get(0).getProdCode().substring(0,4).equals("SEMI")) {
 			i+=mapper.insertProcSemiHold(list.getList().get(0));
 		};
-		mapper.updateProcProd(list.getList().get(0));
+		//홀드테이블 해당 자재 조회 및 list에 손보기
+		List<MakVO> remain = mapper.getIndMakHold(list.getList().get(0).getIndicaCode());
 		for (MakVO vo : list.getList()) {
-			i+=mapper.updateIndMakHold(vo);
-			i+=mapper.insertMatDlivy(vo);
+			
+			for (MakVO innerVo : remain) {
+				if(innerVo.getMatCode().equals(vo.getMatCode())) {
+					if(innerVo.getCnt()>=vo.getCnt()) {
+					vo.setMatLot(innerVo.getMatLot());
+					vo.setRscCode(innerVo.getRscCode());
+					i+=mapper.updateIndMakHold(vo);
+					i+=mapper.insertMatDlivy(vo);
+					}else {
+						i+=mapper.updateIndMakHold(innerVo);
+						vo.setCnt(vo.getCnt()-innerVo.getCnt());
+						innerVo.setEmpNum(vo.getEmpNum());
+						innerVo.setMatName(vo.getMatName());
+						i+=mapper.insertMatDlivy(innerVo);
+					}
+					
+				}
+			}
+			
 		};
+		
+		//홀드랑 출고내역 업데이트
+		mapper.updateProcProd(list.getList().get(0));
+		
 		
 		if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
 			//완제품에 생산품 넣기
