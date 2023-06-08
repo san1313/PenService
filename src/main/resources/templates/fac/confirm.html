@@ -14,7 +14,7 @@
 float:left;
 }
 #grid{
-margin: 80px 0 ;
+margin: 60px 0 ;
 }
 </style>
 
@@ -31,18 +31,18 @@ margin: 80px 0 ;
 <body>
 <div layout:fragment="title">설비점검관리</div>
 
-<!-- 메인콘텐츠 -->
+<!-- 메인 콘텐츠 -->
    <div layout:fragment="content">
    
 <div class="fac_confirm" style="text-align:left">
    <div class = "col-12 fac_confirm">
    				
-   			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   			<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
-            <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <label for="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;담당자&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">
             </label>	
      	 	<br>
@@ -79,12 +79,12 @@ margin: 80px 0 ;
            	
             <br><br>
             
-            <div class="col-12">
-               <div class="col-8" style="margin:0 auto">
+            <div class="col-12" >
+               <div class="col-4" style="margin:0 auto">
                   <button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
                   <button class="w-30 btn btn-warning btn" id="update" type="button">수정</button>
                   <button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
-                  <button class="w-30 btn btn-success btn" id="reset" type="reset">초기화</button>
+                  <button class="w-30 btn btn-primary btn" id="reset" type="reset">초기화</button>
                </div>
             </div>
    </div>
@@ -120,26 +120,26 @@ margin: 80px 0 ;
 <hr>
 <!---점검검색시작-->
 <form id="searchform">
-<div class="ser">
+	<div class="ser">
   	 <select name = "searchDiv">
   	 	<option value="" selected="selected">---선택---</option>
   	 	<option value="fac_name">설비명</option>
- 	 	<option value="fac_code">설비코드</option>
+ 	 	<option value="fac_code">점검코드</option>
   		<option value="emp_num">담당자</option>
   	 </select>
-  	<input type="text" id="searchName">
+  	<input type="text" id="searchName" name="searchName">
   	<!--  <button type="button" id="facBtn" class="btn btn-primary fa-solid fa-magnifying-glass"></button>-->
   	<!--  <button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>-->
 
 <!-- 기간별 검색시작 -->
-<label>점검기간</label>
-  <input class="text1" type="date" id="confirmday1" name = "confirmday1"> ~
-  <input class="text1" type="date" id="confirmday2" name = "confirmday2">
-  <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    		
-</div>
+	<label>점검기간</label>
+  		<input class="text1" type="date" id="confirmday1" name = "confirmday1"> ~
+  		<input class="text1" type="date" id="confirmday2" name = "confirmday2">
+  		<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn"></button>    		
+	</div>
 </form>
  <!-- 점검내역그리드화면 -->
- <div id="grid"></div>
+ 	<div id="grid"></div>
       
  
     <script>
@@ -181,29 +181,39 @@ margin: 80px 0 ;
 		})
     	
 		 //조건검색+점검기간 조회버튼 이벤트
-         document.getElementById('submitbtn').addEventListener('click',function(){
-        	
-        	let data = { searchDiv, searchName ,confirmday1, confirmday2 }
-        	facConfirmListSearch(data);
-        	$('[name="searchDiv"]').val('');
-			$("#searchName").val('');
-        	 
-      		$.ajax({
-         		 url : "/fac/confirmdaysSearchAjax",
-         	     method : "GET",
-         	    data: $('#searchform').serialize(),       
-         	     dataType : "JSON",
-         	     success : function(result){
-         	    	 console.log(result)
-         	    	grid.resetData(result);
-         	    	grid.refreshLayout();	
-         	     },
-         	     error: function(reject){
-         	    	 console.log(reject)
-           		}
-         	}); 
-         })        
+         //document.getElementById('submitbtn').addEventListener('click',function(){
+        	$('#submitbtn').on("click", function(e){
+        		let searchDiv = $('[name="searchDiv"]').val();
+    			let searchName = $('#searchName').val();
+    			let confirmday1 = $('#confirmday1').val();
+    			let confirmday2 = $('#confirmday2').val();
+    			
+        		let data = { searchDiv, searchName ,confirmday1, confirmday2 }
+	        	//facConfirmListSearch(data);
+	        	$('[name="searchDiv"]').val('');
+				$("#searchName").val('');
+				$("#confirmday1").val('');
+				$("#confirmday2").val('');
+				
+				$.ajax({
+	        		 url : "/fac/confirmdaysSearchAjax",
+	        	     method : "GET",
+	        	    data: data,       
+	        	     dataType : "JSON",
+	        	     success : function(result){
+	        	    	 console.log(result)
+	        	    	grid.resetData(result);
+	        	    	grid.refreshLayout();	
+	        	     },
+	        	     error: function(reject){
+	        	    	 console.log(reject)
+	          		}
+	        	}); 
+        	})
+            	 
       
+                
+    
   
           //점검목록리스트그리드
           function facConfirmListSearch(data){
@@ -223,21 +233,21 @@ margin: 80px 0 ;
           grid = new tui.Grid({
           el: document.getElementById('grid'),
           scrollX: false,
-          scrollY: false,
+     	 //scrollY: false,
+		  bodyHeight: 300,
           rowHeaders: ['rowNum'],
-          bodyHeight : 250,
           columns: [
             {
               header: '점검코드',
               name: 'confirmCode'
-            },
-            {
-              header: '점검일자',
-              name: 'confirmDate'
-            },
+            },     
             {
               header: '설비명',
               name: 'facName'
+            },  
+            {
+              header: '점검일자',
+              name: 'confirmDate'
             },
             {
               header: '점검구분',
@@ -268,7 +278,8 @@ margin: 80px 0 ;
           grid2 = new tui.Grid({
           el: document.getElementById('grid2'),
           scrollX: false,
-          scrollY: false,
+     	 //scrollY: false,
+		  bodyHeight: 150,
           rowHeaders: ['rowNum','checkbox'],
           columns: [
             {

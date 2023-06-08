@@ -18,4 +18,6 @@ public class FacDownTimeVO {
 	String facName;// 설비명
 	
 	String operateCheck; //가동여부
+	
+
 }

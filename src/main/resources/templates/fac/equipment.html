@@ -42,42 +42,43 @@
 
 <!--메인 콘텐츠 -->
 	<div layout:fragment="content">
-	
+		
 <div class = "row col-12" style="text-align:left">
 	<div class = "col-8 fac_register">
-				<label for="fac_code">설비코드</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp; 
+				<label for="fac_code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비코드</label>&nbsp;&nbsp;&nbsp;
+				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<label for="fac_name">설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+				<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
 
-				<label for="operate_check" id="operate_checked">가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<label for="operate_check" id="operate_checked">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;가동여부</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
 				<input type="radio" name="operate_check" value="Y" checked> 가동&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="radio" name="operate_check" value="N"> 비가동
 				<br>
-				<label for="install_date">입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-				<input type="date" id="install_date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+				<label for="maker_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;제조업체</label>&nbsp;&nbsp;&nbsp;
+				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 
-				<label for="emp_num">담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-				<input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label for="emp_num">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;담당자</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<label for="maker_name">제조업체</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
-				<input type="text"id="maker_name">&nbsp;&nbsp;&nbsp;&nbsp; 
+				<label for="install_date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;입고일자</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="date" id="install_date">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
+ 
 				<br>
-				<label for="temp_min">최저온도(℃)</label>
-				<input type="text" id="temp_min"size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label for="temp_min">최저온도(℃)</label>&nbsp;&nbsp;&nbsp;
+				<input type="text" id="temp_min" size=20 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<label for="temp_max">최고온도(℃)</label>
-				<input type="text" id="temp_max" size=13 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<label for="temp_max">최고온도(℃)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="temp_max" size=20 maxlength=3>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
-				<label for="check_cycle">점검주기(일)</label>&nbsp;&nbsp;
-				<input type="text" id="check_cycle">
+				<label for="check_cycle">점검주기(일)</label>&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text" id="check_cycle" size=11.5 maxlength=3>
 				
 				<br>
 				<br>
 				
 				<div class="col-12">
-					<div class="col-8" style="margin:0 auto">
+					<div class="col-4" style="margin:0 auto">
 						<button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
 						<button class="w-30 btn btn-warning btn" id="update" type="button">수정</button>
 						<button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
@@ -86,12 +87,14 @@
 				</div>
 	</div>
 		<!-- 공정추가창 -->
-		<div class = "col-4 proc_search"> 
-			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">공정추가</button>
-			<button type="button" class="w-20 btn btn-danger btn" style="float:right; margin-right: 5px;" id="selecProgDelete">공정삭제</button>
-			
+		<div class = "col-4 proc_search">
+			<label>공정설정</label>&nbsp;&nbsp;
 			<!-- 선택된공정모달그리드창 -->
-			<div id="Progaddgrid"></div>
+			<button type="button" id="procCodemodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm">추가</button>
+			<button type="button" class="w-20 btn btn-danger btn"  id="selecProgDelete">삭제</button>
+			<div id="Progaddgrid"></div>		
+			
+			
 		</div> 			
 </div>
 <hr>
@@ -129,7 +132,8 @@
   		<option value="emp_num">담당자</option>
   	 </select>
   	<input type="text" id="searchName">
-  	<button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
+  	 <button type="button" id="facBtn" class="btn btn-primary"><i class="fa fa-search"></i></button>
+
   	<!-- <button class="btn btn-primary" type="button" id="facInitBtn">초기화</button> -->
   
  <!-- 설비목록그리드화면 -->
@@ -186,7 +190,8 @@
 		   var grid = new tui.Grid({
 		    el: document.getElementById('grid'),
 		    scrollX: false,
-		    scrollY: false,
+		    //scrollY: false,	 
+			bodyHeight: 300,
 		    rowHeaders: ['rowNum'],
 		    columns: [
 		      {
@@ -233,7 +238,8 @@
 		     Progaddgrid = new tui.Grid({
 			 el: document.getElementById('Progaddgrid'),
 			 scrollX: false,
-			 scrollY: false,
+			 //scrollY: false,
+			 bodyHeight: 100,
 			 rowHeaders: [
                  {
                    type: 'rowNum'
@@ -258,8 +264,10 @@
 		    grid2 = new tui.Grid({
 		    el: document.getElementById('grid2'),
 		    scrollX: false,
-		    scrollY: false,
+		    //scrollY: false,
+		    bodyHeight: 200,
 		    rowHeaders: ['rowNum','checkbox'],
+		    
 		    columns: [
 		      {
 		        header: '공정코드',
@@ -331,6 +339,7 @@
    	//초기화버튼 이벤트
    	$("#reset").on('click',function(){
    		$('div input').not("input[name=operate_check],#emp_num").val('');
+   		
    	});
   
   
