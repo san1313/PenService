@@ -580,7 +580,19 @@
 
       $(function () {
         $('#ordlistmodal').on('shown.bs.modal', function () {
-          ordmodal.refreshLayout();
+          
+            $.ajax({
+                url: "/mat/orderlistmodal",
+                method: "GET",
+                dataType: "JSON",
+                success: function (result) {
+                  console.log(result);
+                  ordmodal.resetData(result);
+                  ordmodal.refreshLayout();
+                }
+              });
+        	
+          
         })
       })
 
@@ -841,16 +853,7 @@
         });
         grid.removeCheckedRows(false);
 
-        $.ajax({
-            url: "/mat/orderlistmodal",
-            method: "GET",
-            dataType: "JSON",
-            success: function (result) {
-              console.log(result);
-              ordmodal.resetData(result);
-              ordmodal.refreshLayout();
-            }
-          });
+        
       })
 
 
