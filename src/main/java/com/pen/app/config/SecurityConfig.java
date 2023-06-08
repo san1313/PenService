@@ -33,11 +33,19 @@ public class SecurityConfig {
 	requests
 	.antMatchers("/logout", "/login").permitAll()
 	.antMatchers("/admin/**").hasAuthority("총관리자")
-	.antMatchers("/bns/**").hasAnyAuthority("총관리자", "영업팀장", "영업팀 사원")
-	.antMatchers("/mat/**").hasAnyAuthority("총관리자", "자재팀장", "자재팀 사원")
-	.antMatchers("/mak/**", "/ind/**").hasAnyAuthority("총관리자", "생산팀장", "생산팀 사원")
-	.antMatchers("/fac/**").hasAnyAuthority("총관리자", "설비팀장", "설비팀 사원")
-	.antMatchers("/qip/**").hasAnyAuthority("총관리자", "품질팀장", "품질팀 사원")
+	
+	.antMatchers("/bns/**").hasAnyAuthority("영업팀장","총관리자", "영업팀 사원")
+	
+	.antMatchers("/mat/matadjust", "/mat/matoptionhold").hasAnyAuthority("자재팀장","총관리자")
+	.antMatchers("/mat/**").hasAnyAuthority("자재팀장", "자재팀 사원","총관리자")
+	
+	.antMatchers("/mak/**", "/ind/**").hasAnyAuthority("생산팀장", "생산팀 사원","총관리자")
+	
+	.antMatchers("/fac/equipment").hasAnyAuthority("설비팀장","총관리자")
+	.antMatchers("/fac/**").hasAnyAuthority("설비팀장", "설비팀 사원","총관리자")
+	
+	.antMatchers("/qip/testCodeManage", "/qip/testPerItemManage").hasAnyAuthority("품질팀장","총관리자")
+	.antMatchers("/qip/**").hasAnyAuthority("품질팀장", "품질팀 사원","총관리자")
 	.anyRequest().authenticated())
 	.formLogin(login->
 		login.loginPage("/login")
