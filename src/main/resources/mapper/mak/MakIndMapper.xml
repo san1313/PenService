@@ -82,7 +82,7 @@ select pd_code, plan_qnt-sum(ordr_qnt) re_qnt  from mak_plan_detail join mak_ind
 
 <select id="planFlow" parameterType="string" resultType="MakVO">
 	select * 
-		from com_proc_flow a join com_code_proc b using(proc_code)
+		from com_code_proc
 			right outer join (
 				select * 
 					from(SELECT 
@@ -212,6 +212,7 @@ insert into mak_bom(mak_bom_code,
                     amount,
                     plan_indica,
                     mak_flow_code,
+                    bom_mat_usage,
                     result_code) values(
                                         mak_bom_seq.nextval,
                                         #{makStep},
@@ -219,6 +220,7 @@ insert into mak_bom(mak_bom_code,
                                         #{amount},
                                         'MAK-IND-'||(select last_number-1 from user_sequences where sequence_name='MAK_INDICA_SEQ'),
                                         #{makFlowCode},
+                                        #{bomMatUsage},
                                         #{resultCode}
                                         )
 </update>
@@ -303,7 +305,7 @@ select * from com_code_prod where prod_name like ('%'||#{prodName}||'%')
 </select>
 
 <select id="perfIndList" resultType="MakVO">
-select prod_code, indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date, to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state, pd_code,prod_code,prod_name from mak_indica join com_code_prod using(prod_code)
+select prod_code, indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date, to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state, pd_code,prod_code,prod_name from mak_indica join com_code_prod using(prod_code) order by indica_code desc 
 </select>
 
 <select id="oerfProcList" resultType="MakVO" parameterType="string">
@@ -411,7 +413,18 @@ ORDER BY
 
 <select id="getAllProcMat" resultType="MakVO" parameterType="MakVO">
 SELECT
-    amount / ordr_qnt                bom_mat_usage,
+    bom_mat_usage,
+    proc_code,
+    SUM(cnt) cnt,
+    mat_code,
+    mat_name,
+    semi_name,
+    ordr_qnt,
+    result_code
+FROM
+	(
+SELECT
+    bom_mat_usage,
     proc_code,
     cnt,
     mat_code,
@@ -449,6 +462,15 @@ WHERE
         mat_code = a.prod_code
     AND indica_code = #{indicaCode}
     AND proc_code = #{procCode}
+      )
+GROUP BY
+    bom_mat_usage,
+    proc_code,
+    mat_code,
+    mat_name,
+    semi_name,
+    ordr_qnt,
+    result_code
 </select>
 <select id="getProcFac" resultType="MakVO" parameterType="string">
          SELECT
@@ -701,7 +723,7 @@ GROUP BY
  </select>
  
  <select id="getProcProdInfo" parameterType="MakVO" resultType="MakVO">
-SELECT
+SELECT DISTINCT
     prcs_code,
     indica_code,
     fac_code,
@@ -711,28 +733,30 @@ SELECT
     to_char(prcs_fr_date, 'YYYY-MM-DD HH24:MI:SS') prcs_fr_date,
     to_char(prcs_fl_date, 'YYYY-MM-DD HH24:MI:SS') prcs_fl_date,
     prcs_state,
-    rsc_code,
+    a.rsc_code,
+    fac_name,
     re_qnt,
-    FAC_NAME,
-    B.EMP_NAME||' - '||A.EMP_NUM EMP_NUM 
+    b.emp_name
+    || ' - '
+    || a.emp_num                                   emp_num
 FROM
          mak_proc_prod a
+    JOIN com_info_emp b ON a.emp_num = b.emp_num
+    JOIN mak_hold     c USING ( indica_code )
+    JOIN com_code_proc USING ( proc_code )
     JOIN (
         SELECT
+            SUM(test_tnum_def) re_qnt,
             indica_code,
-            ordr_qnt - SUM(prod_cnt) re_qnt
+            proc_name
         FROM
-                 mak_proc_prod
-            JOIN mak_indica USING ( indica_code )
-        WHERE
-                indica_code = #{indicaCode}
-            AND proc_code = #{procCode}
+            qip_list_prod
         GROUP BY
-            ordr_qnt,
-            indica_code
-    ) USING ( indica_code )
+            indica_code,
+            proc_name
+    ) USING ( indica_code,
+              proc_name )
     JOIN fac_info USING ( fac_code )
-    JOIN com_info_emp b ON a.emp_num = b.emp_num
 WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}

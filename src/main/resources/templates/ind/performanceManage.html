@@ -449,19 +449,18 @@ $(function () {
     	makMat.forEach(function(ele,i){
     	let insertData = {
     			"cnt": ele.makUsage,
-    			"procCode":ele.matCode,
     			"matLot":ele.matLot,
     			"prodCode" : ele.resultCode,
     			"makBomCode" : ele.makBomCode,
     			"empNum" : $('#useri option:selected').attr('name'),
     			"indicaCode":$('#indNmi').data('indicaCode'),
     			"procCode":$('#procNamei').data('procCode'),
-    			"rscCode" : ele.rscCode,
     			"prodCnt" : $('#prodCnti').val(),
     			"prodName" : ele.prodName,
     			"matCode":ele.matCode,
     			"matName" : ele.prodName,
-    			"prdtNm" : prdtNm
+    			"prdtNm" : prdtNm,
+    			"resultCode" : ele.parentCode
     	};
     	innerData.push(insertData);
     	});
