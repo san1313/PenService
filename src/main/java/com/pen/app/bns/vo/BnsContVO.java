@@ -19,7 +19,6 @@ public class BnsContVO {
 	String empNum;
 	String contStartDate;
 	String empName;
-	
 	String contDetCode;
 	String prodCode;
 	String prodName;

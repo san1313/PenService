@@ -103,6 +103,37 @@ public class BnsController {
 		return list;
 	}
 	
+	//계약코드 리스트
+		@ResponseBody
+		@GetMapping("/contCodesList")
+		public List<BnsContVO> contCodeList() {
+			List<BnsContVO> list = bnsService.getcontCodesList();
+			
+			return list;
+		}
+		//계약코드 조건 검색
+		@RequestMapping("/contCodesKeyList")
+		@ResponseBody
+		public List<BnsContVO> contCodesKeyList(@RequestParam String result){
+			List<BnsContVO> list = bnsService.getcontCodesKeyList(result);
+			return list;
+		}
+		//주문코드 리스트
+				@ResponseBody
+				@GetMapping("/ordCodesList")
+				public List<BnsOrdVO> ordCodeList() {
+					List<BnsOrdVO> list = bnsService.getordCodesList();
+					
+					return list;
+				}
+				//계약코드 조건 검색
+				@RequestMapping("/ordCodesKeyList")
+				@ResponseBody
+				public List<BnsOrdVO> ordCodesKeyList(@RequestParam String result){
+					List<BnsOrdVO> list = bnsService.getordCodesKeyList(result);
+					return list;
+				}
+	
 	//주문서 수정 모달창 안의 제품리스트
 	@ResponseBody
 	@GetMapping("/prodListModAjax")

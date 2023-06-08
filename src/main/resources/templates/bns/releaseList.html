@@ -44,6 +44,16 @@
 .modal-content{
 text-align:center;
 }
+
+.tui-grid-cell.cell-red{
+background-color : #ffe4e4;
+}
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -55,21 +65,27 @@ text-align:center;
 	<h5 id="nowOrd" class="font-weight-bold" style="display: none">주문건 출고대기현황</h5>
 	<input type="radio" name="type" id="contractBtn" value="contract" checked> <label for="contractBtn">계약서</label>
 	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> <label for="orderBtn">주문서</label>
+	<!-- <span style="float:right; margin-right:30px;" >납기기한이 5일이내 일 경우 : 빨간색</span> -->
 	
 	<!-- 계약건 조건검색폼 -->
 	<form id="searchform">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input type="text" id="productlist-text"
+	제품명 <input class="form-control" type="text" id="productlist-text"
 				style="background-color: #e2e1e1" name="prodName" readonly>
-		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input type="date" id="contDetRelease-text" name="contDetRelease"> - <input type="date" id="contDetRelease1-text" name="contDetRelease1">
+	계약코드 <input class="form-control" type="text" id="contCodeList-text"
+				style="background-color: #e2e1e1" name="contCode" readonly>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="contCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-contCode-modal-lg"></button>
 	</div>
-	<div class= "col-6 row justify-content-end" style="padding-bottom:10px;">
+	<div class= "col-3">
+	납기일자 <input class="form-control" type="date" id="contDetRelease-text" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease1-text" name="contDetRelease1">
+	</div>
+	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;"type="button" id="releaseList"class="btn btn-primary">조회</button>
-	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
+	<button style="width:80px;" type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
@@ -77,16 +93,21 @@ text-align:center;
 	<form id="searchform1" style="display:none">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input type="text" id="productlist-text1"
+	제품명 <input class="form-control" type="text" id="productlist-text1"
 				style="background-color: #e2e1e1" name="prodName" readonly>
-		 <button type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input type="date" id="ordDetRelease-text" name="ordDueDate"> - <input type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	주문코드 <input class="form-control" type="text" id="ordCode-text"
+				style="background-color: #e2e1e1" name="ordCode" readonly>
+		 <button style="height:38px;margin-bottom:3px" type="button" id="ordCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-ordCode-modal-lg"></button>
 	</div>
-	<div class= "col-6 row justify-content-end" style="padding-bottom:10px;">
+	<div class= "col-3">
+	납기일자 <input class="form-control" type="date" id="ordDetRelease-text" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	</div>
+	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button  type="button" style="width:80px; margin-right:10px;" id="releaseList1" class="btn btn-primary">조회</button>
-	<button style="width:80px;" type="button"  id="storeRegBtn" class="btn btn-primary">초기화</button>
+	<button style="width:80px;" type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
@@ -153,6 +174,60 @@ text-align:center;
 			</div>
 		</div>
 		<!-- 제품명 모달1 끝 -->
+		<!-- 계약코드 모달 -->
+	<div class="modal fade bd-contCode-modal-lg" id="contCodeListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="p-3 modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle"></h1>
+					<p>
+						<label>계약코드</label> <input id="searchcontCode-text" type="text">
+						<button type="button" id="searchcontCode"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="contCodeGrid"></div>
+					<div class="modalbtn">
+						<button type="button" class="btn btn-primary" id="modalsubmit3" data-toggle="modal"
+							data-target=".bd-contCode-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 계약코드 모달 끝 -->
+		<!-- 주문코드 모달 -->
+	<div class="modal fade bd-ordCode-modal-lg" id="ordCodeListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="p-3 modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle"></h1>
+					<p>
+						<label>주문코드</label> <input id="searchordCode-text" type="text">
+						<button type="button" id="searchordCode"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="ordCodeGrid"></div>
+					<div class="modalbtn">
+						<button type="button" class="btn btn-primary" id="modalsubmit4" data-toggle="modal"
+							data-target=".bd-ordCode-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 주문코드 모달 끝 -->
 	
 	
 	
@@ -168,8 +243,26 @@ text-align:center;
 				dataType : "JSON",
 				success : function(result){
 					beforeReleaseContGrid.resetData(result);
+					//현재날짜
+					beforeReleaseContGrid.getData().forEach((ele, index)=>{
+					 let today = new Date(); 
+					 let releaseDay = new Date(ele.contDetRelease);
+					 let diffDay = releaseDay.getTime() - today.getTime();
+					 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+					 console.log(diffDays)
+					 	if(diffDays<=5){
+						beforeReleaseContGrid.addCellClassName(index,'contDetCode','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'contCode','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'accName','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'prodCode','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'prodName','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'contDetQuan','cell-red');
+						beforeReleaseContGrid.addCellClassName(index,'contDetRelease','cell-red');
+					 	}
+					})
 				}
 			});
+		
 	 var beforeReleaseContGrid = new tui.Grid({
 		 bodyHeight : 200,
 	     el: document.getElementById('beforeReleaseContGrid'),
@@ -225,6 +318,23 @@ text-align:center;
 			dataType : "JSON",
 			success : function(result){
 				beforeReleaseOrdGrid.resetData(result);
+				
+				beforeReleaseOrdGrid.getData().forEach((ele, index)=>{
+					 let today = new Date(); 
+					 let releaseDay = new Date(ele.ordDueDate);
+					 let diffDay = releaseDay.getTime() - today.getTime();
+					 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+					 console.log(diffDays)
+					 	if(diffDays<=5){
+					 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetCode','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'ordCode','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'accName','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'prodCode','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'prodName','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetQuan','cell-red');
+					 		beforeReleaseOrdGrid.addCellClassName(index,'ordDueDate','cell-red');
+					 	}
+					})
 			}
 		});
 	var beforeReleaseOrdGrid = new tui.Grid({
@@ -586,8 +696,6 @@ $(function(){
    	     success : function(result){
    	     product_Grid.resetData(result);
    	     product_Grid.refreshLayout();
-   	  product_Grid1.resetData(result);
-	     product_Grid1.refreshLayout();
    	     }
    });
     })
@@ -626,6 +734,23 @@ $(function(){
 	    		dataType : "JSON",
 	    		success : function(result){
 	    			beforeReleaseContGrid.resetData(result);
+	    			
+	    			beforeReleaseContGrid.getData().forEach((ele, index)=>{
+						 let today = new Date(); 
+						 let releaseDay = new Date(ele.contDetRelease);
+						 let diffDay = releaseDay.getTime() - today.getTime();
+						 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+						 console.log(diffDays)
+						 	if(diffDays<=5){
+							beforeReleaseContGrid.addCellClassName(index,'contDetCode','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'contCode','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'accName','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'prodCode','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'prodName','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'contDetQuan','cell-red');
+							beforeReleaseContGrid.addCellClassName(index,'contDetRelease','cell-red');
+						 	}
+						})
 	    		}
 	    	});
   		})
@@ -640,10 +765,198 @@ $(function(){
 	    		dataType : "JSON",
 	    		success : function(result){
 	    			beforeReleaseOrdGrid.resetData(result);
+	    			
+	    			beforeReleaseOrdGrid.getData().forEach((ele, index)=>{
+						 let today = new Date(); 
+						 let releaseDay = new Date(ele.ordDueDate);
+						 let diffDay = releaseDay.getTime() - today.getTime();
+						 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+						 console.log(diffDays)
+						 	if(diffDays<=5){
+						 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetCode','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'ordCode','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'accName','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'prodCode','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'prodName','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetQuan','cell-red');
+						 		beforeReleaseOrdGrid.addCellClassName(index,'ordDueDate','cell-red');
+						 	}
+						})
 	    		}
 	    	});
   		})
 	    
+  		
+ var contCode_Grid = new tui.Grid({
+bodyHeight : 200,
+ el: document.getElementById('contCodeGrid'),
+ scrollX: false,
+ rowHeaders: ['rowNum'],
+ columns: [
+   {
+     header: '계약코드',
+     name: 'contCode'
+   },
+   {
+     header: '거래처명',
+     name: 'accName'
+   },
+   {
+     header: '제품명',
+     name: 'prodName'
+   }
+
+ ]
+});
+   	$("#contCodeList").on('click', function(){
+  //모달내 제품리스트 아작스
+   	$.ajax({
+   		url : "/bns/contCodesList",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			contCode_Grid.resetData(result);
+   			contCode_Grid.refreshLayout();
+   		}
+   	});
+   });
+
+	   //모달창 내  계약코드 돋보기 클릭 했을 때
+	   //계약건
+	   $("#searchcontCode").on('click', function(){
+   	const result = $("#searchcontCode-text").val()
+		$("#searchcontCode-text").val('');
+   	//모달창 내 제품검색 아작스
+	   	$.ajax({
+	   		 url : "/bns/contCodesKeyList",
+	   	     method : "GET",
+	   	     data : {'result' : result},
+	   	     success : function(result){
+	   	     contCode_Grid.resetData(result);
+	   	     contCode_Grid.refreshLayout();
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	   	     }
+   		});
+	   })
+
+	//모달 내 제품리스트 그리드 뜨고 모달창 뜨게
+	//계약건
+$(function(){
+	$('#contCodeListModal').on('shown.bs.modal', function(){
+		contCode_Grid.refreshLayout();
+	})
+})
+
+	   //제품리스트 모달 내 그리드 선택 시 본문의 input창으로 자동입력
+	   //계약건
+	contCode_Grid.on('click', ev=> {
+   
+    const focusCell = contCode_Grid.getFocusedCell()
+    let dataRow = contCode_Grid.getRow(ev.rowKey);
+    console.log(dataRow.contCode);
+	//본문의 input창 제품명 입력
+   $('#contCodeList-text').val(dataRow.contCode); 
+    $('#modalsubmit3').click(function(){
+  	  $('#contCodeListModal').modal('hide');
+  	  $.ajax({
+   		 url : "/bns/contCodesList",
+   	     method : "GET",
+   	     dataType : "JSON",
+   	     success : function(result){
+   	     contCode_Grid.resetData(result);
+   	     contCode_Grid.refreshLayout();
+   	     }
+   });
+    })
+  })
+  
+   var ordCode_Grid = new tui.Grid({
+bodyHeight : 200,
+ el: document.getElementById('ordCodeGrid'),
+ scrollX: false,
+ rowHeaders: ['rowNum'],
+ columns: [
+   {
+     header: '주문코드',
+     name: 'ordCode'
+   },
+   {
+     header: '거래처명',
+     name: 'accName'
+   },
+   {
+     header: '제품명',
+     name: 'prodName'
+   }
+
+ ]
+});
+   	$("#ordCodeList").on('click', function(){
+  //모달내 주문코드리스트 아작스
+   	$.ajax({
+   		url : "/bns/ordCodesList",
+   		method : "GET",
+   		dataType : "JSON",
+   		success : function(result){
+   			ordCode_Grid.resetData(result);
+   			ordCode_Grid.refreshLayout();
+   		}
+   	});
+   });
+
+	   //모달창 내  계약코드 돋보기 클릭 했을 때
+	   //주문건
+	   $("#searchordCode").on('click', function(){
+   	const result = $("#searchordCode-text").val()
+		$("#searchordCode-text").val('');
+   	//모달창 내 제품검색 아작스
+	   	$.ajax({
+	   		 url : "/bns/ordCodesKeyList",
+	   	     method : "GET",
+	   	     data : {'result' : result},
+	   	     success : function(result){
+	   	     ordCode_Grid.resetData(result);
+	   	     ordCode_Grid.refreshLayout();
+	   	     },
+	   	     error: function(reject){
+	   	    	 console.log(reject)
+	   	     }
+   		});
+	   })
+
+	//모달 내 제품리스트 그리드 뜨고 모달창 뜨게
+	//주문건
+$(function(){
+	$('#ordCodeListModal').on('shown.bs.modal', function(){
+		ordCode_Grid.refreshLayout();
+	})
+})
+
+	   //제품리스트 모달 내 그리드 선택 시 본문의 input창으로 자동입력
+	   //주문건
+	ordCode_Grid.on('click', ev=> {
+   
+    const focusCell = ordCode_Grid.getFocusedCell()
+    let dataRow = ordCode_Grid.getRow(ev.rowKey);
+    console.log(dataRow.ordCode);
+	//본문의 input창 제품명 입력
+   $('#ordCodeList-text').val(dataRow.ordCode); 
+    $('#modalsubmit4').click(function(){
+  	  $('#ordCodeListModal').modal('hide');
+  	  $.ajax({
+   		 url : "/bns/ordCodesList",
+   	     method : "GET",
+   	     dataType : "JSON",
+   	     success : function(result){
+   	     ordCode_Grid.resetData(result);
+   	     ordCode_Grid.refreshLayout();
+   	     }
+   });
+    })
+  })
+  
            
 	</script>
 	</div>

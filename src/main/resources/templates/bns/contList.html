@@ -55,7 +55,9 @@
 .contbtn button {
 	margin-right: 2px;
 }
-
+.form-control {
+	width: 150px;
+}
 .contReg {
 	margin-top: 30px;
 }
@@ -65,6 +67,9 @@
 }
 .modal-content{
 text-align:center;
+}
+.formInput input.form-control{
+display:inline-block;
 }
 </style>
 
@@ -77,7 +82,7 @@ text-align:center;
 
 	<div layout:fragment="content">
 		<form id="searchform">
-     <div style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
+     <div class="formInput" style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
      <div class="row">
      <label style="margin-left : 15px;">진행구분</label>
      <input style = "margin : 0 5px;" type="radio" id="allBtn" name="all" value="all" checked><label for="allBtn" style="margin-right:10px">전체</label> 
@@ -86,26 +91,26 @@ text-align:center;
      </div>
 		<div class="row" style="margin:10px 0">
 		<div class="col-3">
-			거래처명 <input name="accName" type="text" id="accountlist-text"
-				style="background-color: #e2e1e1;width:240px" readonly>
-			<button style="margin-right : 20px;" type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+			거래처명 <input class="form-control" name="accName" type="text" id="accountlist-text"
+				style="background-color: #e2e1e1;width:200px" readonly>
+			<button style="height:38px;margin-bottom:3px" type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 		</div>
 		<div class="col-3">
-				제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1; width:240px" name="prodName" readonly>
-		 <button style="margin-right : 20px;" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+				제품명 <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:200px" name="prodName" readonly>
+		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</div>
 		<div class="col-3">
-			계약작성일자 <input name="contDate1" type="date" id="contdate-text"> - <input style="margin-right : 20px;" name="contDate2" type="date" id="contdate-text">
+			계약작성일자 <input style="width:124px" class="form-control" name="contDate1" type="date" id="contdate-text"> - <input style="width:124px; margin-right : 20px; " class="form-control" name="contDate2" type="date" id="contdate-text">
 		</div>		
 		<div class="col-3">
-			계약만료일자 <input name="contDueDate1" type="date" id="contduedate-text"> - <input style="margin-right : 20px;" name="contDueDate2" type="date" id="contduedate-text">
+			계약만료일자 <input style="width:124px" class="form-control" name="contDueDate1" type="date" id="contduedate-text"> - <input style="width:124px; margin-right : 20px;" class="form-control" name="contDueDate2" type="date" id="contduedate-text">
 		</div>
 		</div>
 		<div style="margin-top:50px; " class="row justify-content-center">
 			<button type="button" id="searchCont" class="btn btn-primary" style="margin-right:10px; width:74px;">조회</button>
-			<button type="button" id="pageReset" class="btn btn-primary">초기화</button>
+			<button type="reset" id="pageReset" class="btn btn-primary">초기화</button>
 		</div>	
 		</div>
 		</form>
@@ -126,7 +131,6 @@ text-align:center;
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-
 				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
@@ -352,7 +356,7 @@ text-align:center;
 									<label for="recipient-name" class="col-form-label">담당자명
 									</label> <input type="text" id="contModempname" class="form-control"
 										name="ModempName"
-										th:value="${#authentication.principal.username}" readonly>
+										th:value="${#authentication.principal.empName}" readonly>
 								</div>
 
 								<input type="hidden" th:value="${userVO.empNum}"

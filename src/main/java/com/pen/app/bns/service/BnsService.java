@@ -27,6 +27,11 @@ public interface BnsService {
 	public void delOrdList(List<BnsOrdVO> list);//주문서 삭제
 	BnsOrdVO getOrdCode();//주문코드 조회
 	
+	public List<BnsContVO> getcontCodesList();// 모달창 제품리스트 조회
+	public List<BnsContVO> getcontCodesKeyList(String keyword);
+	public List<BnsOrdVO> getordCodesList();// 모달창 제품리스트 조회
+	public List<BnsOrdVO> getordCodesKeyList(String keyword);
+	
 	//계약서
 	public List<BnsContVO> getContList(); //계약서 페이지 조회
 	public  List<BnsContVO> getContListCon(BnsContVO vo);//계약서 조건 조회
