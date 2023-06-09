@@ -692,7 +692,7 @@ ORDER BY
  </select>
  
  <update id="updateProcProd" parameterType="MakVO">
- update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(TO_CHAR(current_date,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
+ update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
  </update>
  
  <update id="insertMatDlivy" parameterType="MakVO">
