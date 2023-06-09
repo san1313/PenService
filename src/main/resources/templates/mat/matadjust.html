@@ -331,6 +331,7 @@
     	checked[0].matMdev= '입고'; 
     	checked[0].empId =$('#empId').val();
    
+    		
     	
     	 $.ajax({
     	  		url : "/mat/matadjustregister",
@@ -343,13 +344,16 @@
     	  		contentType: "application/json",
     	  		success : function(result3){
     	  			console.log(result3);
+  					
     	  			
     	  		},
     	  		error: function(reject){
     	  			console.log(reject)
     	  		}
     	         
-    	  	});    	 	
+    	  	});
+
+    	 matadjustgrid.removeCheckedRows(false);
     	
     })
     
@@ -378,7 +382,7 @@
 	  		}
 	         
 	  	});    	 	
-    	
+    	 matadjustgrid.removeCheckedRows(false);
     })  
     </script>
 
