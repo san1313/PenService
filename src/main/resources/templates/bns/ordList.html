@@ -104,10 +104,10 @@ display:inline-block;
 		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</div>
 		<div class="col-3">
-			<label>주문일자</label> <input style=" width:130px" class="form-control" name="ordDate1" type="date" id="orddate-text"> - <input class="form-control" style="margin-right : 20px; width:130px;" name="ordDate2" type="date" id="orddate-text">
+			<label>주문일자</label> <input style=" width:130px" class="form-control" name="ordDate1" type="date" id="orddate1-text"> - <input class="form-control" style="margin-right : 20px; width:130px;" name="ordDate2" type="date" id="orddate2-text"  min="" disabled >
 		</div>		
 		<div class="col-3">
-			<label>납기일자</label> <input style=" width:130px" class="form-control" name="ordDueDate1" type="date" id="ordduedate-text"> - <input class="form-control" style="margin-right : 20px; width:130px" name="ordDueDate2" type="date" id="ordduedate-text">
+			<label>납기일자</label> <input style=" width:130px" class="form-control" name="ordDueDate1" type="date" id="ordduedate1-text"> - <input class="form-control" style="margin-right : 20px; width:130px" name="ordDueDate2" type="date" id="ordduedate2-text" min="" disabled>
 		</div>
 		</div>
 		<div style="margin-top:50px; "  class="row justify-content-center">
@@ -136,7 +136,7 @@ display:inline-block;
 						<h1 class="modaltitle"></h1>
 					<p>
 						<label >거래처명</label> <input type="text" id="searchacc-text">
-						<button id="searchacc" type="submit" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+						<button style="height:38px;" id="searchacc" type="submit" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					</p>
 					<div id="accountGrid"></div>
 
@@ -213,7 +213,7 @@ display:inline-block;
 								class="form-control" name="empCode" readonly>
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">거래처명</label>
-									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+									<button  type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
 								 <input id="ordaccname" type="text" class="form-control" name="accName" readonly>
 							</div>
@@ -245,10 +245,9 @@ display:inline-block;
 						<label style="float:left;">제품리스트</label>
 						<button style="float:left; "type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
-						<button class = "btn btn-danger" style="float: right; margin-right: 5px;"
-							id="ordProdDelete">삭제</button>
+						<button class = "btn btn-danger" style="float: right; margin-right: 5px; margin-bottom : 5px;"id="ordProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
-						<div class="modalbtn">
+						<div class="modalbtn" style="margin-top : 5px;">
 							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn-secondary"
 								data-dismiss="modal" >취소</button>
@@ -324,7 +323,7 @@ display:inline-block;
 			<div class="modal-dialog modal-lg">
 				<div class="p-3 modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title">주문서 수정</h1>
+						<h1 class="modal-title">주문 상세</h1>
 						<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -381,17 +380,16 @@ display:inline-block;
 							</div>
 							<br>
 							<hr>
-							<h2>주문상세</h2>
 							<br> <label style="float:left;">제품리스트</label>
-							<button style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+							<button id="modProdSearch" style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
-							<button class= "btn btn-danger" style="float: right; margin-right: 5px;"
+							<button class= "btn btn-danger" style="float: right; margin-right: 5px; margin-bottom:5px;"
 								id="ordProdDelete2">삭제</button>
 							<div id="modProdgrid"></div>
-							<div class="modalbtn">
+							<div style="margin-top: 5px;"class="modalbtn">
 								<button id="ordmodsubmit" type="submit" class="btn btn-primary">수정</button>
 								<button type="button" class="btn btn-secondary"
-									data-bs-dismiss="modal">취소</button>
+									data-dismiss="modal">취소</button>
 							</div>
 						</div>
 					</div>
@@ -433,7 +431,58 @@ display:inline-block;
 		const token = $('meta[name="_csrf"]').attr("content");
 		const header = $('meta[name="_csrf_header"]').attr("content");
 		
-		//초기화 버튼 클릭 시
+		//제품모달창 엔터키
+		$('#searchprod-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchprod").click();
+			 }
+		})
+
+		 //거래처엔터키
+		 $('#searchacc-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchacc").click();
+			 }
+		 })
+		 //거래처엔터키
+		 $('#searchaccreg-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchaccreg").click();
+			 }
+		 })
+		 //거래처엔터키
+		 $('#searchprodreg-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchprodreg").click();
+			 }
+		 })
+		 //거래처엔터키
+		 $('#searchprodmod-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchprodmod").click();
+			 }
+		 })
+		
+		 //날짜 조건
+		   var orddate1Input = document.getElementById("orddate1-text");
+	       var orddate2Input = document.getElementById("orddate2-text");
+
+	          orddate1Input.addEventListener("input", function() {
+	            orddate2Input.min = orddate1Input.value;
+	            orddate2Input.disabled = false;
+	            
+	          });
+	          
+	          var ordduedate1Input = document.getElementById("ordduedate1-text");
+		       var ordduedate2Input = document.getElementById("ordduedate2-text");
+
+		          ordduedate1Input.addEventListener("input", function() {
+		            ordduedate2Input.min = ordduedate1Input.value;
+		            ordduedate2Input.disabled = false;
+		            
+		          });
+		
+/* 		//초기화 버튼 클릭 시
 		$('#pageReset').on('click',function(){
 			
 			$.ajax({
@@ -445,7 +494,7 @@ display:inline-block;
 				}
 			});
 			
-		})
+		}) */
 		
 		
 		
@@ -477,16 +526,19 @@ display:inline-block;
             	
                {
                  header: '제품명',
-                 name: 'prodName'
+                 name: 'prodName',
+                 align : 'center'
                },
                {
                  header: '제품코드',
-                 name: 'prodCode'
+                 name: 'prodCode',
+                 align : 'center'
                },
                {
                  header: '주문량',
                  name: 'ordDetQuan',
                  editor:'text',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -496,6 +548,7 @@ display:inline-block;
                    header: '단가',
                    name: 'ordDetPrice',
                    editor:'text',
+                   align : 'center',
                    formatter({ value }) {
                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                      },
@@ -504,6 +557,7 @@ display:inline-block;
                {
                  header: '주문금액',
                  name: 'ordDetTotPrice',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -631,11 +685,13 @@ $.ajax({
      columns: [
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
-         name: 'accName'
+         name: 'accName',
+         align : 'center'
        }
    
      ]
@@ -710,11 +766,13 @@ $.ajax({
      columns: [
        {
          header: '제품코드',
-         name: 'prodCode'
+         name: 'prodCode',
+         align : 'center'
        },
        {
          header: '제품명',
-         name: 'prodName'
+         name: 'prodName',
+         align : 'center'
        }
      ]
    });
@@ -727,11 +785,13 @@ $.ajax({
 	     columns: [
 	       {
 	         header: '제품코드',
-	         name: 'prodCode'
+	         name: 'prodCode',
+	         align : 'center'
 	       },
 	       {
 	         header: '제품명',
-	         name: 'prodName'
+	         name: 'prodName',
+	         align : 'center'
 	       }
 	     ]
 	   });
@@ -852,11 +912,13 @@ $.ajax({
      columns: [
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
-         name: 'accName'
+         name: 'accName',
+         align : 'center'
        }
    
      ]
@@ -937,11 +999,13 @@ $.ajax({
      columns: [
        {
          header: '제품코드',
-         name: 'prodCode'
+         name: 'prodCode',
+         align : 'center'
        },
        {
          header: '제품명',
-         name: 'prodName'
+         name: 'prodName',
+         align : 'center'
        }
    
      ]
@@ -1054,40 +1118,48 @@ $.ajax({
      columns: [
        {
          header: '주문코드',
-         name: 'ordCode'
+         name: 'ordCode',
+         align : 'center'
        },
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
          name: 'accName',
          sortable: true,
-         filter: 'select'
+         filter: 'select',
+         align : 'center'
        },
        {
          header: '주문일자',
          name: 'ordDate',
-         sortable: true
+         sortable: true,
+         align : 'center'
        },
        {
          header: '납기일자',
          name: 'ordDueDate',
-         sortable: true	
+         sortable: true,
+         align : 'center'
        },
+       {
+           header: '담당자명',
+           name: 'empName',
+           align : 'center'
+         },
        {
            header: '진행상황',
            name: 'ordProgress',
-           filter: 'select'
-         },
-       {
-           header: '담당자명',
-           name: 'empName'
+           filter: 'select',
+           align : 'center'
          },
        {
            header: '비고',
-           name: 'ordNote'
+           name: 'ordNote',
+           align : 'center'
          }
    
      ]
@@ -1128,12 +1200,41 @@ $.ajax({
 			dataType : "JSON",
 			success : function(result){
 				modProdgrid.resetData(result);
+				//버튼막기
 				let modRow = modProdgrid.getData();
-				modRow.forEach(ele =>{
-					if(ele.ordDet)
-					
-				})
 				console.log(modRow)
+				modRow.forEach(ele=>{
+					if(ele.ordDetProgress !== '접수완료'){
+						modProdgrid.disableRow(ele.rowKey,true)
+						
+						let submitBtn = document.getElementById('ordmodsubmit');
+						let deleteBtn = document.getElementById('ordProdDelete2');
+						let dueDateBtn = document.getElementById('modalModOrdDueDate');
+						let noteBtn = document.getElementById('modalModOrdNote');
+						let searchBtn = document.getElementById('modProdSearch');
+						
+						submitBtn.disabled = true;
+						deleteBtn.disabled = true;
+						dueDateBtn.disabled = true;
+						noteBtn.disabled = true;
+						searchBtn.disabled = true;
+						
+					}else{
+						let submitBtn = document.getElementById('ordmodsubmit');
+						let deleteBtn = document.getElementById('ordProdDelete2');
+						let dueDateBtn = document.getElementById('modalModOrdDueDate');
+						let noteBtn = document.getElementById('modalModOrdNote');
+						let searchBtn = document.getElementById('modProdSearch');
+						
+						submitBtn.disabled = false;
+						deleteBtn.disabled = false;
+						dueDateBtn.disabled = false;
+						noteBtn.disabled = false;
+						searchBtn.disabled = false;
+						
+					}
+				})
+				
 			}
 		});
 	}
@@ -1154,17 +1255,20 @@ $.ajax({
             	
                {
                  header: '제품명',
-                 name: 'prodName'
+                 name: 'prodName',
+                 align : 'center'
                  
                },
                {
                  header: '제품코드',
-                 name: 'prodCode'
+                 name: 'prodCode',
+                 align : 'center'
                },
                {
                  header: '주문량',
                  name: 'ordDetQuan',
                  editor:'text',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -1173,6 +1277,7 @@ $.ajax({
                    header: '단가',
                    name: 'ordDetPrice',
                    editor:'text',
+                   align : 'center',
                    formatter({ value }) {
                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                      }
@@ -1180,12 +1285,14 @@ $.ajax({
                {
                  header: '주문금액',
                  name: 'ordDetTotPrice',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
                },{
             	   header: '현황',
-                   name: 'ordDetProgress'
+                   name: 'ordDetProgress',
+                   align : 'center'
                }
                  ,
              ],
@@ -1253,13 +1360,19 @@ $.ajax({
          
          //주문서 취소버튼 눌렀을 때
          $('#BtnOrdCancle').on('click',function(){
+        	 let checked = grid.getCheckedRows()
+        	 console.log(checked)
+        		checked.forEach(ele=>{
+				if(ele.ordProgress !== '접수완료'){
+				alert('취소할 수 없는 주문서입니다')
+				        			
+        		}
+        		else{
+				
 			grid.removeCheckedRows(true)
 			let deleted = grid.getModifiedRows().deletedRows;
-			
 			console.log(deleted)
-        	 
 			if(deleted.length>0){
-				
 				$.ajax({
 					url : "/bns/delOrdList",
 					method : "POST",
@@ -1274,8 +1387,8 @@ $.ajax({
 					}
 					});
 			}
-        	 
-        	 
+        		} 
+        		})
          })
          
          
@@ -1332,6 +1445,7 @@ $.ajax({
 		   	})
 		   })
 	
+		
 		 
 		 //그리드 한글로
 		      tui.Grid.setLanguage("ko");

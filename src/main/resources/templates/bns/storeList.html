@@ -68,8 +68,8 @@ display:inline-block;
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>
 	<div class="col-4">
-	<label>생산일자</label> <input class="form-control" type="date" id="prdtDate-text" name="prdtDate"> -
-	 <input class="form-control" type="date" id="prdtDate1-text" name="prdtDate1">
+	<label>생산일자</label> <input class="form-control" type="date" id="prdtDate1-text" name="prdtDate"> -
+	 <input class="form-control" type="date" id="prdtDate2-text" name="prdtDate1" min="" disabled>
 	 </div>
 	 <div class="col-5 row justify-content-end" style="padding-bottom:10px;">
 	 <button style="width:90px; margin-right:10px;"type="button" id="searchStoreList"class="btn btn-primary">조회</button>
@@ -121,6 +121,23 @@ display:inline-block;
 	
 	$(document).ready(function(){
 		
+		//제품모달창 엔터키
+		$('#searchlot-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchlot").click();
+			 }
+		})
+
+		
+		 var prdtdate1Input = document.getElementById("prdtDate1-text");
+	       var prdtdate2Input = document.getElementById("prdtDate2-text");
+
+	       prdtdate1Input.addEventListener("input", function() {
+	    	   prdtdate2Input.min = prdtdate1Input.value;
+	    	   prdtdate2Input.disabled = false;
+	            
+	          });
+	          
 	 $.ajax({
 			url : "/bns/beforeStoreListAjax",
 			method : "GET",
@@ -144,28 +161,34 @@ display:inline-block;
 	     columns: [
 	       {
 	         header: '완제품LOT번호',
-	         name: 'prdtLot'
+	         name: 'prdtLot',
+	         align : 'center'
 	       },
 	       {
 	         header: '완제품명',
-	         name: 'prdtNm'
+	         name: 'prdtNm',
+	         align : 'center'
 	       },
 	       {
 	         header: '완제품코드',
-	         name: 'prodCode'
+	         name: 'prodCode',
+	         align : 'center'
 		    },
 	       {
 	         header: '수량',
-	         name: 'cnt'
+	         name: 'cnt',
+	         align : 'center'
 	       },
 	       {
 	         header: '생산완료일자',
 	         name: 'prdtDate',
-	         sortable: true
+	         sortable: true,
+	         align : 'center'
 	       },
 	       {
 	         header: '진행상태',
-	         name: 'prdtState'
+	         name: 'prdtState',
+	         align : 'center'
 	       }
 	     ]
 	   });
@@ -195,28 +218,34 @@ display:inline-block;
 		     columns: [
 		       {
 		         header: '완제품LOT번호',
-		         name: 'prdtLot'
+		         name: 'prdtLot',
+		         align : 'center'
 		       },
 		       {
 		         header: '완제품명',
-		         name: 'prdtNm'
+		         name: 'prdtNm',
+		         align : 'center'
 		       },
 		       {
 		         header: '입고량',
-		         name: 'bnsStoreQuan'
+		         name: 'bnsStoreQuan',
+		         align : 'center'
 			    },
 		       {
 		         header: '입고일자',
 		         name: 'bnsStoreDate',
-		         sortable: true
+		         sortable: true,
+		         align : 'center'
 		       },
 		       {
 		         header: '담당자명',
-		         name: 'empName'
+		         name: 'empName',
+		         align : 'center'
 		       },
 		       {
 		         header: '진행상태',
-		         name: 'prdtState'
+		         name: 'prdtState',
+		         align : 'center'
 		       }
 	   
 		     ]
@@ -332,15 +361,18 @@ display:inline-block;
 	      columns: [
 	        {
 	          header: 'LOT번호',
-	          name: 'prdtLot'
+	          name: 'prdtLot',
+	          align : 'center'
 	        },
 	        {
 	          header: '제품코드',
-	          name: 'prodCode'
+	          name: 'prodCode',
+	          align : 'center'
 	        },
 	        {
 	          header: '제품명',
-	          name: 'prdtNm'
+	          name: 'prdtNm',
+	          align : 'center'
 	        }
 	      ]
 	    });

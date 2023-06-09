@@ -88,7 +88,7 @@ display:inline-block;
 		 <button style="height:38px;margin-bottom:3px" type="button" id="contCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-contCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	<label>납기일자</label> <input class="form-control" type="date" id="contDetRelease-text" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease1-text" name="contDetRelease1">
+	<label>납기일자</label> <input class="form-control" type="date" id="contDetRelease-text1" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease-text2" name="contDetRelease1" min="" disabled>
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;"type="button" id="releaseList"class="btn btn-primary">조회</button>
@@ -110,7 +110,7 @@ display:inline-block;
 		 <button style="height:38px;margin-bottom:3px" type="button" id="ordCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-ordCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	<label>납기일자</label> <input class="form-control" type="date" id="ordDetRelease-text" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	<label>납기일자</label> <input class="form-control" type="date" id="ordDetRelease-text1" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease-text2" name="ordDueDate1" min="" disabled>
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button  type="button" style="width:80px; margin-right:10px;" id="releaseList1" class="btn btn-primary">조회</button>
@@ -243,6 +243,54 @@ display:inline-block;
 	const token = $('meta[name="_csrf"]').attr("content");
 	const header = $('meta[name="_csrf_header"]').attr("content");
 	
+	
+	//제품모달창 엔터키
+	
+	$('#searchprod-text').on('keyup',function(e){
+	 if(e.keyCode == 13){
+		 $("#searchprod").click();
+	 }
+	})
+
+	$('#searchprod-text1').on('keyup',function(e){
+		 if(e.keyCode == 13){
+			 $("#searchprod1").click();
+		 }
+	})
+	
+	$('#searchcontCode-text').on('keyup',function(e){
+	 if(e.keyCode == 13){
+		 $("#searchcontCode").click();
+	 }
+})
+
+$('#searchordCode-text').on('keyup',function(e){
+	 if(e.keyCode == 13){
+		 $("#searchordCode").click();
+	 }
+})
+
+
+	
+	var contDetReleasedate1Input = document.getElementById("contDetRelease-text1");
+    var contDetReleasedate2Input = document.getElementById("contDetRelease-text2");
+
+    contDetReleasedate1Input.addEventListener("input", function() {
+    	contDetReleasedate2Input.min = contDetReleasedate1Input.value;
+    	contDetReleasedate2Input.disabled = false;
+         
+       });
+    
+     var ordDetReleasedate1Input = document.getElementById("ordDetRelease-text1");
+    var ordDetReleasedate2Input = document.getElementById("ordDetRelease-text2");
+
+    ordDetReleasedate1Input.addEventListener("input", function() {
+    	ordDetReleasedate2Input.min = ordDetReleasedate1Input.value;
+    	ordDetReleasedate2Input.disabled = false;
+         
+       }); 
+	
+	
 		//출고전 계약서 그리드
 		 $.ajax({
 				url : "/bns/beforeReleaseContListAjax",
@@ -283,37 +331,44 @@ display:inline-block;
 	       {
 	         header: '계약상세코드',
 	         name: 'contDetCode',
-	         sortable: true
+	         sortable: true,
+	         align : 'center'
 	       },
 	       {
 	         header: '계약코드',
 	         name: 'contCode',
-	         sortable: true
+	         sortable: true,
+	         align : 'center'
 	       },
 	       {
 	         header: '거래처명',
 	         name: 'accName',
 	         sortable: true,
-	         filter: 'select'
+	         filter: 'select',
+	         align : 'center'
 	       },
 	       {
 	         header: '제품코드',
 	         name: 'prodCode',
 	         sortable: true,
-	         filter: 'select'
+	         filter: 'select',
+	         align : 'center'
 		    },
 	       {
 	         header: '제품명',
-	         name: 'prodName'
+	         name: 'prodName',
+	         align : 'center'
 		    },
 	       {
 	         header: '총주문량',
-	         name: 'contDetQuan'
+	         name: 'contDetQuan',
+	         align : 'center'
 	       },
 	       {
 	         header: '납기일자',
 	         name: 'contDetRelease',
-	         sortable: true
+	         sortable: true,
+	         align : 'center'
 	       }
 	     ]
 	   });
@@ -356,31 +411,38 @@ display:inline-block;
 	     columns: [
 	       {
 	         header: '주문상세코드',
-	         name: 'ordDetCode'
+	         name: 'ordDetCode',
+	         align : 'center'
 	       },
 	       {
 	         header: '주문코드',
-	         name: 'ordCode'
+	         name: 'ordCode',
+	         align : 'center'
 	       },
 	       {
 	         header: '거래처명',
-	         name: 'accName'
+	         name: 'accName',
+	         align : 'center'
 	       },
 	       {
 	         header: '제품코드',
-	         name: 'prodCode'
+	         name: 'prodCode',
+	         align : 'center'
 		    },
 	       {
 	         header: '제품명',
-	         name: 'prodName'
+	         name: 'prodName',
+	         align : 'center'
 		    },
 	       {
 	         header: '주문량',
-	         name: 'ordDetQuan'
+	         name: 'ordDetQuan',
+	         align : 'center'
 	       },
 	       {
 	         header: '납기일자',
-	         name: 'ordDueDate'
+	         name: 'ordDueDate',
+	         align : 'center'
 	       }
 	     ]
 	   });
@@ -398,39 +460,47 @@ display:inline-block;
 		     columns: [
 		       {
 		         header: '완제품LOT번호',
-		         name: 'prdtLot'
+		         name: 'prdtLot',
+		         align : 'center'
 		       },
 		       {
 		         header: '완제품명',
-		         name: 'prdtNm'
+		         name: 'prdtNm',
+		         align : 'center'
 		       },
 			    {
 		         header: '재고량',
-		         name: 'cnt'
+		         name: 'cnt',
+		         align : 'center'
 			    },
 			    {
 		         header: '출고량',
 		         name: 'bnsReleaseQuan',
-		         editor: 'text'
+		         editor: 'text',
+		         align : 'center'
 			    },
 			    {
 		         header: '입고일자',
-		         name: 'bnsStoreDate'
+		         name: 'bnsStoreDate',
+		         align : 'center'
 		       },
 		       {
 		         header: '출고일자',
 		         name: 'sys',
-		         hidden:true
+		         hidden:true,
+		         align : 'center'
 		       },
 		       {
 		         header: '입고 담당자명',
 		         name: 'empName',
-		         hidden:true
+		         hidden:true,
+		         align : 'center'
 		       },
 		       {
 		         header: '비고',
 		         name: 'bnsReleaseNote',
-		         editor: 'text'
+		         editor: 'text',
+		         align : 'center'
 		       }
 		       ],summary:{
 		    	   height:50,
@@ -545,7 +615,6 @@ display:inline-block;
       				return;
       			}
         	   }
-        	   
         	   else{
         	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.ordReqQuan){
       				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
@@ -556,8 +625,6 @@ display:inline-block;
       				return;
       			}
         	   }
-      				
-      			
         	   
 			let checked = afterReleaseGrid.getCheckedRows();
 			console.log(checked);
@@ -583,8 +650,70 @@ display:inline-block;
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						afterReleaseGrid.resetData([]);
-						afterReleaseGrid.setSummaryColumnContent('bnsReleaseQuan', '');
+						console.log(targetRow.contReqQuan)
+						console.log(targetRow.ordReqQuan)
+						console.log(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum)
+						if (radioVal == "contract") {
+							//밑의 써머리 초기화
+							targetRow.contReqQuan -= afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum;
+							//위의 그리드 초기화
+							 $.ajax({
+									url : "/bns/beforeReleaseContListAjax",
+									method : "GET",
+									dataType : "JSON",
+									success : function(result){
+										beforeReleaseContGrid.resetData(result);
+										//현재날짜
+										beforeReleaseContGrid.getData().forEach((ele, index)=>{
+										 let today = new Date(); 
+										 let releaseDay = new Date(ele.contDetRelease);
+										 let diffDay = releaseDay.getTime() - today.getTime();
+										 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+										 console.log(diffDays)
+										 	if(diffDays<=5){
+											beforeReleaseContGrid.addCellClassName(index,'contDetCode','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'contCode','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'accName','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'prodCode','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'prodName','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'contDetQuan','cell-red');
+											beforeReleaseContGrid.addCellClassName(index,'contDetRelease','cell-red');
+										 	}
+										})
+									}
+								});
+						}else{
+							//밑의 써머리 초기화
+							targetRow.ordReqQuan -= afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum; 
+							//위의 그리드 초기화
+							 $.ajax({
+									url : "/bns/beforeReleaseOrdListAjax",
+									method : "GET",
+									dataType : "JSON",
+									success : function(result){
+										beforeReleaseOrdGrid.resetData(result);
+										
+										beforeReleaseOrdGrid.getData().forEach((ele, index)=>{
+											 let today = new Date(); 
+											 let releaseDay = new Date(ele.ordDueDate);
+											 let diffDay = releaseDay.getTime() - today.getTime();
+											 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
+											 console.log(diffDays)
+											 	if(diffDays<=5){
+											 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetCode','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'ordCode','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'accName','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'prodCode','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'prodName','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'ordDetQuan','cell-red');
+											 		beforeReleaseOrdGrid.addCellClassName(index,'ordDueDate','cell-red');
+											 	}
+											})
+									}
+								});
+						}
+						//밑의 그리드 초기화
+						 lotReleaseList()
 					}
 					});
 					
@@ -605,11 +734,13 @@ bodyHeight : 200,
  columns: [
    {
      header: '제품코드',
-     name: 'prodCode'
+     name: 'prodCode',
+     align : 'center'
    },
    {
      header: '제품명',
-     name: 'prodName'
+     name: 'prodName',
+     align : 'center'
    }
 
  ]
@@ -623,11 +754,13 @@ var product_Grid1 = new tui.Grid({
   columns: [
     {
       header: '제품코드',
-      name: 'prodCode'
+      name: 'prodCode',
+      align : 'center'
     },
     {
       header: '제품명',
-      name: 'prodName'
+      name: 'prodName',
+      align : 'center'
     }
 
   ]
@@ -830,15 +963,18 @@ bodyHeight : 200,
  columns: [
    {
      header: '계약코드',
-     name: 'contCode'
+     name: 'contCode',
+     align : 'center'
    },
    {
      header: '거래처명',
-     name: 'accName'
+     name: 'accName',
+     align : 'center'
    },
    {
      header: '제품명',
-     name: 'prodName'
+     name: 'prodName',
+     align : 'center'
    }
 
  ]
@@ -915,15 +1051,18 @@ bodyHeight : 200,
  columns: [
    {
      header: '주문코드',
-     name: 'ordCode'
+     name: 'ordCode',
+     align : 'center'
    },
    {
      header: '거래처명',
-     name: 'accName'
+     name: 'accName',
+     align : 'center'
    },
    {
      header: '제품명',
-     name: 'prodName'
+     name: 'prodName',
+     align : 'center'
    }
 
  ]

@@ -331,7 +331,7 @@
 	]]>
 		</if>
 		</where>
-		order by c.cont_code)
+		order by c.cont_code desc)
 	</select>
 
 	<!-- 계약서 등록 -->
@@ -579,10 +579,10 @@ GROUP BY ord_det_code,
 	select prdt_lot, prod_code, prdt_nm
 	from MAK_PRDT 
 	where prdt_state = '입고대기' and qip_code_list_prod is not null
-	order by prdt_lot desc
 	<if test="keyword != null and keyword != ''">
-	where prdt_lot = #{keyword}
+	and prdt_lot like '%'||#{keyword}||'%'
 	</if>
+	order by prdt_lot desc
 	</select>
 	
 			<!-- 입고관리페이지 입고후 그리드 -->
@@ -592,10 +592,10 @@ GROUP BY ord_det_code,
 	, prdt_nm
 	from MAK_PRDT 
 	where prdt_state = '입고완료' or prdt_state = '출고완료' 
-	order by prdt_lot desc
 	<if test="keyword != null and keyword != ''">
-	where prdt_lot like '%'||#{keyword}||'%'
+	and prdt_lot like '%'||#{keyword}||'%'
 	</if>
+	order by prdt_lot desc
 	</select>
 	
 	<!-- 입고관리페이지 조건 조회 -->
@@ -629,7 +629,7 @@ GROUP BY ord_det_code,
 		</if>
 		 and prdt_state = '입고대기'
 		</where>
-		order by prdt_lot
+		order by prdt_lot desc
 	</select>
 	
 	  	<select id="getSearchStoreList" resultType="BnsStoreVO">
@@ -643,6 +643,7 @@ GROUP BY ord_det_code,
     from com_info_emp e join bns_store b on(b.emp_num = e.emp_num)
     join mak_prdt p on (b.prdt_lot = p.prdt_lot)
 	   where p.prdt_state = '입고완료' or p.prdt_state = '출고완료'
+	   order by bns_store_date desc
 	</select> 
 	
 	<!-- 입고조회페이지 조건 조회 -->
@@ -680,6 +681,7 @@ GROUP BY ord_det_code,
 		</if>
 		 and prdt_state ='출고완료' or prdt_state ='입고완료'
 		</where>
+		order by bns_store_date desc
 	</select>
 	
 	<!-- 출고관리페이지(계약) 조건 조회 -->
@@ -726,7 +728,7 @@ LEFT OUTER JOIN bns_release r on ( d.cont_det_code= r.cont_det_code )
          d.prod_name,
          d.cont_det_quan,
          d.cont_det_release
-         order by d.cont_det_code)
+         order by d.cont_det_release)
 	</select>
 	
 	<!-- 출고관리페이지(주문) 조건 조회 -->
@@ -759,7 +761,7 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 		and ord_due_date <= TO_DATE(#{ordDueDate1}, 'YYYY-MM-DD')
 	]]>
 		</if>
-	  	and ord_progress = '접수완료' 
+	  	and d.ord_det_progress != '출고완료' 
 		</where>
 		GROUP BY 
 		d.ord_det_code,
@@ -769,7 +771,7 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
          d.prod_name,
          d.ord_det_quan,
          o.ord_due_date
-         order by d.ord_det_code)
+         order by ord_due_date)
 	</select>
 	
 	<!-- 출고내역 페이지 그리드 -->
@@ -784,7 +786,7 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 	e.emp_name
          from bns_release r join com_info_emp e 
          on(r.emp_num = e.emp_num)
-         order by bns_release_code
+         order by bns_release_code desc
 	</select>
 	
 	<!-- 출고내역 페이지 조건검색 후 그리드 -->
@@ -823,6 +825,7 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 	]]>
 		</if>
 		</where>
+		order by bns_release_code desc
 	</select>
 	
 </mapper>
