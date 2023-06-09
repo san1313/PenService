@@ -752,10 +752,12 @@ $(function () {
 	            	def+=ele.testTnumDef;
 	            	divide++;
 	            	};
+	            	if(def>0){
 	            	if(ele.makFlowStep>1){
 	            		def = Math.ceil(def/divide);
 	            		ele.reQnt=ele.reQnt-def;
-	            	}
+	            	};
+	            	};
 	            });
 	            grid2.resetData(result);
 
