@@ -250,9 +250,9 @@
 		 	   a.downtime_reason ,
 			   a.reason_explain ,
 			   to_char(DOWNTIME_START_DAY,'yyyy-MM-dd') DOWNTIME_START_DAY ,
-			   to_char(START_TIME,'PM HH24:MI') START_TIME,
+			   to_char(START_TIME,'PM HH12:MI') START_TIME,
 			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'') AS DOWNTIME_END_DAY,
-			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'') AS END_TIME,
+			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH12:MI'),'') AS END_TIME,
 			   b.OPERATE_CHECK,
 			   a.emp_num
 		  FROM FAC_DOWNTIME a

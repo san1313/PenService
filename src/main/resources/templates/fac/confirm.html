@@ -37,7 +37,9 @@ margin: 60px 0 ;
 <div class="fac_confirm" style="text-align:left">
    <div class = "col-12 fac_confirm">
    				
-   			<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+   			<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
@@ -47,7 +49,8 @@ margin: 60px 0 ;
             </label>	
      	 	<br>
      	 	
-            <label for="confirm_code">점검코드&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="confirm_code">&nbsp;점검코드&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="confirm_code" placeholder="CONFIRM" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
@@ -61,7 +64,8 @@ margin: 60px 0 ;
             <input type="radio" id="emergency" name="confirm_category" value="긴급점검"> 긴급점검&nbsp;&nbsp;&nbsp;</label>
             
             <br>
-            <label for="action_history">조치내역</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="action_history">조치내역</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               
             <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;&nbsp;
@@ -333,6 +337,9 @@ margin: 60px 0 ;
       //초기화버튼 이벤트
       $("#reset").on('click',function(){
          $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         $('#confirm_issue option').eq(0).prop('selected','selected');
+         $('#regural').prop('checked',true);
+         $('#fit').prop('checked',true);
          //$('div input').not("").val('');
          //$('div input').not($('#confirmDatei')).val('');
       });
@@ -398,7 +405,10 @@ margin: 60px 0 ;
                   grid.refreshLayout();
                   }
                   })
-                  $('div input').not("input[name=confirm_issue]").val('');
+                  $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+            $('#confirm_issue option').eq(0).prop('selected','selected');
+            $('#regural').prop('checked',true);
+            $('#fit').prop('checked',true);
          },
          error:function(reject){
             console.log(reject)
@@ -440,9 +450,12 @@ margin: 60px 0 ;
                grid.refreshLayout();
                }
                })
-               $('div input').val('');
-         	   $('div select').val('선택');
-               $('div input').not("input[name=confirm_issue]").val('');
+               
+         
+         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         $('#confirm_issue option').eq(0).prop('selected','selected');
+         $('#regural').prop('checked',true);
+         $('#fit').prop('checked',true);
          
             },
             error:function(reject){
@@ -489,7 +502,10 @@ margin: 60px 0 ;
                   }
                   });
    
-                   $('div input').not("input[name=confirm_category]").val('');
+        	  $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+              $('#confirm_issue option').eq(0).prop('selected','selected');
+              $('#regural').prop('checked',true);
+              $('#fit').prop('checked',true);
         	  $('#confirmDatei').val(new Date().toISOString().slice(0,10));     	  
           },
           error:function(reject){
