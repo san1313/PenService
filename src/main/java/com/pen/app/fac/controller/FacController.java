@@ -59,6 +59,15 @@ public class FacController {
 //
 //	}
 
+	//설비코드자동부여
+	/*
+	 * @ResponseBody
+	 * 
+	 * @GetMapping("/facCode") public String facCode() { String result =
+	 * service.getfacCode(); return result; }
+	 */
+	
+	
 	
 	//비가동전체리스트
 	@ResponseBody

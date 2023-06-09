@@ -4,17 +4,19 @@
   "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
 
 <mapper namespace="com.pen.app.fac.mapper.FacMapper">
+	
 	<!--설비단건조회 <select id="getFac" resultType="FacInfoVO"> select * from fac_info 
 		where fac_code = #{facCode} </select> -->
 
-	<!-- 설비 특정검색조회 -->
+
+	<!-- 설비전체조회 + 특정조건검색 -->
 	<select id="getList" resultType="FacInfoVO">
  SELECT fac_code,
 		fac_name,
 		operate_check,
 		check_cycle,
 		to_char(install_date,'yyyy-MM-dd')
-		installDate,
+		install_date,
 		maker_name,
 		temp_min,
 		temp_max,
@@ -22,18 +24,13 @@
    FROM fac_info 
 	<where>
 		<if test="searchDiv != null and searchDiv != ''">
-			<!-- ${searchDiv} = #{searchName} title LIKE '%'|| #{keyword} || '%' -->
 			UPPER(${searchDiv}) LIKE '%' || UPPER(#{searchName}) || '%'
 		</if>
 	</where>
-	ORDER BY fac_code
+	ORDER BY fac_name
 	</select>
 
-	<!-- 설비정보목록조회 <select id="getList" resultType="FacInfoVO"> select fac_code 
-		,fac_name,proc_name ,proc_code,operate_check,check_cycle ,to_char(install_date,'yyyy-MM-dd') 
-		installDate,maker_name ,temp_min,temp_max ,emp_num from FAC_INFO join FAC_CONN_PROC 
-		using(fac_code) join COM_CODE_PROC using(proc_code) </select> -->
-
+	
 	<!-- 설비등록 -->
 	<insert id="facRegister" parameterType="FacInfoVO">
 	INSERT INTO fac_info
@@ -43,16 +40,16 @@
 
 	<!-- 공정+설비등록 -->
 	<insert id="insertFacList" parameterType="FacInfoListVO">
-	INSERT ALL INTO fac_info
-		VALUES('EQMAN'||fac_seq.nextval,
+INSERT ALL INTO fac_info
+		 VALUES('EQMAN'||fac_seq.nextval,
 				#{list[0].facName},
-	   TO_DATE(#{list[0].installDate},'YYYY-MM-DD'),
-			   #{list[0].tempMin},
-		       #{list[0].tempMax},
-		       #{list[0].makerName},
-		       #{list[0].checkCycle},
-		       #{list[0].operateCheck},
-		       #{list[0].empNum})
+	            TO_DATE(#{list[0].installDate},'YYYY-MM-DD'),
+			    #{list[0].tempMin},
+		        #{list[0].tempMax},
+		        #{list[0].makerName},
+		        #{list[0].checkCycle},
+		        #{list[0].operateCheck},
+		        #{list[0].empNum})
 		<foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
 		  INTO FAC_CONN_PROC
 		VALUES (fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
@@ -76,8 +73,8 @@
 	<insert id="insertProcList" parameterType="String">
 	INSERT ALL
 		<foreach collection="list" item="vo" close="SELECT * FROM DUAL" separator=" ">
-		    INTO FAC_CONN_PROC
-		  VALUES (fac_conn_proc_seq.nextval,#{vo.facCode},#{vo.procCode})
+		  INTO FAC_CONN_PROC
+		VALUES (fac_conn_proc_seq.nextval,#{vo.facCode},#{vo.procCode})
 		</foreach>
 	</insert>
 
@@ -104,6 +101,7 @@
 		   SET fac_name = #{facName},
 		       temp_min = #{tempMin},
 		       temp_max = #{tempMax},
+		       install_date=to_date(#{installDate},'YYYY-MM-DD'),
 		       maker_name = #{makerName},
 		       check_cycle = #{checkCycle},
 		       operate_check =#{operateCheck},
@@ -123,13 +121,12 @@
 		UPDATE fac_confirm
 		   SET action_history = #{actionHistory},
 		   	   confirm_category = #{confirmCategory},
+		   	   confirm_date=to_date(#{confirmDate},'YYYY-MM-DD'),
 		   	   confirm_issue = #{confirmIssue},
 		   	   decision = #{decision}
 		 WHERE confirm_code = #{confirmCode}	   	   
 	</update>
-	
-	
-	
+		
 	<!-- 비가동수정-->	
 	<update id="downTimeUpdate" parameterType="FacDownTimeListVO">
 		UPDATE fac_downTime
@@ -143,10 +140,19 @@
 	</update> 
 	
 	<!-- 설비삭제 -->
-	<delete id="facDelete" parameterType="FacInfoVO">
+	<delete id="facDelete" parameterType="FacInfoVO">	
    DELETE FROM fac_info 
 		 WHERE fac_code=#{facCode}
 	</delete>
+	
+	<!-- 작동중인 설비작업유무확인 -->
+	<select id="checkOperateState" parameterType="FacInfoVO" resultType="int">
+	SELECT count(*) 
+	  FROM fac_info 
+	  JOIN mak_proc_prod
+	 USING (fac_code) 
+	 WHERE fac_code=#{facCode}
+	</select>
 	
 	<!-- 점검삭제 -->
 	<delete id="confirmDelete" parameterType="FacConfirmVO">
@@ -163,15 +169,15 @@
 	<!-- 공정코드목록 -->
 	<select id="getproclist" resultType="FacConnProcVO">
 		SELECT proc_code, proc_name
-		  FROM COM_CODE_PROC
-	  ORDER BY  proc_code
+		  FROM com_code_proc
+	  ORDER BY proc_code
 	</select>
 
 	<!-- 공정코드검색조회 -->
 	<select id="getprocminilist" resultType="FacConnProcVO">
 		SELECT proc_code,
 		       proc_name
-		  FROM COM_CODE_PROC
+		  FROM com_code_proc
 		 WHERE proc_name LIKE '%'|| #{keyword} || '%'
 	</select>
 
@@ -196,7 +202,8 @@
 	<select id="getfacminilist" resultType="FacInfoVO">
 		SELECT fac_code,
 		       fac_name,
-		       operate_check
+		       operate_check,
+		       check_cycle
 		       from fac_info
 		 WHERE fac_name LIKE '%'|| #{keyword} || '%'
 	</select>
@@ -214,32 +221,31 @@
 		   FROM FAC_CONFIRM a
 		   JOIN FAC_INFO b 
 		     ON a.fac_code=b.fac_code
-		   <where>
-		  <if test="searchDiv != null and searchName != null">
-				   		<if test="searchDiv == 'fac_name'.toString()">
-				    AND b.fac_name like '%'|| #{searchName} || '%'
-				   		</if>
-				   		<if test="searchDiv == 'confirm_code'.toString()">
-		          	AND a.confirm_code=#{searchName}
-		          		</if>
-		          		<if test="searchDiv == 'emp_num'.toString()">
-		          	AND a.emp_num =#{searchName}
-		          		</if>
-		          		
-		      </if>    		
-          		<if test="confirmday1 != null and confirmday1 != ''">
-			<!-- AND BETWEEN to_date(#{confirmday1} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS') -->
-			<![CDATA[
-			and TRUNC(confirm_date) >= TO_DATE(#{confirmday1}, 'YYYY-MM-DD')			
+		<where>
+	<if test="searchDiv != null and searchName != null">
+		<if test="searchDiv == 'fac_name'.toString()">
+			AND b.fac_name like '%'|| #{searchName} || '%'
+		</if>
+		<if test="searchDiv == 'confirm_code'.toString()">
+		    <!--  AND a.confirm_code=#{searchName}-->
+		    AND a.confirm_code like '%'|| #{searchName} || '%'
+		</if>
+		<if test="searchDiv == 'emp_num'.toString()">
+		    <!-- AND a.emp_num =#{searchName} -->
+		    AND a.emp_num like '%'|| #{searchName} || '%'
+		</if>    		
+	</if>    		
+    <if test="confirmday1 != null and confirmday1 != ''">
+	<![CDATA[
+			AND TRUNC(confirm_date) >= TO_DATE(#{confirmday1}, 'YYYY-MM-DD')			
 		]]>
-				</if>
-				<if test="confirmday2 != null and confirmday2 != ''">
-		    <!-- AND to_date(#{confirmday2} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS') -->
-		    <![CDATA[
-			and TRUNC(confirm_date) <= TO_DATE(#{confirmday2}, 'YYYY-MM-DD')			
+	</if>
+	<if test="confirmday2 != null and confirmday2 != ''">
+	<![CDATA[
+			AND TRUNC(confirm_date) <= TO_DATE(#{confirmday2}, 'YYYY-MM-DD')			
 		]]>
-		    	</if>		        
-		   </where>
+	</if>		        
+		  </where>
 	</select>
 
 	<!--비가동전체조회 -->
@@ -270,10 +276,8 @@
 	              #{facCode},
 	              #{downTimeReason},
 	              #{reasonExplain},
-	              <!--  current_date,
-	              current_date,-->
-	               TO_DATE(#{downTimeStartDay},'YYYY-MM-DD'),
-	               TO_DATE(#{startTime},'HH24:MI'),
+	              TO_DATE(#{downTimeStartDay},'YYYY-MM-DD'),
+	              TO_DATE(#{startTime},'HH24:MI'),
 	              #{empNum})	
 	</insert>
 		

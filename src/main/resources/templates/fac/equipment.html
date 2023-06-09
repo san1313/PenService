@@ -23,11 +23,20 @@
      .proc_search{
      	float : right;
      	}
+ 
   
 }
+    	.swalAlert {
+   top:60px !important;
+}
+     	 .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
 </style>
 
  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+ <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
 <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
 <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
@@ -46,7 +55,7 @@
 <div class = "row col-12" style="text-align:left">
 	<div class = "col-8 fac_register">
 				<label for="fac_code">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비코드</label>&nbsp;&nbsp;&nbsp;
-				<input type="text"id="fac_code" placeholder="EQMAN" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+				<input type="text"id="fac_code" placeholder="EQMAN" style="background-color: #e2e2e2;" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 				
 				<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명</label>&nbsp;&nbsp;&nbsp;&nbsp;
 				<input type="text" id="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
@@ -141,6 +150,14 @@
 	    
  
     <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        customClass: { container: "swalAlert" },
+        showConfirmButton: false,
+      });
+    
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
     
@@ -151,6 +168,7 @@
 	
     $(function(){  
     		
+    	
     		//조건검색기능초기화 버튼이벤트
     		/*$('#facInitBtn').on("click", function(e){
     			$('[name="searchDiv"]').val("");
@@ -158,21 +176,31 @@
     		})
     		*/
     		
+    	//설비코드자동부여
+	   	 /*$.ajax({
+	       	 url: "/fac/facCode",
+	         method: "GET",
+	      	}).done((result) => {
+	        $('#fac_code').val(result);
+	      }) */
+    		
+    		
     		//조건검색돋보기 버튼이벤트 
     		$('#facBtn').on("click",function(e){
     			let searchDiv = $('[name="searchDiv"]').val();
     			let searchName = $('#searchName').val();
-    			let search
-    			//if (searchDiv != '' && searchName )
+    			let search   			
     			let data = { searchDiv, searchName }
     			facListSearch(data);
     			$('[name="searchDiv"]').val('');
     			$("#searchName").val('');
     		})
 		
-		    //설비목록리스트그리드
+		    
+    		//설비목록리스트그리드
 		    function facListSearch(data){
-			    $.ajax({
+			    
+    			$.ajax({
 			   		url : "/fac/infoListAjax",
 			   		method : "GET",
 			   		dataType : "JSON", //키:값 형식으로 가져온다.
@@ -185,15 +213,14 @@
 		    }
 		    
 		    facListSearch(null);
-		    
-		      
+		    		      
 		   var grid = new tui.Grid({
 		    el: document.getElementById('grid'),
-		    scrollX: false,
-		    //scrollY: false,	 
-			bodyHeight: 300,
+		    scrollX: false, 
+			bodyHeight: 460,
 		    rowHeaders: ['rowNum'],
-		    columns: [
+		    columns: 
+		    [
 		      {
 		        header: '설비코드',
 		        name: 'facCode'
@@ -230,7 +257,7 @@
 		        header: '담당자',
 		        name: 'empNum'
 		      }   
-		    ]
+		   ]
 		   
 		  });
 		   
@@ -324,18 +351,8 @@
 	    	
 	    })
 	    
-	    /*
-	    외부 공정코드랑 공정명 input에 값을 뿌려주는 코드 
-	    grid2.on('click', function(e){
-	      let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
-	      $('#proc_code').val(content.procCode); //proc_code라는 id의 인풋 창에 값 rowKey안의 procCode를 넣음
-	      $('#proc_name').val(content.procName);//proc_name라는 id의 인풋 창에 값 rowKey안의 procName을 넣음
-	   })      
-	    })
-	    
-	    */
-	    
-	    
+	
+	        
    	//초기화버튼 이벤트
    	$("#reset").on('click',function(){
    		$('div input').not("input[name=operate_check],#emp_num").val('');
@@ -346,36 +363,34 @@
    	//설비삭제버튼 이벤트
    	$("#delete").on('click', function(){
    		var facCode = $('#fac_code').val();
-   		
-   	// 사용 중인 설비인지 확인
-   	  /*  $.ajax({
-   	         url: "/fac/checkFacOperate",
-   	        method: "POST",
-   	        data: {
-   	            facCode: facCode
-   	        },
-   	        beforeSend: function(xhr) {
-   	            xhr.setRequestHeader(header, token);
-   	        },
-   	        success: function(result) {
-   	            if (result.operate_check ==='Y') {
-   	                if (!confirm("설비가 사용 중입니다. 그래도 삭제하시겠습니까?")) {
-   	                    return; // 삭제 취소
-   	                }
-   	            } */
-   		
+   		 		
    		$.ajax({
    			url: "/fac/facDelete", //컨트롤러에 연결된 주소
-			method : "post", //조회는 항상 get, 나머진 post
-			//json형태인 키:값 형태로 데이터넘김
+			method : "post", //조회는 항상 get, 나머진 post			
 			data: {
-				facCode : $('#fac_code').val()
+				facCode : $('#fac_code').val() //json형태인 키:값 형태로 데이터넘김
 			},
 		 	beforeSend: function (xhr) {
 	        	xhr.setRequestHeader(header, token);
 	        },
-	        success: function (result){	        	
-				alert('삭제성공');
+	        success: function (result){	  
+	        	if(result > 0){
+	        		 Toast.fire({
+	 	                icon: 'success', //success, error, warning, info, question
+	 	                title: '해당 설비정보가 삭제되었습니다.',
+	 	                width: 400 
+	 	              });
+	        	}else{
+	        		   Toast.fire({
+		   	                icon: 'error', //success, error, warning, info, question
+		   	                title: '해당 설비 삭제가 불가능합니다.',
+		   	                width: 400 
+		   	              });
+		        		return ;
+	        	}
+	       
+	           
+	        				
 			   $.ajax({
 			   		url : "/fac/infoListAjax",
 			   		method : "GET",
@@ -384,8 +399,8 @@
 			   		grid.resetData(result);
 			   		grid.refreshLayout();
 			   		}
-			   		})
-			   		$('div input').not("input[name=operate_check]").val('');
+			   	})
+			   	$('div input').not("input[name=operate_check]").val('');
 			},
 			error:function(reject){
 				console.log(reject)
@@ -393,6 +408,7 @@
    		})
 
    	});
+   	
    	//공정삭제버튼 이벤트
    	$('#selecProgDelete').click(function(){
    		getProcRows=Progaddgrid.getCheckedRows();
@@ -437,7 +453,13 @@
 	        	xhr.setRequestHeader(header, token);
 	        },
 			success: function (result){
-			alert('수정성공');
+				Toast.fire({
+	                icon: 'success', //success, error, warning, info, question
+	                title: '해당 설비정보가 수정되었습니다.',
+	                width: 400 
+	              });
+				
+		
 		$.ajax({
 		   		url : "/fac/infoListAjax",
 		   		method : "GET",
@@ -447,7 +469,7 @@
 		   		grid.refreshLayout();
 		   		}
 		   		})
-		   		$('div input').not("input[name=operate_check]").val('');
+		   		$('div input').not("input[name=operate_check],#emp_num").val('');
 				},
 				error:function(reject){
 				console.log(reject)
@@ -489,6 +511,13 @@
   	                    xhr.setRequestHeader(header, token);
    	                  },
     			success: function (result){
+    				Toast.fire({
+    	                icon: 'success', //success, error, warning, info, question
+    	                title: '해당 설비정보가 등록되었습니다.',
+    	                width: 400 
+    	              });
+    			
+    			
     		    $.ajax({
     		   		url : "/fac/infoListAjax",
     		   		method : "GET",
@@ -500,13 +529,13 @@
     		   		})
     		   		insertProcData.forEach(function(ele,i){
     		   			Progaddgrid.removeRow(ele.rowKey);
+    		   		$('div input').not("input[name=operate_check]").val('');	
     		   		});
-    		   		
-    		   		$('div input').not("input[name=operate_check]").val('');
-    		},
-    		error:function(reject){
-    			console.log(reject)
-    		}
+    		   		    		   		
+    			},
+    				error:function(reject){
+    				console.log(reject)
+    			}
     		
     		})
     	});
