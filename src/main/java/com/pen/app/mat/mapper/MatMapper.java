@@ -33,7 +33,7 @@ public interface MatMapper {
 	
 	//자재입고관리
 	List<WarehousingVO> getestwarehousinglist(); //자재입고페이지 검사내역리스트
-	public void getwarehousingregister(WarehousingVO vo); //자재입고등록
+	public int getwarehousingregister(WarehousingVO vo); //자재입고등록
 	public void getmativntryregister(WarehousingVO vo);
 	public String getMatLotWarehousing();
 	

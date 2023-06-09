@@ -101,7 +101,7 @@
 		b.mat_order_qy,
 		b.mat_untpc,
 		b.mat_totamt,
-		b.mat_reqdate
+		to_char(b.mat_reqdate ,'yyyy-mm-dd') mat_reqdate
 		from mat_order_header a join mat_order b
 		on(a.mat_ordernum=b.mat_ordernum)
 		WHERE TRUNC(a.mat_orderdate) =
@@ -117,7 +117,7 @@
 		b.mat_name,
 		a.acc_code,
 		a.mat_orderdate,
-		b.mat_reqdate,
+		to_char(b.mat_reqdate ,'yyyy-mm-dd') mat_reqdate,
 		a.mat_charger,
 		b.mat_untpc,
 		b.mat_order_qy,
@@ -154,7 +154,7 @@
 		b.mat_name,
 		a.acc_code,
 		a.mat_orderdate,
-		b.mat_reqdate,
+		to_char(b.mat_reqdate ,'yyyy-mm-dd') mat_reqdate,
 		a.mat_charger,
 		b.mat_untpc,
 		b.mat_order_qy,
@@ -195,7 +195,7 @@
 		b.mat_name,
 		a.acc_code,
 		a.mat_orderdate,
-		b.mat_reqdate,
+		to_char(b.mat_reqdate ,'yyyy-mm-dd') mat_reqdate,
 		a.mat_charger,
 		b.mat_untpc,
 		b.mat_order_qy,
@@ -215,7 +215,7 @@
 		b.mat_code,
 		b.mat_name,
 		a.mat_orderdate,
-		b.mat_reqdate,
+		to_char(b.mat_reqdate ,'yyyy-mm-dd') mat_reqdate,
 		a.mat_charger,
 		b.mat_untpc,
 		b.mat_order_qy,

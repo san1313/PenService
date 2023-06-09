@@ -33,9 +33,8 @@
     .text1 {
       padding: 0 5px 0 0;
     }
-
-	 .ordersearch label{
-    margin-left: 10px;
+    
+	.ordersearch label{
     padding: 5px;
     }
     .ordersearch button{
@@ -63,8 +62,8 @@
   <div layout:fragment="content">
     <div class="ordersearch">
     <form id="searchform">
-    <div class="row" style ="margin:15px 0 15px 0;">
-    <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+    <div class="row justify-content-center" style ="margin:15px 0 15px 0;">
+    <div class="col-1" style="flex: 0 0 7.5%; text-align: right;">
       <label class="col-form-label" for="matmodalmatname">자재명</label>
       </div>
       <div class="row col-2">
@@ -143,31 +142,38 @@
     bodyHeight : 600,
     columns: [{
     header: '자재출고코드',
-    name: 'matDlivycode'
+    name: 'matDlivycode',
+    align: "center"
     },
     {
     header: 'LOT번호',
-    name: 'matLot'
+    name: 'matLot',
+    align: "center"
     },
     {
     header: '자재코드',
-    name: 'matCode'
+    name: 'matCode',
+    align: "center"
     },
     {
     header: '자재명',
-    name: 'matName'
+    name: 'matName',
+    align: "center"
     },
     {
     header: '출고량',
-    name: 'matDlivyqnt'
+    name: 'matDlivyqnt',
+    align: "center"
     },
     {
     header: '출고일시',
-    name: 'matDlivydate'
+    name: 'matDlivydate',
+    align: "center"
     },
     {
     header: '출고내용',
-    name: 'matContent'
+    name: 'matContent',
+    align: "center"
     }
     ]
     });
@@ -198,11 +204,13 @@
         rowHeaders: ['rowNum'],
         columns: [{
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         }
       ]
     })
@@ -210,18 +218,24 @@
     
     $(function(){  
     $('#matmodal').on('shown.bs.modal', function(e){
+    	//자재모달
+    	//자동커서
+    	$('#ckmat-text').focus();
     	modal_grid.refreshLayout();
     });
     })
 
+     //자재모달엔터키
+      $("#ckmat-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckmat").click();   		  
+    	  }
+      })	
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
-    	console.log(document.getElementById('ckmat-text').value)
-    	let data0 = document.getElementById('ckmat-text').value;
-    	let result2 = "%";
-    	result2+=document.getElementById('ckmat-text').value;
-    	result2+="%";
+    	let result2 = document.querySelector('#matmodal #ckmat-text').value;
+
 		$("#ckmat-text").val('');
     	
     	$.ajax({

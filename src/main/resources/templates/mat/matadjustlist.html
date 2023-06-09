@@ -27,11 +27,18 @@
       margin: 20px 0 0px;
     }
     .form-control {
-	width: 150px;
+	width: 170px;
 	}
 	input.form-control{
 	display:inline-block;
 	}
+	.ordersearch label{
+    padding: 5px;
+    }
+    .ordersearch button{
+    height : 38px;
+    }
+    
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -54,29 +61,43 @@
   <div layout:fragment="content">
     <form id="searchform">
     <div class="ordersearch">
-     <div class="row">
-    <div class="col-3">
+     <div class="row justify-content-center" style ="margin:15px 0 15px 0;">
+
+    <div class="col-3" style="text-align:right;">
       <label>LOT번호</label>
-      <input class="text1 form-control" type="text" id="lotnum" name="matLot"> 
+      <input class="text1 form-control" type="text" id="lotnum" name="matLot" style="margin-right:10px;"> 
       </div>
-        <div class="col-3" >
-     <label  class="col-form-label" for="matMdatdate">조정일자</label>
-     <input class="form-control" type="date" name="matMdatdate" id="matMdatdate"> ~ 
+
+
+	<div class="row col-4">
+     <label>조정일자</label>
+	<div class="col-4">
+     <input class="form-control" type="date" name="matMdatdate" id="matMdatdate"></div>
+      <div class="col-1"> ~</div>
+	 <div class="col-5" style="position:relative; left:-30px;">
      <input class="form-control" type="date" id="matMdatdate1" name="matMdatdate1">
-     </div>
-     <div class=" col-3 justify-content-end">
+	</div>
+	</div>
+
+    <div class="row col-2" style="position:relative; left:-35px;">
+      <div class="col-4">
 	  <input  type="radio" name="matMdev" id="alladj" value="">
 	  <label class="form-check-label" for="alladj">전체</label>
+	  </div>
+	  <div class="col-4">
 	  <input  type="radio" name="matMdev" id="dli" value="출고">
 	  <label class="form-check-label" for="dli">출고</label>
+	  </div>
+	  <div class="col-4">
 	  <input type="radio" name="matMdev" id="inv" value="입고">
 	  <label class="form-check-label" for="inv">입고</label>
 	  </div>
-     <div class="col-3 row justify-content-end" >
+</div>
+     <div class="col-2" style="text-align:left;">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
     </div>
+     </div>
     </div>
-	</div>
 	</form>
 	<div id="lotadjustgride"></div>
 	
@@ -94,39 +115,48 @@
         bodyHeight : 600,
         columns: [{
         header: 'LOT번호',
-        name: 'matLot'
+        name: 'matLot',
+        align: "center"
         },
         {
         header: '자재명',
-        name: 'matName'
+        name: 'matName',
+        align: "center"
         },
         {
         header: '자재코드',
-        name: 'matCode'
+        name: 'matCode',
+        align: "center"
         },
         {
         header: '처리 전 재고량',
-        name: 'bmatQnt'
+        name: 'bmatQnt',
+        align: "center"
         },
         {
         header: '재고량',
-        name: 'matQnt'
+        name: 'matQnt',
+        align: "center"
         },
         {
         header: '자재조정수량',
-        name: 'matMdatqnt'
+        name: 'matMdatqnt',
+        align: "center"
         },
         {
-        header: '조정일자',
-        name: 'matMdatdate'
+        header: '조정일시',
+        name: 'matMdatdate',
+        align: "center"
         },
         {
         header: '조정구분',
-        name: 'matMdev'
+        name: 'matMdev',
+        align: "center"
         },
         {
         header: '조정사유',
-        name: 'matMdatresn'
+        name: 'matMdatresn',
+        align: "center"
         }
         ]
         });

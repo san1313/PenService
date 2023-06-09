@@ -38,7 +38,7 @@ public interface MatService {
 	
 	//자재입고관리
 	public List<WarehousingVO> getestwarehousinglist(); //자재입고 검사내역리스트	
-	public void getwarehousingregister(List<WarehousingVO> list); //자재입고등록
+	public String getwarehousingregister(List<WarehousingVO> list); //자재입고등록
 	
 	//자재입고조회
 	public List<WarehousingVO> gettodaywarehousinglist(); //당일건 자재입고리스트

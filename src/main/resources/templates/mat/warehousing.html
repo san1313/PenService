@@ -62,7 +62,7 @@
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 	tui.Grid.setLanguage('ko')
-	
+	var warehousinggrid = null;
 	 $.ajax({
 	  		url : "/mat/todaywarehousinglist",
 	  		method : "GET",
@@ -95,15 +95,18 @@
     bodyHeight : 250,
     columns: [{
     header: '자재코드',
-    name: 'matCode'
+    name: 'matCode',
+    align: "center"
     },
     {
     header: '자재명',
-    name: 'matName'
+    name: 'matName',
+    align: "center"
     },   
     {
     header: '발주번호',
-    name: 'matOrdernum'
+    name: 'matOrdernum',
+    align: "center"
     },
     {
     header: '자재내역번호',
@@ -112,7 +115,8 @@
     },
     {
     header: '총합격량',
-    name: 'testTnumPass'
+    name: 'testTnumPass',
+    align: "center"
     }
     ]
     });
@@ -123,47 +127,60 @@
     	checked.forEach((row)=>{
     		row.matWrhqy = row.testTnumPass;
     	})
-    	console.log(checked)
+    	let orginIdx = warehousinggrid.getData().length;
     	warehousinggrid.appendRows(checked);
+    	let ii = 0;
+    	let afterIdx = warehousinggrid.getData();
+    	afterIdx.forEach((ele,idx)=>{
+    		if(idx>=orginIdx){
+    			warehousinggrid.moveRow(ele.rowKey,ii);
+    			ii++;
+    		}
+    	})
     	testmetgrid.removeCheckedRows(false);
-	   
    })
     
    
     
-    var warehousinggrid = new tui.Grid({
+     warehousinggrid = new tui.Grid({
         el: document.getElementById('warehousinggrid'),
         scrollX: false,
         rowHeaders: ['checkbox'],
         bodyHeight : 250,
         columns: [{
          header: 'LOT번호',
-         name: 'matLot'
+         name: 'matLot',
+         align: "center"
          },
         {
         header: '자재코드',
-        name: 'matCode'
+        name: 'matCode',
+        align: "center"
         },
         {
         header: '자재명',
-        name: 'matName'
+        name: 'matName',
+        align: "center"
         },   
         {
         header: '발주번호',
-        name: 'matOrdernum'
+        name: 'matOrdernum',
+        align: "center"
         },
         {
         header: '자재내역번호',
         name: 'qipCodeListMat',
-        hidden: true   
+        hidden: true
         },
         {
         header: '거래처코드',
-        name: 'accCode'
+        name: 'accCode',
+        align: "center"
         },
         {
         header: '입고량',
-        name: 'matWrhqy'
+        name: 'matWrhqy',
+        align: "center"
         },
         {
         header: '총합격량',
@@ -192,26 +209,27 @@
 		   beforeSend: function (xhr){
 			   xhr.setRequestHeader(header, token);
 		   },
-		   dataType: "JSON",
 		   contentType: "application/json",
 		   success: function(result2){
-			   console.log(result2)
+			   console.log(result2);
+			   $.ajax({
+			  		url : "/mat/todaywarehousinglist",
+			  		method : "GET",
+			  		dataType : "JSON",
+			  		success : function(result){
+			  			console.log(result);
+			  			warehousinggrid.resetData(result);
+			  			warehousinggrid.refreshLayout();
+			  		}
+			  	});
+			   
 		   },
 		   error: function(reject){
 			   console.log(reject)
 		   }
 	   });
 	   
-	   $.ajax({
-	  		url : "/mat/todaywarehousinglist",
-	  		method : "GET",
-	  		dataType : "JSON",
-	  		success : function(result){
-	  			console.log(result);
-	  			warehousinggrid.resetData(result);
-	  			warehousinggrid.refreshLayout();
-	  		}
-	  	});
+	   
 
    })
     </script>

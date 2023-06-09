@@ -14,22 +14,9 @@
       padding: 20px;
     }
     .text1 {
-      margin: 15px;
       padding: 0 5px 0 ;
     }
     
-    #dlivy{
-	margin : 10px;
-	float:right;
-	margin-right:10px;
-
-	}
-	#subtn{
-	margin : 10px;
-	float:right;
-	margin-right:10px;
-
-	}
     #grid{
       margin: 20px 0 0px;
     }
@@ -37,6 +24,13 @@
     float:right;
     margin: 10px 0;
     }
+    .ordersearch label{
+    padding: 5px;
+    }
+    .ordersearch button{
+    height:38px;
+    }
+ 
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -57,16 +51,38 @@
   </div>
   
   <div layout:fragment="content">
-    <form id="searchform">
     <div class="ordersearch">
-      <label>LOT번호</label>
-      <input class="text1" type="text" id="lotnum" name="matLot">  
-     <label>검사일자</label>
-     <input class="text1" type="date" name="matChkeepdate" id="matChkeepdate"> ~ 
-     <input class="text1" type="date" id="matChkeepdate1" name="matChkeepdate1">
+    <form id="searchform">   
+    <div class="row justify-content-center" style ="margin:15px 0 15px 0;">
+    <div class="col-1" style="flex: 0 0 7.5%; text-align: right; position:relative; right:-100px; ">
+      <label class="col-form-label" for="lotnum">LOT번호</label>
+      </div>
+      <div class="row col-4">
+      <div class="col-7" style="position:relative; right:-100px;">
+      <input class="text1 form-control" type="text" id="lotnum" name="matLot"> 
+      </div> 
+      </div>
+  
+      <div class="col-1" style="position:relative; left:-50px;">
+     <label class="col-form-label" for="matChkeepdate">검사일자</label>
+     </div>
+     <div class=" row col-5">
+       <div class="row col-5" style="position:relative; left:-50px;">
+        <div class="col-11" >
+     <input class="text1 form-control" type="date" name="matChkeepdate" id="matChkeepdate"> </div>
+		<div class="col-1">~ </div>
+     </div>
+     <div class="col-5" style="position:relative; left:-50px;">
+     <input class="text1 form-control" type="date" id="matChkeepdate1" name="matChkeepdate1">
+      </div>
+      <div class="col-2" style="position:relative; left:-30px;">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+   </div>
     </div>
+     </div>
 	</form>
+    </div>
+	
 	<input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>  
 	<button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="resul" >결과반영</button>
 	<div id="grid"></div>
@@ -85,7 +101,8 @@
         bodyHeight : 550,
         columns: [{
         header: 'LOT번호',
-        name: 'matLot'
+        name: 'matLot',
+        align: "center"
         },
         {
         header: '폐기처리번호',
@@ -94,27 +111,33 @@
         },
         {
         header: '자재코드',
-        name: 'matCode'
+        name: 'matCode',
+        align: "center"
         },
         {
         header: '자재명',
-        name: 'matName'
+        name: 'matName',
+        align: "center"
         },
         {
         header: '검사량',
-        name: 'matTestQnt'
+        name: 'matTestQnt',
+        align: "center"
         },
         {
         header: '합격량',
-        name: 'matPassQnt'
+        name: 'matPassQnt',
+        align: "center"
         },
         {
         header: '폐기량',
-        name: 'matStaQnt'
+        name: 'matStaQnt',
+        align: "center"
         },
         {
         header: '변경보관기한',
-        name: 'matChkeepdate'
+        name: 'matChkeepdate',
+        align: "center"
         },
         {
         header: '사원번호',

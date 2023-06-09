@@ -46,11 +46,13 @@
       display: none;
       float: right;
       margin-right: 10px;
+      margin-bottom: 2px;
     }
 
     #suBtn {
       display: none;
       float: right;
+      margin-bottom: 2px;
     }
 
     .text1 {
@@ -218,13 +220,13 @@
           <div class="modal-body">
           <form id="modalsearch">
             <label>자재명</label>
-            <input class="modaltext" type="text" id="ckmat-text" name="matName">
-            <label>발주일자</label>
+            <input class="modaltext" type="text" id="ckmat-text" name="matName">    
+            <label>발주일자</label>   
             <input class="text1" type="date" name="matOrderdate" id="matOrderdate"> ~
             <input class="text1" type="date" id="matOrderdate1" name="matOrderdate1">
             <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ordck">조회</button>
              <div class="d-grid gap-2 d-md-flex justify-content-md-end">
-              <button class="btn btn-success" type="button" id="modiford">수정</button>
+              <button class="btn btn-primary" type="button" id="modiford">수정</button>
               <button class="btn btn-danger" type="button" id="delord">삭제</button>
             </div>
             </form>
@@ -268,7 +270,8 @@
         bodyHeight : 200,
         columns: [{
           header: '발주번호',
-          name: 'matOrdernum'
+          name: 'matOrdernum',
+          align: "center"
         },
         {
         header: '발주상세번호',
@@ -277,48 +280,58 @@
         },
         {
           header: '발주명',
-          name: 'matOrdername'
+          name: 'matOrdername',
+          align: "center"
         },
         {
           header: '거래처코드',
-          name: 'accCode'
+          name: 'accCode',
+          align: "center"
         },
         {
           header: '거래처명',
-          name: 'accName'
+          name: 'accName',
+          align: "center"
         },
         {
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         },
         {
           header: '발주량',
           name: 'matOrderQy',
-          editor: 'text'
+          editor: 'text',
+          align: "center"
         },
         {
           header: '단가',
           name: 'matUntpc',
-          editor: 'text'
+          editor: 'text',
+          align: "center"
         },
         {
           header: '총금액',
-          name: 'matTotamt'
+          name: 'matTotamt',
+          align: "center"
         },
         {
           header: '납기일',
-          name: 'matReqdate'
+          name: 'matReqdate',
+          align: "center"
         },
         {
           header: '담당자',
-          name: 'matCharger'
+          name: 'matCharger',
+          align: "center"
         },
         {
-          header: '발주일자',
+          header: '발주일시',
           name: 'matOrderdate',
           hidden: true
         }
@@ -329,12 +342,12 @@
           columnContent: {
             matOrderQy: {
               template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
+            	  return `TOTAL: ${valueMap.sum}`;
               }
             },
             matTotamt: {
               template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
+            	  return `TOTAL: ${valueMap.sum}`;
               }
             }
           }
@@ -378,11 +391,13 @@
         rowHeaders: ['rowNum'],
         columns: [{
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         }
         ]
       })
@@ -392,13 +407,15 @@
         $('#matmodal').on('shown.bs.modal', function (e) {
           //자재명모달
           matmodallist();
+          //자동커서
+          $('#ckmat-text').focus();
           modal_grid.refreshLayout();
         });
 
 
         $('#accmodal').on('shown.bs.modal', function (e) {
           //거래처모달
-
+			$('#ckacc-text').focus();
           $.ajax({
             url: "/mat/acclist",
             method: "GET",
@@ -416,17 +433,20 @@
 
       })
 
-
+	//자재모달엔터키
+      $("#ckmat-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckmat").click();   		  
+    	  }
+      })	
 
       //자재모달검색조회
       $("#ckmat").on('click', function () {
-        console.log(document.getElementById('ckmat-text').value)
-        let data0 = document.getElementById('ckmat-text').value;
-        let result2 = "%";
-        result2 += document.getElementById('ckmat-text').value;
-        result2 += "%";
+  
+        let result2 = document.querySelector('#matmodal #ckmat-text').value;
         $("#ckmat-text").val('');
-
+		
+    		   
         $.ajax({
           url: "/mat/matminilist",
           method: "GET",
@@ -440,6 +460,7 @@
 
           }
         })
+
       });
 
       //자재모달선택
@@ -498,11 +519,13 @@
         columns: [
           {
             header: '거래처코드',
-            name: 'accCode'
+            name: 'accCode',
+            align: "center"
           },
           {
             header: '거래처명',
-            name: 'accName'
+            name: 'accName',
+            align: "center"
           }
         ]
       });
@@ -514,13 +537,19 @@
       })
 
 
+      
+    //거래처모달엔터키
+      $("#ckacc-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckacc").click();   		  
+    	  }
+      })	
+      
       //거래처모달검색조회
       $("#ckacc").on('click', function () {
-        console.log(document.getElementById('ckacc-text').value)
-        let data1 = document.getElementById('ckacc-text').value;
-        let result = "%";
-        result += data1;
-        result += "%";
+        let data1 = document.querySelector('#accmodal #ckacc-text').value;
+        result = data1;
+
         $("#ckacc-text").val('');
 
         $.ajax({
@@ -604,53 +633,65 @@
         rowHeaders: ['checkbox'],
         columns: [{
           header: '발주번호',
-          name: 'matOrdernum'
+          name: 'matOrdernum',
+          align: "center"
         },
         {
         header: '발주상세번호',
-        name: 'matDtaordcode'
+        name: 'matDtaordcode',
+        align: "center"
         },
         {
         header: '발주명',
-        name: 'matOrdername'
+        name: 'matOrdername',
+        align: "center"
         },
         {
           header: '거래처코드',
-          name: 'accCode'
+          name: 'accCode',
+          align: "center"
         },
         {
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         },
         {
           header: '발주량',
           name: 'matOrderQy',
+          align: "center",
           editor: 'text'
         },
         {
           header: '단가',
           name: 'matUntpc',
+          align: "center",
           editor: 'text'
         },
         {
           header: '총금액',
-          name: 'matTotamt'
+          name: 'matTotamt',
+          align: "center"
         },
         {
           header: '납기일',
-          name: 'matReqdate'
+          name: 'matReqdate',
+          align: "center"
         },
         {
           header: '담당자',
-          name: 'matCharger'
+          name: 'matCharger',
+          align: "center"
         },
         {
-          header: '발주일자',
-          name: 'matOrderdate'
+          header: '발주일시',
+          name: 'matOrderdate',
+          align: "center"
         }
         ]
       	});
@@ -788,6 +829,7 @@
 
           };
           grid.appendRow(necc);
+          
           $('#matmodalmatname').val("");
           $('#matmodalmatcode').val("");
           $('#matReqdate').val("");
@@ -864,47 +906,58 @@
         rowHeaders: ['rowNum'],
         columns: [{
           header: '발주번호',
-          name: 'matOrdernum'
+          name: 'matOrdernum',
+          align: "center"
         },
         {
           header: '발주명',
-          name: 'matOrdername'
+          name: 'matOrdername',
+          align: "center"
         },
         {
           header: '거래처코드',
-          name: 'accCode'
+          name: 'accCode',
+          align: "center"
         },
         {
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         },
         {
           header: '발주량',
-          name: 'matOrderQy'
+          name: 'matOrderQy',
+          align: "center"
         },
         {
           header: '단가',
-          name: 'matUntpc'
+          name: 'matUntpc',
+          align: "center"
         },
         {
           header: '총금액',
-          name: 'matTotamt'
+          name: 'matTotamt',
+          align: "center"
         },
         {
           header: '납기일',
-          name: 'matReqdate'
+          name: 'matReqdate',
+          align: "center"
         },
         {
           header: '담당자',
-          name: 'matCharger'
+          name: 'matCharger',
+          align: "center"
         },
         {
-          header: '발주일자',
-          name: 'matOrderdate'
+          header: '발주일시',
+          name: 'matOrderdate',
+          align: "center"
         }
         ],
         summary: {
@@ -913,12 +966,12 @@
           columnContent: {
             matOrderQy: {
               template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
+            	  return `TOTAL: ${valueMap.sum}`;
               }
             },
             matTotamt: {
               template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
+            	  return `TOTAL: ${valueMap.sum}`;
               }
             }
           }
