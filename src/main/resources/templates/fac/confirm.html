@@ -6,16 +6,26 @@
 <meta charset="UTF-8" />
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
+    
 <title>PenServiceMES</title>
-<style>
 
+<style>
+.ser{
+float:left;
+}
+#grid{
+margin: 80px 0 ;
+}
 </style>
 
-<script src="https://code.jquery.com/jquery-1.11.3.js"></script>
-<link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
-<script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
-<link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
-<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+  <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+  <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+  <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+  <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 </head>
 
 <body>
@@ -42,7 +52,7 @@
             </label>
             
 
-            <label for="confirm_date">점검일자</label>&nbsp;&nbsp;&nbsp;
+            <label for="confirm_date">점검일자</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="date" id="confirmDatei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     
             <label for="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;
@@ -54,7 +64,7 @@
             <label for="action_history">조치내역</label>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="action_history">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
               
-            <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;
+            <label for="confirm_issue">점검사항</label>&nbsp;&nbsp;&nbsp;&nbsp;
             <select name="confirm_issue" id="confirm_issue" style="width:120px; height:30px;" >
                <option value="선택" selected="selected">---선택---</option>
                <option value="점검">점검</option>
@@ -71,10 +81,10 @@
             
             <div class="col-12">
                <div class="col-8" style="margin:0 auto">
-                  <button class="w-30 btn btn-primary btn-lg" id="register" type="submit">등록</button>
-                  <button class="w-30 btn btn-warning btn-lg" id="update" type="button">수정</button>
-                  <button class="w-20 btn btn-danger btn-lg" id="delete" type="button">삭제</button>
-                  <button class="w-30 btn btn-success btn-lg" id="reset" type="reset">초기화</button>
+                  <button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
+                  <button class="w-30 btn btn-warning btn" id="update" type="button">수정</button>
+                  <button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
+                  <button class="w-30 btn btn-success btn" id="reset" type="reset">초기화</button>
                </div>
             </div>
    </div>
@@ -108,15 +118,26 @@
 </div>
 
 <hr>
-<!-- 기간별 검색시작 -->
-<div class="col-lg-12" style="text-align:left">
+<!---점검검색시작-->
 <form id="searchform">
+<div class="ser">
+  	 <select name = "searchDiv">
+  	 	<option value="" selected="selected">---선택---</option>
+  	 	<option value="fac_name">설비명</option>
+ 	 	<option value="fac_code">설비코드</option>
+  		<option value="emp_num">담당자</option>
+  	 </select>
+  	<input type="text" id="searchName">
+  	<!--  <button type="button" id="facBtn" class="btn btn-primary fa-solid fa-magnifying-glass"></button>-->
+  	<!--  <button class="btn btn-primary" type="button" id="facInitBtn">초기화</button>-->
+
+<!-- 기간별 검색시작 -->
 <label>점검기간</label>
   <input class="text1" type="date" id="confirmday1" name = "confirmday1"> ~
   <input class="text1" type="date" id="confirmday2" name = "confirmday2">
   <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    		
-</form>
 </div>
+</form>
  <!-- 점검내역그리드화면 -->
  <div id="grid"></div>
       
@@ -159,6 +180,30 @@
 			});
 		})
     	
+		 //조건검색+점검기간 조회버튼 이벤트
+         document.getElementById('submitbtn').addEventListener('click',function(){
+        	
+        	let data = { searchDiv, searchName ,confirmday1, confirmday2 }
+        	facConfirmListSearch(data);
+        	$('[name="searchDiv"]').val('');
+			$("#searchName").val('');
+        	 
+      		$.ajax({
+         		 url : "/fac/confirmdaysSearchAjax",
+         	     method : "GET",
+         	    data: $('#searchform').serialize(),       
+         	     dataType : "JSON",
+         	     success : function(result){
+         	    	 console.log(result)
+         	    	grid.resetData(result);
+         	    	grid.refreshLayout();	
+         	     },
+         	     error: function(reject){
+         	    	 console.log(reject)
+           		}
+         	}); 
+         })        
+      
   
           //점검목록리스트그리드
           function facConfirmListSearch(data){
@@ -180,6 +225,7 @@
           scrollX: false,
           scrollY: false,
           rowHeaders: ['rowNum'],
+          bodyHeight : 250,
           columns: [
             {
               header: '점검코드',
@@ -271,24 +317,6 @@
          
       })      
       
-       //점검기간 조회버튼
-         document.getElementById('submitbtn').addEventListener('click',function(){
-          	
-      		$.ajax({
-         		 url : "/fac/confirmdaysSearchAjax",
-         	     method : "GET",
-         	    data: $('#searchform').serialize(),       
-         	     dataType : "JSON",
-         	     success : function(result){
-         	    	 console.log(result)
-         	    	grid.resetData(result);
-         	    	grid.refreshLayout();	
-         	     },
-         	     error: function(reject){
-         	    	 console.log(reject)
-           }
-         }); 
-         })        
       
          
       //초기화버튼 이벤트

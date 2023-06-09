@@ -66,6 +66,13 @@
       margin: 10px 0 10px;
       float: right;
     }
+    .ordersearch .col-1{
+    line-height:65px;
+    }
+  	.ordersearch button{
+  	margin-top:15px;
+  	height:38px;
+  	}
 
   </style>
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
@@ -86,26 +93,67 @@
   </div>
 
   <div layout:fragment="content">
-    <div class="ordersearch">
-      <label>발주번호</label>
-      <input id="orderCode" class="text1" readonly>
-      <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly>
-      <input class="text1" type="hidden" id="matmodalmatcode" readonly>
-      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal"
-        data-target="#matmodal"></button>
-      <label>납기일</label>
-      <input class="text1" type="date" id="matReqdate"><br>
-      <label>거래처명</label>
-      <input class="text1" type="text" id="accmodalname" readonly>
+    <div class="ordersearch inputContainer">
+    <div class="row">
+      <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="orderCode">발주번호</label>
+      </div>
+       <div class="col-2">
+      <input id="orderCode" class="text1 form-control" readonly>
+      </div>
+      <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="accmodalname">거래처명</label>
+      </div>
+      <div class="row col-3">
+      <div class="col-9">
+      <input class="text1 form-control" type="text" id="accmodalname" readonly>
       <input class="text1" type="hidden" id="accmodalcode" readonly>
+      </div>
+      <div class="col-3">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal"
         data-target="#accmodal"></button>
-      <label>담당자</label>
-      <input class="text1" type="text" id="matCharger" th:value="${#authentication.principal.username}" readonly>
-      <button type="button" id="addmatbtn" class="btn btn-primary fa-solid fa-magnifying-glass">추가</button>
+        </div>
+        </div>
+        <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="matmodalmatname">자재명</label>
+      </div>
+      <div class="row col-3">
+      <div class="col-9">
+      <input class="text1 form-control" type="text" id="matmodalmatname" readonly>
+      <input class="text1" type="hidden" id="matmodalmatcode" readonly>
+      </div>
+       <div class="col-3">
+      <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal"
+        data-target="#matmodal"></button><br>
+        </div>
+        </div>
+        </div>
+        <div class="row">
+         <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="matReqdate">납기일</label>
+      </div>
+      <div class="col-2">
+      <input class="text1 form-control" type="date" id="matReqdate">
+      </div>
+       <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
+      <label class="col-form-label" for="ordername">발주명</label>
+      </div>
+      <div class="col-3">
+      <input class="text1 form-control" type="text" id="ordername">
+      </div>
+       <div class="col-1" style="flex: 0 0 7.5%; text-align: right; padding-right:20px;" >
+      <label class="col-form-label" for="matCharger">담당자</label>
+      </div>
+      <div class="row col-3">
+      <div class="col-9">
+      <input class="text1 form-control" type="text" id="matCharger" th:value="${#authentication.principal.username}" style="margin:15px 0 0 0;" readonly>
+      </div>
+      <div class="col-3">
+      <button type="button"  id="addmatbtn" class="btn btn-primary fa-solid fa-magnifying-glass">추가</button>
+      </div>
+      </div>
     </div>
-
+</div>
     <!-- 자재명모달 -->
     <div class="modal fade bd-example-modal-lg" id="matmodal" tabindex="-1" role="dialog"
       aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -120,7 +168,7 @@
           <div class="modal-body">
             <label>자재명</label>
             <input class="modaltext" type="text" id="ckmat-text">
-            <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+            <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
             <div id="mat-modal-grid"></div>
           </div>
         </div>
@@ -142,7 +190,7 @@
           <div class="modal-body">
             <label>거래처코드</label>
             <input class="modaltext" type="text" id="ckacc-text">
-            <button class="ckaccmodalbtn" type="button" id="ckacc">조회</button>
+            <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckacc">조회</button>
             <div id="acc-modal-grid"></div>
           </div>
         </div>
@@ -155,7 +203,7 @@
       <div class="modal-dialog modal-xl">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">발주목록</h5>
+            <h5 class="modal-title">발주수정삭제</h5>
             <button type="button" class="close" data-dismiss="modal" aria-label="Close">
               <span aria-hidden="true">&times;</span>
             </button>
@@ -191,7 +239,7 @@
     <script>
       const token = $('meta[name="_csrf"]').attr("content");
       const header = $('meta[name="_csrf_header"]').attr("content");
-
+      var ckgrid = null;
       // 당일발주건리스트
       $.ajax({
         url: "/mat/todaymatregister",
@@ -210,19 +258,19 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['checkbox'],
+        bodyHeight : 200,
         columns: [{
           header: '발주번호',
           name: 'matOrdernum'
         },
         {
-            header: '발주상세번호',
-            name: 'matDtaordcode',
-            hidden:true
-            },
+        header: '발주상세번호',
+        name: 'matDtaordcode',
+        hidden:true
+        },
         {
           header: '발주명',
-          name: 'matOrdername',
-          editor: 'text'
+          name: 'matOrdername'
         },
         {
           header: '거래처코드',
@@ -298,16 +346,20 @@
 
 
       //자재명모달
-      $.ajax({
-        url: "/mat/matlist",
-        method: "GET",
-        dataType: "JSON",
-        success: function (result) {
-          console.log(result);
-          modal_grid.resetData(result);
-          modal_grid.refreshLayout();
-        }
-      });
+      function matmodallist(){
+	      $.ajax({
+	        url: "/mat/matlist",
+	        method: "GET",
+	        dataType: "JSON",
+	        data:{accName : $('#accmodalname').val()},
+	        success: function (result) {
+	          console.log(result);
+	          modal_grid.resetData(result);
+	          modal_grid.refreshLayout();
+	        }
+	      });
+    	  
+      }
 
 
 
@@ -332,6 +384,7 @@
       $(function () {
         $('#matmodal').on('shown.bs.modal', function (e) {
           //자재명모달
+          matmodallist();
           modal_grid.refreshLayout();
         });
 
@@ -540,8 +593,7 @@
         },
         {
         header: '발주명',
-        name: 'matOrdername',
-        editor: 'text'
+        name: 'matOrdername'
         },
         {
           header: '거래처코드',
@@ -581,24 +633,8 @@
           header: '발주일자',
           name: 'matOrderdate'
         }
-        ],
-        summary: {
-          height: 40,
-          position: 'bottom',
-          columnContent: {
-            matOrderQy: {
-              template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
-              }
-            },
-            matTotamt: {
-              template: function (valueMap) {
-                return `TOTAL: ${valueMap.sum}`;
-              }
-            }
-          }
-        }
-      });
+        ]
+      	});
 	
     //조회버튼
       document.getElementById('ordck').addEventListener('click',function(){
@@ -634,6 +670,27 @@
           },         
           contentType: "application/json",
           success: function (result4) {
+        	  $.ajax({
+                  url: "/mat/todaymatregister",
+                  method: "GET",
+                  dataType: "JSON",
+                  success: function (result) {
+                    console.log(result);
+                    ckgrid.resetData(result);
+                    ckgrid.refreshLayout();
+                  }
+                });
+
+        		$.ajax({
+                url: "/mat/orderlistajax",
+                method: "GET",
+                dataType: "JSON",
+                success: function (result) {
+                  console.log(result);
+                  ordmodal.resetData(result);
+                  ordmodal.refreshLayout();
+                }
+              });
           //  let app = result4;
             //ordmodal.appendRows(app);
             //onsole.log(result4);
@@ -644,16 +701,7 @@
 
         });
     	
-    	 $.ajax({
-    	        url: "/mat/orderlistajax",
-    	        method: "GET",
-    	        dataType: "JSON",
-    	        success: function (result) {
-    	          console.log(result);
-    	          ordmodal.resetData(result);
     	          ordmodal.refreshLayout();
-    	        }
-    	      });   	 
      })
      
 
@@ -671,6 +719,28 @@
              },
              contentType: "application/json",
              success: function (result4) {
+            	 
+            	 $.ajax({
+                     url: "/mat/todaymatregister",
+                     method: "GET",
+                     dataType: "JSON",
+                     success: function (result) {
+                       console.log(result);
+                       ckgrid.resetData(result);
+                       ckgrid.refreshLayout();
+                     }
+                   });
+
+           		$.ajax({
+                   url: "/mat/orderlistajax",
+                   method: "GET",
+                   dataType: "JSON",
+                   success: function (result) {
+                     console.log(result);
+                     ordmodal.resetData(result);
+                     ordmodal.refreshLayout();
+                   }
+                 });
                //let app = result4;
                //ordmodal.appendRows(app);
                //onsole.log(result4);
@@ -680,16 +750,6 @@
              }
 
            });
-    	 $.ajax({
- 	        url: "/mat/orderlistajax",
- 	        method: "GET",
- 	        dataType: "JSON",
- 	        success: function (result) {
- 	          console.log(result);
- 	          ordmodal.resetData(result);
- 	          ordmodal.refreshLayout();
- 	        }
- 	      }); 
     	 
      })
      
@@ -708,6 +768,7 @@
             matOrdernum: $('#orderCode').val(),
             matName: $('#matmodalmatname').val(),
             matCode: $('#matmodalmatcode').val(),
+            matOrdername: $('#ordername').val(),
             accCode: $('#accmodalcode').val(),
             accName: $('#accmodalname').val(),
             matReqdate: $('#matReqdate').val(),
@@ -753,43 +814,37 @@
           checked[i].matOrderdate = new Date().toISOString().slice(0, 10);
         });
 
-
-        console.log(checked);
         $.ajax({
           url: "/mat/matregister",
           method: "POST",
-          data: JSON.stringify(grid.getCheckedRows()),
+          data: JSON.stringify(checked),
           beforeSend: function (xhr) {
             xhr.setRequestHeader(header, token);
           },
           dataType: "JSON",
           contentType: "application/json",
           success: function (result3) {
-            let app = result3;
-            ckgrid.appendRows(app);
-            console.log(result3);
-
+        	  console.log('등록 후');
+        	  $.ajax({
+                  url: "/mat/todaymatregister",
+                  method: "GET",
+                  dataType: "JSON",
+                  success: function (result) {
+                	  console.log('등록후 자동조회');
+                    console.log(result);
+                    ckgrid.resetData(result);
+                    ckgrid.refreshLayout();
+                  }
+                });
           }
 
         });
         grid.removeCheckedRows(false);
 
-        $.ajax({
-          url: "/mat/todaymatregister",
-          method: "GET",
-          dataType: "JSON",
-          success: function (result) {
-            console.log(result);
-            ckgrid.resetData(result);
-            ckgrid.refreshLayout();
-          }
-        });
-
       })
 
 
-
-      var ckgrid = new tui.Grid({
+      ckgrid = new tui.Grid({
         el: document.getElementById('ckgrid'),
         scrollX: false,
         scrollY: false,

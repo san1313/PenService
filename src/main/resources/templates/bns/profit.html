@@ -1,0 +1,156 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+
+<meta charset="UTF-8">
+<title>Insert title here</title>
+<script src="https://kit.fontawesome.com/56e7c5522c.js"
+	crossorigin="anonymous"></script>
+	<link rel="stylesheet" href="https://uicdn.toast.com/chart/latest/toastui-chart.min.css" />
+<script src="https://uicdn.toast.com/chart/latest/toastui-chart.min.js"></script>
+	<script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script
+	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+
+
+
+<!-- <script src="https://code.jquery.com/jquery-1.11.3.js"></script> -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="/plugins/jquery/jquery.min.js"></script>
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<style>
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
+</style>
+</head>
+<body>
+<div layout:fragment="title">
+		<h1>제품별/거래처별 판매실적</h1>
+	</div>
+		<div layout:fragment="content">
+			<div class="row justify-content-center">
+			<div class="col-4">
+			<label>거래처명</label> <input class="form-control" name="accName" type="text" id="accountlist-text"
+				style="background-color: #e2e1e1;width:200px; display:inline-block;" readonly>
+			<button  type="button" style="height:38px;margin-bottom:3px" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
+		</div>
+		<div class="col-4">
+				<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:200px" name="prodName" readonly>
+		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+		</div>
+		</div>
+		<div style="margin-top : 50px;"class="row justify-content-center">
+		
+		<div id="chart"></div>
+		
+		<!-- 제품명 모달 -->
+	<div class="modal fade bd-product-modal-lg" id="productListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="p-3 modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle"></h1>
+					<p>
+						<label>제품명</label> <input id="searchprod-text" type="text">
+						<button type="button" id="searchprod"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="productGrid"></div>
+					<div class="modalbtn">
+						<button type="button" class="btn btn-primary" id="modalsubmit" data-toggle="modal"
+							data-target=".bd-product-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 제품명 모달 끝 -->
+		<!-- 거래처리스트 모달 -->
+		<div class="modal fade bd-account-modal-lg" id="accountListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="p-3 modal-content">
+			<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+						<h1 class="modaltitle"></h1>
+					<p>
+						<label >거래처명</label> <input type="text" id="searchacc-text">
+						<button id="searchacc" type="submit" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					</p>
+					<div id="accountGrid"></div>
+
+					<div class="modalbtn ">
+						<button class="btn btn-primary" id="searchacc-btn" data-toggle="modal"
+							data-target=".bd-account-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 거래처리스트 모달 끝 -->
+		</div>
+		
+		
+		<script>
+		
+		const token = $('meta[name="_csrf"]').attr("content");
+		const header = $('meta[name="_csrf_header"]').attr("content");
+		
+		/* namespace */
+		const Chart = toastui.Chart;		
+		const el = document.getElementById('chart');
+		const data = {
+		  categories: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+		  series: [
+		    {
+		      name: '',
+		      data: [5000, 3000, 5000, 7000, 6000, 4000, 1000],
+		    },
+		    {
+		      name: 'Income',
+		      data: [8000, 4000, 7000, 2000, 6000, 3000, 5000],
+		    },
+		  ],
+		};
+		
+		const options = {
+		  chart: { width: 800, height: 500 },
+		};
+		
+		const chart = Chart.barChart({ el, data, options });
+		// const chart = new BarChart({ el, data, options }); // Second way
+		</script>
+		</div>
+</body>
+</html>

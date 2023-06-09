@@ -385,7 +385,6 @@
                 if (ele[colName] === null && colName != "bomCode") {
                   // 빈칸 체크
                   check = true;
-                  console.log(colName);
                 }
               }
             });
@@ -408,7 +407,10 @@
               alert("제품코드를 먼저 입력해주십시오.");
               return;
             }
-            grid.appendRow({ bomProdCode: $("#itemCode").val(), bomProdName: $("#itemName").val() }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+            grid.appendRow(
+              { bomProdCode: $("#itemCode").val(), bomProdName: $("#itemName").val(), bomMatUsage: 0 },
+              { focus: true }
+            ); // 행을 추가하고 마우스 커서를 이동
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified"); // 색칠
           });
           //재료 추가 끝
@@ -490,7 +492,6 @@
               data: { itemCode: row.itemCode },
             })
               .done((r) => {
-                console.log(r);
                 r.forEach((ele) => {
                   procNameList.push({ text: ele.procName, value: ele.procCode });
                 });

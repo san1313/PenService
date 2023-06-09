@@ -9,33 +9,28 @@
   <title>자재조정관리</title>
 
   <style>
-    .ordersearch {
+	.ordersearch {
       border: 1px solid black;
       padding: 20px;
     }
     .text1 {
-      margin: 15px;
-      padding: 0 5px 0 ;
+    margin: 15px;
+    padding: 0 5px 0 ;
     }
     
     #dlivy{
 	margin : 10px;
 	float:right;
-	margin-right:10px;
-
 	}
 	#subtn{
 	margin : 10px;
-	float:right;
-	margin-right:10px;
-
+	float:right;	
 	}
     #lotadjustgride{
       margin: 20px 0 0px;
     }
     #matadjustgrid{
      display:none;
-     margin:20px 0 0;
     }
 
   </style>
@@ -57,13 +52,19 @@
   </div>
   
   <div layout:fragment="content">
+  <form id = "searchform">
     <div class="ordersearch">
       <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly	>
-      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      <input class="text1" type="text" id="matmodalmatname" name="matName" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" name="matCode" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+      <label>LOT번호</label>
+      <input class="text1" type="text" id="matlot" name="matLot">
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
+      <input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}"  readonly>    
     </div>
+    </form>
+
 
     <!-- 자재명모달 -->
     <div class="modal fade bd-example-modal-lg" id="matmodal" tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel" aria-hidden="true">
@@ -78,7 +79,7 @@
       <div class="modal-body">
         <label>자재명</label>
         <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
       	<div id="mat-modal-grid"></div>
       </div>
     </div>
@@ -87,12 +88,13 @@
 
 
 	<div id="lotadjustgride"></div>
-	<div id="matadjustgrid"></div>
-	
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
+	<input class="text1" type="hidden" id="empId" name="empId" th:value="${#authentication.principal.username}" readonly>
      <button type="button" class="btn btn-primary" id="subtn">입고</button>
      <button type="button" class="btn btn-primary" id="dlivy">출고</button>
 	</div>
+	<div id="matadjustgrid"></div>
+	
 	
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
@@ -104,7 +106,7 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['rowNum'],
-        bodyHeight : 200,
+        bodyHeight : 250,
         columns: [{
         header: 'LOT번호',
         name: 'matLot'
@@ -238,13 +240,13 @@
     
    //조회버튼
    $("#submitbtn").on('click',function(){
-	   let data1 = document.getElementById('matmodalmatname').value;
+
 	   
 	   $("#matmodalmatname").val("");
 	   $.ajax({
 		 url: "/mat/matadjustsearch",
 		 method: "GET",
-		 data : {'result' : data1},
+		 data : $('#searchform').serialize(),
 		 success : function(result){
 			 console.log(result)
 			 lotadjustgride.resetData(result);
@@ -264,6 +266,7 @@
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
+    bodyHeight : 250,
     columns: [{
     header: 'LOT번호',
     name: 'matLot'
@@ -289,6 +292,11 @@
     header: '조정사유',
     name: 'matMdatresn',
     editor:'text'
+    },
+    {
+    header: '사원번호',
+    name: 'empId',
+    hidden: true
     }
     ]
     });
@@ -320,10 +328,14 @@
     	let checked = matadjustgrid.getCheckedRows();
     	
     	console.log(checked);
+    	checked[0].matMdev= '입고'; 
+    	checked[0].empId =$('#empId').val();
+   
+    	
     	 $.ajax({
     	  		url : "/mat/matadjustregister",
     	  		method : "POST",
-    	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+    	  		data : JSON.stringify(checked),
     	  		beforeSend: function (xhr) {
     	            xhr.setRequestHeader(header, token);
     	          },
@@ -331,6 +343,7 @@
     	  		contentType: "application/json",
     	  		success : function(result3){
     	  			console.log(result3);
+    	  			
     	  		},
     	  		error: function(reject){
     	  			console.log(reject)
@@ -345,10 +358,13 @@
     	let checked2 = matadjustgrid.getCheckedRows();
     	console.log(checked2);
     	
+    	checked2[0].matMdev='출고';
+    	checked2[0].empId =$('#empId').val();
+    	
     	$.ajax({
 	  		url : "/mat/matadjustdliregister",
 	  		method : "POST",
-	  		data : JSON.stringify(matadjustgrid.getCheckedRows()),
+	  		data : JSON.stringify(checked2),
 	  		beforeSend: function (xhr) {
 	            xhr.setRequestHeader(header, token);
 	          },
@@ -363,10 +379,7 @@
 	         
 	  	});    	 	
     	
-    })
-    
-  
-   
+    })  
     </script>
 
     </div>

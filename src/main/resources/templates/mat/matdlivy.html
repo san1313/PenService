@@ -38,7 +38,7 @@
       margin: 0 10px;
     }
 
-    #igrid {
+    #dlivygrid {
       margin: 20px 0 10px;
     }
 	#deletematbtn{
@@ -80,13 +80,16 @@
   
   <div layout:fragment="content">
     <div class="ordersearch">
+    <form id="searchform">
       <label>자재명</label>
-      <input class="text1" type="text" id="matmodalmatname" readonly	>
-      <input class="text1" type="hidden" id="matmodalmatcode" readonly	>
+      <input class="text1" type="text" id="matmodalmatname" name = "matName" readonly	>
+      <input class="text1" type="hidden" id="matmodalmatcode" name = "matCode" readonly	>
       <button id="matmodalBtn" type="button" class="btn btn-primary fa-solid fa-magnifying-glass" data-toggle="modal" data-target="#matmodal"></button>
       <label>출고일자</label>
-      <input class="text1" type="date" id="matDlivydate"> ~ <input class="text1" type="date" id="matDlivydate1">
-      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>    
+      <input class="text1" type="date" id="matDlivydate" name = "matDlivydate"> ~ 
+      <input class="text1" type="date" id="matDlivydate1 " name = "matDlivydate1">
+      <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
+      </form>    
     </div>
 
     <!-- 자재명모달 -->
@@ -102,7 +105,7 @@
       <div class="modal-body">
         <label>자재명</label>
         <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
       	<div id="mat-modal-grid"></div>
       </div>
     </div>
@@ -133,7 +136,7 @@
     el: document.getElementById('dlivygrid'),
     scrollX: false,
     rowHeaders: ['rowNum'],
-    bodyHeight : 200,
+    bodyHeight : 600,
     columns: [{
     header: '자재출고코드',
     name: 'matDlivycode'
@@ -149,10 +152,6 @@
     {
     header: '자재명',
     name: 'matName'
-    },
-    {
-    header: '단위',
-    name: 'matUnit'
     },
     {
     header: '출고량',
@@ -270,17 +269,11 @@
      
    //조회버튼
 	 document.getElementById('submitbtn').addEventListener('click',function(){
-	   var matName = document.getElementById('matmodalmatname').value;
-	   var startDate = document.getElementById('matDlivydate').value;
-	   var endDate = document.getElementById('matDlivydate1').value;
-    	
-    	
+    	    	
 		 $.ajax({
    		 url : "/mat/matdlivysearchlist",
    	     method : "GET",
-   	     data : {matName: matName,
-   	    		matDlivydate : startDate,
-   	    		matDlivydate1 : endDate}, 
+   	     data : $('#searchform').serialize(),
    	     dataType : "JSON",
    	     success : function(result){
    	    	 console.log(result)
@@ -294,8 +287,7 @@
    })  
   
 
-     
-   
+        
     </script>
 
     </div>

@@ -28,16 +28,17 @@
    <div class = "col-6 fac_downTime">
    				
    			<label for="fac_name">설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요">
+   			<input type="text" id="fac_code" readonly hidden style="width:120px; height:30px;" >
+            <input type="text" id="fac_name" readonly placeholder="조회 후 등록" style="width:120px; height:30px;" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;
             <br>
 
             <label for="emp_num">담당자&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="emp_num" th:value="${#authentication.principal.username}" readonly style="width:120px; height:30px;">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
-            <label for="downTime_code" >비가동코드&nbsp;
+            <label for="downTime_code" >비가동코드&nbsp;&nbsp;&nbsp;
             <input type="text" id="downTime_code" placeholder="REST" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
   
@@ -49,9 +50,9 @@
                 	 <option value="고장">고장</option>
                		 <option value="수리">수리</option>
                		 <option value="점검">대기</option>
-            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;   
+            </select>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; 
           	
-          	<label for="reason_explain">사유설명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+          	<label for="reason_explain">사유설명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="text" id="reason_explain">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
@@ -66,10 +67,10 @@
             
             <div class="col-12">
                <div class="col-8" style="margin:0 auto">
-                  <button class="w-30 btn btn-primary btn-lg" id="register" type="submit">등록</button>
-                  <button class="w-30 btn btn-warning btn-lg" id="update" type="button">수정</button>
-                  <button class="w-20 btn btn-danger btn-lg" id="delete" type="button">삭제</button>
-                  <button class="w-30 btn btn-success btn-lg" id="reset" type="reset">초기화</button>
+                  <button class="w-30 btn btn-primary btn" id="register" type="submit">등록</button>
+                  <!-- <button class="w-30 btn btn-warning btn" id="update" type="button">수정</button> -->
+                  <button class="w-20 btn btn-danger btn" id="delete" type="button">삭제</button>
+                  <button class="w-30 btn btn-success btn" id="reset" type="reset">초기화</button>
                </div>
             </div>
       </div>      
@@ -191,7 +192,11 @@
             {
               header: '비가동코드',
               name: 'downTimeCode'
-            },         
+            },
+            {
+                header: '설비코드',
+                name: 'facCode'
+             },
             {
               header: '설비명',
               name: 'facName'
@@ -311,12 +316,13 @@
     */  
          
       //초기화버튼 이벤트
-     /* $("#reset").on('click',function(){
-         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
-         //$('div input').not("").val('');
+      $("#reset").on('click',function(){
+         //$('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         $('div input').not("#emp_num").val('');
+         $('div select').option('');
          //$('div input').not($('#confirmDatei')).val('');
       });
-      */
+      
  
         //점검수정,삭제하기전 그리드 이벤트 작업
         //서버에 연결전 토큰값 담는 method
@@ -333,6 +339,7 @@
               //값을 input창에 다시 담아줌
               $('#downTime_code').val(dblclickRows.downTimeCode); //비가동코드
               $('#fac_name').val(dblclickRows.facName); //설비명
+              $('#fac_code').val(dblclickRows.facCode); //설비코드
               $('#downTime_reason').val(dblclickRows.downTimeReason); //비가동사유             
               $('#reason_explain').val(dblclickRows.reasonExplain); //사유설명
               $('#emp_num').val(dblclickRows.empNum);//담당자
@@ -393,30 +400,34 @@
       });
      
     
-    //비가동수정버튼 이벤트
-  /* $("#update").on('click',function(){
+    //비가동수정(비가동종료등록)버튼 이벤트
+   $("#procCodemodalbtn").on('click',function(){
 	
       $.ajax({
-         url: "/fac/confirmUpdate", //컨트롤러에 연결된 주소
+         url: "/fac/downTimeUpdate", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
          //json형태인 키:값 형태로 데이터넘김
          data: {
-               confirmCode : $('#confirm_code').val(),
-               //facName : $('#fac_name').val(),
-               confirmDate :$('#confirmDatei').val(),
-               confirmCategory : $('input[name=confirm_category]:checked').val(),
-               actionHistory : $("#action_history").val(),
-               confirmIssue : $('#confirm_issue').val(),
-               decision : $('input[name=decision]:checked').val(), 
+               downTimeCode : $('#downTime_code').val(),
+               facCode : $('#fac_code').val(),
+               facName : $('#fac_name').val(),
+               downTimeReason :$('#downTime_reason').val(), //비가동사유-셀렉트박스
+               reasonExplain : $('#reason_explain').val(),
+               downTimeStartDay : $('#downTime_start_day').val(),
+               startTime : $('#start_time').val(),
+               downTimeEndDay : $("#downTime_end_day").val(),
+               endTime : $('#end_time').val(),
+               
                //empNum : $('#emp_num').val()
                },
             beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
            },
       success: function (result){
-         alert('수정성공');
+         alert('비가동 수정 완료');
+         
          $.ajax({
-               url : "/fac/confirmListAjax",
+               url : "/fac/downTimeListAjax",
                method : "GET",
                dataType : "JSON",
                success : function(result){
@@ -425,7 +436,7 @@
                }
                })
                $('div input').val('');
-         	   $('div select').val('선택');
+         	   //$('div select').val('선택');
                //$('div input').not("input[name=confirm_issue]").val('');         
             },
             error:function(reject){
@@ -434,7 +445,7 @@
       
       })
    });
-*/
+
     //비가동등록버튼 이벤트
      $("#register").on('click',function(){              	 
     	  let downTimeInsertData={}; //키:값 담을때 사용

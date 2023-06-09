@@ -63,8 +63,11 @@
 .form-control {
 	width: 150px;
 }
- {
-	margin : 100px;
+.modal-content{
+text-align:center;
+}
+.formInput input.form-control{
+display:inline-block;
 }
 </style>
 
@@ -76,49 +79,46 @@
 	</div>
 
 	<div layout:fragment="content">
+	<div class="row justify-content-end" style="margin:0 2px 8px 0;">
+	<button style=" width:200px; height:40px;" type="button" class="btn btn-primary " data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서 등록</button>
+	<button style=" width:200px; height:40px; margin-left:10px;" id="BtnOrdCancle" class="btn btn btn-danger">주문서 취소</button>
+	</div>
 	<form id="searchform">
-	<div style="border: 1px solid #aaa; padding : 30px; margin-bottom : 20px;">
+	<div class="formInput" style="border: 1px solid #aaa; padding : 20px; margin-bottom : 20px;">
      <div class="row">
      <label style="margin-left : 15px;">진행구분</label>
      <input style = "margin : 0 5px;" type="radio" id="allBtn" name="all" value="all" checked><label for="allBtn" style="margin-right:10px">전체</label> 
      <input style = "margin : 0 5px;" type="radio" id="ingBtn" name="all" value="ing"><label for="ingBtn" style="margin-right:10px">진행</label>
      <input style = "margin : 0 5px;" type="radio" id="finBtn" name="all" value="finish"><label for="finBtn" style="margin-right:10px">완료</label>
      </div>
-		<div class="row" style="margin:20px 0">
+		<div class="row" style="margin:10px 0">
 		<div class="col-3">
-			거래처명 <input name="accName" type="text" id="accountlist-text"
-				style="background-color: #e2e1e1;width:240px" readonly>
-			<button style="margin-right : 20px;" type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+			<label>거래처명</label> <input class="form-control" name="accName" type="text" id="accountlist-text"
+				style="background-color: #e2e1e1;width:200px; display:inline-block;" readonly>
+			<button  type="button" style="height:38px;margin-bottom:3px" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
 				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 		</div>
 		<div class="col-3">
-				제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1; width:240px" name="prodName" readonly>
-		 <button style="margin-right : 20px;" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+				<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:200px" name="prodName" readonly>
+		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</div>
 		<div class="col-3">
-			주문일자 <input name="ordDate1" type="date" id="orddate-text"> - <input style="margin-right : 20px;" name="ordDate2" type="date" id="orddate-text">
+			<label>주문일자</label> <input style=" width:130px" class="form-control" name="ordDate1" type="date" id="orddate-text"> - <input class="form-control" style="margin-right : 20px; width:130px;" name="ordDate2" type="date" id="orddate-text">
 		</div>		
 		<div class="col-3">
-			납기일자 <input name="ordDueDate1" type="date" id="ordduedate-text"> - <input style="margin-right : 20px;" name="ordDueDate2" type="date" id="ordduedate-text">
+			<label>납기일자</label> <input style=" width:130px" class="form-control" name="ordDueDate1" type="date" id="ordduedate-text"> - <input class="form-control" style="margin-right : 20px; width:130px" name="ordDueDate2" type="date" id="ordduedate-text">
 		</div>
 		</div>
-		<div class="row justify-content-center">
-			<button type="button" id="searchOrd" class="btn btn-primary" style="margin-right:10px">조회</button>
-			<button type="button" id="pageReset" class="btn btn-primary">초기화</button>
+		<div style="margin-top:50px; "  class="row justify-content-center">
+			<button type="button" id="searchOrd" class="btn btn-primary" style="margin-right:10px; width:74px;">조회</button>
+			<button type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 		</div>		
 	</div>
 	</form>
+		 
 		
-		<div class="ordbtn">
-			<button type="button" class="btn btn-primary "
-				data-toggle="modal" data-target=".bd-ordList-modal-lg">주문서
-				등록</button>
-			<button id="BtnOrdCancle" class="btn btn btn-danger">주문서
-				취소</button>
-		</div>
 
-		<br>
 
 		<!------------------------------ 본문 모달 ------------------------------------->
 		<!-- 거래처리스트 모달 -->
@@ -126,18 +126,18 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 			<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">거래처 목록</h1>
+						<h1 class="modaltitle"></h1>
 					<p>
-						거래처명 <input type="text" id="searchacc-text">
-						<button id="searchacc" type="submit"
-							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+						<label >거래처명</label> <input type="text" id="searchacc-text">
+						<button id="searchacc" type="submit" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					</p>
 					<div id="accountGrid"></div>
 
 					<div class="modalbtn ">
@@ -154,17 +154,17 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">제품 목록</h1>
-
+					<h1 class="modaltitle"></h1>
+	
 					<p>
-						제품명 <input id="searchprod-text" type="text">
+						<label>제품명</label> <input id="searchprod-text" type="text">
 						<button type="submit" id="searchprod"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
@@ -186,7 +186,7 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title">주문서 등록</h1>
 						<button type="button" class="close" data-dismiss="modal"
@@ -206,19 +206,16 @@
 							<div style="float: left; margin-right: 10px">
 								<label for="recipient-name" class="col-form-label">담당자명
 								</label> <input type="text" id="ordempname" class="form-control"
-									name="empName" th:value="${#authentication.principal.username}"
-									readonly>
+									name="empName" th:value="${#authentication.principal.empName}"
+								readonly>
 							</div>
-
 							<input type="hidden" th:value="${userVO.empNum}" id="ordempnum"
 								class="form-control" name="empCode" readonly>
-
 							<div style="float: left; margin-right: 10px">
-								<label for="recipient-name" class="col-form-label">거래처명
+								<label for="recipient-name" class="col-form-label">거래처명</label>
 									<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 										data-toggle="modal" data-target=".bd-smallaccount-modal-sm"></button>
-								</label> <input id="ordaccname" type="text" class="form-control"
-									name="accName" readonly>
+								 <input id="ordaccname" type="text" class="form-control" name="accName" readonly>
 							</div>
 						</div>
 						<div style="display: flex;">
@@ -244,9 +241,9 @@
 						<input type="hidden" id="modalOrdNote" class="form-control"
 							name="ordNote"></input> <br>
 						<hr>
-						<h2>주문상세</h2>
-						<br> <label>제품리스트</label>
-						<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+						<br> 
+						<label style="float:left;">제품리스트</label>
+						<button style="float:left; "type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
 						<button class = "btn btn-danger" style="float: right; margin-right: 5px;"
 							id="ordProdDelete">삭제</button>
@@ -254,7 +251,7 @@
 						<div class="modalbtn">
 							<button id="ordregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn-secondary"
-								data-bs-dismiss="modal" >취소</button>
+								data-dismiss="modal" >취소</button>
 						</div>
 					</div>
 
@@ -263,16 +260,16 @@
 						id="accountRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-3 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-								<h2 class="modaltitle">거래처 목록</h2>
+								<h2 class="modaltitle"></h2>
 								<p>
-									거래처명 <input id="searchaccreg-text" type="text">
+									거래처명 <input style="width:100px;"id="searchaccreg-text" type="text">
 									<button id="searchaccreg" class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
 								<div id="accountRegGrid"></div>
@@ -291,16 +288,16 @@
 						id="productRegModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-3 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-								<h2 class="modaltitle">제품리스트</h2>
+								<h2 class="modaltitle"></h2>
 								<p>
-									제품명 <input id="searchprodreg-text" type="text">
+									제품명 <input style="width:100px;" id="searchprodreg-text" type="text">
 									<button id="searchprodreg" type="submit"
 										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
@@ -325,7 +322,7 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 					<div class="modal-header">
 						<h1 class="modal-title">주문서 수정</h1>
 						<button type="button" class="close" data-dismiss="modal"
@@ -346,7 +343,7 @@
 									<label for="recipient-name" class="col-form-label">담당자명
 									</label> <input type="text" id="ordempname" class="form-control"
 										name="empName"
-										th:value="${#authentication.principal.username}" readonly>
+										th:value="${#authentication.principal.empName}" readonly>
 								</div>
 
 								<input type="hidden" th:value="${userVO.empNum}" id="ordempnum"
@@ -377,14 +374,16 @@
 									</label> <input id="modalModOrdDueDate" type="date"
 										class="form-control" name="ordDueDateMod">
 								</div>
+							<div style="float: left; margin-right: 10px">
+							<label for="recipient-name" class="col-form-label">비고
+							</label> <input id="modalModOrdNote" class="form-control" name="ordNote">
 							</div>
-							<label for="recipient-name" class="col-form-label">비고</label> <input
-								id="modalModOrdNote" class="form-control" name="ordNote"></input>
+							</div>
 							<br>
 							<hr>
 							<h2>주문상세</h2>
-							<br> <label>제품리스트</label>
-							<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+							<br> <label style="float:left;">제품리스트</label>
+							<button style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
 							<button class= "btn btn-danger" style="float: right; margin-right: 5px;"
 								id="ordProdDelete2">삭제</button>
@@ -401,7 +400,7 @@
 						id="productModModal" tabindex="-1" role="dialog"
 						aria-labelledby="mySmallModalLabel" aria-hidden="true">
 						<div class="modal-dialog modal-sm">
-							<div class="modal-content">
+							<div class="p-1 modal-content">
 							<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
@@ -410,7 +409,7 @@
 						</div>
 								<h2 class="modaltitle">제품리스트</h2>
 								<p>
-									제품명 <input id="searchprodmod-text" type="text">
+									제품명 <input style="width:100px;" id="searchprodmod-text" type="text">
 									<button id="searchprodmod" type="submit"
 										class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 								</p>
@@ -487,16 +486,28 @@
                {
                  header: '주문량',
                  name: 'ordDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+
                },
                {
                    header: '단가',
                    name: 'ordDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     },
+
                  },
                {
                  header: '주문금액',
-                 name: 'ordDetTotPrice'
+                 name: 'ordDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+
                  
                }
              ],
@@ -506,17 +517,17 @@
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOTAL: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVERAGE: ${valueMap.avg}원`;
+                	   return `AVG: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOTAL: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }
@@ -763,7 +774,11 @@ $.ajax({
 
      let dataRow = productReg_Grid.getRow(ev.rowKey);
      delete dataRow.rowKey;
-
+	
+     dataRow.ordDetPrice = 0;
+     dataRow.ordDetTotPrice = 0;
+     dataRow.ordDetQuan = 0;
+     
    	addProdgrid.appendRow(dataRow,{
  		  focus:true
  	  });
@@ -787,10 +802,14 @@ $.ajax({
      })
      
       productReg_Grid2.on('click', ev=> {
+    	  
     	  console.log(ev);
      let dataRow = productReg_Grid2.getRow(ev.rowKey);
 	console.log(dataRow)
      delete dataRow.rowKey;
+	 dataRow.ordDetPrice = 0;
+     dataRow.ordDetTotPrice = 0;
+     dataRow.ordDetQuan = 0;
    	modProdgrid.appendRow(dataRow,{
  		  focus:true
  	  });
@@ -1085,6 +1104,8 @@ $.ajax({
 		
 		let row = grid.getRow(ev.rowKey)
 		
+		
+		
 		$('input[name=ordCodeMod]').attr('value',row.ordCode);
 		$('input[name=accNameMod]').attr('value',row.accName);
 		$('input[name=ordDateMod]').attr('value',row.ordDate);
@@ -1104,9 +1125,15 @@ $.ajax({
 			url : "/bns/prodListModAjax",
 			method : "GET",
 			data : {result : row.ordCode},
-			success : function(result){
 			dataType : "JSON",
+			success : function(result){
 				modProdgrid.resetData(result);
+				let modRow = modProdgrid.getData();
+				modRow.forEach(ele =>{
+					if(ele.ordDet)
+					
+				})
+				console.log(modRow)
 			}
 		});
 	}
@@ -1137,17 +1164,30 @@ $.ajax({
                {
                  header: '주문량',
                  name: 'ordDetQuan',
-                 editor:'text'
+                 editor:'text',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
                },
                {
                    header: '단가',
                    name: 'ordDetPrice',
-                   editor:'text'
+                   editor:'text',
+                   formatter({ value }) {
+                       return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                     }
                  },
                {
                  header: '주문금액',
-                 name: 'ordDetTotPrice'
+                 name: 'ordDetTotPrice',
+                 formatter({ value }) {
+                     return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+                   }
+               },{
+            	   header: '현황',
+                   name: 'ordDetProgress'
                }
+                 ,
              ],
                summary: {
             	   height: 40,
@@ -1155,24 +1195,24 @@ $.ajax({
              columnContent: {
             	 ordDetQuan: {
                    template: function(valueMap) {
-                     return `TOTAL: ${valueMap.sum}`;
+                     return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}`;
                    }
                  },
                  ordDetPrice: {
                    template: function(valueMap) {
-                     return `AVERAGE: ${valueMap.avg}원`;
+                	   return `AVG: ${valueMap.avg.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                    }
                  },
                  ordDetTotPrice: {
                      template: function(valueMap) {
-                       return `TOTAL: ${valueMap.sum}원`;
+                       return `TOT: ${valueMap.sum.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")}원`;
                      }
                    }
                }
              }  
             	});
  	
- 	
+	
  	
 		 //총 주문금액 계산
           modProdgrid.on('editingFinish', function(ev){
@@ -1292,6 +1332,9 @@ $.ajax({
 		   	})
 		   })
 	
+		 
+		 //그리드 한글로
+		      tui.Grid.setLanguage("ko");
     </script>
 
 

@@ -22,9 +22,11 @@
    FROM fac_info
 	<where>
 		<if test="searchDiv != null and searchDiv != ''">
-			${searchDiv} = #{searchName}
+			<!-- ${searchDiv} = #{searchName} title LIKE '%'|| #{keyword} || '%' -->
+			UPPER(${searchDiv}) LIKE '%' || UPPER(#{searchName}) || '%'
 		</if>
 	</where>
+	ORDER BY fac_code
 	</select>
 
 	<!-- 설비정보목록조회 <select id="getList" resultType="FacInfoVO"> select fac_code 
@@ -44,7 +46,7 @@
 	INSERT ALL into fac_info
 		values('EQMAN'||fac_seq.nextval,
 		#{list[0].facName},
-		#{list[0].installDate},
+		to_date(#{list[0].installDate},'YYYY-MM-DD'),
 		#{list[0].tempMin},
 		#{list[0].tempMax},
 		#{list[0].makerName},
@@ -57,7 +59,8 @@
 		  VALUES (fac_conn_proc_seq.nextval,'EQMAN'||fac_seq.currval,#{vo.procCode})
 		</foreach>
 	</insert>
-
+	
+	
 	<!-- 점검등록 -->
 	<insert id="insertConfirmList" parameterType="FacConfirmVO">
    INSERT INTO fac_confirm(confirm_code,confirm_date,confirm_category,action_history,decision,confirm_issue,emp_num,fac_code)
@@ -81,6 +84,7 @@
 		  JOIN com_code_proc b
 		    ON a.proc_code = b.proc_code
 		 WHERE fac_code=#{facCode}
+	  ORDER BY a.proc_code
 	</select>
 
 	<!-- 해당설비 공정삭제 -->
@@ -102,6 +106,13 @@
 		 WHERE fac_code = #{facCode}
 	</update>
 
+	<!-- 설비상태수정 -->
+	<update id="facOperateState" parameterType="FacDownTimeVO">
+		UPDATE fac_info
+		   SET operate_check =#{operateCheck}		      
+		 WHERE fac_code = #{facCode}
+	</update>
+	
 	<!-- 점검수정 -->
 	<update id="confirmUpdate" parameterType="FacConfirmVO">
 		UPDATE fac_confirm
@@ -111,9 +122,21 @@
 		   	   decision = #{decision}
 		 WHERE confirm_code = #{confirmCode}	   	   
 	</update>
-
-
-
+	
+	
+	
+	<!-- 비가동수정-->	
+	<update id="downTimeUpdate" parameterType="FacDownTimeListVO">
+		UPDATE fac_downTime
+		   SET downtime_reason = #{downTimeReason},
+		   	   reason_explain=#{reasonExplain},
+		   	   DOWNTIME_START_DAY=to_date(#{downTimeStartDay},'YYYY-MM-DD'),
+		   	   START_TIME=to_date(#{startTime},'HH24:MI'),
+		   	   DOWNTIME_END_DAY=to_date(#{downTimeEndDay},'YYYY-MM-DD'),
+		   	   END_TIME=to_date(#{endTime},'HH24:MI')
+		 WHERE DOWNTIME_CODE=#{downTimeCode} 	   
+	</update> 
+	
 	<!-- 설비삭제 -->
 	<delete id="facDelete" parameterType="FacInfoVO">
    DELETE FROM fac_info 
@@ -129,8 +152,7 @@
 	<!-- 비가동삭제 -->
 	<delete id="downTimeDelete" parameterType="FacDownTimeVO">
 	DELETE FROM FAC_DOWNTIME
-		  WHERE downTime_code=#{downTimeCode}
-	
+		  WHERE downTime_code=#{downTimeCode}	
 	</delete>
 
 	<!-- 공정코드목록 -->
@@ -161,6 +183,7 @@
 		  FROM FAC_CONFIRM a
 		  JOIN FAC_INFO b
 		 USING (fac_code)
+	  ORDER BY a.confirm_code
 	</select>
 
 	<!-- 설비코드검색조회 -->
@@ -175,7 +198,7 @@
 	<!-- 점검기간 조회 -->
 	<select id="confirmdaysSearchAjax" resultType="FacConfirmVO">
 		SELECT  a.confirm_code,
-				to_char(confirm_date,'yyyy-MM-dd') confirm_Date,
+				to_char(confirm_date,'YYYY-MM-DD') confirm_Date,
 				b.fac_name,
 				a.action_history,
 				a.confirm_category,
@@ -184,28 +207,44 @@
 				a.emp_num		
 		   FROM FAC_CONFIRM a
 		   JOIN FAC_INFO b on a.fac_code=b.fac_code
-		  WHERE confirm_date 
-		BETWEEN to_date(#{confirmday1},'YYYY-MM-DD')
-		    AND to_date(#{confirmday2},'YYYY-MM-DD')		        
+		   <where>
+		   <if test="facName != null and facName != ''">
+		   and b.fac_name like '%'|| #{facName} || '%'
+		   </if>
+		   <if test="confirmCode != null and confirmCode != ''">
+          and a.confirm_code=#{confirmCode}
+          </if>
+          <if test="empNum != null and empNum != ''">
+          and a.emp_num =#{empNum}
+          </if>
+          <if test="confirmday1 != null and confirmday1 != ''">
+			and BETWEEN to_date(#{confirmday1} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+			</if>
+			<if test="confirmday2 != null and confirmday2 != ''">
+		    AND to_date(#{confirmday2} ||' 23:59:59','YYYY-MM-DD HH24:MI:SS')
+		    </if>		        
+		   </where>
 	</select>
 
 	<!--비가동전체조회 -->
 	<select id="getDownTimeList" resultType="FacDownTimeVO">
 		SELECT a.downtime_code,
+			   b.fac_code,
 			   b.fac_name ,
 		 	   a.downtime_reason ,
 			   a.reason_explain ,
 			   to_char(DOWNTIME_START_DAY,'yyyy-MM-dd') DOWNTIME_START_DAY ,
 			   to_char(START_TIME,'PM HH24:MI') START_TIME,
-			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'-') AS DOWNTIME_END_DAY,
-			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'-') AS END_TIME,
+			   NVL2(a.DOWNTIME_END_DAY,to_char(a.DOWNTIME_END_DAY,'yyyy-MM-dd'),'') AS DOWNTIME_END_DAY,
+			   NVL2(a.END_TIME,to_char(a.END_TIME,'PM HH24:MI'),'') AS END_TIME,
 			   b.OPERATE_CHECK,
 			   a.emp_num
 		  FROM FAC_DOWNTIME a
 		  JOIN FAC_INFO b
-		 USING (fac_code)
-		 WHERE downtime_start_day is not null 
-		   AND downtime_end_day is null or operate_check = 'N'
+		    ON (a.fac_code = b.fac_code)
+		 <!--  WHERE downtime_start_day is not null 
+		   AND downtime_end_day is null or operate_check = 'N' -->
+	  ORDER BY a.downtime_code   
 	</select>
 	
 	<!-- 비가동등록 -->

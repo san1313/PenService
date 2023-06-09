@@ -14,6 +14,7 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -52,11 +53,6 @@ public class FacController {
 		// 설비정보관리 페이지
 	}
 
-	
-//	@GetMapping("/register") // 설비정보관리 페이지
-//	public void register() {
-//
-//	}
 	
 //	@GetMapping("/management") // 설비관리 페이지
 //	public void management() {
@@ -123,6 +119,8 @@ public class FacController {
 		return service.insertFacList(list);
 	}
 	
+	
+	
 	//점검등록
 	@RequestMapping("/confirmRegister")
 	@ResponseBody
@@ -151,6 +149,14 @@ public class FacController {
 	public int confirmUpdate(FacConfirmVO list) {
 		return service.confirmUpdate(list);
 	}
+	
+	
+	//비가동수정
+	@ResponseBody
+	@RequestMapping("/downTimeUpdate")
+	public int downTimeUpdate(FacDownTimeVO vo) {
+		return service.downTimeUpdate(vo);
+	}
 
 	// 설비삭제
 	@ResponseBody
@@ -159,6 +165,13 @@ public class FacController {
 		return service.facDelete(vo);
 	}
 	
+	//작업상태 체크 
+//	@ResponseBody
+//	@RequestMapping("/checkProcState")
+//	public int checkProcState(FacConnProcVO vo) {
+//		
+//	}
+//	
 	//점검삭제
 	@ResponseBody
 	@RequestMapping("/confirmDelete")

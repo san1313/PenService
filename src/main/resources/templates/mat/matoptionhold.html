@@ -25,7 +25,7 @@
 
 	}
 	#subtn{
-	margin : 10px;
+	margin : 10px 0 0;
 	float:right;
 	margin-right:10px;
 
@@ -35,7 +35,7 @@
     }
     #matholdgrid{
      display:none;
-     margin:20px 0 0;
+     margin:10px 0 0;
     }
 
   </style>
@@ -78,7 +78,7 @@
       <div class="modal-body">
         <label>자재명</label>
         <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
       	<div id="mat-modal-grid"></div>
       </div>
     </div>
@@ -87,11 +87,11 @@
 
 
 	<div id="lotholdgrid"></div>
-	<div id="matholdgrid"></div>
-	
 	<div class="d-grid gap-2 d-md-flex justify-content-md-end">
      <button type="button" class="btn btn-primary" id="subtn">임의해제</button>
 	</div>
+	<div id="matholdgrid"></div>
+	
 	
     <script>
     const token = $('meta[name="_csrf"]').attr("content");
@@ -103,7 +103,7 @@
         scrollX: false,
         scrollY: false,
         rowHeaders: ['rowNum'],
-        bodyHeight : 200,
+        bodyHeight : 250,
         columns: [{
         header: 'LOT번호',
         name: 'matLot'
@@ -263,13 +263,10 @@
     scrollX: false,
     scrollY: false,
     rowHeaders: ['checkbox'],
+    bodyHeight : 200,
     columns: [{
     header: 'LOT번호',
     name: 'matLot'
-    },
-    {
-    header: '단위',
-    name: 'matUnit'
     },
     {
     header: '해제수량',

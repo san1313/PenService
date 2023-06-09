@@ -31,7 +31,7 @@ public class MatController {
 
 	@Autowired MatService matservice;
 
-	//발주페이지
+	//발주관리
 	@GetMapping("/order")
 	public void ordermain() {
 		
@@ -40,8 +40,8 @@ public class MatController {
 	//자재모달창리스트
 	@ResponseBody
 	@GetMapping("/matlist")
-	public List<OrderVO> matlist(){
-		List<OrderVO> list = matservice.getmatlist();
+	public List<OrderVO> matlist(@RequestParam(required = false) String accName){
+		List<OrderVO> list = matservice.getmatlist(accName);
 		return list;
 	}
 	
@@ -82,10 +82,10 @@ public class MatController {
 	//발주등록
 	 @RequestMapping("/matregister")
 	 @ResponseBody 
-	 public OrderVO matregister(@RequestBody List<OrderVO> list){
+	 public boolean matregister(@RequestBody List<OrderVO> list){
 		 System.err.println(list);
 		 matservice.getmatregister(list);		 
-	 	 return null; 
+	 	 return true; 
 	 }
 		 
 	 //당일발주등록조회
@@ -240,13 +240,12 @@ public class MatController {
 		 return list;
 	 }
 	 
-	 //자재조정 자재코드 검색
+	 //자재조정관리 다중검색
 	 @RequestMapping("/matadjustsearch")
 	 @ResponseBody
-	 public List<AdjustVO> matadjustsearch(@RequestParam String result){
-		 System.out.println(result);
-		 List<AdjustVO> list = matservice.getmatadjustsearch(result);
-		 return list;
+	 public List<AdjustVO> matadjustsearch(AdjustVO AdjustVO){
+		 System.out.println(AdjustVO);
+		 return matservice.getmatadjustsearch(AdjustVO);
 	 }
 	 
 	 //자재조정 lot 상세

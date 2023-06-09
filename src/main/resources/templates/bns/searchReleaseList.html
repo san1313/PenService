@@ -41,6 +41,15 @@
 .modalbtn {
 	text-align: center;
 }
+.modal-content{
+text-align:center;
+}
+.modal-content{
+text-align:center;
+}
+input.form-control{
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -49,23 +58,24 @@
 	</div>
 		<div layout:fragment="content">
 		<form id="searchform">
-		<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+		<div class="row">
 		<div class="col-3">
-	제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1" name="prdtNm" readonly>
-		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+	<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:200px" name="prodName" readonly>
+		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</div>
 		<div class="col-3">
-		거래처명 <input type="text" id="accountlist-text"
-			style="background-color: #e2e1e1" name="accName" readonly>
-		<button type="button" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
-			data-toggle="modal" data-target=".bd-account-modal-lg"></button>
+		<label>거래처명</label> <input class="form-control" name="accName" type="text" id="accountlist-text"
+				style="background-color: #e2e1e1;width:200px; display:inline-block;" readonly>
+			<button  type="button" style="height:38px;margin-bottom:3px" id="accountList" class="fa-solid fa-magnifying-glass btn btn-primary"
+				data-toggle="modal" data-target=".bd-account-modal-lg"></button>
 			</div>
 			<div class="col-3">
-	출고일자 <input type="date" name="bnsReleaseDate"> - <input type="date" name="bnsReleaseDate1"> 
-	</div>
-	<div>
-	<button type="button" id="searchRelease" class = "btn btn-primary">조회</button>
+	<label>출고일자</label> <input class="form-control" style=" width:140px" type="date" name="bnsReleaseDate"> - <input style="margin-right : 20px; width:140px;" class="form-control" type="date" name="bnsReleaseDate1"> 
+	</div >
+	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
+	<button style="width:80px; margin-right:10px;" type="button" id="searchRelease" class = "btn btn-primary">조회</button>
+	<button style="width:80px;" type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	</form>
@@ -77,16 +87,16 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">제품 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						제품명 <input id="searchprod-text" type="text">
+						<label>제품명</label> <input id="searchprod-text" type="text">
 						<button type="button" id="searchprod"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
@@ -105,16 +115,16 @@
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">거래처 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						거래처명 <input type="text" id="searchacc-text">
+						<label>거래처명</label> <input type="text" id="searchacc-text">
 						<button id="searchacc" type="submit"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="accountGrid"></div>
@@ -372,6 +382,9 @@ $.ajax({
 	    })
 
 })
+
+//그리드 한글로
+	      tui.Grid.setLanguage("ko");
 </script>
 
 </div>

@@ -10,23 +10,10 @@
 
   <style>
     .ordersearch {
-      border: 1px solid black;
-      padding: 20px;
+      float: left;
     }
 
     .addmatbtn {
-      width: 5px 10px;
-      background-color: #282cff;
-      border: none;
-      color: white;
-      text-align: center;
-      display: inline-block;
-      font-size: 16px;
-      float: right;
-      margin: 0 10px;
-    }
-
-    .submitbtn {
       width: 5px 10px;
       background-color: #282cff;
       border: none;
@@ -100,7 +87,7 @@
       <div class="modal-body">
         <label>자재명</label>
         <input class="modaltext" type="text" id="ckmat-text">
-        <button class="ckmatmodalbtn" type="button" id="ckmat">조회</button>
+        <button class="btn btn-primary fa-solid fa-magnifying-glass" type="button" id="ckmat">조회</button>
       	<div id="mat-modal-grid"></div>
       </div>
     </div>
@@ -122,7 +109,7 @@
     el: document.getElementById('igrid'),
     scrollX: false,
     rowHeaders: ['rowNum'],
-    bodyHeight : 200,
+    bodyHeight : 250,
     columns: [{
     header: '자재코드',
     name: 'matCode'
@@ -289,7 +276,7 @@
       scrollX: false,
       scrollY: false,
       rowHeaders: ['rowNum'],
-      bodyHeight : 200,
+      bodyHeight : 250,
       columns: [{
       header: '자재코드',
       name: 'matCode'

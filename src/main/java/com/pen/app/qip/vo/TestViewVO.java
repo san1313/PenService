@@ -14,6 +14,7 @@ public class TestViewVO {
     String indicaCode;
     String prodName;
     String procName;
+    int testNumProd;
     
     //보관기간초과
     String qipCodeListExp;
@@ -26,4 +27,8 @@ public class TestViewVO {
     int testTnumDef;
     int testTnumPass;
     
+    //상세
+    String testName;
+    String testDetail;
+    int testNumDef;
 }

@@ -6,6 +6,7 @@ import org.mybatis.spring.annotation.MapperScan;
 
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -22,8 +23,10 @@ public interface FacService {
 	public int insertFacList(FacInfoListVO list); //설비+공정등록
 	public int insertConfirmList(FacConfirmVO list); //점검등록
 	
+	
 	public int facUpdate(FacInfoListVO list); //설비수정
 	public int confirmUpdate(FacConfirmVO list);//점검수정
+	public int downTimeUpdate(FacDownTimeVO vo); //비가동 수정(비가동종료등록)
 	
 	public int facDelete(FacInfoVO vo); //설비삭제
 	public int confirmDelete(FacConfirmVO vo); //점검삭제
@@ -35,4 +38,5 @@ public interface FacService {
 	
 	public List<FacDownTimeVO> getDownTimeList(FacDownTimeVO vo);//설비비가동조회
 	public int insertDownTimeList(FacDownTimeVO list); //비가동 등록 
+	
 }

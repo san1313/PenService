@@ -11,4 +11,6 @@ public interface TestViewMapper {
 	List<TestViewVO> getItemView(Map<String, String> map);
 
 	List<TestViewVO> getExpView(Map<String, String> map);
+
+	List<TestViewVO> getDetailView(String qipCode);
 }

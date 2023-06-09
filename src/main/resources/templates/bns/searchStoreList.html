@@ -34,6 +34,22 @@
 .container-fluid {
 	text-align: left !important;
 }
+.modaltitle {
+	text-align: center;
+}
+
+.modalbtn {
+	text-align: center;
+}
+.modal-content{
+text-align:center;
+}
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
 </style>
 </head>
 <body>
@@ -43,23 +59,24 @@
 	
 	<div layout:fragment="content">
 	<form id="searchform">
-	<div style="border: 1px solid #aaa; margin : 20px 0; padding: 30px;" class="row">
+	<div class="row">
 	<div class="col-3">
-	제품명 <input type="text" id="productlist-text"
-				style="background-color: #e2e1e1" name="prdtNm" readonly>
-		 <button type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+	<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:230px;" name="prdtNm" readonly>
+		 <button style="height:38px; margin-bottom : 3px;"type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class="col-3">
-		완제품LOT <input type="text" id="lotlist-text"
+		<label>완제품LOT</label> <input class="form-control" type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
-		<button type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
+		<button style="height:38px; margin-bottom : 3px;"type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>				
 	<div class="col-3">
-	입고일자 <input type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
+	<label>입고일자</label> <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
 	</div>
-	<div class="col-3">
-	<button type="button" id="searchStore" class="btn btn-primary">조회</button>
+	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
+	<button style="width:80px; margin-right:10px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
+	<button  style="width:80px;" type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
 	</div>
 	</div>
 	
@@ -69,16 +86,16 @@
 			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">제품 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						제품명 <input id="searchprod-text" type="text">
+						<label>제품명</label> <input id="searchprod-text" type="text">
 						<button type="button" id="searchprod"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="productGrid"></div>
@@ -97,16 +114,16 @@
 			aria-hidden="true">
 			<div class="modal-dialog modal-lg">
 
-				<div class="modal-content">
+				<div class="p-3 modal-content">
 				<div class="modal-header"> 
 					<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
 						</button>
 						</div>
-					<h1 class="modaltitle">완제품LOT 목록</h1>
+					<h1 class="modaltitle"></h1>
 					<p>
-						완제품LOT <input type="text" id="searchlot-text">
+						<label>완제품LOT</label> <input type="text" id="searchlot-text">
 						<button id="searchlot" type="submit"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="lotGrid"></div>
@@ -132,7 +149,7 @@ $(document).ready(function(){
 	
 	//입고내역 그리드 아작스
 $.ajax({
-	url : "/bns/afterStoreListAjax",
+	url : "/bns/searchStoreListAjax",
 	method : "GET",
 	dataType : "JSON",
 	success : function(result){
@@ -334,9 +351,26 @@ $(function(){
 	    		}
 	    	});
 	    })
+	    
+	    //초기화 버튼 클릭 시
+		$('#pageReset').on('click',function(){
+			
+			$.ajax({
+				url : "/bns/searchStoreListAjax",
+				method : "GET",
+				dataType : "JSON",
+				success : function(result){
+					StoreGrid.resetData(result);
+				}
+			});
+			
+		})
   
   
 })
+
+//그리드 한글로
+	      tui.Grid.setLanguage("ko");
 </script>
 </div>
 </body>

@@ -168,4 +168,11 @@ public class QualityController {
 	ToastUiResponseDTO expView(@RequestParam Map<String, String> map) {
 		return viewService.getExpView(map);
 	}
+	
+	// 검사 상세 리스트
+	@GetMapping("/detailView")
+	@ResponseBody
+	ToastUiResponseDTO detailView(@RequestParam String qipCode) {
+		return viewService.getDetailView(qipCode);
+	}
 }

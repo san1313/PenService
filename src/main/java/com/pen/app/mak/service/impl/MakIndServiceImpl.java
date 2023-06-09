@@ -216,7 +216,21 @@ public class MakIndServiceImpl implements MakIndService{
 	@Override
 	public List<MakVO> oerfProcList(String indicaCode) {
 		// TODO Auto-generated method stub
-		return mapper.oerfProcList(indicaCode);
+		List<MakVO> list = mapper.oerfProcList(indicaCode);
+		for (MakVO vo : list) {
+			int i = mapper.getProcProdCount(vo);
+			if(i>0) {
+				int j = mapper.getProcReCnt(vo);
+				if(j>0) {
+					vo.setIndicaState("작업중");
+				}else {
+					vo.setIndicaState("작업완료");
+				}
+			}else {
+				vo.setIndicaState("미작업");
+			}
+		}
+		return list;
 	}
 
 	@Override
@@ -231,12 +245,9 @@ public class MakIndServiceImpl implements MakIndService{
 	@Override
 	@Transactional
 	public List<MakVO> insertProcProd(MakVO vo) {
-		System.err.println(vo.getProdCode().substring(0,4));
 		if(vo.getProdCode().substring(0,4).equals("SEMI")) {
-			System.out.println("??");
 		vo.setProdNm((mapper.selectSemi(vo.getProdCode())).getSemiName());
 		}else if(vo.getProdCode().substring(0,4).equals("PROD")){
-			System.out.println("왜 이게 선택됨?");
 			vo.setProdNm((mapper.selectProd(vo.getProdCode())).getProdName());
 		}
 		if(mapper.insertProcProd(vo)>0) {
@@ -248,23 +259,41 @@ public class MakIndServiceImpl implements MakIndService{
 		return null;
 	}
 
-	/* 공정실적 수정, 자재출고 등록, hold 수정 */
+	/* 공정실적 수정, 자재출고 등록, hold 수정  + a [홀드 등록, 완제품 등록]*/
 	@Override
 	@Transactional
 	public String updateProcProd(IndicaListVO list) {
 		int i =0;
 		String prcsCode = mapper.getProcProd(list.getList().get(0));
 		list.getList().get(0).setPrcsCode(prcsCode);
+		//홀드에 생산품 넣기
+		if(list.getList().get(0).getProdCode().substring(0,4).equals("SEMI")) {
+			i+=mapper.insertProcSemiHold(list.getList().get(0));
+		};
 		mapper.updateProcProd(list.getList().get(0));
 		for (MakVO vo : list.getList()) {
 			i+=mapper.updateIndMakHold(vo);
 			i+=mapper.insertMatDlivy(vo);
-		}
+		};
+		
+		if(list.getList().get(0).getProdCode().substring(0,4).equals("PROD")) {
+			//완제품에 생산품 넣기
+			i+=mapper.insertProcPrdt(list.getList().get(0));
+			i+=mapper.updateProcIndica(list.getList().get(0));
+			
+			
+		};
 		String result="";
 		if(i>0) {
 			result="성공";
 		}
 		return result;
+	}
+
+	@Override
+	public List<MakVO> getProcProdInfo(MakVO vo) {
+		
+		return mapper.getProcProdInfo(vo);
 	}
 
 

@@ -23,6 +23,7 @@ public class AdjustVO { //조정
 	String matWrhst; //상태
 	int bmatQnt; //처리 전 재고량
 	String vo;
+	String empId;
 
 	
 }

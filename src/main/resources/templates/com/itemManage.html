@@ -517,7 +517,7 @@
             switch (type) {
               case "mat":
                 // grid.appendRow({ matCode: nextNum, matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
-                grid.appendRow({ matUse: "Y" }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
+                grid.appendRow({ matUse: "Y", matSfst: 0 }, { focus: true }); // 행을 추가하고 마우스 커서를 이동
                 break;
               case "semi":
                 // grid.appendRow({ semiCode: nextNum, semiUse: "Y" }, { focus: true });
@@ -525,7 +525,7 @@
                 break;
               case "prod":
                 // grid.appendRow({ prodCode: nextNum, prodUse: "Y" }, { focus: true });
-                grid.appendRow({ prodUse: "Y" }, { focus: true });
+                grid.appendRow({ prodUse: "Y", prodSfst: 0 }, { focus: true });
             }
             grid.addRowClassName(grid.getFocusedCell().rowKey, "modified");
           });

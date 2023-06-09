@@ -45,7 +45,6 @@ public class BnsController {
       return "bns/ordList";
    }
    
-   //////////삭제
    //주문서리스트 아작스
 	@ResponseBody
 	@GetMapping("/ordListAjax")
@@ -102,6 +101,37 @@ public class BnsController {
 		List<BnsProdVO> list = bnsService.getProdKeyList(result);
 		return list;
 	}
+	
+	//계약코드 리스트
+		@ResponseBody
+		@GetMapping("/contCodesList")
+		public List<BnsContVO> contCodeList() {
+			List<BnsContVO> list = bnsService.getcontCodesList();
+			
+			return list;
+		}
+		//계약코드 조건 검색
+		@RequestMapping("/contCodesKeyList")
+		@ResponseBody
+		public List<BnsContVO> contCodesKeyList(@RequestParam String result){
+			List<BnsContVO> list = bnsService.getcontCodesKeyList(result);
+			return list;
+		}
+		//주문코드 리스트
+				@ResponseBody
+				@GetMapping("/ordCodesList")
+				public List<BnsOrdVO> ordCodeList() {
+					List<BnsOrdVO> list = bnsService.getordCodesList();
+					
+					return list;
+				}
+				//계약코드 조건 검색
+				@RequestMapping("/ordCodesKeyList")
+				@ResponseBody
+				public List<BnsOrdVO> ordCodesKeyList(@RequestParam String result){
+					List<BnsOrdVO> list = bnsService.getordCodesKeyList(result);
+					return list;
+				}
 	
 	//주문서 수정 모달창 안의 제품리스트
 	@ResponseBody
@@ -329,6 +359,12 @@ public class BnsController {
 		      model.addAttribute("userVO", user);
 		  return "bns/searchStoreList";
 		   }  
+@ResponseBody
+@GetMapping("/searchStoreListAjax")
+public List<BnsStoreVO> searchStoreListAjax(){
+	List<BnsStoreVO> list = bnsService.getSearchStoreList();
+	return list;
+}
 
 //출고내역 조회페이지
 @GetMapping("/searchReleaseList")
@@ -395,6 +431,15 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 		public List<BnsReleaseVO> releaseSearchListconAjax(BnsReleaseVO vo){
 			return bnsService.getreleaseSearchListCon(vo);
 		}
+		
+		//판매실적 페이지
+		   @GetMapping("/profit")
+		   public String profit(Model model, Authentication authentication) {
+				/* model.addAttribute("profit", bnsService.getProfit()); */
+		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		      model.addAttribute("userVO", user);
+		      return "bns/profit";
+		   }
 
 }
 

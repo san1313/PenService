@@ -143,7 +143,8 @@
               <label class="col-form-label" for="matOrderQy">수량</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="matOrderQy" name="matOrderQy" readonly />
+              <input type="hidden" class="form-control" id="matOrderQy" name="matOrderQy" readonly />
+              <input type="text" class="form-control" id="matOrderQyShow" name="matOrderQyShow" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="matUnit">단위</label>
@@ -225,7 +226,8 @@
               <label class="col-form-label" for="itemNum">수량</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="itemNum" name="itemNum" readonly />
+              <input type="hidden" class="form-control" id="itemNum" name="itemNum" readonly />
+              <input type="text" class="form-control" id="itemNumShow" name="itemNumShow" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="itemUnit">단위</label>
@@ -300,7 +302,8 @@
               <label class="col-form-label" for="expNum">수량</label>
             </div>
             <div class="col-2">
-              <input type="text" class="form-control" id="expNum" name="expNum" readonly />
+              <input type="hidden" class="form-control" id="expNum" name="expNum" readonly />
+              <input type="text" class="form-control" id="expNumShow" name="expNumShow" readonly />
             </div>
             <div class="col-1" style="flex: 0 0 7.5%; text-align: right">
               <label class="col-form-label" for="expUnit">단위</label>
@@ -395,6 +398,7 @@
       <div id="grid"></div>
       <script src="/plugins/jquery/jquery.min.js"></script>
       <script>
+        let reg = /\B(?=(\d{3})+(?!\d))/g;
         $(function () {
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
@@ -442,6 +446,9 @@
                 name: "testNumDef",
                 align: "center",
                 editor: "text",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
                 validation: {
                   required: true,
                   dataType: "number",
@@ -454,7 +461,7 @@
               columnContent: {
                 testNumDef: {
                   template(summary) {
-                    return "총 불량량 : " + summary.sum;
+                    return "총 불량량 : " + summary.sum.toString().replace(reg, ",");
                   },
                 },
               },
@@ -507,6 +514,9 @@
                 header: "수량",
                 name: "matOrderQy",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "단위",
@@ -574,6 +584,9 @@
                 name: "itemCnt",
                 align: "center",
                 width: 100,
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "단위",
@@ -637,6 +650,9 @@
                 header: "수량",
                 name: "expCnt",
                 align: "center",
+                formatter({ value }) {
+                  return value.toString().replace(reg, ",");
+                },
               },
               {
                 header: "단위",
@@ -707,44 +723,54 @@
 
           //라디오버튼 동작 시작
           let radioVal = "mat";
-          $("input[name=type]").on("change", (e) => {
-            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
-            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
+          function changeTest() {
+            radioVal = $("input[name=type]:checked").val();
             let mat = $("#matInputs");
             let item = $("#itemInputs");
             let exp = $("#expInputs");
+            if (radioVal == "mat") {
+              item.hide();
+              exp.hide();
+              mat.show();
+              $("#itemInputs input").val("");
+              $("#itemTestDate").val(today);
+              $("#itemEmpName").val(empName);
+              $("#expInputs input").val("");
+              $("#expEmpName").val(empName);
+              $("#expTestDate").val(today);
+              grid.clear();
+            } else if (radioVal == "item") {
+              mat.hide();
+              exp.hide();
+              item.show();
+              $("#matInputs input").val("");
+              $("#matTestDate").val(today);
+              $("#matEmpName").val(empName);
+              $("#expInputs input").val("");
+              $("#expEmpName").val(empName);
+              $("#expTestDate").val(today);
+              grid.clear();
+            } else {
+              mat.hide();
+              item.hide();
+              exp.show();
+              $("#matInputs input").val("");
+              $("#matTestDate").val(today);
+              $("#matEmpName").val(empName);
+              $("#itemInputs input").val("");
+              $("#itemTestDate").val(today);
+              $("#itemEmpName").val(empName);
+              grid.clear();
+            }
+          }
+          $("input[name=type]").on("change", (e) => {
+            let tmp = grid.getModifiedRows(); // 변경된 행을 가져옴 (추가,삭제,수정)
+            let noChange = tmp.updatedRows.length + tmp.createdRows.length + tmp.deletedRows.length == 0; // 변경된 행이 0개면 true
             if (noChange) {
-              radioVal = $("input[name=type]:checked").val();
-              if (radioVal == "mat") {
-                item.hide();
-                exp.hide();
-                mat.show();
-              } else if (radioVal == "item") {
-                mat.hide();
-                exp.hide();
-                item.show();
-              } else {
-                mat.hide();
-                item.hide();
-                exp.show();
-              }
+              changeTest();
             } else {
               if (confirm("검사항목 변경시 저장되지않은 데이터가 소실됩니다.\n변경하시겠습니까?")) {
-                radioVal = $("input[name=type]:checked").val();
-                grid.restore();
-                if (radioVal == "mat") {
-                  item.hide();
-                  exp.hide();
-                  mat.show();
-                } else if (radioVal == "item") {
-                  mat.hide();
-                  exp.hide();
-                  item.show();
-                } else {
-                  mat.hide();
-                  item.hide();
-                  exp.show();
-                }
+                changeTest();
               } else {
                 $(this).prop("checked", false);
                 $('input[name=type][value="' + radioVal + '"]').prop("checked", true);
@@ -842,6 +868,7 @@
                     case "expired":
                       expModalGrid.readData();
                       $("#expInputs input").val("");
+                      $("#expTestDate").val(today);
                       $("#expEmpName").val(empName);
                       break;
                   }
@@ -891,6 +918,7 @@
             $("#matCode").val(row.matCode);
             $("#matName").val(row.matName);
             $("#matOrderQy").val(row.matOrderQy);
+            $("#matOrderQyShow").val(row.matOrderQy.toString().replace(reg, ","));
             $("#matUnit").val(row.matUnit);
             $("#accCode").val(row.accCode);
             $("#accName").val(row.accName);
@@ -915,11 +943,12 @@
             inputs.eq(3).val(row.itemCode);
             inputs.eq(4).val(row.itemName);
             inputs.eq(5).val(row.itemCnt);
-            inputs.eq(6).val(row.itemUnit);
-            inputs.eq(7).val(row.itemDate);
-            inputs.eq(8).val(row.prevProcName);
-            inputs.eq(9).val(row.indicaCode);
-            inputs.eq(10).val(row.itemType);
+            inputs.eq(6).val(row.itemCnt.toString().replace(reg, ","));
+            inputs.eq(7).val(row.itemUnit);
+            inputs.eq(8).val(row.itemDate);
+            inputs.eq(9).val(row.prevProcName);
+            inputs.eq(10).val(row.indicaCode);
+            inputs.eq(11).val(row.itemType);
             console.log(inputs);
             console.log(row);
             grid.setRequestParams({ itemCode: row.itemCode });
@@ -942,8 +971,9 @@
             inputs.eq(3).val(row.expCode);
             inputs.eq(4).val(row.expName);
             inputs.eq(5).val(row.expCnt);
-            inputs.eq(6).val(row.expUnit);
-            inputs.eq(7).val(row.expDate);
+            inputs.eq(6).val(row.expCnt.toString().replace(reg, ","));
+            inputs.eq(7).val(row.expUnit);
+            inputs.eq(8).val(row.expDate);
             grid.setRequestParams({ itemCode: row.expCode });
             grid.readData();
 

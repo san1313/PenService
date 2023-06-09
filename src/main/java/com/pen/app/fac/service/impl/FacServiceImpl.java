@@ -9,6 +9,7 @@ import com.pen.app.fac.mapper.FacMapper;
 import com.pen.app.fac.service.FacService;
 import com.pen.app.fac.vo.FacConfirmVO;
 import com.pen.app.fac.vo.FacConnProcVO;
+import com.pen.app.fac.vo.FacDownTimeListVO;
 import com.pen.app.fac.vo.FacDownTimeVO;
 import com.pen.app.fac.vo.FacInfoListVO;
 import com.pen.app.fac.vo.FacInfoVO;
@@ -55,14 +56,7 @@ public class FacServiceImpl implements FacService {
 		 mapper.facConnProcDelete(list.getList().get(0).getFacCode());
 		//공정수정
 		 mapper.insertProcList(list);
-		// 설비수정
-		 
-		/*설비 비가동으로 수정할 경우 비가동 테이블에 등록 하는 부분
-		 * if(list.getList().get(0).getOperateCheck().equals(list.getList().get(0).
-		 * getSearchDiv())) { }else {
-		 * if(list.getList().get(0).getOperateCheck().equals('N')) {
-		 * mapper.insertDownFac(list.getList().get(0)); } }
-		 */
+		// 설비수정		 	
 		return mapper.facUpdate(list.getList().get(0));
 
 	}
@@ -70,6 +64,7 @@ public class FacServiceImpl implements FacService {
 	@Override
 	public int facDelete(FacInfoVO vo) {
 		// 설비삭제
+		//mapper.checkProcState(vo.getFacCode()) //설비 작업상태체크		
 		return mapper.facDelete(vo);
 	}
 
@@ -116,10 +111,12 @@ public class FacServiceImpl implements FacService {
 	}
 
 	@Override
-	public int insertDownTimeList(FacDownTimeVO list) {
-		System.out.println("등록 서비스 : "+list);
+	public int insertDownTimeList(FacDownTimeVO vo) {
+		System.out.println("등록 서비스 : "+vo);
 		// 비가동등록
-		return mapper.insertDownTimeList(list);
+		vo.setOperateCheck("N");
+		mapper.facOperateState(vo);
+		return mapper.insertDownTimeList(vo);
 	}
 
 	@Override
@@ -128,6 +125,18 @@ public class FacServiceImpl implements FacService {
 		return mapper.downTimeDelete(vo);
 	}
 
-	
+	@Override
+	public int downTimeUpdate(FacDownTimeVO vo) {
+		//설비상태변경 가동중
+		if(vo.getEndTime() != null && !vo.getEndTime().isEmpty())
+			vo.setOperateCheck("Y");
+		else
+			vo.setOperateCheck("N");
+		mapper.facOperateState(vo);
+		
+		// 비가동수정
+		return mapper.downTimeUpdate(vo);
+	}
 
+	
 }
