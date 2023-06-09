@@ -260,6 +260,15 @@ public class MakIndServiceImpl implements MakIndService{
 	@Transactional
 	public List<MakVO> getProcList(MakVO vo) {
 		List<MakVO> list = mapper.getAllProcMat(vo);
+		for (MakVO re : list) {
+			vo.setMatCode(re.getResultCode());
+			Integer i =mapper.getResultUsage(vo);
+			if(i!=null) {
+			re.setOrdrQnt(re.getOrdrQnt()*i);
+			};
+		};
+		
+		
 		list.addAll(mapper.getProcFac(vo.getProcCode()));
 		return list;
 	}
@@ -316,7 +325,12 @@ public class MakIndServiceImpl implements MakIndService{
 			}
 			
 		};
-		
+		for (MakVO vo : list.getList()) {
+			Integer j = mapper.getResultUsage(vo);
+			if(j!=null) {
+				vo.setProdCnt(vo.getProdCnt()/j);
+			}
+		}
 		//홀드랑 출고내역 업데이트
 		mapper.updateProcProd(list.getList().get(0));
 		

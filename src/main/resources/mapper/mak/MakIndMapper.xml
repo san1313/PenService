@@ -315,7 +315,8 @@ SELECT
     indica_code,
     proc_name,
     indica_state,
-    ordr_qnt,
+    ordr_qnt                  ordr_qnt,
+    nvl(test_tnum_def, 0)     test_tnum_def,
     mak_flow_step,
     ordr_qnt - nvl(re_qnt, 0) re_qnt
 FROM
@@ -325,6 +326,21 @@ FROM
     JOIN mak_flow USING ( mak_flow_code,
                           indica_code )
     JOIN com_code_proc USING ( proc_code )
+    LEFT OUTER JOIN (
+        SELECT
+            SUM(test_tnum_def) test_tnum_def,
+            indica_code,
+            proc_code
+        FROM
+                 qip_list_prod
+            JOIN com_code_proc USING ( proc_name )
+        WHERE
+            indica_code = #{indicaCode}
+        GROUP BY
+            indica_code,
+            proc_code
+    ) USING ( indica_code,
+              proc_code )
     LEFT OUTER JOIN (
         SELECT
             indica_code,
@@ -404,7 +420,8 @@ GROUP BY
     ordr_qnt,
     mak_flow_step,
     re_qnt,
-    origin_count
+    origin_count,
+    test_tnum_def
 HAVING
     COUNT(proc_code) >= origin_count
 ORDER BY
@@ -471,6 +488,9 @@ GROUP BY
     semi_name,
     ordr_qnt,
     result_code
+</select>
+<select id="getResultUsage" parameterType="MakVO" resultType="integer">
+select bom_mat_usage from mak_bom where plan_indica=#{indicaCode} and prod_code = #{matCode}
 </select>
 <select id="getProcFac" resultType="MakVO" parameterType="string">
          SELECT
