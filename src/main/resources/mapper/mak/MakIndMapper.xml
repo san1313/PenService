@@ -823,7 +823,7 @@ FROM
             proc_name
     ) USING ( indica_code,
               proc_name )
-    JOIN fac_info USING ( fac_code )
+    left outer JOIN fac_info USING ( fac_code )
 WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}
