@@ -14,6 +14,10 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
+<script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
+
 <style>
 .container-fluid .col-form-label{
 font-size:10pt;
@@ -33,6 +37,14 @@ height:28px;
 background-color:red}
 #facNmi option:disabled{
 background-color:red}
+
+.swalAlert {
+	top:60px !important;
+}
+.swal2-popup.swal2-toast .swal2-title{
+margin-top : 11px;
+font-size : 1.2em;
+}
 </style>
 </head>
 <body>
@@ -141,6 +153,13 @@ background-color:red}
 
 
 <script>
+const Toast = Swal.mixin({
+	  toast: true,
+	  position: 'top-end',
+ 	  timer: 1500,
+	  customClass: {container: 'swalAlert'},
+	  showConfirmButton: false,
+	});
 const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
 var grid = null;
@@ -157,6 +176,11 @@ var prdtNm="";
 var minQnt = 0;
 var miniQnt = 100000;
 $(function () {
+	
+
+		
+	
+	
 	//기본값 설정
     $('#indDatei').val(new Date().toISOString().slice(0, 10));
     $('#stDatei').val(new Date().toISOString().slice(0, 10));
@@ -299,15 +323,10 @@ $(function () {
     		    	})
     //공정 그리드 설정
      grid2.on("click",function(e){
-    	let planProcData = grid2.getRow(e.rowKey);
     	minQnt=0;
     	miniQnt=100000;
     	$('#stBtn').prop('disabled',false);
-    	
-  	 let insertData = {
-  			 "procCode" : planProcData.procCode,
-  			 "indicaCode" : planProcData.indicaCode
-  	 };
+    	let planProcData = grid2.getRow(e.rowKey);
   	 $('#facNmi option').remove();
   	 $('#procNamei').val(planProcData.procName);
   	 $('#procNamei').data('procCode',planProcData.procCode);
@@ -324,6 +343,12 @@ $(function () {
 				}
   		 }
   	 }
+    	
+
+  	 let insertData = {
+  			 "procCode" : planProcData.procCode,
+  			 "indicaCode" : planProcData.indicaCode
+  	 };
 	            //공정정보 불러오기
 	          	   $.ajax({
 	          		  url:"/ind/getProcList",
@@ -449,7 +474,7 @@ $(function () {
     $('#endBtn').click(function(){
     	 let makMat = grid3.getData(); 
     	let innerData = [];
-    	
+    	console.log(makMat);
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
     	let insertData = {
@@ -504,6 +529,10 @@ $(function () {
     		    			method : "GET",
     		    			success:function(result){
     		    				grid.resetData(result);
+    		    				Toast.fire({
+    		    					  icon: 'success',
+    		    					  title: '공정종료',
+    		    					});
     		    			}
     		    		});
     		    	//사원정보 불러오기
@@ -620,7 +649,10 @@ $(function () {
     		    		url:"/ind/userList",
     		    		method : "GET",
     		    		success:function(result){
-    		    			
+    		    			Toast.fire({
+		    					  icon: 'success',
+		    					  title: '공정시작',
+		    					});
     		    			$('#useri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
@@ -674,11 +706,11 @@ $(function () {
     	$('#stBtn').prop('disabled',true);
     	$('#endBtn').prop('disabled',true);
     	//수정버튼 활성화
+		$('#facNmi option').remove();
     	$('#indNmi').val(modData.indicaNm);
 		$('#indNmi').data("indicaCode",indicaCode);
 		$('#procNamei').val("");
 		$('#facNmi').val("");
-		$('#facNmi option').remove();
 		$("#useri").val("");
 		$('#procnamei').data('procCode',"");
 		 let grid2Rows = grid2.getData();
@@ -714,11 +746,18 @@ $(function () {
 	          success : function(result){
 	        	grid2.textContent="";
 	        	let def=0;
+	        	let divide=0;
 	            result.forEach(function(ele,idx){
+	            	if(ele.testTnumDef>0){
 	            	def+=ele.testTnumDef;
+	            	divide++;
+	            	};
+	            	if(def>0){
 	            	if(ele.makFlowStep>1){
+	            		def = Math.ceil(def/divide);
 	            		ele.reQnt=ele.reQnt-def;
-	            	}
+	            	};
+	            	};
 	            });
 	            grid2.resetData(result);
 

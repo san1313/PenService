@@ -305,7 +305,48 @@ select * from com_code_prod where prod_name like ('%'||#{prodName}||'%')
 </select>
 
 <select id="perfIndList" resultType="MakVO">
-select prod_code, indica_code,indica_nm,emp_num,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date, to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state, pd_code,prod_code,prod_name from mak_indica join com_code_prod using(prod_code) order by indica_code desc 
+SELECT
+    prod_code,
+    indica_code,
+    indica_nm,
+    emp_num,
+    ordr_qnt,
+    to_char(indica_date, 'yyyy-mm-dd') indica_date,
+    to_char(st_date, 'yyyy-mm-dd')     st_date,
+    to_char(cls_date, 'yyyy-mm-dd')    cls_date,
+    indica_state,
+    pd_code,
+    prod_code,
+    prod_name
+FROM
+         mak_indica
+    JOIN com_code_prod USING ( prod_code )
+WHERE
+    TO_DATE(cls_date, 'yyyy-mm-dd') >= TO_DATE(sysdate, 'yyyy-mm-dd')
+    AND indica_state != '작업완료'
+ORDER BY
+    indica_code DESC 
+</select>
+
+<select id="resultIndList" resultType="MakVO">
+SELECT
+    prod_code,
+    indica_code,
+    indica_nm,
+    emp_num,
+    ordr_qnt,
+    to_char(indica_date, 'yyyy-mm-dd') indica_date,
+    to_char(st_date, 'yyyy-mm-dd')     st_date,
+    to_char(cls_date, 'yyyy-mm-dd')    cls_date,
+    indica_state,
+    pd_code,
+    prod_code,
+    prod_name
+FROM
+         mak_indica
+    JOIN com_code_prod USING ( prod_code )
+ORDER BY
+    indica_code DESC 
 </select>
 
 <select id="oerfProcList" resultType="MakVO" parameterType="string">
@@ -490,7 +531,13 @@ GROUP BY
     result_code
 </select>
 <select id="getResultUsage" parameterType="MakVO" resultType="integer">
-select bom_mat_usage from mak_bom where plan_indica=#{indicaCode} and prod_code = #{matCode}
+select bom_mat_usage from mak_bom 
+where 
+plan_indica=#{indicaCode} 
+and prod_code = #{prodCode}
+<if test="resultCode !=null and resultCode != ''">
+ and result_code=#{resultCode}
+ </if>
 </select>
 <select id="getProcFac" resultType="MakVO" parameterType="string">
          SELECT
@@ -776,7 +823,7 @@ FROM
             proc_name
     ) USING ( indica_code,
               proc_name )
-    JOIN fac_info USING ( fac_code )
+    left outer JOIN fac_info USING ( fac_code )
 WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}

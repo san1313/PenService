@@ -261,7 +261,7 @@ public class MakIndServiceImpl implements MakIndService{
 	public List<MakVO> getProcList(MakVO vo) {
 		List<MakVO> list = mapper.getAllProcMat(vo);
 		for (MakVO re : list) {
-			vo.setMatCode(re.getResultCode());
+			vo.setProdCode(re.getResultCode());
 			Integer i =mapper.getResultUsage(vo);
 			if(i!=null) {
 			re.setOrdrQnt(re.getOrdrQnt()*i);

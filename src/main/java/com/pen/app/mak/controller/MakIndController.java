@@ -139,6 +139,12 @@ public class MakIndController {
 		return mapper.perfIndList();
 	}
 	
+	@GetMapping("/resultIndList")
+	@ResponseBody
+	List<MakVO> resultIndList(){
+		return mapper.resultIndList();
+	}
+	
 	@RequestMapping("/oerfProcList")
 	@ResponseBody
 	List<MakVO> oerfProcList(@RequestParam String indicaCode){
