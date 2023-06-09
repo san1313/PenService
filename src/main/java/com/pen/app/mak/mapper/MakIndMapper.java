@@ -47,6 +47,7 @@ public interface MakIndMapper {
 	
 	List<MakVO> modalProd(String prodName);
 	List<MakVO> perfIndList();
+	List<MakVO> resultIndList();
 	List<MakVO> oerfProcList(String indicaCode);
 	List<MakVO> userList();
 	List<MakVO> getAllProcMat(MakVO vo);

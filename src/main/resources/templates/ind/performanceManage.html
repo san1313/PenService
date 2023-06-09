@@ -299,15 +299,10 @@ $(function () {
     		    	})
     //공정 그리드 설정
      grid2.on("click",function(e){
-    	let planProcData = grid2.getRow(e.rowKey);
     	minQnt=0;
     	miniQnt=100000;
     	$('#stBtn').prop('disabled',false);
-    	
-  	 let insertData = {
-  			 "procCode" : planProcData.procCode,
-  			 "indicaCode" : planProcData.indicaCode
-  	 };
+    	let planProcData = grid2.getRow(e.rowKey);
   	 $('#facNmi option').remove();
   	 $('#procNamei').val(planProcData.procName);
   	 $('#procNamei').data('procCode',planProcData.procCode);
@@ -324,6 +319,12 @@ $(function () {
 				}
   		 }
   	 }
+    	
+
+  	 let insertData = {
+  			 "procCode" : planProcData.procCode,
+  			 "indicaCode" : planProcData.indicaCode
+  	 };
 	            //공정정보 불러오기
 	          	   $.ajax({
 	          		  url:"/ind/getProcList",
@@ -449,7 +450,7 @@ $(function () {
     $('#endBtn').click(function(){
     	 let makMat = grid3.getData(); 
     	let innerData = [];
-    	
+    	console.log(makMat);
     	//그리드3 반복;; 홀드테이블도 같이
     	makMat.forEach(function(ele,i){
     	let insertData = {
@@ -674,11 +675,11 @@ $(function () {
     	$('#stBtn').prop('disabled',true);
     	$('#endBtn').prop('disabled',true);
     	//수정버튼 활성화
+		$('#facNmi option').remove();
     	$('#indNmi').val(modData.indicaNm);
 		$('#indNmi').data("indicaCode",indicaCode);
 		$('#procNamei').val("");
 		$('#facNmi').val("");
-		$('#facNmi option').remove();
 		$("#useri").val("");
 		$('#procnamei').data('procCode',"");
 		 let grid2Rows = grid2.getData();
