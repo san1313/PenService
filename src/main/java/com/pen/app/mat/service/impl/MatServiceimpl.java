@@ -120,11 +120,15 @@ public class MatServiceimpl implements MatService {
 		return matmapper.getestwarehousinglist();
 	}
 
+	//여러건의 통신 발생 시 통신 장애 발생의 경우 이전+이후 통신들의 무효처리
 	@Override
 	@Transactional
-	public void getwarehousingregister(List<WarehousingVO> list) {
-		//자재입고
+	public String getwarehousingregister(List<WarehousingVO> list) {
+		//자재입고량 총합을 받아서 입력하기 위해 사용
 		int sum = 0;
+		//crud의 경우 리턴값은 디폴트로 숫자임으로 리턴되는 결과값을 받아오기 위해 사용
+		int j =0;
+		String result = "";
 		// 입고량을 재고량으로 지정
 		for (WarehousingVO in : list) {
 			sum += in.getMatWrhqy();
@@ -137,12 +141,15 @@ public class MatServiceimpl implements MatService {
 			list.get(i).setMatWrhqy(pass);
 		}
 		for (WarehousingVO in : list) {
-			matmapper.getwarehousingregister(in);
+			j+=matmapper.getwarehousingregister(in);
 			//로트번호 조회해서 셋팅
 			in.setMatLot(matmapper.getMatLotWarehousing()); 
 			matmapper.getmativntryregister(in);
 		}
-		
+		if(j>0) {
+			result = "입고성공";
+		}
+		return result; 
 	}
 
 	@Override

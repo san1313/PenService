@@ -193,27 +193,33 @@
     bodyHeight : 550,
     columns: [{
     header: 'LOT번호',
-    name: 'matLot'
+    name: 'matLot',
+    align: "center"
     },
     {
     header: '발주번호',
-    name: 'matOrdernum'
+    name: 'matOrdernum',
+    align: "center"
     },
     {
     header: '자재코드',
-    name: 'matCode'
+    name: 'matCode',
+    align: "center"
     },
     {
     header: '거래처명',
-    name: 'matBcncname'
+    name: 'matBcncname',
+    align: "center"
     },
     {
     header: '입고량',
-    name: 'matWrhqy'
+    name: 'matWrhqy',
+    align: "center"	
     },
     {
-    header: '입고일자',
-    name: 'matWrhdate'
+    header: '입고일시',
+    name: 'matWrhdate',
+    align: "center"
     }   
     ]
     });
@@ -248,11 +254,13 @@
         rowHeaders: ['rowNum'],
         columns: [{
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         }
       ]
     })
@@ -260,7 +268,10 @@
     
     $(function(){  
     $('#matmodal').on('shown.bs.modal', function(e){
+    	//자재모달
     	matmodallist();
+    	//자동커서
+    	$('#ckmat-text').focus();
     	modal_grid.refreshLayout();
     });
     
@@ -282,15 +293,17 @@
 	})
     
     })
-
+	
+    //자재모달엔터키
+      $("#ckmat-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckmat").click();   		  
+    	  }
+      })
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
-    	console.log(document.getElementById('ckmat-text').value)
-    	let data0 = document.getElementById('ckmat-text').value;
-    	let result2 = "%";
-    	result2+=document.getElementById('ckmat-text').value;
-    	result2+="%";
+    	let result2 = document.querySelector('#matmodal #ckmat-text').value;
 		$("#ckmat-text").val('');
     	
     	$.ajax({
@@ -363,11 +376,13 @@
       columns: [
         {
           header: '거래처코드',
-          name: 'accCode'
+          name: 'accCode',
+          align: "center"
         },
         {
           header: '거래처명',
-          name: 'accName'
+          name: 'accName',
+          align: "center"
         }  
       ]
     });
@@ -375,17 +390,22 @@
      $(function(){  
         $('#accmodal').on('shown.bs.modal', function(){
         	accmodal_grid.refreshLayout();
+        	//자동커서
+        	$('#ckacc-text').focus();
         });
         })
         
+          //거래처모달엔터키
+      $("#ckacc-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckacc").click();   		  
+    	  }
+      })
         
         //거래처모달검색조회
          $("#ckacc").on('click', function(){
-        	console.log(document.getElementById('ckacc-text').value)
         	let data1 = document.getElementById('ckacc-text').value;
-        	let result = "%";
-        	result += data1;
-        	result += "%";
+        	result = data1;
     		$("#ckacc-text").val('');
         	
         	$.ajax({

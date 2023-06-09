@@ -172,11 +172,11 @@ public class MatController {
 	 //자재 입고등록
 	 @RequestMapping("/warehousingregister")
 	 @ResponseBody
-	 public WarehousingVO warehousingregister(@RequestBody List<WarehousingVO> list) {
+	 public String warehousingregister(@RequestBody List<WarehousingVO> list) {
 		 System.err.println(list);
 		 
-		 matservice.getwarehousingregister(list);
-		 return null;
+		 
+		 return matservice.getwarehousingregister(list);
 	 }
 	 
 	 //당일건 자재입고등록리스트

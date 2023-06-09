@@ -108,23 +108,28 @@
     bodyHeight : 250,
     columns: [{
     header: '자재코드',
-    name: 'matCode'
+    name: 'matCode',
+    align: "center"
     },
     {
     header: '자재명',
-    name: 'matName'
+    name: 'matName',
+    align: "center"
     },
     {
     header: '재고량',
-    name: 'matQnt'
+    name: 'matQnt',
+    align: "center"
     },
     {
     header: '안전재고',
-    name: 'matSfst'
+    name: 'matSfst',
+    align: "center"
     },
     {
     header: '안전재고 부족분',
-    name: 'matdef'
+    name: 'matdef',
+    align: "center"
     }
     ]
     });
@@ -155,11 +160,13 @@
         rowHeaders: ['rowNum'],
         columns: [{
           header: '자재코드',
-          name: 'matCode'
+          name: 'matCode',
+          align: "center"
         },
         {
           header: '자재명',
-          name: 'matName'
+          name: 'matName',
+          align: "center"
         }
       ]
     })
@@ -167,18 +174,24 @@
     
     $(function(){  
     $('#matmodal').on('shown.bs.modal', function(e){
+    	//자재모달
+    	//자동커서
+    	$('#ckmat-text').focus();
     	modal_grid.refreshLayout();
     });
     })
 
+     //자재모달엔터키
+      $("#ckmat-text").on('keyup',function(e){
+    	  if(e.keyCode == 13){
+			$("#ckmat").click();   		  
+    	  }
+      })	
+      
     
     //자재모달검색조회
     $("#ckmat").on('click', function(){
-    	console.log(document.getElementById('ckmat-text').value)
-    	let data0 = document.getElementById('ckmat-text').value;
-    	let result2 = "%";
-    	result2+=document.getElementById('ckmat-text').value;
-    	result2+="%";
+    	let result2 = document.querySelector('#matmodal #ckmat-text').value;
 		$("#ckmat-text").val('');
     	
     	$.ajax({
@@ -195,6 +208,7 @@
       		}
     	})
     });
+     
      
     //자재모달선택
     modal_grid.on('click', ev=> {
@@ -275,31 +289,38 @@
       bodyHeight : 250,
       columns: [{
       header: '자재코드',
-      name: 'matCode'
+      name: 'matCode',
+      align: "center"
       },
       {
       header: '자재명',
-      name: 'matName'
+      name: 'matName',
+      align: "center"
       },
       {
       header: 'LOT번호',
-      name: 'matLot'
+      name: 'matLot',
+      align: "center"
       },
       {
       header: '거래처명',
-      name: 'matBcncname'
+      name: 'matBcncname',
+      align: "center"
       },
       {
       header: '실재고량',
-      name: 'matQntt'
+      name: 'matQntt',
+      align: "center"
       },
       {
       header: '홀드수량',
-      name: 'cnt'
+      name: 'cnt',
+      align: "center"
       },
       {
       header: '재고량',
-      name: 'matQnt'
+      name: 'matQnt',
+      align: "center"
       }
       ]
       });
