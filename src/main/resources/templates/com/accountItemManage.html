@@ -16,6 +16,8 @@
     <script src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
     <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
     <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
     <style>
       #accGrid .tui-grid-cell-current-row > td {
         background-color: #00a9ff33;
@@ -40,6 +42,12 @@
       }
       #itemGrid td[data-column-name="itemCode"] {
         background-color: transparent;
+      }
+      .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
       }
     </style>
   </head>
@@ -132,8 +140,30 @@
         $(function () {
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
+          // Alert API
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
 
           // 메인그리드시작;
+          tui.Grid.applyTheme("default", {
+            cell: {
+              selectedHeader: { background: "none" }, // 드래그했을때 헤더도 드래그 x
+              disabled: { background: "#f4f4f4", text: "#333" }, // 비활성컬럼 색깔 수정
+            },
+          });
+          tui.Grid.setLanguage("ko", {
+            display: {
+              noData: "데이터가 존재하지 않습니다.",
+            },
+            net: {
+              confirmModify: "데이터를 저장하시겠습니까?",
+            },
+          });
 
           //그리드폼 시작
           const accGrid = new tui.Grid({
@@ -279,25 +309,20 @@
             if (result == "Success") {
               itemGrid.setRequestParams({ accCode: accCode });
               itemGrid.readData();
-              alert("데이터가 저장되었습니다.");
+              Toast.fire({
+                icon: "success", //success, error, warning, info, question
+                title: "데이터가 저장되었습니다.",
+                width: 400,
+              });
             } else if (result == "Fail") {
-              alert("데이터 저장중 에러가 발생했습니다.");
+              Toast.fire({
+                icon: "error", //success, error, warning, info, question
+                title: "데이터 저장 중 에러가 발생했습니다.",
+                width: 400,
+              });
             }
           });
-          tui.Grid.applyTheme("default", {
-            cell: {
-              selectedHeader: { background: "none" }, // 드래그했을때 헤더도 드래그 x
-              disabled: { background: "#f4f4f4", text: "#333" }, // 비활성컬럼 색깔 수정
-            },
-          });
-          tui.Grid.setLanguage("ko", {
-            display: {
-              noData: "데이터가 존재하지 않습니다.",
-            },
-            net: {
-              confirmModify: "데이터를 저장하시겠습니까?",
-            },
-          });
+
           //수정된 행 색칠 시작
           itemGrid.on("afterChange", (e) => {
             let c = e.changes[0];
@@ -324,7 +349,7 @@
           //그리드 세팅 끝
 
           //이름으로 조회 기능 시작
-          $("#accSearchBtn").click(() => {
+          function searchFunc() {
             let accName = $("#accName");
             if (accName.val() != "") {
               accGrid.setRequestParams({ accName: accName.val() });
@@ -335,6 +360,10 @@
               accGrid.readData();
             }
             accName.val("");
+          }
+          $("#accSearchBtn").click(() => searchFunc());
+          $("#accName").keyup((e) => {
+            if (e.keyCode == 13) searchFunc();
           });
           // 이름으로 조회기능 끝
 
@@ -362,9 +391,14 @@
 
           //저장기능 시작
           $("#save").click(() => {
+            itemGrid.finishEditing();
             if (!accCode) {
               // 제품을 선택 안했을시
-              alert("거래처를 먼저 선택해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "거래처를 먼저 선택해주십시오.",
+                width: 400,
+              });
             } else {
               let mod = itemGrid.getModifiedRows();
               let cre = mod.createdRows;
@@ -372,7 +406,11 @@
               cre.forEach((ele) => {
                 if (!ele.itemCode) {
                   // 빈칸 체크
-                  alert("품목코드를 입력해주십시오.");
+                  Toast.fire({
+                    icon: "warning", //success, error, warning, info, question
+                    title: "품목코드를 입력해주십시오.",
+                    width: 400,
+                  });
                   check = true;
                 }
               });
@@ -380,10 +418,17 @@
                 // 빈칸이 있으면 저장x
                 return;
               }
-              itemGrid.finishEditing();
-              itemGrid.setRequestParams();
-              itemGrid.request("modifyData");
-              itemGrid.setRequestParams(accCode);
+              if (itemGrid.isModified()) {
+                itemGrid.setRequestParams();
+                itemGrid.request("modifyData");
+                itemGrid.setRequestParams(accCode);
+              } else {
+                Toast.fire({
+                  icon: "info", //success, error, warning, info, question
+                  title: "변경사항이 없습니다.",
+                  width: 400,
+                });
+              }
             }
           });
 
@@ -392,7 +437,11 @@
           //추가 버튼 시작
           $("#add").click((e) => {
             if (!accCode) {
-              alert("거래처를 먼저 선택해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "거래처를 먼저 선택해주십시오.",
+                width: 400,
+              });
             } else {
               itemGrid.appendRow({}, { focus: true }); // 행을 추가하고 마우스 커서를 이동
               let rowKey = itemGrid.getFocusedCell().rowKey;
@@ -404,10 +453,18 @@
           //삭제 버튼 시작
           $("#delete").click((e) => {
             if (!accCode) {
-              alert("거래처를 먼저 선택해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "거래처를 먼저 선택해주십시오.",
+                width: 400,
+              });
             } else {
               if (itemGrid.getCheckedRowKeys().length == 0) {
-                alert("삭제할 행을 체크해주십시오.");
+                Toast.fire({
+                  icon: "warning", //success, error, warning, info, question
+                  title: "삭제할 행을 체크해주십시오.",
+                  width: 400,
+                });
               } else {
                 itemGrid.removeCheckedRows(true);
               }
@@ -418,7 +475,11 @@
           //초기화 버튼 시작
           $("#reset").click((e) => {
             if (!accCode) {
-              alert("거래처를 먼저 선택해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "거래처를 먼저 선택해주십시오.",
+                width: 400,
+              });
             } else {
               if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
                 itemGrid.restore();

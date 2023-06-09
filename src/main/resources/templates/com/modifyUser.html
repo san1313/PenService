@@ -10,91 +10,107 @@
     <meta name="_csrf" th:content="${_csrf.token}" />
     <meta name="_csrf_header" th:content="${_csrf.headerName}" />
     <title>Pen Service</title>
+    <style>
+      .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
     </style>
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   </head>
   <body>
     <div layout:fragment="title">정보 변경</div>
     <!-- 메인컨텐츠 -->
     <div layout:fragment="content">
-
       <div style="width: 720px; margin: 0 auto">
         <div class="card card-outline">
           <div class="card-body">
-              <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="empId">아이디</label>
-                <input
-                  type="text"
-                  class="form-control col-4"
-                  style="float: none; margin: 0 auto 10px auto"
-                  id="empId"
-                  name="empId"
-                  placeholder="아이디 입력"
-                  readonly
-                  th:value="${vo.empId}"
-                />
-                <div class="col-4"></div>
+            <div class="form-group row">
+              <label class="text-right col-4 col-form-label" for="empId">아이디</label>
+              <input
+                type="text"
+                class="form-control col-4"
+                style="float: none; margin: 0 auto 10px auto"
+                id="empId"
+                name="empId"
+                placeholder="아이디 입력"
+                readonly
+                th:value="${vo.empId}"
+              />
+              <div class="col-4"></div>
+            </div>
+            <div class="form-group row">
+              <label class="text-right col-4 col-form-label" for="curPw">현재 비밀번호</label>
+              <input
+                type="password"
+                class="form-control col-4"
+                style="float: none; margin: 0 auto 10px auto"
+                id="curPw"
+                name="curPw"
+              />
+              <div class="col-4"></div>
+            </div>
+            <div class="form-group row">
+              <label class="text-right col-4 col-form-label" for="password1">새 비밀번호</label>
+              <input
+                type="password"
+                class="form-control col-4"
+                style="float: none; margin: 0 auto 10px auto"
+                id="password1"
+                name="empPw"
+                placeholder="변경시 입력"
+              />
+              <div class="col-4 text-danger text-left align-middle">
+                <p style="margin-bottom: 0px; line-height: 38px">6자 이상</p>
               </div>
-              <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="curPw">현재 비밀번호</label>
-                <input
-                  type="password"
-                  class="form-control col-4"
-                  style="float: none; margin: 0 auto 10px auto"
-                  id="curPw"
-                  name="curPw"
-                />
-                <div class="col-4">
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="password1">새 비밀번호</label>
-                <input
-                  type="password"
-                  class="form-control col-4"
-                  style="float: none; margin: 0 auto 10px auto"
-                  id="password1"
-                  name="empPw"
-                  placeholder="변경시 입력"
-                />
-                <div class="col-4 text-danger text-left align-middle">
-                  <p style="margin-bottom: 0px; line-height: 38px">6자 이상</p>
-                </div>
-              </div>
-              <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="password2">비밀번호 확인</label>
-                <input
-                  type="password"
-                  class="form-control col-4"
-                  style="float: none; margin: 0 auto 10px auto"
-                  id="password2"
-                  placeholder="변경시 입력"
-                />
-                <div class="col-4"></div>
-              </div>
-              <div class="form-group row">
-                <label class="text-right col-4 col-form-label" for="tel">연락처</label>
-                <input
-                  type="tel"
-                  class="form-control col-4"
-                  style="float: none; margin: 0 auto 10px auto"
-                  id="tel"
-                  name="empTel"
-                  placeholder="연락처 입력"
-                  aria-describedby="emailHelp"
-                  th:value="${vo.empTel}"
-                />
-                <div class="col-4"></div>
-              </div>
-              <hr />
-              <p>비밀번호 분실시 담당자에게 연락<br />연락처 : 010-0000-0000</p>
-              <button type="button" id="submit" class="btn btn-primary">변경</button>
-              <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
+            </div>
+            <div class="form-group row">
+              <label class="text-right col-4 col-form-label" for="password2">비밀번호 확인</label>
+              <input
+                type="password"
+                class="form-control col-4"
+                style="float: none; margin: 0 auto 10px auto"
+                id="password2"
+                placeholder="변경시 입력"
+              />
+              <div class="col-4"></div>
+            </div>
+            <div class="form-group row">
+              <label class="text-right col-4 col-form-label" for="tel">연락처</label>
+              <input
+                type="tel"
+                class="form-control col-4"
+                style="float: none; margin: 0 auto 10px auto"
+                id="tel"
+                name="empTel"
+                placeholder="연락처 입력"
+                aria-describedby="emailHelp"
+                th:value="${vo.empTel}"
+              />
+              <div class="col-4"></div>
+            </div>
+            <hr />
+            <p>비밀번호 분실시 담당자에게 연락<br />연락처 : 010-0000-0000</p>
+            <button type="button" id="submit" class="btn btn-primary">변경</button>
+            <input type="hidden" th:name="${_csrf.parameterName}" th:value="${_csrf.token}" />
           </div>
         </div>
       </div>
       <script src="/plugins/jquery/jquery.min.js"></script>
       <script>
         $(function () {
+          // Alert API
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
+
           let token = $('meta[name="_csrf"]').attr("content");
           let header = $('meta[name="_csrf_header"]').attr("content");
           $("#submit").click((e) => {
@@ -103,18 +119,30 @@
             let pw2 = $("#password2");
             let tel = $("#tel");
             if (tel.val() == "") {
-              alert("연락처를 입력해주세요");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "연락처를 입력해주십시오.",
+                width: 400,
+              });
               tel.focus();
               return false;
             }
             if (pw1.val().length < 6 && pw1.val() != "") {
-              alert("비밀번호는 6자 이상이어야 합니다.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "비밀번호는 6자 이상이어야 합니다.",
+                width: 400,
+              });
               pw1.focus();
               pw1.val("");
               return false;
             }
             if (pw1.val() != pw2.val()) {
-              alert("비밀번호와 비밀번호 확인이 다릅니다.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "비밀번호와 비밀번호 확인이 다릅니다.",
+                width: 400,
+              });
               pw1.val("");
               pw2.val("");
               pw1.focus();
@@ -123,23 +151,39 @@
             $.ajax({
               url: "/modify",
               method: "POST",
-              data: JSON.stringify({ empId: $("#empId").val(), curPw: curPw.val(), empPw: pw1.val(), empTel: tel.val() }),
+              data: JSON.stringify({
+                empId: $("#empId").val(),
+                curPw: curPw.val(),
+                empPw: pw1.val(),
+                empTel: tel.val(),
+              }),
               beforeSend: (xhr) => xhr.setRequestHeader(header, token),
               contentType: "application/json",
             })
               .done((r) => {
-                if(r){
-                  alert("변경 완료");
-                  curPw.val('');
-                  pw1.val('');
-                  pw2.val('');
-                }else{
-                  alert("현재 비밀번호가 일치하지 않습니다.")
+                if (r) {
+                  Toast.fire({
+                    icon: "success", //success, error, warning, info, question
+                    title: "회원정보가 변경되었습니다.",
+                    width: 400,
+                  });
+                  curPw.val("");
+                  pw1.val("");
+                  pw2.val("");
+                } else {
+                  Toast.fire({
+                    icon: "error", //success, error, warning, info, question
+                    title: "현재 비밀번호가 일치하지 않습니다.",
+                    width: 400,
+                  });
                 }
-                
               })
               .fail((e) => {
-                alert("데이터 변경 중 에러가 발생했습니다.")
+                Toast.fire({
+                  icon: "error", //success, error, warning, info, question
+                  title: "데이터 변경 중 에러가 발생했습니다.",
+                  width: 400,
+                });
               });
           });
         });

@@ -71,7 +71,15 @@
       #grid .over {
         background-color: #ffe5e5;
       }
+      .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
     </style>
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   </head>
   <body>
     <div layout:fragment="title">검사</div>
@@ -400,6 +408,15 @@
       <script>
         let reg = /\B(?=(\d{3})+(?!\d))/g;
         $(function () {
+          // Alert API
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
+
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
           // 메인그리드시작;
@@ -679,9 +696,17 @@
             let result = JSON.parse(e.xhr.response).data.contents;
             if (result == "Success") {
               grid.readData();
-              alert("데이터가 저장되었습니다.");
+              Toast.fire({
+                icon: "success", //success, error, warning, info, question
+                title: "데이터가 저장되었습니다.",
+                width: 400,
+              });
             } else if (result == "Fail") {
-              alert("데이터 저장중 에러가 발생했습니다.");
+              Toast.fire({
+                icon: "error", //success, error, warning, info, question
+                title: "데이터 저장 중 에러가 발생했습니다.",
+                width: 400,
+              });
             }
           });
 
@@ -803,11 +828,19 @@
                   break;
               }
               if (!targetCode && radioVal == "mat") {
-                alert("발주번호를 먼저 선택해주십시오.");
+                Toast.fire({
+                  icon: "warning", //success, error, warning, info, question
+                  title: "발주번호를 먼저 선택해주십시오",
+                  width: 400,
+                });
                 return;
               }
               if (!targetCode) {
-                alert("LOT를 먼저 선택해주십시오.");
+                Toast.fire({
+                  icon: "warning", //success, error, warning, info, question
+                  title: "LOT를 먼저 선택해주십시오",
+                  width: 400,
+                });
                 return;
               }
 
@@ -815,11 +848,19 @@
               grid.finishEditing();
               //유효성 검사 시작
               if (grid.validate().length) {
-                alert("불량량이 숫자가 아니거나 비어있습니다.");
+                Toast.fire({
+                  icon: "warning", //success, error, warning, info, question
+                  title: "불량량이 숫자가 아니거나 비어있습니다.",
+                  width: 400,
+                });
                 return;
               }
               if (grid.getSummaryValues("testNumDef").sum > testNum) {
-                alert("총 불량량이 수량보다 큽니다.");
+                Toast.fire({
+                  icon: "warning", //success, error, warning, info, question
+                  title: "총 불량량이 수량보다 큽니다.",
+                  width: 400,
+                });
                 return;
               }
               //유효성 검사 끝
@@ -850,7 +891,11 @@
                 },
               })
                 .done((r) => {
-                  alert("검사 내역이 저장되었습니다.");
+                  Toast.fire({
+                    icon: "success", //success, error, warning, info, question
+                    title: "데이터가 저장되었습니다.",
+                    width: 400,
+                  });
                   grid.clear();
                   switch (radioVal) {
                     case "mat":
@@ -874,7 +919,11 @@
                   }
                 })
                 .fail((e) => {
-                  alert("데이터를 저장하는중 에러가 발생했습니다.");
+                  Toast.fire({
+                    icon: "error", //success, error, warning, info, question
+                    title: "데이터 저장 중 에러가 발생했습니다.",
+                    width: 400,
+                  });
                 });
             }
           });

@@ -45,7 +45,15 @@
       #grid td[data-column-name="bomMatCode"] {
         background-color: transparent;
       }
+      .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
     </style>
+    <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   </head>
   <body>
     <div layout:fragment="title">BOM 관리</div>
@@ -171,9 +179,27 @@
       <script src="/plugins/jquery/jquery.min.js"></script>
       <script>
         $(function () {
+          // Alert API
+          const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
+
           const token = $('meta[name="_csrf"]').attr("content");
           const header = $('meta[name="_csrf_header"]').attr("content");
           // 메인그리드시작;
+          //tui grid의 언어세팅
+          tui.Grid.setLanguage("ko", {
+            display: {
+              noData: "데이터가 존재하지 않습니다.",
+            },
+            net: {
+              confirmModify: "데이터를 저장하시겠습니까?",
+            },
+          });
 
           let procNameList = [];
           let chk = true;
@@ -346,9 +372,17 @@
             if (result == "Success") {
               grid.setRequestParams({ itemCode: $("#itemCode").val() });
               grid.readData();
-              alert("데이터가 저장되었습니다.");
+              Toast.fire({
+                icon: "success", //success, error, warning, info, question
+                title: "데이터가 저장되었습니다.",
+                width: 400,
+              });
             } else if (result == "Fail") {
-              alert("데이터 저장중 에러가 발생했습니다.");
+              Toast.fire({
+                icon: "error", //success, error, warning, info, question
+                title: "데이터 저장 중 에러가 발생했습니다.",
+                width: 400,
+              });
             }
           });
 
@@ -359,22 +393,17 @@
           });
           //수정된 행 색칠 끝
 
-          //tui grid의 언어세팅
-          tui.Grid.setLanguage("ko", {
-            display: {
-              noData: "데이터가 존재하지 않습니다.",
-            },
-            net: {
-              confirmModify: "데이터를 저장하시겠습니까?",
-            },
-          });
-
           //그리드 세팅 끝
 
           //저장기능 시작
           $("#save").click(() => {
+            grid.finishEditing();
             if (chk) {
-              alert("제품코드를 먼저 입력해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "제품코드를 먼저 입력해주십시오.",
+                width: 400,
+              });
               return;
             }
             let mod = grid.getModifiedRows();
@@ -390,13 +419,24 @@
             });
             if (check) {
               // 빈칸이 있으면 저장x
-              alert("빈 칸이 존재합니다.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "빈 칸이 존재합니다.",
+                width: 400,
+              });
               return;
             }
             //덜 닫힌 input창을 저장시키고 모든 변경사항을 서버로 전송
-            grid.finishEditing();
-            grid.setRequestParams();
-            grid.request("modifyData");
+            if (grid.isModified()) {
+              grid.setRequestParams();
+              grid.request("modifyData");
+            } else {
+              Toast.fire({
+                icon: "info", //success, error, warning, info, question
+                title: "변경사항이 없습니다.",
+                width: 400,
+              });
+            }
           });
 
           //저장기능 끝
@@ -404,7 +444,11 @@
           //재료 추가 시작
           $("#add").click((e) => {
             if (chk) {
-              alert("제품코드를 먼저 입력해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "제품코드를 먼저 입력해주십시오.",
+                width: 400,
+              });
               return;
             }
             grid.appendRow(
@@ -418,11 +462,19 @@
           //재료 삭제 시작
           $("#delete").click((e) => {
             if (chk) {
-              alert("제품코드를 먼저 입력해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "제품코드를 먼저 입력해주십시오.",
+                width: 400,
+              });
               return;
             }
             if (grid.getCheckedRowKeys().length == 0) {
-              alert("삭제할 행을 체크해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "삭제할 행을 체크해주십시오.",
+                width: 400,
+              });
             } else {
               grid.removeCheckedRows(true);
             }
@@ -432,7 +484,11 @@
           //초기화 버튼 시작
           $("#reset").click((e) => {
             if (chk) {
-              alert("제품코드를 먼저 입력해주십시오.");
+              Toast.fire({
+                icon: "warning", //success, error, warning, info, question
+                title: "제품코드를 먼저 입력해주십시오.",
+                width: 400,
+              });
               return;
             }
             if (confirm("변경된 내용을 초기화 하시겠습니까?")) {
@@ -464,7 +520,7 @@
           // 모달 그리드 새로고침 끝
 
           // 모달 제품명으로 조회 기능 시작
-          $("#itemSearchBtn").click(() => {
+          function searchFunc() {
             let itemName = $("#innerItem");
             if (itemName.val() != "") {
               $.ajax({
@@ -478,6 +534,10 @@
               itemGrid.readData();
             }
             itemName.val("");
+          }
+          $("#itemSearchBtn").click(() => searchFunc());
+          $("#innerItem").keyup((e) => {
+            if (e.keyCode == 13) searchFunc();
           });
           // 모달 제품명으로 조회 기능 끝
 
@@ -500,7 +560,11 @@
                 $(".itemsModal").modal("hide");
               })
               .fail((e) => {
-                alert("공정 데이터를 받아오는중 에러가 발생했습니다.");
+                Toast.fire({
+                  icon: "error", //success, error, warning, info, question
+                  title: "데이터를 불러오는중 에러가 발생했습니다.",
+                  width: 400,
+                });
               });
             chk = false;
           });
