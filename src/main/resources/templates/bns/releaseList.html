@@ -54,6 +54,13 @@ background-color : #ffe4e4;
 input.form-control{
 display:inline-block;
 }
+.modaltitle {
+	text-align: center;
+}
+
+.modalbtn {
+	text-align: center;
+}
 </style>
 </head>
 <body>
@@ -71,17 +78,17 @@ display:inline-block;
 	<form id="searchform">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input class="form-control" type="text" id="productlist-text"
-				style="background-color: #e2e1e1" name="prodName" readonly>
+	<label>제품명</label> <input  class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:230px" name="prodName" readonly>
 		 <button style="height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	계약코드 <input class="form-control" type="text" id="contCodeList-text"
-				style="background-color: #e2e1e1" name="contCode" readonly>
+	<label>계약코드</label> <input class="form-control" type="text" id="contCodeList-text"
+				style="background-color: #e2e1e1; width:230px" name="contCode" readonly>
 		 <button style="height:38px;margin-bottom:3px" type="button" id="contCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-contCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input class="form-control" type="date" id="contDetRelease-text" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease1-text" name="contDetRelease1">
+	<label>납기일자</label> <input class="form-control" type="date" id="contDetRelease-text" name="contDetRelease"> - <input class="form-control" type="date" id="contDetRelease1-text" name="contDetRelease1">
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;"type="button" id="releaseList"class="btn btn-primary">조회</button>
@@ -93,17 +100,17 @@ display:inline-block;
 	<form id="searchform1" style="display:none">
 	<div class="row">
 	<div class= "col-3">
-	제품명 <input class="form-control" type="text" id="productlist-text1"
-				style="background-color: #e2e1e1" name="prodName" readonly>
+	<label>제품명</label> <input class="form-control" type="text" id="productlist-text1"
+				style="background-color: #e2e1e1; width:230px" name="prodName" readonly>
 		 <button style="height:38px;margin-bottom:3px" type="button" id="productList1" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product1-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	주문코드 <input class="form-control" type="text" id="ordCode-text"
-				style="background-color: #e2e1e1" name="ordCode" readonly>
+	<label>주문코드</label> <input class="form-control" type="text" id="ordCode-text"
+				style="background-color: #e2e1e1; width:230px" name="ordCode" readonly>
 		 <button style="height:38px;margin-bottom:3px" type="button" id="ordCodeList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-ordCode-modal-lg"></button>
 	</div>
 	<div class= "col-3">
-	납기일자 <input class="form-control" type="date" id="ordDetRelease-text" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease1-text" name="ordDueDate1">
+	<label>납기일자</label> <input class="form-control" type="date" id="ordDetRelease-text" name="ordDueDate"> - <input class="form-control" type="date" id="ordDetRelease1-text" name="ordDueDate1">
 	</div>
 	<div class= "col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button  type="button" style="width:80px; margin-right:10px;" id="releaseList1" class="btn btn-primary">조회</button>
@@ -412,11 +419,13 @@ display:inline-block;
 		       },
 		       {
 		         header: '출고일자',
-		         name: 'sys'
+		         name: 'sys',
+		         hidden:true
 		       },
 		       {
 		         header: '입고 담당자명',
-		         name: 'empName'
+		         name: 'empName',
+		         hidden:true
 		       },
 		       {
 		         header: '비고',
@@ -424,7 +433,7 @@ display:inline-block;
 		         editor: 'text'
 		       }
 		       ],summary:{
-		    	   height:40,
+		    	   height:50,
 		    	   position:'bottom'
 		       }
 		   });
@@ -477,17 +486,22 @@ display:inline-block;
         				  }
         				});
         			console.log(row);
-        			 $.ajax({
-        					url : "/bns/LotReleaseListAjax",
-        					method : "GET",
-        					data : {result : row.prodCode},
-        					dataType : "JSON",
-        					success : function(result){
-        						afterReleaseGrid.resetData(result);
-        					}
-        				});
+        			lotReleaseList();
+        			 
           } 
-          }) 
+          })
+          
+          function lotReleaseList(){
+        	   $.ajax({
+					url : "/bns/LotReleaseListAjax",
+					method : "GET",
+					data : {result : targetRow.prodCode},
+					dataType : "JSON",
+					success : function(result){
+						afterReleaseGrid.resetData(result);
+					}
+				});
+          }
           
           //주문상황 첫번째 열 클릭 시 밑의 그리드로 정보 이동
            beforeReleaseOrdGrid.on('click', ev=> {
@@ -518,18 +532,32 @@ display:inline-block;
           
           //출고등록 버튼 클릭 시
            $('#releaseRegBtn').on('click' ,function(){
-        	/*    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
+        	   console.log(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum)
+        	   console.log(targetRow.ordReqQuan)
+        	   let radioVal = $("input[name=type]:checked").val();
+        	   if (radioVal == "contract") {
+        	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
    				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
    				return;
    				}
-        	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.ordReqQuan){
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
+      				alert("출고량을 입력하세요 ");
+      				return;
+      			}
+        	   }
+        	   
+        	   else{
+        	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.ordReqQuan){
       				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
       				return;
       				}
-        	   if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
       				alert("출고량을 입력하세요 ");
       				return;
-      			} */
+      			}
+        	   }
+      				
+      			
         	   
 			let checked = afterReleaseGrid.getCheckedRows();
 			console.log(checked);
@@ -555,9 +583,16 @@ display:inline-block;
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						
+						afterReleaseGrid.resetData([]);
+						afterReleaseGrid.setSummaryColumnContent('bnsReleaseQuan', '');
 					}
-					})
+					});
+					
+		
+					
+					 	
+			
+      			
            })
 				//////////////////////////////본문의 제품명 모달 관련
 	//모달내 제품리스트 그리드 생성
@@ -957,7 +992,8 @@ $(function(){
     })
   })
   
-           
+           //그리드 한글로
+	      tui.Grid.setLanguage("ko");
 	</script>
 	</div>
 </body>

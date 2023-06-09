@@ -529,7 +529,7 @@ GROUP BY cont_det_code,
 FROM bns_order
 JOIN bns_order_detail USING ( ord_code )
 LEFT OUTER JOIN bns_release USING ( ord_det_code )
-WHERE ord_progress = '접수완료'
+WHERE ord_det_progress != '출고완료'
 GROUP BY ord_det_code,
          ord_code,
          bns_order.acc_name,

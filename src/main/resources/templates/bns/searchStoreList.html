@@ -61,18 +61,18 @@ display:inline-block;
 	<form id="searchform">
 	<div class="row">
 	<div class="col-3">
-	제품명 <input class="form-control" type="text" id="productlist-text"
+	<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
 				style="background-color: #e2e1e1; width:230px;" name="prdtNm" readonly>
 		 <button style="height:38px; margin-bottom : 3px;"type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 	</div>
 	<div class="col-3">
-		완제품LOT <input class="form-control" type="text" id="lotlist-text"
+		<label>완제품LOT</label> <input class="form-control" type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button style="height:38px; margin-bottom : 3px;"type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>				
 	<div class="col-3">
-	입고일자 <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
+	<label>입고일자</label> <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
 	</div>
 	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
@@ -368,6 +368,9 @@ $(function(){
   
   
 })
+
+//그리드 한글로
+	      tui.Grid.setLanguage("ko");
 </script>
 </div>
 </body>

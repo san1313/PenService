@@ -45,7 +45,6 @@ public class BnsController {
       return "bns/ordList";
    }
    
-   //////////삭제
    //주문서리스트 아작스
 	@ResponseBody
 	@GetMapping("/ordListAjax")
@@ -432,6 +431,15 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 		public List<BnsReleaseVO> releaseSearchListconAjax(BnsReleaseVO vo){
 			return bnsService.getreleaseSearchListCon(vo);
 		}
+		
+		//판매실적 페이지
+		   @GetMapping("/profit")
+		   public String profit(Model model, Authentication authentication) {
+				/* model.addAttribute("profit", bnsService.getProfit()); */
+		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		      model.addAttribute("userVO", user);
+		      return "bns/profit";
+		   }
 
 }
 

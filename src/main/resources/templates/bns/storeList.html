@@ -62,13 +62,13 @@ display:inline-block;
 	<form id="searchform">
 	<div class="row">
 	<div class="col-3">
-		완제품LOT <input class="form-control" type="text" id="lotlist-text"
+		<label>완제품LOT</label> <input class="form-control" type="text" id="lotlist-text"
 			style="background-color: #e2e1e1; width:230px;" name="prdtLot"readonly>
 		<button style="height:38px; margin-bottom : 3px;"type="button" id="lotList" class="fa-solid fa-magnifying-glass btn btn-primary"
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>
 	<div class="col-4">
-	생산일자 <input class="form-control" type="date" id="prdtDate-text" name="prdtDate"> -
+	<label>생산일자</label> <input class="form-control" type="date" id="prdtDate-text" name="prdtDate"> -
 	 <input class="form-control" type="date" id="prdtDate1-text" name="prdtDate1">
 	 </div>
 	 <div class="col-5 row justify-content-end" style="padding-bottom:10px;">
@@ -422,6 +422,10 @@ display:inline-block;
 	    
 	    
 	});
+	  
+	//그리드 한글로
+    tui.Grid.setLanguage("ko");
+	  
 	</script>
 	</div>
 </body>
