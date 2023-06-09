@@ -72,7 +72,7 @@ display:inline-block;
 			data-toggle="modal" data-target=".bd-lot-modal-lg"></button>
 	</div>				
 	<div class="col-3">
-	<label>입고일자</label> <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1">
+	<label>입고일자</label> <input class="form-control" type="date" id="bnsStoreDate-text1" name="bnsStoreDate"> - <input class="form-control" type="date" id="bnsStoreDate-text2" name="bnsStoreDate1" min="" disabled>
 	</div>
 	<div class="col-3 row justify-content-end" style="padding-bottom:10px;">
 	<button style="width:80px; margin-right:10px;" type="button" id="searchStore" class="btn btn-primary">조회</button>
@@ -124,7 +124,7 @@ display:inline-block;
 					<h1 class="modaltitle"></h1>
 					<p>
 						<label>완제품LOT</label> <input type="text" id="searchlot-text">
-						<button id="searchlot" type="submit"
+						<button id="searchlot" type="button"
 							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
 					<div id="lotGrid"></div>
 
@@ -146,6 +146,31 @@ const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
 
 $(document).ready(function(){
+	
+	 //LOT 모달창 엔터키
+	 $('#searchlot-tex').on('keyup',function(e){
+		 if(e.keyCode == 13){
+			 $("#searchlot").click();
+		 }
+	 })
+	
+	 //제품모달창 엔터키
+$('#searchprod-text').on('keyup',function(e){
+	 if(e.keyCode == 13){
+		 $("#searchprod").click();
+	 }
+})
+
+	
+	//날짜 조건
+	 var bnsStoredate1Input = document.getElementById("bnsStoreDate-text1");
+     var bnsStoredate2Input = document.getElementById("bnsStoreDate-text2");
+
+     bnsStoredate1Input.addEventListener("input", function() {
+    	 bnsStoredate2Input.min = bnsStoredate1Input.value;
+    	 bnsStoredate2Input.disabled = false;
+          
+        });
 	
 	//입고내역 그리드 아작스
 $.ajax({
@@ -170,23 +195,28 @@ var StoreGrid = new tui.Grid({
      columns: [
        {
          header: '완제품LOT번호',
-         name: 'prdtLot'
+         name: 'prdtLot',
+         align : 'center'
        },
        {
          header: '완제품명',
-         name: 'prdtNm'
+         name: 'prdtNm',
+         align : 'center'
        },
        {
          header: '입고량',
-         name: 'bnsStoreQuan'
+         name: 'bnsStoreQuan',
+         align : 'center'
 	    },
        {
          header: '입고일자',
-         name: 'bnsStoreDate'
+         name: 'bnsStoreDate',
+         align : 'center'
        },
        {
          header: '담당자명',
-         name: 'empName'
+         name: 'empName',
+         align : 'center'
        }
      ]
    }); 
@@ -202,11 +232,13 @@ bodyHeight : 200,
  columns: [
    {
      header: '제품코드',
-     name: 'prodCode'
+     name: 'prodCode',
+     align : 'center'
    },
    {
      header: '제품명',
-     name: 'prodName'
+     name: 'prodName',
+     align : 'center'
    }
 
  ]
@@ -293,15 +325,18 @@ $(function(){
 	      columns: [
 	        {
 	          header: 'LOT번호',
-	          name: 'prdtLot'
+	          name: 'prdtLot',
+	          align : 'center'
 	        },
 	        {
 	          header: '제품코드',
-	          name: 'prodCode'
+	          name: 'prodCode',
+	          align : 'center'
 	        },
 	        {
 	          header: '제품명',
-	          name: 'prdtNm'
+	          name: 'prdtNm',
+	          align : 'center'
 	        }
 	      ]
 	    });
@@ -352,7 +387,7 @@ $(function(){
 	    	});
 	    })
 	    
-	    //초기화 버튼 클릭 시
+	/*     //초기화 버튼 클릭 시
 		$('#pageReset').on('click',function(){
 			
 			$.ajax({
@@ -364,7 +399,7 @@ $(function(){
 				}
 			});
 			
-		})
+		}) */
   
   
 })

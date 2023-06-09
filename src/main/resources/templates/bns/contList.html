@@ -106,10 +106,10 @@ display:inline-block;
 		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
 		</div>
 		<div class="col-3">
-			<label>계약작성일자</label> <input style="width:124px" class="form-control" name="contDate1" type="date" id="contdate-text"> - <input style="width:124px; margin-right : 20px; " class="form-control" name="contDate2" type="date" id="contdate-text">
+			<label>계약작성일자</label> <input style="width:124px" class="form-control" name="contDate1" type="date" id="contdate1-text"> - <input style="width:124px; margin-right : 20px; " class="form-control" name="contDate2" type="date" id="contdate2-text" min="" disabled>
 		</div>		
 		<div class="col-3">
-			<label>계약만료일자</label> <input style="width:124px" class="form-control" name="contDueDate1" type="date" id="contduedate-text"> - <input style="width:124px; margin-right : 20px;" class="form-control" name="contDueDate2" type="date" id="contduedate-text">
+			<label>계약만료일자</label> <input style="width:124px" class="form-control" name="contDueDate1" type="date" id="contduedate1-text"> - <input style="width:124px; margin-right : 20px;" class="form-control" name="contDueDate2" type="date" id="contduedate2-text" min="" disabled>
 		</div>
 		</div>
 		<div style="margin-top:50px; " class="row justify-content-center">
@@ -255,10 +255,10 @@ display:inline-block;
 						<button type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 							data-toggle="modal" data-target=".bd-smallproduct-modal-sm"></button>
 							</div>
-						<button class="btn btn-danger" style="float: right; margin-right: 5px;"
+						<button class="btn btn-danger" style="float: right; margin-right: 5px; margin-bottom:5px;"
 							id="contProdDelete">삭제</button>
 						<div id="addProdgrid"></div>
-						<div class="modalbtn">
+						<div style="margin-top : 5px;"class="modalbtn">
 							<button id="contregsubmit" type="submit" class="btn btn-primary">등록</button>
 							<button type="button" class="btn btn btn-secondary"
 								data-dismiss="modal">취소</button>
@@ -334,7 +334,7 @@ display:inline-block;
 			<div class="modal-dialog modal-lg">
 				<div class="p-3 modal-content">
 					<div class="modal-header">
-						<h1 class="modal-title">계약서 수정</h1>
+						<h1 class="modal-title">계약 상세</h1>
 						<button type="button" class="close" data-dismiss="modal"
 							aria-label="Close">
 							<span aria-hidden="true">&times;</span>
@@ -397,17 +397,16 @@ display:inline-block;
 							</div>
 							<br>
 							<hr>
-							<h2>계약상세</h2>
 							<br> <label style="float:left;">제품리스트</label>
-							<button style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
+							<button id="modProdSearch" style="float:left;" type="button" class="fa-solid fa-magnifying-glass btn btn-primary"
 								data-toggle="modal" data-target=".bd-smallproductMod-modal-sm"></button>
-							<button class = "btn btn-danger"style="float: right; margin-right: 5px;"
+							<button class = "btn btn-danger"style="float: right; margin-right: 5px; margin-bottom:5px;"
 								id="contProdDelete2">삭제</button>
 							<div id="modProdgrid"></div>
-							<div class="modalbtn">
+							<div style="margin-top : 5px;"class="modalbtn">
 								<button id="contmodsubmit" type="submit" class="btn btn-primary">수정</button>
 								<button type="button" class="btn btn-secondary"
-									data-bs-dismiss="modal">취소</button>
+									data-dismiss="modal">취소</button>
 							</div>
 						</div>
 					</div>
@@ -433,7 +432,7 @@ display:inline-block;
 								<div class="modalbtn">
 									<button class="btn btn-primary" id="modalsubmitbtn2" data-toggle="modal"
 										data-target=".bd-smallproductMod-modal-sm" type="button">확인</button>
-									<button class="btn btn-secondary" data-bs-dismiss="modal" >취소</button>
+									<button class="btn btn-secondary" data-dismiss="modal" >취소</button>
 								</div>
 							</div>
 						</div>
@@ -448,7 +447,7 @@ display:inline-block;
 		<!--------------------------------------------------------- 스크립트 ------------------------------------------->
 		<script>
 		
-		//초기화 버튼 클릭 시
+	/* 	//초기화 버튼 클릭 시
 		$('#pageReset').on('click',function(){
 			
 			$.ajax({
@@ -460,13 +459,43 @@ display:inline-block;
 				}
 			});
 			
-		})
+		}) */
 		
 		
 		
 		const token = $('meta[name="_csrf"]').attr("content");
 		const header = $('meta[name="_csrf_header"]').attr("content");
 		
+		//제품모달창 엔터키
+		$('#searchprod-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchprod").click();
+			 }
+		})
+
+		 //거래처엔터키
+		 $('#searchacc-text').on('keyup',function(e){
+			 if(e.keyCode == 13){
+				 $("#searchacc").click();
+			 }
+		 })
+		
+		//날짜
+		  var contdate1Input = document.getElementById("contdate1-text");
+	       var contdate2Input = document.getElementById("contdate2-text");
+
+	       contdate1Input.addEventListener("input", function() {
+	    	   contdate2Input.min = contdate1Input.value;
+	    	   contdate2Input.disabled = false;
+	          });
+	       
+	       var contduedate1Input = document.getElementById("contduedate1-text");
+	       var contduedate2Input = document.getElementById("contduedate2-text");
+
+	       contduedate1Input.addEventListener("input", function() {
+	    	   contduedate2Input.min = contduedate1Input.value;
+	    	   contduedate2Input.disabled = false;
+	          });
 		
 		$('#contProdDelete').on('click' ,function(){
 			
@@ -494,16 +523,19 @@ display:inline-block;
             	
                {
                  header: '제품명',
-                 name: 'prodName'
+                 name: 'prodName',
+                 align : 'center'
                },
                {
                  header: '제품코드',
-                 name: 'prodCode'
+                 name: 'prodCode',
+                 align : 'center'
                },
                {
                  header: '계약량',
                  name: 'contDetQuan',
                  editor:'text',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    },
@@ -512,6 +544,7 @@ display:inline-block;
                    header: '단가',
                    name: 'contDetPrice',
                    editor:'text',
+                   align : 'center',
                    formatter({ value }) {
                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                      }
@@ -519,6 +552,7 @@ display:inline-block;
                {
                  header: '계약금액',
                  name: 'contDetTotPrice',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -526,7 +560,8 @@ display:inline-block;
                {
                 header: '납기일자',
                 name: 'contDetRelease',
-                editor:'datePicker'
+                editor:'datePicker',
+                align : 'center'
               }
              ],
                summary: {
@@ -646,11 +681,13 @@ $.ajax({
      columns: [
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
-         name: 'accName'
+         name: 'accName',
+         align : 'center'
        }
    
      ]
@@ -725,11 +762,13 @@ $.ajax({
      columns: [
        {
          header: '제품코드',
-         name: 'prodCode'
+         name: 'prodCode',
+         align : 'center'
        },
        {
          header: '제품명',
-         name: 'prodName'
+         name: 'prodName',
+         align : 'center'
        }
      ]
    });
@@ -742,11 +781,13 @@ $.ajax({
 	     columns: [
 	       {
 	         header: '제품코드',
-	         name: 'prodCode'
+	         name: 'prodCode',
+	         align : 'center'
 	       },
 	       {
 	         header: '제품명',
-	         name: 'prodName'
+	         name: 'prodName',
+	         align : 'center'
 	       }
 	     ]
 	   });
@@ -867,11 +908,13 @@ $.ajax({
      columns: [
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
-         name: 'accName'
+         name: 'accName',
+         align : 'center'
        }
    
      ]
@@ -951,11 +994,13 @@ $.ajax({
      columns: [
        {
          header: '제품코드',
-         name: 'prodCode'
+         name: 'prodCode',
+         align : 'center'
        },
        {
          header: '제품명',
-         name: 'prodName'
+         name: 'prodName',
+         align : 'center'
        }
    
      ]
@@ -1068,45 +1113,54 @@ $.ajax({
      columns: [
        {
          header: '계약코드',
-         name: 'contCode'
+         name: 'contCode',
+         align : 'center'
        },
        {
          header: '거래처코드',
-         name: 'accCode'
+         name: 'accCode',
+         align : 'center'
        },
        {
          header: '거래처명',
          name: 'accName',
          sortable: true,
-         filter: 'select'
+         filter: 'select',
+         align : 'center'
        },
        {
          header: '작성일자',
          name: 'contDate',
-         sortable: true
+         sortable: true,
+         align : 'center'
        },
        {
            header: '시행일자',
            name: 'contStartDate',
-           sortable: true
+           sortable: true,
+           align : 'center'
          },
        {
          header: '만료일자',
          name: 'contDueDate',
-         sortable: true	
+         sortable: true,
+         align : 'center'
        },
+       {
+           header: '담당자명',
+           name: 'empName',
+           align : 'center'
+         },
        {
            header: '진행상황',
            name: 'contProgress',
-           filter: 'select'
-         },
-       {
-           header: '담당자명',
-           name: 'empName'
+           filter: 'select',
+           align : 'center'
          },
        {
            header: '비고',
-           name: 'contNote'
+           name: 'contNote',
+           align : 'center'
          }
    
      ]
@@ -1147,6 +1201,45 @@ $.ajax({
 			dataType : "JSON",
 			success : function(result){
 				modProdgrid.resetData(result);
+				//버튼막기
+				let modRow = modProdgrid.getData();
+				console.log(modRow)
+				modRow.forEach(ele=>{
+					ele.contProgress = row.contProgress
+					if(ele.contProgress =='출고완료'){
+						modProdgrid.disableRow(ele.rowKey,true)
+						
+						let submitBtn = document.getElementById('contmodsubmit');
+						let deleteBtn = document.getElementById('contProdDelete2');
+						let dueDateBtn = document.getElementById('modalModcontDueDate');
+						let startDateBtn = document.getElementById('modalModcontStartDate');
+						let noteBtn = document.getElementById('modalModcontNote');
+						let searchBtn = document.getElementById('modProdSearch');
+						
+						submitBtn.disabled = true;
+						deleteBtn.disabled = true;
+						dueDateBtn.disabled = true;
+						startDateBtn.disabled = true;
+						noteBtn.disabled = true;
+						searchBtn.disabled = true;
+						
+					}else{
+						let submitBtn = document.getElementById('contmodsubmit');
+						let deleteBtn = document.getElementById('contProdDelete2');
+						let dueDateBtn = document.getElementById('modalModcontDueDate');
+						let startDateBtn = document.getElementById('modalModcontStartDate');
+						let noteBtn = document.getElementById('modalModcontNote');
+						let searchBtn = document.getElementById('modProdSearch'); 
+						
+						submitBtn.disabled = false;
+						deleteBtn.disabled = false;
+						dueDateBtn.disabled = false;
+						startDateBtn.disabled = false;
+						noteBtn.disabled = false;
+						searchBtn.disabled = false;
+						
+					}
+			})
 			}
 		});
 	}
@@ -1167,17 +1260,20 @@ $.ajax({
             	 
                {
                  header: '제품명',
-                 name: 'prodName'
+                 name: 'prodName',
+                 align : 'center'
                  
                },
                {
                  header: '제품코드',
-                 name: 'prodCode'
+                 name: 'prodCode',
+                 align : 'center'
                },
                {
                  header: '계약량',
                  name: 'contDetQuan',
                  editor:'text',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -1186,6 +1282,7 @@ $.ajax({
                    header: '단가',
                    name: 'contDetPrice',
                    editor:'text',
+                   align : 'center',
                    formatter({ value }) {
                        return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                      }
@@ -1193,6 +1290,7 @@ $.ajax({
                {
                  header: '계약금액',
                  name: 'contDetTotPrice',
+                 align : 'center',
                  formatter({ value }) {
                      return value.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
                    }
@@ -1201,12 +1299,15 @@ $.ajax({
                  {
                 	 header: '납기일자',
                      name: 'contDetRelease',
-                     editor:'datePicker'
+                     editor:'datePicker',
+                     align : 'center'
+                     
                  }
                  ,
                  {
                 	 header: '현황',
-                     name: 'contDetProgress'
+                     name: 'contDetProgress',
+                     align : 'center'
                     
                  }
              ],
@@ -1276,6 +1377,15 @@ $.ajax({
          
    		//계약서 삭제
          $('#BtnContCancle').on('click',function(){
+        	 
+        	 let checked = grid.getCheckedRows()
+        	 console.log(checked)
+        		checked.forEach(ele=>{
+				if(ele.contProgress !== '접수완료'){
+				alert('취소할 수 없는 계약서입니다')
+				        			
+				}else{
+        	 
 			grid.removeCheckedRows(true)
 			let deleted = grid.getModifiedRows().deletedRows;
 			
@@ -1297,7 +1407,8 @@ $.ajax({
 					}
 					});
 			}
-        	 
+				}
+        		})
         	 
          })
         
