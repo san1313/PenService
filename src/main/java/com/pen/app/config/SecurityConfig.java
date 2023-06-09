@@ -39,6 +39,7 @@ public class SecurityConfig {
 	.antMatchers("/mat/matadjust", "/mat/matoptionhold").hasAnyAuthority("자재팀장","총관리자")
 	.antMatchers("/mat/**").hasAnyAuthority("자재팀장", "자재팀 사원","총관리자")
 	
+	.antMatchers("/mak/plan", "/ind/indica", "/ind/dirindica", "/ind/performance").hasAnyAuthority("생산팀장","총관리자")
 	.antMatchers("/mak/**", "/ind/**").hasAnyAuthority("생산팀장", "생산팀 사원","총관리자")
 	
 	.antMatchers("/fac/equipment").hasAnyAuthority("설비팀장","총관리자")
