@@ -14,6 +14,10 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+
+<script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
+
 <style>
 label{
 font-size:10pt;
@@ -28,6 +32,12 @@ margin-top:5px;
 height:28px;
 font-size:10pt;
 }
+     .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
 </style>
 
 </head>
@@ -91,7 +101,15 @@ font-size:10pt;
       <div id="grid"></div>
 
 <script>
+
 //전역변수 선언부
+const Toast = Swal.mixin({
+    toast: true,
+    position: 'top-end',
+    timer: 1500,
+    customClass: {container: 'swalAlert'},
+    showConfirmButton: false,
+  })
 const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
 var selectNum = 0;
@@ -364,10 +382,14 @@ $('#sCon').change(function(){
     	if(comDev==1){
     		
     	if($('#plnmi').val()==''){
-    		alert('계획명을 지정해주세요.');
+    	      Toast.fire({
+    	          icon: 'warning', //success, error, warning, info, question
+    	          title: '계획명을 지정해주세요.'
+    	        });
     		return false;
     	};
     	if($('#dsti').val()==$('#dclsi').val()){
+    		
     		if(confirm("계획 시작일자와 종료일자가 동일합니다. \n그대로 진행하시겠습니까?")){
     		}else{
     			return false;
@@ -415,7 +437,7 @@ $('#sCon').change(function(){
                     xhr.setRequestHeader(header, token);
                   },
     	        success : function(result){
-					alert(result);
+    	        	
 					grid.appendRows(innerData);
 					modal_grid.textContent="";
 					Hfrm.textContent="";
@@ -478,7 +500,11 @@ $('#sCon').change(function(){
                  xhr.setRequestHeader(header, token);
                },
  	        success : function(result){
-					alert(result);
+ 	        	Toast.fire({
+	    	          icon: 'success', //success, error, warning, info, question
+	    	          title: result,
+	    	          width: 400
+	    	        });
 					
      	        	comDev=1;
      	        	modal_grid.textContent="";
@@ -502,7 +528,10 @@ $('#sCon').change(function(){
  	        });
        	 
     	}else{
-    		alert('삭제가 취소되었습니다.');
+    		Toast.fire({
+   	          icon: 'success', //success, error, warning, info, question
+   	          title: '삭제가 취소되었습니다.'
+   	        });
     	};
     	
     })
@@ -531,7 +560,10 @@ $('#sCon').change(function(){
                      xhr.setRequestHeader(header, token);
                    },
      	        success : function(result){
-     	        	alert("수정 성공");
+     	        	Toast.fire({
+   	    	          icon: 'success', //success, error, warning, info, question
+   	    	          title: '수정 완료되었습니다.'
+   	    	        });
      	        	comDev=1;
      	        	modal_grid.textContent="";
 					Hfrm.textContent="";
@@ -561,7 +593,10 @@ $('#sCon').change(function(){
     	let sDate=$("#sCon").val();
     	let clsDate=$("#clsCon").val();
     	if(sDate==''||clsDate==''){
-    		alert("계획일자 범위가 규정되지 않았습니다.");
+    		Toast.fire({
+     	          icon: 'warning', //success, error, warning, info, question
+     	          title: '계획범위일자를 지정하여주세요'
+     	        });
     	}
     	let data={planSdate:sDate,
     			planClsdate:clsDate};
@@ -587,12 +622,18 @@ $('#sCon').change(function(){
     $('#plcoi').keyup(function(){
     	if(comDev==1){
     	  	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
-    		alert('해당 계약건의 수량을 넘어설 수 없습니다.');
+    	  		Toast.fire({
+    	   	          icon: 'warning', //success, error, warning, info, question
+    	   	          title: '해당 계약의 수량을 넘었습니다.'
+    	   	        });
     		$('#plcoi').val($('#abplcoi'+selectNum).val());
     	};
     	}else if(comDev==2){
     		if(Math.abs($("#plcoi").val())>$("#contDetQuan0").val()){
-    			alert('해당 계약의 잔류수량을 넘어설 수 없습니다.')
+    			Toast.fire({
+    	   	          icon: 'warning', //success, error, warning, info, question
+    	   	          title: '해당 계약의 잔류수량을 넘었습니다.'
+    	   	        });
     			$("#plcoi").val($("#contDetQuan0").val());
     		};
     	};
@@ -608,17 +649,26 @@ $('#sCon').change(function(){
     	
     	//변수 제어 - 제약 조건 걸기
     	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
-    		alert('해당 계약건의 수량을 넘어설수 없습니다.');
+    		Toast.fire({
+     	          icon: 'warning', //success, error, warning, info, question
+     	          title: '해당 계약의 수량을 넘었습니다.'
+     	        });
     		$('#plcoi').val($('#abplcoi'+selectNum).val());
     	};
     	};
     	if($('#dsti').val()<new Date().toISOString().slice(0, 10)){
-    		alert('계획시작일의 최소일자는 금일입니다.');
+    		Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '계획 최소 시작일자는 금일입니다.'
+   	        });
     		document.getElementById('dsti').value=new Date().toISOString().slice(0, 10);
     	};
     	
     	if($('#dclsi').val()<$('#dsti').val()){
-    		alert('계획마감일의 최소일자는 계약시작일입니다.');
+    		Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '계획 마감의 최소일자는 계획 시작일자입니다.'
+   	        });
     		$('#dclsi').val($('#dsti').val());
     	};
     });
@@ -849,7 +899,10 @@ function getModalCon(){
 			let sDate=$("#sOrdCon").val();
 			let clsDate=$("#clsOrdCon").val();
 			if(sDate==''||clsDate==''){
-	    		alert("납기일자 범위가 규정되지 않았습니다.");
+				Toast.fire({
+	     	          icon: 'warning', //success, error, warning, info, question
+	     	          title: '납기일자 범위가 지정되지 않았습니다.'
+	     	        });
 	    	}
 	    	let data={planSdate:sDate,
 	    			planClsdate:clsDate};
@@ -1361,7 +1414,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	if(comDev==1){
     		
     	if($('#plnmi').val()==''){
-    		alert('계획명을 지정해주세요.');
+    		 Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '계획명을 지정해주세요.'
+   	        });
     		return false;
     	};
     	if($('#dsti').val()==$('#dclsi').val()){
@@ -1413,7 +1469,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
                     xhr.setRequestHeader(header, token);
                   },
     	        success : function(result){
-					alert(result);
+    	        	Toast.fire({
+    	     	          icon: 'success', //success, error, warning, info, question
+    	     	          title: result
+    	     	        });
 					grid.appendRows(innerData);
 					modal_grid.textContent="";
 					Hfrm.textContent="";
@@ -1476,8 +1535,11 @@ document.getElementById('orderBtn').addEventListener('click',function(){
                  xhr.setRequestHeader(header, token);
                },
  	        success : function(result){
-					alert(result);
-					
+ 	        	 Toast.fire({
+ 	    	          icon: 'success', //success, error, warning, info, question
+ 	    	          title: result,
+ 	    	          width: 400
+ 	    	        });
      	        	comDev=1;
      	        	modal_grid.textContent="";
 					Hfrm.textContent="";
@@ -1500,7 +1562,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
  	        });
        	 
     	}else{
-    		alert('삭제가 취소되었습니다.');
+    		Toast.fire({
+   	          icon: 'success', //success, error, warning, info, question
+   	          title: '삭제가 취소되었습니다.'
+   	        });
     	};
     	
     })
@@ -1527,7 +1592,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
                      xhr.setRequestHeader(header, token);
                    },
      	        success : function(result){
-     	        	alert("수정 성공");
+     	        	Toast.fire({
+   	    	          icon: 'success', //success, error, warning, info, question
+   	    	          title: '수정 완료되었습니다.'
+   	    	        });
      	        	comDev=1;
      	        	modal_grid.textContent="";
 					Hfrm.textContent="";
@@ -1557,7 +1625,10 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	let sDate=$("#sCon").val();
     	let clsDate=$("#clsCon").val();
     	if(sDate==''||clsDate==''){
-    		alert("계획일자 범위가 규정되지 않았습니다.");
+    		Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '계획일자를 지정하여 주세요.'
+   	        });
     	}
     	let data={planSdate:sDate,
     			planClsdate:clsDate};
@@ -1582,12 +1653,18 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     $('#plcoi').keyup(function(){
     	if(comDev==1){
     	  	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
-    		alert('해당 주문건의 수량을 넘어설 수 없습니다.');
+    	  		Toast.fire({
+	    	          icon: 'warning', //success, error, warning, info, question
+	    	          title: '주문수량을 초과하였습니다.'
+	    	        });
     		$('#plcoi').val($('#abplcoi'+selectNum).val());
     	};
     	}else if(comDev==2){
     		if(Math.abs($("#plcoi").val())>$("#contDetQuan0").val()){
-    			alert('해당 주문의 잔류수량을 넘어설 수 없습니다.')
+    			Toast.fire({
+	    	          icon: 'warning', //success, error, warning, info, question
+	    	          title: '해당 주문의 잔류수량을 넘었습니다.'
+	    	        });
     			$("#plcoi").val($("#contDetQuan0").val());
     		};
     	};
@@ -1603,17 +1680,27 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     	
     	//변수 제어 - 제약 조건 걸기
     	if(Math.abs($('#plcoi').val())>$('#abplcoi'+selectNum).val()){
-    		alert('해당 계약건의 수량을 넘어설수 없습니다.');
+    		Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '해당 계약의 수량을 넘었습니다.'
+   	        });
     		$('#plcoi').val($('#abplcoi'+selectNum).val());
     	};
     	};
     	if($('#dsti').val()<new Date().toISOString().slice(0, 10)){
-    		alert('계획시작일의 최소일자는 금일입니다.');
+    		Toast.fire({
+   	          icon: 'warning', //success, error, warning, info, question
+   	          title: '계획시작일의 최소일자는 금일입니다.'
+   	        });
     		document.getElementById('dsti').value=new Date().toISOString().slice(0, 10);
     	};
     	
     	if($('#dclsi').val()<$('#dsti').val()){
-    		alert('계획마감일의 최소일자는 계획시작일입니다.');
+    		
+    		Toast.fire({
+     	          icon: 'warning', //success, error, warning, info, question
+     	          title: '계획마감일의 최소일자는 계획시작일입니다.'
+     	        });
     		$('#dclsi').val($('#dsti').val());
     	};
     });

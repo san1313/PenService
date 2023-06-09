@@ -14,6 +14,8 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
+<script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
 <style>
 .container-fluid .col-form-label{
 font-size:10pt;
@@ -28,7 +30,12 @@ font-size:10pt;
 margin-bottom:10px;
 height:28px;
 }
-
+      .swalAlert {
+        top: 60px !important;
+      }
+      .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
 </style>
 </head>
 <body>
@@ -154,6 +161,13 @@ height:28px;
 
 
 <script>
+const Toast = Swal.mixin({
+    toast: true,
+    position: "top-end",
+    timer: 1500,
+    customClass: { container: "swalAlert" },
+    showConfirmButton: false,
+  });
 //전역변수 선언부
 const token = $('meta[name="_csrf"]').attr("content");
 const header = $('meta[name="_csrf_header"]').attr("content");
@@ -603,7 +617,10 @@ $(function () {
 		
 		
 		if($('#indNmi').val()==''){
-    		alert('지시명을 지정해주세요.');
+		      Toast.fire({
+		          icon: 'warning', //success, error, warning, info, question
+		          title: '지시명을 지정해주세요'
+		        });
     		return false;
     	};
     	if($('#stDatei').val()==$('#clsDatei').val()){
@@ -613,7 +630,10 @@ $(function () {
     		};
     	};
     	if($('#planNmi').val()==''){
-    		alert('계획을 선택해주세요');
+    	      Toast.fire({
+    	          icon: 'warning', //success, error, warning, info, question
+    	          title: '계획을 선택해주세요'
+    	        });
     		return false;
     	}
     	let makFlow = grid2.getData();
