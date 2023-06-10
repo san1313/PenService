@@ -118,6 +118,23 @@ font-size : 1.2em;
 </div>
 </div>
 </div>
+<div class="form-group row">
+<div class="form-group row col-5">
+<label class="col-5 col-form-label">작업취소</label>
+<select class="form-control col-7"  id="procUseri">
+</select>
+</div>
+</div>
+
+<div class="form-group row">
+<div class="from-group row col-12">
+<div class="col-2"></div>
+<div class="col-10">
+<button  class="btn btn-danger" id="cancelBtn" disabled>작업취소</button>
+</div>
+</div>
+</div>
+
 </div>
 </div>
 </div>
@@ -237,7 +254,7 @@ $(function () {
 	grid2 = new tui.Grid({
         el: document.getElementById('proc_grid'),
         scrollX: false,
-        bodyHeight: 250,
+        bodyHeight: 350,
         columns: [{
           header: '공정명',
           name: 'procName'
@@ -256,7 +273,7 @@ $(function () {
 	grid3 = new tui.Grid({
         el: document.getElementById('bom_grid'),
         scrollX: false,
-        bodyHeight: 30,
+        bodyHeight: 250,
         columns: [
         {
           header: '자재명',
@@ -288,6 +305,7 @@ $(function () {
     		    		success:function(result){
     		    			
     		    			$('#useri option').remove();
+    		    			$('#procUseri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
     		    				let options = document.createElement("option");
@@ -299,14 +317,33 @@ $(function () {
     		    				options.dataset.fldate=ele.prcsFlDate;
     		    				options.append(ele.empName);
     		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
+    		    					let option2 = document.createElement("option");
+        		    				option2.setAttribute('name',ele.empNum);
+        		    				option2.dataset.num=i;
+        		    				option2.dataset.procCode=ele.procCode;
+        		    				option2.dataset.indicaCode=ele.indicaCode;
+        		    				option2.dataset.facCode=ele.facCode;
+        		    				option2.dataset.fldate=ele.prcsFlDate;
+        		    				option2.dataset.prcsCode=ele.prcsCode;
+        		    				option2.append(ele.empName);
+        		    				
+        		    				option2.append("-");
     		    					options.append("-");
     		    					let getindicaNm = grid.getData();
     		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
     		    						options.append(ind.indicaNm);
+    		    						option2.append(ind.indicaNm);
     		    					});
+    		    					console.log('??');
+    		    					
+    		    					console.log(options);
     		    					options.append("-");
     		    					options.append(ele.procCode);
+    		    					option2.append("-");
+    		    					option2.append(ele.procCode);
+    		    					
+    		    					document.getElementById('procUseri').appendChild(option2);
+    		    					
     		    				}
     		    				if(ele.facCode!=null){
     		    					options.setAttribute('disabled',true);
@@ -314,7 +351,8 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				
+    		    					$('#cancelBtn').prop('disabled',true);
+    		    					$('#procUseri').val('');
     		    				}
     		    				
     		    			})
@@ -327,6 +365,8 @@ $(function () {
     	miniQnt=100000;
     	$('#stBtn').prop('disabled',false);
     	let planProcData = grid2.getRow(e.rowKey);
+    	$('#procUseri').val('');
+    	$('#cancelBtn').prop('disabled',true);
   	 $('#facNmi option').remove();
   	 $('#procNamei').val(planProcData.procName);
   	 $('#procNamei').data('procCode',planProcData.procCode);
@@ -389,6 +429,7 @@ $(function () {
 										if(userNm.getAttribute('name')==ele.empNum){
 											options.append(userNm.value);
 										}
+										
 									})
 									
 								}
@@ -470,6 +511,9 @@ $(function () {
     		$('#endBtn').prop('disabled',true);
     	}
     })
+    $('#procUseri').change(function(){
+    	$('#cancelBtn').prop('disabled',false);
+    })
     //종료버튼 클릭이벤트
     $('#endBtn').click(function(){
     	 let makMat = grid3.getData(); 
@@ -542,6 +586,7 @@ $(function () {
     		    		success:function(result){
     		    			
     		    			$('#useri option').remove();
+    		    			$('#procUseri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
     		    				let options = document.createElement("option");
@@ -553,14 +598,32 @@ $(function () {
     		    				options.dataset.fldate=ele.prcsFlDate;
     		    				options.append(ele.empName);
     		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
+    		    					let option2 = document.createElement("option");
+        		    				option2.setAttribute('name',ele.empNum);
+        		    				option2.dataset.num=i;
+        		    				option2.dataset.procCode=ele.procCode;
+        		    				option2.dataset.indicaCode=ele.indicaCode;
+        		    				option2.dataset.facCode=ele.facCode;
+        		    				option2.dataset.fldate=ele.prcsFlDate;
+        		    				option2.dataset.prcsCode=ele.prcsCode;
+        		    				option2.append(ele.empName);
+        		    				
+        		    				option2.append("-");
     		    					options.append("-");
     		    					let getindicaNm = grid.getData();
     		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
     		    						options.append(ind.indicaNm);
+    		    						option2.append(ind.indicaNm);
     		    					});
+    		    					
+    		    					console.log(options);
     		    					options.append("-");
     		    					options.append(ele.procCode);
+    		    					option2.append("-");
+    		    					option2.append(ele.procCode);
+    		    					
+    		    					document.getElementById('procUseri').appendChild(option2);
+    		    					
     		    				}
     		    				if(ele.facCode!=null){
     		    					options.setAttribute('disabled',true);
@@ -568,7 +631,8 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				
+    		    				$('#cancelBtn').prop('disabled',true);
+    		    				$('#procUseri').val('');
     		    				}
     		    				
     		    			})
@@ -654,6 +718,7 @@ $(function () {
 		    					  title: '공정시작',
 		    					});
     		    			$('#useri option').remove();
+    		    			$('#procUseri option').remove();
     		    			result.forEach(function(ele,i){
     		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
     		    				let options = document.createElement("option");
@@ -665,14 +730,33 @@ $(function () {
     		    				options.dataset.fldate=ele.prcsFlDate;
     		    				options.append(ele.empName);
     		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
+    		    					let option2 = document.createElement("option");
+        		    				option2.setAttribute('name',ele.empNum);
+        		    				option2.dataset.num=i;
+        		    				option2.dataset.procCode=ele.procCode;
+        		    				option2.dataset.indicaCode=ele.indicaCode;
+        		    				option2.dataset.facCode=ele.facCode;
+        		    				option2.dataset.fldate=ele.prcsFlDate;
+        		    				option2.dataset.prcsCode=ele.prcsCode;
+        		    				option2.append(ele.empName);
+        		    				
+        		    				option2.append("-");
     		    					options.append("-");
     		    					let getindicaNm = grid.getData();
     		    					getindicaNm.forEach(function(ind){
-    		    						if(ele.indicaCode==ind.indicaCode)
     		    						options.append(ind.indicaNm);
+    		    						option2.append(ind.indicaNm);
     		    					});
+    		    					console.log('??');
+    		    					
+    		    					console.log(options);
     		    					options.append("-");
     		    					options.append(ele.procCode);
+    		    					option2.append("-");
+    		    					option2.append(ele.procCode);
+    		    					
+    		    					document.getElementById('procUseri').appendChild(option2);
+    		    					
     		    				}
     		    				if(ele.facCode!=null){
     		    					options.setAttribute('disabled',true);
@@ -680,7 +764,8 @@ $(function () {
     		    					options.removeAttribute('disabled');
     		    				}
     		    				document.getElementById('useri').appendChild(options);
-    		    				
+    		    				$('#cancelBtn').prop('disabled',true);
+    		    				$('#procUseri').val('');
     		    				}
     		    				
     		    			})
@@ -696,13 +781,113 @@ $(function () {
     	//등록 아작스 끝
 	});
     //등록버튼 끝
-    
+    //삭제버튼 시작
+    $('#cancelBtn').click(function(){
+    	let delProcsCode=$('#procUseri option:selected').data('prcsCode');
+    	//삭제이벤트
+    	 $.ajax({
+	          url : "/ind/delProcProd",
+	          method : "POST",
+	          data : {"prcsCode":delProcsCode},
+	          beforeSend: function (xhr) {
+	              xhr.setRequestHeader(header, token);
+	            },
+	          success : function(result){
+
+	    			 let grid2Rows = grid2.getData();
+	    		    	grid2Rows.forEach(function(ele,i){
+	    		    		grid2.removeRow(grid2Rows[i].rowKey);
+	    		    	});
+	    		    	 let grid3Rows = grid3.getData();
+	    		    	grid3Rows.forEach(function(ele,i){
+	    		    		grid3.removeRow(grid3Rows[i].rowKey);
+	    		    	});
+	    		    	
+	    		    	$('#prodCnti').val('0');
+	    		    	$('#indNmi').val('');
+	    		    	$('#facNmi option').remove();
+	    		    	$('#procNamei').val('');
+	    		    	$('#stBtn').prop('disabled',true);
+	    		    	$('#useri').val('');
+	    		    	$('#facNmi').val('');
+	    				$('#useri option').remove();
+	    				//사원정보 불러오기
+	    		    	$.ajax({
+	    		    		url:"/ind/userList",
+	    		    		method : "GET",
+	    		    		success:function(result){
+	    		    			Toast.fire({
+			    					  icon: 'success',
+			    					  title: '공정시작',
+			    					});
+	    		    			$('#useri option').remove();
+	    		    			$('#procUseri option').remove();
+	    		    			result.forEach(function(ele,i){
+	    		    				if(ele.prcsFlDate!=null||ele.prcsFlDate==null&&ele.facCode!=null||ele.prcsFlDate==null&&ele.facCode==null){
+	    		    				let options = document.createElement("option");
+	    		    				options.setAttribute('name',ele.empNum);
+	    		    				options.dataset.num=i;
+	    		    				options.dataset.procCode=ele.procCode;
+	    		    				options.dataset.indicaCode=ele.indicaCode;
+	    		    				options.dataset.facCode=ele.facCode;
+	    		    				options.dataset.fldate=ele.prcsFlDate;
+	    		    				options.append(ele.empName);
+	    		    				if(ele.prcsFlDate==null&&ele.facCode!=null){
+	    		    					let option2 = document.createElement("option");
+	        		    				option2.setAttribute('name',ele.empNum);
+	        		    				option2.dataset.num=i;
+	        		    				option2.dataset.procCode=ele.procCode;
+	        		    				option2.dataset.indicaCode=ele.indicaCode;
+	        		    				option2.dataset.facCode=ele.facCode;
+	        		    				option2.dataset.fldate=ele.prcsFlDate;
+	        		    				option2.dataset.prcsCode=ele.prcsCode;
+	        		    				option2.append(ele.empName);
+	        		    				
+	        		    				option2.append("-");
+	    		    					options.append("-");
+	    		    					let getindicaNm = grid.getData();
+	    		    					getindicaNm.forEach(function(ind){
+	    		    						options.append(ind.indicaNm);
+	    		    						option2.append(ind.indicaNm);
+	    		    					});
+	    		    					console.log('??');
+	    		    					
+	    		    					console.log(options);
+	    		    					options.append("-");
+	    		    					options.append(ele.procCode);
+	    		    					option2.append("-");
+	    		    					option2.append(ele.procCode);
+	    		    					
+	    		    					document.getElementById('procUseri').appendChild(option2);
+	    		    					
+	    		    				}
+	    		    				if(ele.facCode!=null){
+	    		    					options.setAttribute('disabled',true);
+	    		    				}else{
+	    		    					options.removeAttribute('disabled');
+	    		    				}
+	    		    				document.getElementById('useri').appendChild(options);
+	    		    				$('#cancelBtn').prop('disabled',true);
+	    		    				$('#procUseri').val('');
+	    		    				}
+	    		    				
+	    		    			})
+	    		    			
+	    		    		}
+	    		    	})
+	    		    	//사원정보 불러오기 끝
+
+	          }
+    	 })
+    })
     grid.on('click',function(e){
     	modData = grid.getRow(e.rowKey);
     	prdtNm=modData.prodName;
     	pdCode=modData.pdCode;
     	indicaCode=modData.indicaCode;
     	prodCode=modData.prodCode;
+    	$('#cancelBtn').prop('disabled',true);
+    	$('#procUseri').val('');
     	$('#stBtn').prop('disabled',true);
     	$('#endBtn').prop('disabled',true);
     	//수정버튼 활성화

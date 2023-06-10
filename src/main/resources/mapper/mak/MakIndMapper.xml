@@ -828,5 +828,7 @@ WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}
  </select>
-
+<delete id="delProcProd" parameterType="string" >
+delete mak_proc_prod where prcs_code=#{prcsCode}
+</delete>
 </mapper>
