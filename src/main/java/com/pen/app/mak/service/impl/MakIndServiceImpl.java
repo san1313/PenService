@@ -172,8 +172,17 @@ public class MakIndServiceImpl implements MakIndService{
 
 	@Override
 	public List<MakVO> getIndicatedBom(String indicaCode) {
-		
-		return mapper.getIndicatedBom(indicaCode);
+		List<MakVO> list = mapper.getIndicatedBom(indicaCode);
+		for (MakVO vo : list) {
+			for(MakVO innervo : list) {
+				if(vo.getParentCode().equals(innervo.getBomProdCode())) {
+					vo.setBomMatUsage(vo.getBomMatUsage()*innervo.getBomMatUsage());
+				}
+			}
+			
+		}
+				
+		return list;
 	}
 
 	/* 지시서 수정,hold수정,자재재고수정,bom 수정,공정 수정 */
