@@ -162,6 +162,7 @@ height:28px;
 <script>
 var pdfTable = [];
     $("#pdfmake").click(function () { //버튼 id pdfmake 발생시 행동할 이벤트
+    	//비동기 아작스로 테이블 구성
     	 $.ajax({
   	          url : "/ind/getIndicatedBom",
   	          method : "POST",
@@ -176,7 +177,12 @@ var pdfTable = [];
   	        	let pdfTableHeader = ['공정명', '공정분류', '투입자재명','현재 보유재고', '산출물'];
   	            pdfTable.push(pdfTableHeader);
   	            result.forEach(function(ele){
-  	            	let pdfInnerTable = [{text : ele.procName},{text : ele.procType},{text : ele.bomProdName},{text : ele.amount.toString()},{text : ele.prodName}];
+  	            	let pdfInnerTable = [
+  	            			{text : ele.procName},
+  	            			{text : ele.procType},
+  	            			{text : ele.bomProdName},
+  	            			{text : ele.amount.toString()},
+  	            			{text : ele.prodName}];
   	            	pdfTable.push(pdfInnerTable);            
   	            	})
   	        }
@@ -185,7 +191,7 @@ var pdfTable = [];
         /* documentDefinition : pdf파일에 들어갈 내용 및 여러가지를 정의 */
         var documentDefinition = {
         		
-            //content : pdf의 내용을 정의 
+            //content : pdf의 내용을 정의, pdf안의 테이블과 내용 구성
             content: [ 
             	{
                 style: 'headerTable',
@@ -201,7 +207,7 @@ var pdfTable = [];
                 {
                     text: $('#indNmi').val()+' 생산지시서',
                     style: 'style_test'
-                }, // style 부분에 정의된 style_test 적용해보기 및 한글 꺠짐 테스트
+                }, // style 부분에 정의된 style_test 적용 및 한글 적용여부
                 {
                 	text: '지시명 : '+$('#indNmi').val()
                 },
