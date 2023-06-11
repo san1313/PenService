@@ -227,11 +227,9 @@ INSERT ALL INTO fac_info
 			AND b.fac_name like '%'|| #{searchName} || '%'
 		</if>
 		<if test="searchDiv == 'confirm_code'.toString()">
-		    <!--  AND a.confirm_code=#{searchName}-->
 		    AND a.confirm_code like '%'|| #{searchName} || '%'
 		</if>
 		<if test="searchDiv == 'emp_num'.toString()">
-		    <!-- AND a.emp_num =#{searchName} -->
 		    AND a.emp_num like '%'|| #{searchName} || '%'
 		</if>    		
 	</if>    		

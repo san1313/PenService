@@ -389,11 +389,9 @@
     
     //비가동수정(비가동종료등록)버튼 이벤트
    $("#procCodemodalbtn").on('click',function(){
-	
       $.ajax({
          url: "/fac/downTimeUpdate", //컨트롤러에 연결된 주소
          method : "post", //조회는 항상 get, 나머진(수정,등록,삭제) post
-         //json형태인 키:값 형태로 데이터넘김
          data: {
                downTimeCode : $('#downTime_code').val(),
                facCode : $('#fac_code').val(),
@@ -404,8 +402,7 @@
                startTime : $('#start_time').val(),
                downTimeEndDay : $("#downTime_end_day").val(),
                endTime : $('#end_time').val(),
-               
-               //empNum : $('#emp_num').val()
+
                },
             beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
