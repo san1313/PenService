@@ -14,7 +14,7 @@
 <link rel="stylesheet" href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
-
+<script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
 <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
 <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
 
@@ -37,6 +37,11 @@ font-size:10pt;
       }
       .swal2-popup.swal2-toast .swal2-title {
         margin-top: 11px !important;
+      }
+       #getConNm {
+        cursor: pointer;
+        height:28px;
+        margin:0;
       }
 </style>
 
@@ -224,12 +229,12 @@ $('#sCon').change(function(){
     Frm.appendChild(div1);
     
     //모달 아이콘
-    let sicon = document.createElement('ion-icon');
+    let sicon = document.createElement('button');
     sicon.setAttribute('id','getConNm');
     sicon.setAttribute('name','search');
     sicon.dataset.toggle="modal";
     sicon.dataset.target=".bd-example-modal-lg";
-    sicon.setAttribute('class','col-1');
+    sicon.setAttribute('class','col-1 btn btn-primary fa-solid fa-magnifying-glass');
     div.appendChild(sicon);
     
 	//제품명
@@ -829,11 +834,12 @@ $('#sCon').change(function(){
     		document.getElementById('plcoi').max=Math.abs($("#contDetQuan0").val());
     		
     		//제품 검색 숨기기
-    		$('ion-icon[name="search"]').css('display','none');
+    		$('button[name="search"]').css('display','none');
       	})
       };
       //검색버튼 모달
-     document.getElementById('getConNm').addEventListener('click',function(){
+     document.getElementById('getConNm').addEventListener('click',function(e){
+    	 e.preventDefault();
         $.ajax({
           url : "/mak/planning",
           method : "GET",
@@ -1257,12 +1263,12 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     Frm.appendChild(div1);
     
     //모달 아이콘
-    let sicon = document.createElement('ion-icon');
+    let sicon = document.createElement('button');
     sicon.setAttribute('id','getConNm');
     sicon.setAttribute('name','search');
     sicon.dataset.toggle="modal";
     sicon.dataset.target=".bd-example-modal-lg";
-    sicon.setAttribute('class','col-1');
+    sicon.setAttribute('class','col-1 btn btn-primary fa-solid fa-magnifying-glass');
     div.appendChild(sicon);
     
 	//제품명
@@ -1855,11 +1861,12 @@ document.getElementById('orderBtn').addEventListener('click',function(){
     		document.getElementById('plcoi').max=Math.abs($("#contDetQuan0").val());
     		
     		//제품 검색 숨기기
-    		$('ion-icon[name="search"]').css('display','none');
+    		$('button[name="search"]').css('display','none');
       	})
       };
       //검색버튼 모달
-     document.getElementById('getConNm').addEventListener('click',function(){
+     document.getElementById('getConNm').addEventListener('click',function(e){
+    	 e.preventDefault();
         $.ajax({
           url : "/mak/ordering",
           method : "GET",
