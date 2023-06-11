@@ -512,7 +512,17 @@
      }
    }); 
    })  
-     
+   
+   //날짜설정
+   function get_date(days) {
+ 	 var date = new Date();
+  	date.setDate(date.getDate() + days);
+  		return date;
+	}
+
+   document.getElementById('matOrderdate1').valueAsDate = get_date(-7);	
+   document.getElementById('matOrderdate2').valueAsDate = new Date();		
+   
    
     </script>
 

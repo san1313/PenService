@@ -83,6 +83,8 @@
   	}
 
   </style>
+  <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
@@ -249,6 +251,17 @@
       const token = $('meta[name="_csrf"]').attr("content");
       const header = $('meta[name="_csrf_header"]').attr("content");
       var ckgrid = null;
+      
+      //알람
+      const Toast = Swal.mixin({
+          toast: true,
+          position: "top-end",
+          timer: 1500,
+          customClass: { container: "swalAlert" },
+          showConfirmButton: false,
+        });
+  
+      
       // 당일발주건리스트
       $.ajax({
         url: "/mat/todaymatregister",
@@ -738,6 +751,11 @@
                     console.log(result);
                     ckgrid.resetData(result);
                     ckgrid.refreshLayout();
+                    Toast.fire({
+                        icon: "success", //success, error, warning, info, question
+                        title: "수정이 완료되었습니다.",
+                        width: 400,
+                      });
                   }
                 });
 
@@ -775,7 +793,6 @@
              },
              contentType: "application/json",
              success: function (result4) {
-            	 
             	 $.ajax({
                      url: "/mat/todaymatregister",
                      method: "GET",
@@ -784,9 +801,13 @@
                        console.log(result);
                        ckgrid.resetData(result);
                        ckgrid.refreshLayout();
+                       Toast.fire({
+                           icon: "success", //success, error, warning, info, question
+                           title: "삭제가 완료되었습니다.",
+                           width: 400,
+                         });
                      }
                    });
-
            		$.ajax({
                    url: "/mat/orderlistmodal",
                    method: "GET",
@@ -797,13 +818,10 @@
                      ordmodal.refreshLayout();
                    }
                  });
-
              },error : function(reject){
            	  console.log(reject);
              }
-
-           });
-    	 
+           });   	 
      })
      
 
@@ -814,7 +832,11 @@
         //grid
 
         if ($('#matmodalmatname').val() == '' || $('#matmodalmatcode').val() == '' || $('#accmodalcode').val() == '' || $('#matReqdate').val() == '' || $('#matCharger').val() == '' || $('#matmodaltestuntpc').val() == '') {
-          alert('뭔가 비어있는게 있어요');
+        	 Toast.fire({
+                 icon: "error", //success, error, warning, info, question
+                 title: "다시한번 확인해주세요.",
+                 width: 400,
+               });
           false;
         } else {
           let necc = {
@@ -864,10 +886,11 @@
       //발주요청버튼
       document.getElementById('suBtn').addEventListener('click', function () {
         let checked = grid.getCheckedRows();
+        //발주요청시간 생성
         checked.forEach(function (ele, i) {
           checked[i].matOrderdate = new Date().toISOString().slice(0, 10);
         });
-
+		
         $.ajax({
           url: "/mat/matregister",
           method: "POST",
@@ -878,24 +901,23 @@
           dataType: "JSON",
           contentType: "application/json",
           success: function (result3) {
-        	  console.log('등록 후');
+        	  Toast.fire({
+                  icon: "success",
+                  title: "발주완료되었습니다.",
+                  width: 400,
+                });
         	  $.ajax({
                   url: "/mat/todaymatregister",
                   method: "GET",
                   dataType: "JSON",
                   success: function (result) {
-                	  console.log('등록후 자동조회');
-                    console.log(result);
                     ckgrid.resetData(result);
                     ckgrid.refreshLayout();
                   }
                 });
           }
-
         });
-        grid.removeCheckedRows(false);
-
-        
+        grid.removeCheckedRows(false);      
       })
 
 

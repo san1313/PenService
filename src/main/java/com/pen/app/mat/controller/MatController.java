@@ -78,7 +78,7 @@ public class MatController {
 		 return result; 
 	 }
 	 
-	
+	 
 	//발주등록
 	 @RequestMapping("/matregister")
 	 @ResponseBody 
@@ -108,8 +108,7 @@ public class MatController {
 	 @RequestMapping("/ordlistsearchmodal")
 	 @ResponseBody
 	 public List<OrderVO> ordlistsearchmodal(OrderVO OrderVO) {
-		 System.err.println(OrderVO);
-
+		System.err.println(OrderVO);
 		return matservice.getordlistsearchmodal(OrderVO);
 	 }
 	 
@@ -173,9 +172,7 @@ public class MatController {
 	 @RequestMapping("/warehousingregister")
 	 @ResponseBody
 	 public String warehousingregister(@RequestBody List<WarehousingVO> list) {
-		 System.err.println(list);
-		 
-		 
+		 System.err.println(list);	 
 		 return matservice.getwarehousingregister(list);
 	 }
 	 
@@ -267,19 +264,19 @@ public class MatController {
 	 //자재조정(입고)
 	 @RequestMapping("/matadjustregister")
 	 @ResponseBody
-	 public AdjustVO matadjustregister(@RequestBody List<AdjustVO> list) {
-		 System.err.println(list);		 
+	 public boolean matadjustregister(@RequestBody List<AdjustVO> list) {
+		 System.err.println(list);		 	
 		 matservice.getmatadjustregister(list);
-		 return null;
+		 return true;
 	 }
 	 
 	 //자재조정(출고)
 	 @RequestMapping("/matadjustdliregister")
 	 @ResponseBody
-	 public AdjustVO matadjustdliregister(@RequestBody List<AdjustVO> list) {
+	 public boolean matadjustdliregister(@RequestBody List<AdjustVO> list) {
 		 System.err.println(list);
 		 matservice.getmatadjustdliregister(list);
-		 return null;
+		 return true;
 	 }
 	 
 	 //자재조정조회
