@@ -71,8 +71,11 @@ public class MakIndServiceImpl implements MakIndService{
 		List<MakVO> result =mapper.planFlow(prodCode);
 		for (MakVO vo : result) {
 			for (MakVO innervo : result) {
+				//다음 산출물 여부 확인
 				if(vo.getParentCode()!=null) {
+					//부모 제품의 자재소모율 가져오기 위한 코드
 				if(vo.getParentCode().equals(innervo.getBomProdCode())) {
+					//부모 제품의 자재소모율을 자식 제품의 자재소모율에 곱셈
 					if(innervo.getBomMatUsage()>0) {
 					vo.setBomMatUsage(vo.getBomMatUsage()*innervo.getBomMatUsage());
 					}
@@ -172,8 +175,17 @@ public class MakIndServiceImpl implements MakIndService{
 
 	@Override
 	public List<MakVO> getIndicatedBom(String indicaCode) {
-		
-		return mapper.getIndicatedBom(indicaCode);
+		List<MakVO> list = mapper.getIndicatedBom(indicaCode);
+		for (MakVO vo : list) {
+			for(MakVO innervo : list) {
+				if(vo.getParentCode().equals(innervo.getBomProdCode())) {
+					vo.setBomMatUsage(vo.getBomMatUsage()*innervo.getBomMatUsage());
+				}
+			}
+			
+		}
+				
+		return list;
 	}
 
 	/* 지시서 수정,hold수정,자재재고수정,bom 수정,공정 수정 */

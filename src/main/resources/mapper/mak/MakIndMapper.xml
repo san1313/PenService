@@ -258,7 +258,7 @@ update mat_invntry set mat_qnt=mat_qnt-#{cnt} where mat_lot = #{matLot}
 </update>
 
 <update id="updateIndica" parameterType="MakVO">
-update mak_indica set ORDR_QNT = #{ordrQnt}, st_date=#{stDate}, cls_date=#{clsDate} where indica_code = #{indicaCode}
+update mak_indica set ORDR_QNT = #{ordrQnt}, st_date=to_date(#{stDate},'yyyy-mm-dd'), cls_date=to_date(#{clsDate},'yyyy-mm-dd') where indica_code = #{indicaCode}
 </update>
 
 <update id="updateMakBom" parameterType="MakVO">
@@ -692,7 +692,7 @@ ORDER BY
  </select>
  
  <update id="updateProcProd" parameterType="MakVO">
- update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(TO_CHAR(current_date,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
+ update mak_proc_prod set prod_cnt=#{prodCnt}, prcs_fl_date=to_date(TO_CHAR(sysdate,'YYYY-MM-DD HH24:MI:SS'),'yyyy-mm-dd HH24:mi:ss'), rsc_code ='MAK-HOLD-'||(select last_number-1 from user_sequences where sequence_name='MAK_HOLD_SEQ'),prcs_state='작업완료' where prcs_code=#{prcsCode}
  </update>
  
  <update id="insertMatDlivy" parameterType="MakVO">
@@ -828,5 +828,7 @@ WHERE
         indica_code = #{indicaCode}
     AND proc_code = #{procCode}
  </select>
-
+<delete id="delProcProd" parameterType="string" >
+delete mak_proc_prod where prcs_code=#{prcsCode}
+</delete>
 </mapper>

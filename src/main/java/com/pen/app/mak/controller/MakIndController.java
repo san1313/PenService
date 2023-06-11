@@ -151,6 +151,12 @@ public class MakIndController {
 		return service.oerfProcList(indicaCode);
 	}
 	
+	@RequestMapping("/delProcProd")
+	@ResponseBody
+	int delProcProd(@RequestParam String prcsCode){
+		return mapper.delProcProd(prcsCode);
+	}
+	
 	@GetMapping("/userList")
 	@ResponseBody
 	List<MakVO> userList(){

@@ -16,6 +16,10 @@
 <script type="module" src="https://unpkg.com/ionicons@7.1.0/dist/ionicons/ionicons.esm.js"></script>
 <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
 <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
+
+<script src="/pdfjs/pdfmake.min.js"></script>
+<script src="/pdfjs/vfs_fonts.js"></script>
+<script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
 <style>
 .container-fluid .col-form-label{
 font-size:10pt;
@@ -36,11 +40,18 @@ height:28px;
       .swal2-popup.swal2-toast .swal2-title {
         margin-top: 11px !important;
       }
+                  #getPlanNm {
+        cursor: pointer;
+      }
 </style>
 </head>
 <body>
 <h2 layout:fragment="title">생산 지시 관리(직접지시건)</h2>
 <div layout:fragment="content">
+
+<div style="float:right; padding-right:70px; display:none;" id="pdfDiv">
+<button style="width:48px; height:48px;" class="btn btn-primary fa-regular fa-file-pdf fa-xl" id="pdfmake"></button>
+</div>
 <!-- 생산지시 페이지 -->
 <div  style="text-align:left;">
 <div class="card card-outline" style="display:inline-block;">
@@ -65,7 +76,8 @@ height:28px;
 <div class="form-group row col-5">
 <label class="col-5 col-form-label">제품명</label>
 <input class="form-control col-5" id="prodNmi" readonly>
-<ion-icon class="col-1" name="search" id="getPlanNm" data-toggle="modal" data-target=".bd-example-modal-lg">
+<!-- check! -->
+<button type="button" class="col-2 btn btn-primary fa-solid fa-magnifying-glass" name="search" id="getPlanNm" data-toggle="modal" data-target="#matmodalbtn" style="height:28px;"></button>
 </div>
 
 <div class="form-group row col-5">
@@ -147,6 +159,130 @@ height:28px;
 <!-- 모달 끝 -->
 <!-- 화면 그리드 -->
 
+<script>
+var pdfTable = [];
+    $("#pdfmake").click(function () { //버튼 id pdfmake 발생시 행동할 이벤트
+    	//비동기 아작스로 테이블 구성
+    	 $.ajax({
+  	          url : "/ind/getIndicatedBom",
+  	          method : "POST",
+  	          data : {"indicaCode":modData.indicaCode},
+  	          beforeSend: function (xhr) {
+  	              xhr.setRequestHeader(header, token);
+  	            },
+  	            async : false,
+  	          success : function(result){
+  	        	  console.log(result);
+  	        	pdfTable=[];
+  	        	let pdfTableHeader = ['공정명', '공정분류', '투입자재명','현재 보유재고', '산출물'];
+  	            pdfTable.push(pdfTableHeader);
+  	            result.forEach(function(ele){
+  	            	let pdfInnerTable = [
+  	            			{text : ele.procName},
+  	            			{text : ele.procType},
+  	            			{text : ele.bomProdName},
+  	            			{text : ele.amount.toString()},
+  	            			{text : ele.prodName}];
+  	            	pdfTable.push(pdfInnerTable);            
+  	            	})
+  	        }
+         });
+  
+        /* documentDefinition : pdf파일에 들어갈 내용 및 여러가지를 정의 */
+        var documentDefinition = {
+        		
+            //content : pdf의 내용을 정의, pdf안의 테이블과 내용 구성
+            content: [ 
+            	{
+                style: 'headerTable',
+                table: {
+                    widths: [50, 50, 50],
+                    headerRows:1,
+                    body: [
+                    	[{text:'작업자'},{text:'현장반장'},{text:'담당자'}],
+                    	[{text:'\n\n'},{text:'\n\n'},{text:'\n\n'}]
+                    ]
+                }
+            },
+                {
+                    text: $('#indNmi').val()+' 생산지시서',
+                    style: 'style_test'
+                }, // style 부분에 정의된 style_test 적용 및 한글 적용여부
+                {
+                	text: '지시명 : '+$('#indNmi').val()
+                },
+                {
+                	text: '지시일자 : '+$('#indDatei').val()
+                },
+                {
+                	text : '제품명 : '+$('#prodNmi').val()
+                },
+                {
+                	text : '지시량 : '+$('#ordrQnti').val()
+                },
+                {
+                	text : '지시기간 : '+$('#stDatei').val()+' ~ '+$('#clsDatei').val()
+                },
+                {
+                	text : '출력일자 : '+  new Date().toISOString().slice(0,10)
+                },
+                {
+                    style: 'tableExample',
+                    table: {
+                        widths: [100, 80, 100, 80, '*'],
+                        body: pdfTable
+                    }
+                }//테이블 그리기 
+            ],
+            //하단의 현재페이지 / 페이지 수 넣기 
+            footer: function (currentPage, pageCount) {
+                return {
+                    margin: 10,
+                    columns: [{
+                        fontSize: 9,
+                        text: [{
+                                text: '--------------------------------------------------------------------------' +
+                                    '\n',
+                                margin: [0, 20]
+                            },
+                            {
+                                text: '' + currentPage.toString() + ' of ' +
+                                    pageCount,
+                            }
+                        ],
+                        alignment: 'center'
+                    }]
+                };
+
+            },
+            //필요한 스타일 정의하기 
+            styles: {
+                style_test: {
+                    fontSize: 18,
+                    bold: true,
+                    margin: [0, 0, 0, 0],
+                    alignment: 'center'
+                },
+                tableExample: {
+                    margin: [0, 5, 0, 15]
+                },
+                headerTable: {
+                	margin:[350,0,0,5],
+                	alignment:'center'
+                }
+         	 },
+            // 페이지 크기 용지의 크기 사이즈 넣기 또는 특정 사이즈 넣기 { width: number, height: number }
+            pageSize: 'A4',
+
+            /* 페이지 방향 portrait : 가로 , landscape : 세로 */
+            pageOrientation: 'portrait',
+        };
+
+        var pdf_name = $('#indNmi').val()+'생산지시서.pdf'; // pdf 만들 파일의 이름 
+        pdfMake.createPdf(documentDefinition).download(pdf_name);
+  	       
+    })
+</script>
 
 
 <script>
@@ -218,7 +354,7 @@ $(function () {
 	grid2 = new tui.Grid({
         el: document.getElementById('proc_grid'),
         scrollX: false,
-        bodyHeight: 200,
+        bodyHeight: 350,
         columns: [{
           header: '공정순서',
           name: 'procOrder'
@@ -237,7 +373,7 @@ $(function () {
 	grid3 = new tui.Grid({
         el: document.getElementById('bom_grid'),
         scrollX: false,
-        bodyHeight: 200,
+        bodyHeight: 350,
         columns: [
         {
           header: '자재명',
@@ -261,7 +397,7 @@ $(function () {
 	grid4 = new tui.Grid({
         el: document.getElementById('mat_grid'),
         scrollX: false,
-        bodyHeight: 200,
+        bodyHeight: 350,
         columns: [{
           header: '설비명',
           name: 'facName'
@@ -451,7 +587,7 @@ $(function () {
     	$('#clsDatei').val(new Date().toISOString().slice(0, 10));
     	$('#indDatei').val(new Date().toISOString().slice(0, 10));
     	//검색버튼 활성화
-    	$('ion-icon[name="search"]').css('display','block');
+    	$('button[name="search"]').css('display','block');
     	//버튼 비활성화
     	$('#subBtn').attr('disabled',false);
     	$('#modBtn').attr('disabled',true);
@@ -539,7 +675,7 @@ $(function () {
     	$('#clsDatei').val(new Date().toISOString().slice(0, 10));
     	$('#indDatei').val(new Date().toISOString().slice(0, 10));
     	//검색버튼 활성화
-    	$('ion-icon[name="search"]').css('display','block');
+    	$('button[name="search"]').css('display','block');
     	//버튼 비활성화
     	$('#subBtn').attr('disabled',false);
     	$('#modBtn').attr('disabled',true);
@@ -689,6 +825,7 @@ $(function () {
     //등록버튼 끝
     
     grid.on('dblclick',function(e){
+    	$('#pdfDiv').css('display','block');
     	modData = grid.getRow(e.rowKey);
     	pdCode=modData.pdCode;
     	indicaCode=modData.indicaCode;
@@ -719,7 +856,7 @@ $(function () {
     	
     	
     	//검색버튼 숨기기
-    	$('ion-icon[name="search"]').css('display','none');
+    	$('button[name="search"]').css('display','none');
     	//공정 bom 데이터 넣기
 	      $.ajax({
 	          url : "/ind/getIndicatedBom",
@@ -796,13 +933,14 @@ $(function () {
     	$('#clsDatei').val(new Date().toISOString().slice(0, 10));
     	$('#indDatei').val(new Date().toISOString().slice(0, 10));
     	//검색버튼 활성화
-    	$('ion-icon[name="search"]').css('display','block');
+    	$('button[name="search"]').css('display','block');
     	//버튼 비활성화
     	$('#subBtn').attr('disabled',false);
     	$('#modBtn').attr('disabled',true);
     	$('#delBtn').attr('disabled',true);
     	$('#indNmi').attr('readonly',false);
     	$('#stDatei').attr('readonly',false);
+    	$('#pdfDiv').css('display','none');
     	//그리드 내용 삭제
     	 let grid2Rows = grid2.getData();
     	grid2Rows.forEach(function(ele,i){

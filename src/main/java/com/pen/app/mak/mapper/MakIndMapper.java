@@ -66,4 +66,5 @@ public interface MakIndMapper {
 	int getProcReCnt(MakVO vo);
 	List<MakVO> getProcProdInfo(MakVO vo);
 	Integer getResultUsage(MakVO vo);
+	int delProcProd(String prcsCode);
 }

@@ -151,7 +151,7 @@ grid = new tui.Grid({
 	grid2 = new tui.Grid({
         el: document.getElementById('proc_grid'),
         scrollX: false,
-        bodyHeight: 250,
+        bodyHeight: 350,
         columns: [{
           header: '공정명',
           name: 'procName'
@@ -166,11 +166,11 @@ grid = new tui.Grid({
           }
       ]
       });
-	//투입 자재
+	//작업자 내역
 	grid3 = new tui.Grid({
         el: document.getElementById('bom_grid'),
         scrollX: false,
-        bodyHeight: 250,
+        bodyHeight: 350,
         columns: [
         {
           header: '작업자',
