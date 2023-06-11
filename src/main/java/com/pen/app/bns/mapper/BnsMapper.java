@@ -7,6 +7,7 @@ import com.pen.app.bns.vo.BnsContVO;
 import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 import com.pen.app.bns.vo.BnsReleaseVO;
+import com.pen.app.bns.vo.BnsStockVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
 public interface BnsMapper {
@@ -66,6 +67,10 @@ public interface BnsMapper {
 	List<BnsReleaseVO> getreleaseContListCon(BnsReleaseVO vo);//출고 대기(계약)조건조회
 	List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고 대기(주문)조건조회
 	List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo);//출고내역 대기(주문)조건조회
+	
+	//재고조회페이지
+	List<BnsStockVO> getSearchStockList();
+	List<BnsStockVO> getstockSearchListCon(BnsStockVO vo);
 	
 	
 }

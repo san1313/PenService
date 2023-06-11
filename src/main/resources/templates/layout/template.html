@@ -202,6 +202,12 @@
                     </a>
                   </li>
                   <li class="nav-item">
+                    <a href="/bns/searchStockList" class="nav-link">
+                      <i class="far fa-circle nav-icon"></i>
+                      <p>제품 재고 조회</p>
+                    </a>
+                  </li>
+                  <li class="nav-item">
                     <a href="/bns/releaseList" class="nav-link">
                       <i class="far fa-circle nav-icon"></i>
                       <p>출고 관리</p>
@@ -543,9 +549,12 @@
           case "searchReleaseList":
             $("#bnsNav").find("a[href='/bns/searchReleaseList']").addClass("active");
             break;
-          case "returnList":
+          /* case "returnList":
             $("#bnsNav").find("a[href='/bns/returnList']").addClass("active");
-            break;
+            break; */
+          case "searchStockList":
+              $("#bnsNav").find("a[href='/bns/searchStockList']").addClass("active");
+              break;
         }
       } else if (path.startsWith("/mat")) {
         $("#matNav").addClass("menu-open");

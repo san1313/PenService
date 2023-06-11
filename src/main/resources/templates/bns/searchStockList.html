@@ -1,0 +1,304 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org"
+	xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout"
+	layout:decorate="~{layout/template}">
+<head>
+<meta charset="UTF-8">
+<title>ordList</title>
+<script src="https://kit.fontawesome.com/56e7c5522c.js"
+	crossorigin="anonymous"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
+<script
+	src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
+<script
+	src="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.js"></script>
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script type="text/javascript" src="https://uicdn.toast.com/tui.pagination/v3.4.0/tui-pagination.js"></script>
+<link rel="stylesheet" href="https://uicdn.toast.com/tui.pagination/latest/tui-pagination.css" />
+<!-- <script src="https://code.jquery.com/jquery-1.11.3.js"></script> -->
+<link rel="stylesheet"
+	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
+<script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
+<script src="/plugins/jquery/jquery.min.js"></script>
+
+<meta name="_csrf" th:content="${_csrf.token}" />
+<meta name="_csrf_header" th:content="${_csrf.headerName}" />
+<style>
+
+.form-control {
+	width: 150px;
+}
+input.form-control{
+display:inline-block;
+}
+</style>
+</head>
+<body>
+<div layout:fragment="title">
+		<h1> 제품 재고 조회 </h1>
+	</div>
+		<div layout:fragment="content">
+		
+		<form id="searchform">
+		<div class="row">
+		<div class="col-3">
+	<label>제품명</label> <input class="form-control" type="text" id="productlist-text"
+				style="background-color: #e2e1e1; width:200px" name="prdtNm" readonly>
+		 <button style="margin-right : 20px;height:38px;margin-bottom:3px" type="button" id="productList" class="fa-solid fa-magnifying-glass btn btn-primary" data-toggle="modal" data-target=".bd-product-modal-lg"></button>
+		</div>
+		<div class="col-3">
+	<label>생산일자</label> <input class="form-control" style=" width:140px" type="date" name="prdtDate" id="prdtDate-text1"> - <input style="margin-right : 20px; width:140px;" class="form-control" type="date" name="prdtDate1" id="prdtDate-text2" min="" disabled> 
+	</div >
+		<div class="col-3">
+	<label>입고일자</label> <input class="form-control" style=" width:140px" type="date" name="bnsStoreDate" id="bnsStoreDate-text1"> - <input style="margin-right : 20px; width:140px;" class="form-control" type="date" name="bnsStoreDate1" id="bnsStoreDate-text2" min="" disabled> 
+	</div >
+		<div class="justify-content-end" style="padding-bottom:10px; margin-left:95px;">
+		<label>총 재고</label> <input class="form-control" type="text" id="totalCnt" style="background-color: #e2e1e1; width:70px" value="" readonly >
+	<button style="width:80px; margin-left : 10px; margin-right:10px;" type="button" id="searchStock" class = "btn btn-primary">조회</button>
+	<button style="width:80px;" type="reset"  id="pageReset"  class="btn btn-primary">초기화</button>
+	</div>
+		</div>
+		</form>
+		<div id="StockGrid"></div>
+		
+		<!-- 제품명 모달 -->
+	<div style=" padding : 30px; " class="modal fade bd-product-modal-lg" id="productListModal"
+			tabindex="-1" role="dialog" aria-labelledby="myLargeModalLabel"
+			aria-hidden="true">
+			<div class="modal-dialog modal-lg">
+				<div class="p-3 modal-content">
+				<div class="modal-header"> 
+					<button type="button" class="close" data-dismiss="modal"
+							aria-label="Close">
+							<span aria-hidden="true">&times;</span>
+						</button>
+						</div>
+					<h1 class="modaltitle"></h1>
+					<p>
+						<label>제품명</label> <input id="searchprod-text" type="text">
+						<button type="button" id="searchprod"
+							class="fa-solid fa-magnifying-glass btn btn-primary"></button>
+					<div id="productGrid"></div>
+					<div class="modalbtn">
+						<button  class="btn btn-primary" id="modalsubmit" data-toggle="modal"
+							data-target=".bd-product-modal-lg">확인</button>
+						<button class="btn btn-secondary" data-dismiss="modal">취소</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<!-- 제품명 모달 끝 -->
+		
+		
+		
+		
+		
+<script>
+const token = $('meta[name="_csrf"]').attr("content");
+const header = $('meta[name="_csrf_header"]').attr("content");
+
+var prdtdate1Input = document.getElementById("prdtDate-text1");
+var prdtdate2Input = document.getElementById("prdtDate-text2");
+
+prdtdate1Input.addEventListener("input", function() {
+	prdtdate2Input.min = prdtdate1Input.value;
+	prdtdate2Input.disabled = false;
+     
+   });
+   
+var bnsStoredate1Input = document.getElementById("bnsStoreDate-text1");
+var bnsStoredate2Input = document.getElementById("bnsStoreDate-text2");
+
+bnsStoredate1Input.addEventListener("input", function() {
+	bnsStoredate2Input.min = bnsStoredate1Input.value;
+	bnsStoredate2Input.disabled = false;
+     
+   });
+   
+   //재고조회그리드 아작스
+$.ajax({
+	url : "/bns/searchStockListAjax",
+	method : "GET",
+	dataType : "JSON",
+	success : function(result){
+		StockGrid.resetData(result);
+	}
+});
+
+//재고조회 그리드 생성
+
+var StockGrid = new tui.Grid({	
+	   bodyHeight : 500,
+	     el: document.getElementById('StockGrid'),
+	     scrollX: false,
+	      pageOptions: {
+		  	    useClient: true,	// front에서만 페이징 하는 속성
+		  	    perPage: 10
+		  	  }, 
+	     rowHeaders: [{type: 'checkbox'},{type:'rowNum'}],
+	     columns: [
+	       {
+	         header: '완제품LOT',
+	         name: 'prdtLot',
+	         align : 'center'
+	       },
+	       {
+	         header: '제품코드',
+	         name: 'prodCode',
+	         align : 'center'
+	  	    },
+	       {
+	           header: '제품명',
+	           name: 'prdtNm',
+	           align : 'center'
+	  	    },
+	       {
+	         header: '재고량',
+	         name: 'cnt',
+	         align : 'center'
+	       },
+	       {
+	         header: '생산일자',
+	         name: 'prdtDate',
+	         align : 'center'
+		    },
+	       {
+	         header: '입고일자',
+	         name: 'bnsStoreDate',
+	         align : 'center'
+	       },
+	       {
+	   	  	 header: '규격',
+	          name: 'prdtUnit',
+	          align : 'center'
+	         },
+	       {
+	       	 header: '제품상태',
+	         name: 'prdtState',
+	         align : 'center'
+	       }
+	     ]
+	   }); 
+
+//////////////////////////////본문의 제품명 모달 관련
+//모달내 제품리스트 그리드 생성
+var product_Grid = new tui.Grid({
+bodyHeight : 200,
+el: document.getElementById('productGrid'),
+scrollX: false,
+rowHeaders: ['rowNum'],
+columns: [
+{
+ header: '제품코드',
+ name: 'prodCode',
+ align : 'center'
+},
+{
+ header: '제품명',
+ name: 'prodName',
+ align : 'center'
+}
+
+]
+});
+
+//제품모달창 엔터키
+$('#searchprod-text').on('keyup',function(e){
+	 if(e.keyCode == 13){
+		 $("#searchprod").click();
+	 }
+})
+//본문의 제품명 돋보기 클릭 했을 때
+	$("#productList").on('click', function(){
+//모달내 제품리스트 아작스
+	$.ajax({
+		url : "/bns/prodList",
+		method : "GET",
+		dataType : "JSON",
+		success : function(result){
+			product_Grid.resetData(result);
+			product_Grid.refreshLayout();
+		}
+	});
+});
+   //모달창 내  제품명 돋보기 클릭 했을 때
+   $("#searchprod").on('click', function(){
+	const result = $("#searchprod-text").val()
+	$("#searchprod-text").val('');
+	//모달창 내 제품검색 아작스
+   	$.ajax({
+   		 url : "/bns/prodKeyList",
+   	     method : "GET",
+   	     data : {'result' : result},
+   	     success : function(result){
+   	     product_Grid.resetData(result);
+   	     product_Grid.refreshLayout();
+   	     },
+   	     error: function(reject){
+   	    	 console.log(reject)
+   	     }
+		});
+   })
+//모달 내 제품리스트 그리드 뜨고 모달창 뜨게
+$(function(){
+$('#productListModal').on('shown.bs.modal', function(){
+	product_Grid.refreshLayout();
+})
+})
+   //제품리스트 모달 내 그리드 선택 시 본문의 input창으로 자동입력
+product_Grid.on('click', ev=> {
+console.log(ev.rowKey)
+console.log(ev.columns)
+const focusCell = product_Grid.getFocusedCell()
+console.log(focusCell)
+let dataRow = product_Grid.getRow(ev.rowKey);
+console.log(dataRow);
+//본문의 input창 제품명 입력
+$('#productlist-text').val(dataRow.prodName);
+$('#modalsubmit').click(function(){
+	  $('#productListModal').modal('hide');
+	  $.ajax({
+		 url : "/bns/prodList",
+	     method : "GET",
+	     dataType : "JSON",
+	     success : function(result){
+	     product_Grid.resetData(result);
+	     product_Grid.refreshLayout();
+	     }
+});
+})
+})
+
+//본문의 조회버튼 클릭 시 
+	    document.getElementById('searchStock').addEventListener('click',function(){
+	    	$.ajax({
+	    		url : "/bns/stockSearchListconAjax",
+	    		method : "GET",
+	    		data : $('#searchform').serialize(),
+	    		dataType : "JSON",
+	    		success : function(result){
+	    			StockGrid.resetData(result);
+	    			console.log(result)
+	    			result.forEach(ele=>{
+	    			if(result.length == 1){
+	    				$('#totalCnt').val(ele.cntTotal); 
+	    			}
+	    				/* for(let i =0; i<result.length; i++){
+	    					ele.cntTotal += ele.cntTotal;
+	    					console.log(ele.cntTotal)
+	    				} */
+	    			})
+	    		}
+	    	});
+	    })
+ </script>
+</div>
+
+
+</body>
+</html>

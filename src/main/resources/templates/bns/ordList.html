@@ -25,6 +25,8 @@
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="/plugins/jquery/jquery.min.js"></script>
+   <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -597,7 +599,14 @@ display:inline-block;
        	  
          }) 
          
-         
+              const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
+
          //주문서 등록 모달창의 등록 버튼클릭시
 		$('#ordregsubmit').on('click' ,function(){
 			addProdgrid.finishEditing();
@@ -626,6 +635,12 @@ display:inline-block;
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
+				
+				 Toast.fire({
+		                icon: "success", //success, error, warning, info, question
+		                title: "주문서가 등록되었습니다.",
+		                width: 400,
+		              });
 				
 		        
 		   		//전체 조회페이지 아작스
@@ -1364,7 +1379,12 @@ $.ajax({
         	 console.log(checked)
         		checked.forEach(ele=>{
 				if(ele.ordProgress !== '접수완료'){
-				alert('취소할 수 없는 주문서입니다')
+					 Toast.fire({
+			                icon: "error", //success, error, warning, info, question
+			                title: "취고할 수 업는 주문서입니다.",
+			                width: 400,
+			              });
+					
 				        			
         		}
         		else{
@@ -1383,6 +1403,11 @@ $.ajax({
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
+						 Toast.fire({
+				                icon: "success", //success, error, warning, info, question
+				                title: "주문서가 취소되었습니다.",
+				                width: 400,
+				              });
 						
 					}
 					});
@@ -1428,6 +1453,12 @@ $.ajax({
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
+				 Toast.fire({
+		                icon: "success", //success, error, warning, info, question
+		                title: "주문서가 수정되었습니다.",
+		                width: 400,
+		              });
+				
 				
 			}
 			});
