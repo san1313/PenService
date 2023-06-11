@@ -29,6 +29,8 @@
 	}
 
   </style>
+  <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
@@ -63,6 +65,18 @@
     const header = $('meta[name="_csrf_header"]').attr("content");
 	tui.Grid.setLanguage('ko')
 	var warehousinggrid = null;
+	
+	//알람
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        customClass: { container: "swalAlert" },
+        showConfirmButton: false,
+      });
+	
+	
+	
 	 $.ajax({
 	  		url : "/mat/todaywarehousinglist",
 	  		method : "GET",
@@ -220,17 +234,18 @@
 			  			console.log(result);
 			  			warehousinggrid.resetData(result);
 			  			warehousinggrid.refreshLayout();
+			  			 Toast.fire({
+			                 icon: "success", //success, error, warning, info, question
+			                 title: "입고가 완료되었습니다.",
+			                 width: 400,
+			               });
 			  		}
-			  	});
-			   
+			  	});			   
 		   },
 		   error: function(reject){
 			   console.log(reject)
 		   }
-	   });
-	   
-	   
-
+	   });   
    })
     </script>
 	</div>

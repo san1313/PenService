@@ -47,6 +47,8 @@
 
 
   </style>
+  <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+  <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
   <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
@@ -121,6 +123,16 @@
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
 
+  	//알람
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        customClass: { container: "swalAlert" },
+        showConfirmButton: false,
+      });
+	
+    
     //lot리스트
     var lotadjustgride = new tui.Grid({
         el: document.getElementById('lotadjustgride'),
@@ -156,19 +168,7 @@
         ]
         });
     
-    
-/*     $.ajax({
-        url : "/mat/matadjustlotlist",
-        method : "GET",
-        dataType : "JSON",
-        success : function(result){
-        	console.log(result);
-        	lotadjustgride.resetData(result);
-        	lotadjustgride.refreshLayout();
-        }
-      }); */
-	
-       
+ 
     
   //자재명모달
     $.ajax({
@@ -380,8 +380,13 @@
     	  		dataType : "JSON",
     	  		contentType: "application/json",
     	  		success : function(result3){
+    	  			console.log('입고후알람');
+    	  			Toast.fire({
+		                 icon: "success", //success, error, warning, info, question
+		                 title: "입고가 완료되었습니다.",
+		                 width: 400,
+		               });
     	  			console.log(result3);
-  					
     	  			
     	  		},
     	  		error: function(reject){
@@ -413,6 +418,11 @@
 	  		contentType: "application/json",
 	  		success : function(result3){
 	  			console.log(result3);
+	  			Toast.fire({
+	                 icon: "success", //success, error, warning, info, question
+	                 title: "출고가 완료되었습니다.",
+	                 width: 400,
+	               });
 	  		},
 	  		error: function(reject){
 	  			console.log(reject)
@@ -421,6 +431,10 @@
 	  	});    	 	
     	 matadjustgrid.removeCheckedRows(false);
     })  
+    
+    
+    
+    
     </script>
 
     </div>

@@ -140,8 +140,7 @@
 	<![CDATA[
 		and TRUNC(mat_orderdate) <= TO_DATE(#{matOrderdate1}, 'YYYY-MM-DD')
 		]]>
-		</if>
-		
+		</if>	
 		order by a.mat_ordernum desc
 	</select>
 	
@@ -262,6 +261,8 @@
 		c.QIP_CODE_LIST_MAT) order by 1
 	</select>
 
+
+
 	<!-- 자재입고등록 -->
 	<update id="getmativntryregister" parameterType="WarehousingVO">
 	insert into mat_invntry (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT, MAT_STATE, MAT_KEEPDATE)
@@ -272,24 +273,7 @@
 	<select id="getMatLotWarehousing" resultType="string">
 	select mat_lot from (select mat_lot,rownum from (select mat_lot from mat_wrhousng order by mat_lot desc) where rownum=1)
 	</select>
-	<!-- 		DECLARE
-		v_lot varchar2(60);
-		BEGIN
 
-		SELECT get_mat_lot_seq
-		INTO v_lot
-		FROM DUAL;
-
-		MERGE INTO MAT_INVNTRY a
-		USING dual
-		ON (a.mat_lot = v_lot)
-		WHEN MATCHED THEN
-		UPDATE
-		SET a.MAT_QNT = v_lot
-		WHEN NOT MATCHED THEN
-		INSERT (MAT_LOT, MAT_CODE, MAT_NAME, MAT_QNT, MAT_STATE, MAT_KEEPDATE)
-		VALUES(v_lot, #{list[0].matCode}, #{list[0].matName},
-		#{list[0].matQnt}, '검사완료', sysdate+(interval '1' year)); -->
 	<update id="getwarehousingregister" parameterType="WarehousingVO">
 			insert into MAT_WRHOUSNG(MAT_WRHNUM, QIP_CODE_LIST_MAT, MAT_LOT,
 			MAT_BCNCNAME, MAT_WRHQY, MAT_WRHDATE, MAT_WRHST)
@@ -297,6 +281,8 @@
 			com_code_account where acc_code=#{accCode}), #{matWrhqy},
 			sysdate, '입고완료')
 	</update>
+
+
 
 	<!-- 당일건 자재입고리스트 -->
 	<select id="gettodaywarehousinglist" resultType="WarehousingVO">
@@ -327,7 +313,7 @@
 		join qip_list_mat c
 		on(a.qip_code_list_mat=c.qip_code_list_mat)
 		join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
-		WHERE trunc(a.mat_wrhdate) between sysdate-7 and sysdate
+		WHERE TRUNC(a.mat_wrhdate) between sysdate-7 and sysdate
         order by a.mat_wrhdate desc
 	</select>
 
@@ -342,9 +328,9 @@
 			from mat_wrhousng a join mat_invntry b on (a.mat_lot=b.mat_lot)
 			join qip_list_mat c on(a.qip_code_list_mat=c.qip_code_list_mat)
 			join mat_order d on(c.mat_dtaordcode = d.mat_dtaordcode)
-		<where>
-			<if test="matLot != null and matLot != ''">
-				where b.mat_code=#{matCode}
+		WHERE TRUNC(a.mat_wrhdate) between sysdate-7 and sysdate
+			<if test="matName != null and matName != ''">
+				and b.mat_name=#{matName}
 			</if>
 			<if test="accName != null and accName != ''">
 				and a.mat_bcncname = #{accName}
@@ -359,7 +345,7 @@
 		and TRUNC(mat_wrhdate) <= TO_DATE(#{matWrhdate1}, 'YYYY-MM-DD')
 	]]>
 		</if>
-		</where>
+		order by a.mat_wrhdate desc
 	</select>
 
 
@@ -503,17 +489,16 @@
 	<!-- 조정조회리스트 -->
 	<select id="getallmatadjustlist" resultType="AdjustVO">
 		SELECT DISTINCT
-    b.mat_lot,
-    b.mat_name,
-    b.mat_code,
-    ( b.mat_qnt - a.mat_mdatqnt ) AS bmatqnt,
-    b.mat_qnt,
-    a.mat_mdatqnt,
-    a.mat_mdev,
-    a.mat_mdatdate,
-    a.mat_mdatresn
-FROM
-         mat_mdat a
+		    b.mat_lot,
+		    b.mat_name,
+		    b.mat_code,
+		    ( b.mat_qnt - a.mat_mdatqnt ) AS bmatqnt,
+		    b.mat_qnt,
+		    a.mat_mdatqnt,
+		    a.mat_mdev,
+		    a.mat_mdatdate,
+		    a.mat_mdatresn
+			FROM mat_mdat a
     JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
 WHERE
     trunc(a.mat_mdatdate) BETWEEN sysdate - 7 AND sysdate
@@ -551,8 +536,7 @@ ORDER BY
     a.mat_mdev,
     a.mat_mdatdate,
     a.mat_mdatresn
-FROM
-         mat_mdat a
+	FROM mat_mdat a
     JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
 		<where>
 		a.mat_mdev = '입고'
@@ -575,18 +559,17 @@ FROM
 		</where>
 		union all
 				SELECT DISTINCT
-    b.mat_lot,
-    b.mat_name,
-    b.mat_code,
-    ( b.mat_qnt + a.mat_mdatqnt ) AS bmatqnt,
-    b.mat_qnt,
-    a.mat_mdatqnt,
-    a.mat_mdev,
-    a.mat_mdatdate,
-    a.mat_mdatresn
-FROM
-         mat_mdat a
-    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
+			    b.mat_lot,
+			    b.mat_name,
+			    b.mat_code,
+			    ( b.mat_qnt + a.mat_mdatqnt ) AS bmatqnt,
+			    b.mat_qnt,
+			    a.mat_mdatqnt,
+			    a.mat_mdev,
+			    a.mat_mdatdate,
+			    a.mat_mdatresn
+			FROM mat_mdat a
+			    JOIN mat_invntry b ON ( a.mat_lot = b.mat_lot )
 		<where>
 		a.mat_mdev = '출고'
 			<if test="matLot != null and matLot != ''">

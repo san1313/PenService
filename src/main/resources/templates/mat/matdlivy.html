@@ -85,7 +85,7 @@
        <div class="col-1">~ </div>
        </div>
        <div class="col-5">
-      <input class="text1 form-control" type="date" id="matDlivydate1 " name = "matDlivydate1">
+      <input class="text1 form-control" type="date" id="matDlivydate1" name = "matDlivydate1">
       </div>
       <div class="col-2">
       <button type="button" class="btn btn-primary fa-solid fa-magnifying-glass" id="submitbtn">조회</button>
@@ -121,9 +121,7 @@
 
 
     <script>
-/*     const token = $('meta[name="_csrf"]').attr("content");
-    const header = $('meta[name="_csrf_header"]').attr("content");
- */
+
     $.ajax({
         url : "/mat/matdlivylist",
         method : "GET",
@@ -304,6 +302,16 @@
    }); 
    })  
   
+   
+    //날짜설정
+   function get_date(days) {
+ 	 var date = new Date();
+  	date.setDate(date.getDate() + days);
+  		return date;
+	}
+
+   document.getElementById('matDlivydate').valueAsDate = get_date(-7);
+   document.getElementById('matDlivydate1').valueAsDate = new Date();		
 
         
     </script>

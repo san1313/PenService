@@ -161,7 +161,6 @@
 </div>
 
 
-	
 	<div id="warehousinglistgrid"></div>
 
 
@@ -469,7 +468,17 @@
      }
    }); 
    })  
+	
+    //날짜설정
+   function get_date(days) {
+ 	 var date = new Date();
+  	date.setDate(date.getDate() + days);
+  		return date;
+	}
 
+   document.getElementById('matReqdate').valueAsDate = get_date(-7);	
+   document.getElementById('matReqdate1').valueAsDate = new Date();		
+   
      
 
 
