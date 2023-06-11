@@ -10,16 +10,24 @@
 <title>PenServiceMES</title>
 
 <style>
-.ser{
-float:left;
-}
-#grid{
-margin: 60px 0 ;
-}
+	.ser{
+		float:left;
+		}
+	#grid{
+		margin: 60px 0 ;
+		}
+	.swalAlert {
+   		top:60px !important;
+	}
+     	 .swal2-popup.swal2-toast .swal2-title {
+        margin-top: 11px !important;
+      }
 </style>
 
 <script src="https://kit.fontawesome.com/56e7c5522c.js" crossorigin="anonymous"></script>
   <script src="https://code.jquery.com/jquery-1.11.3.js"></script>
+   <script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+<link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css">
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.css">
   <script src="https://uicdn.toast.com/tui.time-picker/latest/tui-time-picker.js"></script>
   <link rel="stylesheet" href="https://uicdn.toast.com/tui.date-picker/latest/tui-date-picker.css" />
@@ -40,7 +48,7 @@ margin: 60px 0 ;
    			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
    			<label for="fac_name">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;설비명&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="fac_name" readonly placeholder="조회 후 등록하세요" >
+            <input type="text" id="fac_name" readonly placeholder="조회하시오" >
             <button type="button" id="facSelectmodalbtn" class="btn btn-primary" data-toggle="modal" data-target=".bd-smallproduct-modal-sm"><i class="fa fa-search"></i></button>
             </label> &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             
@@ -51,12 +59,12 @@ margin: 60px 0 ;
      	 	
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<label for="confirm_code">&nbsp;점검코드&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="text" id="confirm_code" placeholder="CONFIRM" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="text" id="confirm_code" placeholder="CONFIRM" style="background-color: #e2e2e2;" readonly>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
             </label>
             
 
             <label for="confirm_date">점검일자</label>&nbsp;&nbsp;&nbsp;&nbsp;
-            <input type="date" id="confirmDatei">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+            <input type="date" id="confirmDate">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
                     
             <label for="confirm_category">점검구분&nbsp;&nbsp;&nbsp;&nbsp;
             <input type="radio" id="regural"name="confirm_category" value="정기점검" checked> 정기점검&nbsp;&nbsp;&nbsp;
@@ -147,20 +155,24 @@ margin: 60px 0 ;
       
  
     <script>
+    const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        customClass: { container: "swalAlert" },
+        showConfirmButton: false,
+      });
+    
+      
     const token = $('meta[name="_csrf"]').attr("content");
     const header = $('meta[name="_csrf_header"]').attr("content");
     
     var dblclickRows=null;
-    //var getProcRows=null;
     var grid2 = null;
-    //var Progaddgrid = null;
    	var grid = null; 
    
     $(function(){
     	
-    	//점검일자 자동생성
-    	$('#confirmDatei').attr('readonly',true);
-    	$('#confirmDatei').val(new Date().toISOString().slice(0,10));
 		
     	//설비명버튼 이벤트
 		$('#facSelectmodalbtn').click(function(){
@@ -193,7 +205,7 @@ margin: 60px 0 ;
     			let confirmday2 = $('#confirmday2').val();
     			
         		let data = { searchDiv, searchName ,confirmday1, confirmday2 }
-	        	//facConfirmListSearch(data);
+	       
 	        	$('[name="searchDiv"]').val('');
 				$("#searchName").val('');
 				$("#confirmday1").val('');
@@ -214,11 +226,7 @@ margin: 60px 0 ;
 	          		}
 	        	}); 
         	})
-            	 
-      
-                
-    
-  
+            	  
           //점검목록리스트그리드
           function facConfirmListSearch(data){
           $.ajax({
@@ -238,7 +246,7 @@ margin: 60px 0 ;
           el: document.getElementById('grid'),
           scrollX: false,
      	 //scrollY: false,
-		  bodyHeight: 300,
+		  bodyHeight: 460,
           rowHeaders: ['rowNum'],
           columns: [
             {
@@ -293,6 +301,10 @@ margin: 60px 0 ;
             {
               header: '설비명',
               name: 'facName'
+            },
+            {
+              header: '정기점검(일)',
+              name: 'checkCycle'
             }
           ]
          })
@@ -322,8 +334,9 @@ margin: 60px 0 ;
     	 let hidden =  document.getElementById('hiddenDiv');
     	 hidden.textContent="";
          let content = grid2.getRow(e.rowKey); //grid2의 이벤트가 걸린 로우키가 내용
-         //$('#fac_code').val(content.facCode); //fac_code라는 id의 인풋 창에 값 rowKey안의 facCode를 넣음
+     
          $('#fac_name').val(content.facName);//fac_name라는 id의 인풋 창에 값 rowKey안의 facName을 넣음
+         
          let hidInput = document.createElement('input');
          hidInput.setAttribute('type','hidden');
          hidInput.setAttribute('id','facCodei');
@@ -336,12 +349,10 @@ margin: 60px 0 ;
          
       //초기화버튼 이벤트
       $("#reset").on('click',function(){
-         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDate,#emp_num").val('');
          $('#confirm_issue option').eq(0).prop('selected','selected');
          $('#regural').prop('checked',true);
          $('#fit').prop('checked',true);
-         //$('div input').not("").val('');
-         //$('div input').not($('#confirmDatei')).val('');
       });
       
  
@@ -365,37 +376,32 @@ margin: 60px 0 ;
               $('#confirm_issue').val(dblclickRows.confirmIssue); //점검사항-셀렉트박스
               $("input:radio[name='confirm_category']:radio[value=\'"+dblclickRows.confirmCategory+"\']").prop('checked', true);//점검구분()
               $("input:radio[name='decision']:radio[value=\'"+dblclickRows.decision+"\']").prop('checked',true);//판정(라디오)              
-              $('#confirmDatei').val(dblclickRows.confirmDate);  //점검일시 
-              //$('#confirm_category').val(dblclickRows.confirmCategory); //점검구분 -라디오버튼
-              //$('input[name="confirm_category"]:checked').val(dblclickRows.confirmCategory);
-              //$('#decision').val(dblclickRows.decision); //판정 -라디오버튼
+              $('#confirmDate').val(dblclickRows.confirmDate);  //점검일시 
              
            }); 
       
    })
         
- /* 셀렉트박스 선택하는 방법 $('select[name="confirm_issue"] option:eq(2)').prop("selected",true) 
- 라디오버튼 체크하는 방법 :  $("input:radio[name='confirm_category']:radio[value='사과']").prop('checked', true); 
- $('input[name="confirm_category"]:checked')
- */
-    
-   
-   
-   
+
       //점검삭제버튼 이벤트    
       $("#delete").on('click', function(){
          $.ajax({
             url: "/fac/confirmDelete", //컨트롤러에 연결된 주소
-         method : "post", //조회는 항상 get, 나머진 post
-         //json형태인 키:값 형태로 데이터넘김
+         method : "post", //조회는 항상 get, 나머진 post      
          data: {
-            confirmCode : $('#confirm_code').val()
+            confirmCode : $('#confirm_code').val()  //json형태인 키:값 형태로 데이터넘김
          },
           beforeSend: function (xhr) {
               xhr.setRequestHeader(header, token);
            },
            success: function (result){
-            alert('삭제성공');
+        	   Toast.fire({
+	                icon: 'success', //success, error, warning, info, question
+	                title: '해당 점검정보가 삭제되었습니다.',
+	                width: 400 
+	              });
+        	
+        	
             $.ajax({
                   url : "/fac/confirmListAjax",
                   method : "GET",
@@ -404,8 +410,8 @@ margin: 60px 0 ;
                   grid.resetData(result);
                   grid.refreshLayout();
                   }
-                  })
-                  $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+               })
+            $('div input').not("input[name=confirm_category],input[name=decision],#confirmDate,#emp_num").val('');
             $('#confirm_issue option').eq(0).prop('selected','selected');
             $('#regural').prop('checked',true);
             $('#fit').prop('checked',true);
@@ -413,9 +419,9 @@ margin: 60px 0 ;
          error:function(reject){
             console.log(reject)
          }
-         })
+       })
 
-      });
+     });
      
     
     //점검수정버튼 이벤트
@@ -427,7 +433,7 @@ margin: 60px 0 ;
          //json형태인 키:값 형태로 데이터넘김
          data: {
                confirmCode : $('#confirm_code').val(),   
-               confirmDate :$('#confirmDatei').val(),
+               confirmDate :$('#confirmDate').val(),
                confirmCategory : $('input[name=confirm_category]:checked').val(),
                actionHistory : $("#action_history").val(),
                confirmIssue : $('#confirm_issue').val(),
@@ -440,7 +446,13 @@ margin: 60px 0 ;
               xhr.setRequestHeader(header, token);
            },
       success: function (result){
-         alert('수정성공');
+    	  Toast.fire({
+              icon: 'success', //success, error, warning, info, question
+              title: '해당 점검정보가 수정되었습니다.',
+              width: 400 
+            });
+    
+    		
          $.ajax({
                url : "/fac/confirmListAjax",
                method : "GET",
@@ -450,14 +462,12 @@ margin: 60px 0 ;
                grid.refreshLayout();
                }
                })
-               
-         
-         $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+                        
+         $('div input').not("input[name=confirm_category],input[name=decision],#emp_num").val('');
          $('#confirm_issue option').eq(0).prop('selected','selected');
          $('#regural').prop('checked',true);
-         $('#fit').prop('checked',true);
-         
-            },
+         $('#fit').prop('checked',true);         
+          },
             error:function(reject){
             console.log(reject)
          }
@@ -473,7 +483,7 @@ margin: 60px 0 ;
    		confirmInsertData = {
                        "confirmCode" : $("#confirm_code").val(),
                        "facCode" : $("#facCodei").val(),
-                       "confirmDate" : $('#confirmDatei').val(),
+                       "confirmDate" : $('#confirmDate').val(),
                        "confirmCategory" : $("input[name=confirm_category]:checked").val(),
                        "actionHistory" : $("#action_history").val(),
                        "confirmIssue" :$("select[name=confirm_issue]").val(),
@@ -491,22 +501,28 @@ margin: 60px 0 ;
                          xhr.setRequestHeader(header, token);
                         },
           success: function (result){
-        	  
+        	  Toast.fire({
+	                icon: 'success', //success, error, warning, info, question
+	                title: '해당 점검정보가 등록되었습니다.',
+	                width: 400 
+	              });
+        
+        		
         	  $.ajax({
                   url : "/fac/confirmListAjax",
                   method : "GET",
                  dataType : "JSON", //키:값 형식으로 가져온다.
-                  success : function(result){
+                  success : function(result){          
                    grid.resetData(result);
                    grid.refreshLayout();
                   }
                   });
    
-        	  $('div input').not("input[name=confirm_category],input[name=decision],#confirmDatei,#emp_num").val('');
+        	  $('div input').not("input[name=confirm_category],input[name=decision],#confirmDate,#emp_num").val('');
               $('#confirm_issue option').eq(0).prop('selected','selected');
               $('#regural').prop('checked',true);
               $('#fit').prop('checked',true);
-        	  $('#confirmDatei').val(new Date().toISOString().slice(0,10));     	  
+        	  $('#confirmDate').val(new Date().toISOString().slice(0,10));     	  
           },
           error:function(reject){
              console.log(reject)
@@ -515,24 +531,7 @@ margin: 60px 0 ;
           })
        });
        
-       
- 
-      
-            
-     /* function getProc(){
-   getProcRows=grid2.getCheckedRows();
-   console.log(getProcRows);
-   Progaddgrid.appendRows(getProcRows);
-  getProcRows.forEach(function(ele,i){
-   Progaddgrid.appendRows(getProcRows[i])
-   }); 
-     $('#procmodalbtn').modal('hide'); 
-      $('#procmodalbtn').hide();
-      $('.bd-example-modal-lg').hide();
-}*/
-       
-       
-       
+    
  </script>
    </div>
 </body>

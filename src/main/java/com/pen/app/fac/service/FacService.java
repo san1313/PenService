@@ -16,7 +16,7 @@ public interface FacService {
 	public List<FacConnProcVO> getproclist();//공정코드목록
 	public List<FacConnProcVO> getprocminilist(String keyword); //공정명으로 공정코드조회
 	
-	
+	//public String getfacCode();//설비코드자동부여
 	public List<FacConnProcVO> getFacConnProcList(String facCode); //설비별 공정조회
 	public FacInfoVO getFac(String facCode); //단건조회
 	public int facRegister(FacInfoVO vo); //설비등록

@@ -18,9 +18,18 @@ public class FacServiceImpl implements FacService {
 
 	@Autowired
 	FacMapper mapper;
+	
+
+//	@Override
+//	public String getfacCode() {
+//		// 설비코드자동부여
+//		return mapper.getfacCode();
+//	}
+
 
 	@Override
 	public List<FacConnProcVO> getproclist() {
+		//공정코드전체리스트
 		return mapper.getproclist();
 	}
 
@@ -54,17 +63,22 @@ public class FacServiceImpl implements FacService {
 		//해당설비 공정삭제
 		 mapper.facConnProcDelete(list.getList().get(0).getFacCode());
 		//공정수정
-		 mapper.insertProcList(list);
+		 mapper.insertProcList(list);		
 		// 설비수정		 	
-		return mapper.facUpdate(list.getList().get(0));
+	return mapper.facUpdate(list.getList().get(0));
 
 	}
 
 	@Override
 	public int facDelete(FacInfoVO vo) {
-		// 설비삭제
-		//mapper.checkProcState(vo.getFacCode()) //설비 작업상태체크		
-		return mapper.facDelete(vo);
+		//작동중 설비 수량확인
+		int count =mapper.checkOperateState(vo.getFacCode());
+		if(count > 0 ) {
+			return 0;
+		}else {
+			// 설비삭제
+			return mapper.facDelete(vo);
+		}		
 	}
 
 	@Override
@@ -126,14 +140,14 @@ public class FacServiceImpl implements FacService {
 
 	@Override
 	public int downTimeUpdate(FacDownTimeVO vo) {
-		//설비상태변경 가동중
+		//설비상태변경->가동 or 비가동이면 
 		if(vo.getEndTime() != null && !vo.getEndTime().isEmpty())
 			vo.setOperateCheck("Y");
 		else
 			vo.setOperateCheck("N");
 		mapper.facOperateState(vo);
 		
-		// 비가동수정
+		// 비가동수정(비가동에서도 가동여부 상태 변경됨)
 		return mapper.downTimeUpdate(vo);
 	}
 
