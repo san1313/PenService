@@ -26,14 +26,14 @@
 <link rel="stylesheet"
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="/plugins/jquery/jquery.min.js"></script>
+<script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
 
 <style>
- .container-fluid {
-	text-align: left !important;
-} 
+
 .modaltitle {
 	text-align: center;
 }
@@ -68,10 +68,12 @@ display:inline-block;
 		<h1>출고 관리</h1>
 	</div>
 	<div layout:fragment="content">
-	<h5 id="nowCont" class="font-weight-bold">계약건 출고대기현황</h5>
-	<h5 id="nowOrd" class="font-weight-bold" style="display: none">주문건 출고대기현황</h5>
+	<h5 id="nowCont" class="row font-weight-bold" style="margin-left:5px;">계약건 출고대기현황</h5>
+	<h5 id="nowOrd" class="row font-weight-bold" style="display: none; margin-left:5px;">주문건 출고대기현황</h5>
+	<div class="row" style="margin-left:5px;">
 	<input type="radio" name="type" id="contractBtn" value="contract" checked> <label for="contractBtn">계약서</label>
 	<input style ="margin-left : 10px;"type="radio" name="type" id="orderBtn" value="order"> <label for="orderBtn">주문서</label>
+	</div>
 	<!-- <span style="float:right; margin-right:30px;" >납기기한이 5일이내 일 경우 : 빨간색</span> -->
 	
 	<!-- 계약건 조건검색폼 -->
@@ -123,7 +125,7 @@ display:inline-block;
 	<!-- 주문상세건 -->
 	<div id="beforeReleaseOrdGrid" style="display: none"></div>
 	<br>
-	<h5 class="font-weight-bold" >출고등록</h5>
+	<h5 class="row font-weight-bold" style="margin-left:5px;">출고등록</h5>
 	<button id="releaseRegBtn" style="float:right ; margin-bottom:10px;" class="btn btn-primary">출고 등록</button>
 	<div id="afterReleaseGrid"></div>
 	
@@ -243,6 +245,15 @@ display:inline-block;
 	const token = $('meta[name="_csrf"]').attr("content");
 	const header = $('meta[name="_csrf_header"]').attr("content");
 	
+	//alert
+	const Toast = Swal.mixin({
+        toast: true,
+        position: "top-end",
+        timer: 1500,
+        customClass: { container: "swalAlert" },
+        showConfirmButton: false,
+      });
+
 	
 	//제품모달창 엔터키
 	
@@ -607,21 +618,37 @@ $('#searchordCode-text').on('keyup',function(e){
         	   let radioVal = $("input[name=type]:checked").val();
         	   if (radioVal == "contract") {
         	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
-   				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "입력한 출고량이 필요 주문량보다 많습니다.",
+                        width: 400,
+                      });
    				return;
    				}
         	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
-      				alert("출고량을 입력하세요 ");
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "출고량을 입력해주세요",
+                        width: 400,
+                      });
       				return;
       			}
         	   }
         	   else{
         	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.ordReqQuan){
-      				alert(" 입력한 출고량이 필요 주문량보다 많습니다 ");
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "입력한 출고량이 필요주문량보다 많습니다.",
+                        width: 400,
+                      });
       				return;
       				}
         	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum == 0){
-      				alert("출고량을 입력하세요 ");
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "출고량을 입력해주세요",
+                        width: 400,
+                      });
       				return;
       			}
         	   }
@@ -653,6 +680,11 @@ $('#searchordCode-text').on('keyup',function(e){
 						console.log(targetRow.contReqQuan)
 						console.log(targetRow.ordReqQuan)
 						console.log(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum)
+						Toast.fire({
+                        icon: "success", //success, error, warning, info, question
+                        title: "정상 출고 되었습니다.",
+                        width: 400,
+                      });
 						if (radioVal == "contract") {
 							//밑의 써머리 초기화
 							targetRow.contReqQuan -= afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum;

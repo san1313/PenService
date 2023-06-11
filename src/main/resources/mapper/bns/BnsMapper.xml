@@ -828,4 +828,68 @@ LEFT OUTER JOIN bns_release r on ( d.ord_det_code= r.ord_det_code )
 		order by bns_release_code desc
 	</select>
 	
+		<!-- 출고내역 페이지 그리드 -->
+	<select id="getSearchStockList" resultType="BnsStockVO">
+	   select 
+      m.prdt_lot,
+      m.prod_code,
+      m.prdt_nm,
+      m.cnt,
+      to_char(m.prdt_date,'yyyy-mm-dd') prdt_date,
+      to_char(s.bns_store_date,'yyyy-mm-dd') bns_store_date,
+      m.prdt_unit,
+      m.prdt_state
+      from mak_prdt m join bns_store s on(m.prdt_lot = s.prdt_lot)
+       where m.prdt_state != '출고완료' 
+       order by m.prdt_lot desc
+	</select>
+	
+	<!-- 재고조회 조건검색 -->
+<select id="getstockSearchListCon" resultType="BnsStockVO">
+	select *
+		
+	from(
+		select 
+      m.prdt_lot,
+      m.prod_code,
+      m.prdt_nm,
+      m.cnt,
+      to_char(m.prdt_date,'yyyy-mm-dd') prdt_date,
+      to_char(s.bns_store_date,'yyyy-mm-dd') bns_store_date,
+      m.prdt_unit,
+      m.prdt_state,
+      (select get_cnt_total(m.prod_code) from dual) cnt_total
+      from mak_prdt m join bns_store s on(m.prdt_lot = s.prdt_lot)
+      
+		<where>
+		<if test="prdtNm != null and prdtNm != ''"> 
+		 and m.prdt_nm = #{prdtNm}
+		</if>
+		<if test="prdtDate != null and prdtDate != ''">
+	<![CDATA[
+			and prdt_date >= TO_DATE(#{prdtDate}, 'YYYY-MM-DD') 
+	]]>
+		</if>
+	<if test="prdtDate1 != null and prdtDate1 != ''">
+	<![CDATA[		
+		and prdt_date <= TO_DATE(#{prdtDate1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		<if test="bnsStoreDate != null and bnsStoreDate != ''">
+	<![CDATA[		
+		and bns_store_date >= TO_DATE(#{bnsStoreDate}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		<if test="bnsStoreDate1 != null and bnsStoreDate1 != ''">
+	<![CDATA[		
+		and bns_store_date <= TO_DATE(#{bnsStoreDate1}, 'YYYY-MM-DD')
+	]]>
+		</if>
+		and m.prdt_state != '출고완료'
+		</where>
+		order by m.prdt_lot desc)
+	</select>
+	
+	
+	
 </mapper>

@@ -8,6 +8,7 @@ import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 import com.pen.app.bns.vo.BnsReleaseListVO;
 import com.pen.app.bns.vo.BnsReleaseVO;
+import com.pen.app.bns.vo.BnsStockVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
@@ -54,7 +55,7 @@ public interface BnsService {
 	public  List<BnsReleaseVO> getbeforeReleaseOrdList();//출고전 주문서 조회
 	public List<BnsReleaseVO> getLotReleaseList(String keyword);//출고전 LOT 리스트 그리드
 	public void insertReleaseList(BnsReleaseListVO list); //출고 등록
-	public List<BnsReleaseVO> getSearchReleaseList(); //입고후 그리드 조회
+	public List<BnsReleaseVO> getSearchReleaseList(); //출고조회 페이지
 	
 	public List<BnsStoreVO> getLOTPrdtList(String keyword);//거래처리스트 조회검색
 	public List<BnsStoreVO> getLOTPrdtAfterList(String keyword);
@@ -65,5 +66,8 @@ public interface BnsService {
 	public  List<BnsReleaseVO> getreleaseOrdListCon(BnsReleaseVO vo);//출고관리(주문) 조건 조회
 	public  List<BnsReleaseVO> getreleaseSearchListCon(BnsReleaseVO vo);//출고관리(주문) 조건 조회
 	
+	//재고조회
+	public List<BnsStockVO> getSearchStockList(); //재고조회 페이지
+	public  List<BnsStockVO> getstockSearchListCon(BnsStockVO vo);
 	
 }

@@ -25,6 +25,8 @@
 	href="https://uicdn.toast.com/grid/latest/tui-grid.css" />
 <script src="https://uicdn.toast.com/grid/latest/tui-grid.js"></script>
 <script src="/plugins/jquery/jquery.min.js"></script>
+<script src="/plugins/sweetalert2/sweetalert2.min.js"></script>
+    <link rel="stylesheet" href="/plugins/sweetalert2/sweetalert2.min.css" />
 
 <meta name="_csrf" th:content="${_csrf.token}" />
 <meta name="_csrf_header" th:content="${_csrf.headerName}" />
@@ -466,6 +468,16 @@ display:inline-block;
 		const token = $('meta[name="_csrf"]').attr("content");
 		const header = $('meta[name="_csrf_header"]').attr("content");
 		
+		//alert창
+	    const Toast = Swal.mixin({
+            toast: true,
+            position: "top-end",
+            timer: 1500,
+            customClass: { container: "swalAlert" },
+            showConfirmButton: false,
+          });
+
+		
 		//제품모달창 엔터키
 		$('#searchprod-text').on('keyup',function(e){
 			 if(e.keyCode == 13){
@@ -626,7 +638,12 @@ display:inline-block;
 	          },
 			success : function(result){
 				
-		        alert('주문서 등록완료');
+				 Toast.fire({
+		                icon: "success", //success, error, warning, info, question
+		                title: "계약서가 등록되었습니다.",
+		                width: 400,
+		              });
+				
 		   		//전체 조회페이지 아작스
 		   		$.ajax({
 					url : "/bns/contListAjax",
@@ -1382,8 +1399,12 @@ $.ajax({
         	 console.log(checked)
         		checked.forEach(ele=>{
 				if(ele.contProgress !== '접수완료'){
-				alert('취소할 수 없는 계약서입니다')
-				        			
+					 Toast.fire({
+			                icon: "error", //success, error, warning, info, question
+			                title: "취소할 수 없는 계약서입니다.",
+			                width: 400,
+			              });
+					
 				}else{
         	 
 			grid.removeCheckedRows(true)
@@ -1403,7 +1424,11 @@ $.ajax({
 			            xhr.setRequestHeader(header, token);
 			          },
 					success : function(result){
-						
+						 Toast.fire({
+				                icon: "success", //success, error, warning, info, question
+				                title: "계약서가 삭제되었습니다.",
+				                width: 400,
+				              });
 					}
 					});
 			}
@@ -1446,6 +1471,11 @@ $.ajax({
 	            xhr.setRequestHeader(header, token);
 	          },
 			success : function(result){
+				 Toast.fire({
+		                icon: "success", //success, error, warning, info, question
+		                title: "계약서가 수정되었습니다.",
+		                width: 400,
+		              });
 				
 			}
 			});

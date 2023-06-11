@@ -22,6 +22,7 @@ import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 import com.pen.app.bns.vo.BnsReleaseListVO;
 import com.pen.app.bns.vo.BnsReleaseVO;
+import com.pen.app.bns.vo.BnsStockVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
@@ -425,7 +426,7 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 			return bnsService.getreleaseOrdListCon(vo);
 		}
 		
-		//출고조회내역페이지 아작스
+		//출고조회내역페이지 검색 조건 아작스
 		@ResponseBody
 		@RequestMapping("/releaseSearchListconAjax")
 		public List<BnsReleaseVO> releaseSearchListconAjax(BnsReleaseVO vo){
@@ -440,6 +441,29 @@ public List<BnsReleaseVO> searchReleaseListAjax(){
 		      model.addAttribute("userVO", user);
 		      return "bns/profit";
 		   }
+		   
+		 //완제품 재고조회페이지
+		   @GetMapping("/searchStockList")
+		   		   public String searchStockList(Model model, Authentication authentication) {
+		   		      UserDetails user = (UserDetails) authentication.getPrincipal();
+		   		      model.addAttribute("userVO", user);
+		   		  return "bns/searchStockList";
+		   		   }
+		   
+		 //완제품 재고조회 그리드 아작스
+		   @ResponseBody
+		   @GetMapping("/searchStockListAjax")
+		   public List<BnsStockVO> searchStockListAjax(){
+		   	List<BnsStockVO> list = bnsService.getSearchStockList();
+		   	return list;
+		   }
+		   
+		 //출고조회내역페이지 검색 조건 아작스
+			@ResponseBody
+			@RequestMapping("/stockSearchListconAjax")
+			public List<BnsStockVO> stockSearchListconAjax(BnsStockVO vo){
+				return bnsService.getstockSearchListCon(vo);
+			}
 
 }
 

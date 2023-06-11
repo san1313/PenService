@@ -13,6 +13,7 @@ import com.pen.app.bns.vo.BnsOrdVO;
 import com.pen.app.bns.vo.BnsProdVO;
 import com.pen.app.bns.vo.BnsReleaseListVO;
 import com.pen.app.bns.vo.BnsReleaseVO;
+import com.pen.app.bns.vo.BnsStockVO;
 import com.pen.app.bns.vo.BnsStoreListVO;
 import com.pen.app.bns.vo.BnsStoreVO;
 
@@ -243,4 +244,15 @@ public class BnsServiceImpl implements BnsService {
 			public List<BnsOrdVO> getordCodesKeyList(String keyword) {
 				return mapper.getordCodesKeyList(keyword);
 			}
+		
+		//재고조회
+		@Override
+			public List<BnsStockVO> getSearchStockList() {
+				return mapper.getSearchStockList();
+			}
+		@Override
+			public List<BnsStockVO> getstockSearchListCon(BnsStockVO vo) {
+				return mapper.getstockSearchListCon(vo);
+			}
+		
 }
