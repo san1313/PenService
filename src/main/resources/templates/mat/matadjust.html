@@ -361,15 +361,10 @@
     })
     
     //입고버튼
-    document.getElementById('subtn').addEventListener('click', function(){
+    	$("#subtn").on('click', function(){
     	let checked = matadjustgrid.getCheckedRows();
-    	
-    	console.log(checked);
     	checked[0].matMdev= '입고'; 
-    	checked[0].empId =$('#empId').val();
-   
-    		
-    	
+    	checked[0].empId =$('#empId').val();   	
     	 $.ajax({
     	  		url : "/mat/matadjustregister",
     	  		method : "POST",
@@ -380,29 +375,22 @@
     	  		dataType : "JSON",
     	  		contentType: "application/json",
     	  		success : function(result3){
-    	  			console.log('입고후알람');
     	  			Toast.fire({
-		                 icon: "success", //success, error, warning, info, question
+		                 icon: "success",
 		                 title: "입고가 완료되었습니다.",
 		                 width: 400,
-		               });
-    	  			console.log(result3);
-    	  			
+		               });	  			
     	  		},
     	  		error: function(reject){
-    	  			console.log(reject)
-    	  		}
-    	         
+    	  		}   	         
     	  	});
-
-    	 matadjustgrid.removeCheckedRows(false);
-    	
+    	 matadjustgrid.removeCheckedRows(false); 	
     })
     
+    
     //출고버튼
-    document.getElementById('dlivy').addEventListener('click', function(){
+    $("#dlivy").on('click', function(){
     	let checked2 = matadjustgrid.getCheckedRows();
-    	console.log(checked2);
     	
     	checked2[0].matMdev='출고';
     	checked2[0].empId =$('#empId').val();
@@ -419,15 +407,13 @@
 	  		success : function(result3){
 	  			console.log(result3);
 	  			Toast.fire({
-	                 icon: "success", //success, error, warning, info, question
+	                 icon: "success",
 	                 title: "출고가 완료되었습니다.",
 	                 width: 400,
 	               });
 	  		},
 	  		error: function(reject){
-	  			console.log(reject)
-	  		}
-	         
+	  		}        
 	  	});    	 	
     	 matadjustgrid.removeCheckedRows(false);
     })  
