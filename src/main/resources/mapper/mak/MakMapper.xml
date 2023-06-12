@@ -21,7 +21,7 @@
 		        (cont_det_quan - plan_qnt) contDetQuan,
 		        prod_code 
 		   from	conplan_view 
-		  where plan_type='plan' 
+		  where plan_type='plan' and trunc(plan_date) between to_date(sysdate-7,'yyyy-mm-dd') and sysdate 
 		  order by pd_code desc
 	</select>
 
@@ -184,7 +184,7 @@
 		to_char(plan_clsdate,'yyyy-MM-dd')
 		planClsdate,to_char(ord_due_date,'yyyy-MM-dd') ordDueDate,
 		plan_state,plan_qnt,ord_det_quan-plan_qnt ordDetQuan,prod_code from
-		ordplan_view where plan_type='order' order by pd_code desc
+		ordplan_view where plan_type='order' and trunc(plan_date) between to_date(sysdate-7,'yyyy-mm-dd') and sysdate order by pd_code desc
 	</select>
 
 
@@ -225,7 +225,7 @@
 		ord_DET_CODE,PROD_CODE,PROD_NAME,ord_DET_PRICE,ord_DET_QUAN,to_char(ord_Due_date,'yyyy-MM-dd')
 		ordDueDate,ACC_CODE,ACC_NAME,to_char(ord_DATE,'yyyy-MM-dd')
 		ordDate,to_char(ord_DUE_DATE,'yyyy-MM-dd')
-		ordDueDate,ord_PROGRESS,ord_NOTE,EMP_NUM,ord_code from ord_base_bns order by ord_due_date desc
+		ordDueDate,ord_PROGRESS,ord_NOTE,EMP_NUM,ord_code from ord_base_bns where ord_progress !='출고완료' order by ord_due_date desc
 	</select>
 	<!-- 계약연결코드 불러오기 비교구문용 -->
 	<select id="getConnection" resultType="PlanVO">
@@ -241,6 +241,7 @@
 			<foreach collection="list" item="cdc" separator=" and ">
 			ord_det_code != #{cdc}
 			</foreach>
+			and ord_progress != '출고완료'
 		</where>
 	</select>
 	<!-- 주문서 기반 계획서 등록 -->
@@ -290,7 +291,7 @@ MAK_EMP_NUM )
 		 <select id="getModalOrd" resultType="PlanVO">
 		select acc_code||acc_name||'-'||prod_name contNm, ord_det_quan,
 		prod_name, to_char(ord_due_date,'yyyy-MM-dd')
-		ordDueDate,ord_det_code,prod_code from ord_base_bns where ord_due_date between to_date(#{planSdate},'yyyy-mm-dd') 
+		ordDueDate,ord_det_code,prod_code from ord_base_bns where ord_progress != '출고완료' and ord_due_date between to_date(#{planSdate},'yyyy-mm-dd') 
 		and to_date(#{planClsdate}||'23:59:59','yyyy-mm-dd hh24:mi:ss') order by ord_due_date desc
 		</select>
 		

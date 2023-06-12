@@ -134,6 +134,7 @@ var comDev = 1;
 var planType = "";
 //라디오 버튼 클릭 - 계약서기반
 document.getElementById('planBtn').addEventListener('click',function(){
+	$('.modal-title').text('계약목록');
 	comDev=1;
 	planType="plan";
 $('#basBtn').css('display','flex');
@@ -1164,6 +1165,7 @@ function planChoice(){
 
 //주문서기반 라디오 클릭 이벤트
 document.getElementById('orderBtn').addEventListener('click',function(){
+	$('.modal-title').text('주문목록');
 	planType="order";
 	comDev=1;
 	$('#basBtn').css('display','flex');
