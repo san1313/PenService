@@ -77,7 +77,7 @@ select pd_code, plan_qnt-sum(ordr_qnt) re_qnt  from mak_plan_detail join mak_ind
 
 
 <select id="indList" resultType="MakVO" parameterType="string">
-	select prod_name,pd_code,plan_code,plan_nm,plan_type,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate, to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate,priority,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_plan join mak_plan_detail using(plan_code) join mak_indica using(pd_code) join com_code_prod using(prod_code) where pd_code = #{pdCode} and cls_date>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
+	select prod_name,pd_code,plan_code,plan_nm,plan_type,mak_emp_num,plan_state,pd_prod_code,plan_qnt,to_char(plan_sdate,'yyyy-mm-dd') plan_sdate, to_char(plan_clsdate,'yyyy-mm-dd') plan_clsdate,priority,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_plan join mak_plan_detail using(plan_code) join mak_indica using(pd_code) join com_code_prod using(prod_code) where pd_code = #{pdCode} and to_date(cls_date,'yyyy-mm-dd')>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
 </select>
 
 <select id="planFlow" parameterType="string" resultType="MakVO">
@@ -293,7 +293,7 @@ delete mak_hold where indica_code=#{indicaCode}
 </delete>
 
 <select id="dirIndList" resultType="MakVO">
-select prod_name,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_indica join com_code_prod using(prod_code) where pd_code is null and cls_date>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
+select prod_name,indica_code,indica_nm,emp_num,prod_code,ordr_qnt,to_char(indica_date,'yyyy-mm-dd') indica_date, to_char(st_date,'yyyy-mm-dd') st_date,to_char(cls_date,'yyyy-mm-dd') cls_date, indica_state from mak_indica join com_code_prod using(prod_code) where pd_code is null and to_date(cls_date,'yyyy-mm-dd')>=to_date(sysdate,'yyyy-mm-dd') and indica_state in ('미작업','작업중')
 </select>
 
 <select id="product" resultType="MakVO">
@@ -316,7 +316,6 @@ SELECT
     to_char(cls_date, 'yyyy-mm-dd')    cls_date,
     indica_state,
     pd_code,
-    prod_code,
     prod_name
 FROM
          mak_indica
@@ -811,7 +810,7 @@ FROM
     JOIN com_info_emp b ON a.emp_num = b.emp_num
     JOIN mak_hold     c USING ( indica_code )
     JOIN com_code_proc USING ( proc_code )
-    JOIN (
+    LEFT OUTER JOIN (
         SELECT
             SUM(test_tnum_def) re_qnt,
             indica_code,
