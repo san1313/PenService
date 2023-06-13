@@ -610,9 +610,19 @@ $('#searchordCode-text').on('keyup',function(e){
           
           //출고등록 버튼 클릭 시
            $('#releaseRegBtn').on('click' ,function(){
-        	   console.log(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum)
-        	   console.log(targetRow.ordReqQuan)
-        	  	console.log(targetRow)
+        	  		let checked = afterReleaseGrid.getCheckedRows();
+			
+			checked.forEach(ele=>{
+				ele.contDetCode = targetRow.contDetCode;
+				ele.ordDetCode = targetRow.ordDetCode;
+				ele.prdtCode = targetRow.prodCode;
+				ele.accName = targetRow.accName;
+				ele.bnsReleaseDate = ele.sys;
+				ele.empNum = '[[${#authentication.principal.empNum}]]';
+			})
+			
+			console.log(checked.cnt)
+			
         	   let radioVal = $("input[name=type]:checked").val();
         	   if (radioVal == "contract") {
         	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
@@ -631,7 +641,7 @@ $('#searchordCode-text').on('keyup',function(e){
                       });
       				return;
       			}
-        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > targetRow.cnt){
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > checked.cnt){
         	    	Toast.fire({
                         icon: "error", //success, error, warning, info, question
                         title: "입력한 출고량이 재고량보다 많습니다",
@@ -657,7 +667,7 @@ $('#searchordCode-text').on('keyup',function(e){
                       });
       				return;
       			}
-        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > targetRow.cnt){
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > checked.cnt){
         	    	Toast.fire({
                         icon: "error", //success, error, warning, info, question
                         title: "입력한 출고량이 재고량보다 많습니다",
@@ -667,18 +677,7 @@ $('#searchordCode-text').on('keyup',function(e){
       			}
         	   }
         	   
-			let checked = afterReleaseGrid.getCheckedRows();
-			console.log(checked);
-			console.log(targetRow);
-			
-			checked.forEach(ele=>{
-				ele.contDetCode = targetRow.contDetCode;
-				ele.ordDetCode = targetRow.ordDetCode;
-				ele.prdtCode = targetRow.prodCode;
-				ele.accName = targetRow.accName;
-				ele.bnsReleaseDate = ele.sys;
-				ele.empNum = '[[${#authentication.principal.empNum}]]';
-			})
+		
 			console.log(checked)
 			
 			 $.ajax({
