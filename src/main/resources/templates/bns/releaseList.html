@@ -558,18 +558,15 @@ $('#searchordCode-text').on('keyup',function(e){
            beforeReleaseContGrid.on('click', ev=> {
          	  if(ev.columnName == 'contDetCode'){
         			let row = beforeReleaseContGrid.getRow(ev.rowKey);
-        			
         			targetRow = row;
-        			console.log(targetRow);
         			afterReleaseGrid.setSummaryColumnContent('bnsReleaseQuan', {
         				  template(summary) {
         				    return '출고 필요량 : ' + targetRow.contReqQuan + '<br>출고량 : ' + summary.sum;
         				  }
         				});
-        			console.log(row);
+        			//그리드 초기화
         			lotReleaseList();
-        			 
-          } 
+          	  } 
           })
           
           function lotReleaseList(){
@@ -613,8 +610,19 @@ $('#searchordCode-text').on('keyup',function(e){
           
           //출고등록 버튼 클릭 시
            $('#releaseRegBtn').on('click' ,function(){
-        	   console.log(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum)
-        	   console.log(targetRow.ordReqQuan)
+        	  		let checked = afterReleaseGrid.getCheckedRows();
+			
+			checked.forEach(ele=>{
+				ele.contDetCode = targetRow.contDetCode;
+				ele.ordDetCode = targetRow.ordDetCode;
+				ele.prdtCode = targetRow.prodCode;
+				ele.accName = targetRow.accName;
+				ele.bnsReleaseDate = ele.sys;
+				ele.empNum = '[[${#authentication.principal.empNum}]]';
+			})
+			
+			console.log(checked.cnt)
+			
         	   let radioVal = $("input[name=type]:checked").val();
         	   if (radioVal == "contract") {
         	    if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum>targetRow.contReqQuan){
@@ -629,6 +637,14 @@ $('#searchordCode-text').on('keyup',function(e){
         	    	Toast.fire({
                         icon: "error", //success, error, warning, info, question
                         title: "출고량을 입력해주세요",
+                        width: 400,
+                      });
+      				return;
+      			}
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > checked.cnt){
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "입력한 출고량이 재고량보다 많습니다",
                         width: 400,
                       });
       				return;
@@ -651,20 +667,17 @@ $('#searchordCode-text').on('keyup',function(e){
                       });
       				return;
       			}
+        	    else if(afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum > checked.cnt){
+        	    	Toast.fire({
+                        icon: "error", //success, error, warning, info, question
+                        title: "입력한 출고량이 재고량보다 많습니다",
+                        width: 400,
+                      });
+      				return;
+      			}
         	   }
         	   
-			let checked = afterReleaseGrid.getCheckedRows();
-			console.log(checked);
-			console.log(targetRow);
-			
-			checked.forEach(ele=>{
-				ele.contDetCode = targetRow.contDetCode;
-				ele.ordDetCode = targetRow.ordDetCode;
-				ele.prdtCode = targetRow.prodCode;
-				ele.accName = targetRow.accName;
-				ele.bnsReleaseDate = ele.sys;
-				ele.empNum = '[[${#authentication.principal.empNum}]]';
-			})
+		
 			console.log(checked)
 			
 			 $.ajax({
@@ -686,22 +699,21 @@ $('#searchordCode-text').on('keyup',function(e){
                         width: 400,
                       });
 						if (radioVal == "contract") {
-							//밑의 써머리 초기화
+							//출고 필요량 초기화
 							targetRow.contReqQuan -= afterReleaseGrid.getSummaryValues('bnsReleaseQuan').sum;
-							//위의 그리드 초기화
+							//출고전 계약서 그리드
 							 $.ajax({
 									url : "/bns/beforeReleaseContListAjax",
 									method : "GET",
 									dataType : "JSON",
 									success : function(result){
 										beforeReleaseContGrid.resetData(result);
-										//현재날짜
+										//납기기한에 따른 경고색 부여
 										beforeReleaseContGrid.getData().forEach((ele, index)=>{
 										 let today = new Date(); 
 										 let releaseDay = new Date(ele.contDetRelease);
 										 let diffDay = releaseDay.getTime() - today.getTime();
 										 let diffDays = Math.ceil(diffDay / (1000 * 3600 * 24));
-										 console.log(diffDays)
 										 	if(diffDays<=5){
 											beforeReleaseContGrid.addCellClassName(index,'contDetCode','cell-red');
 											beforeReleaseContGrid.addCellClassName(index,'contCode','cell-red');
